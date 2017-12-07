@@ -21,5 +21,5 @@ message("\tmlPack \t\t\tunknown \tunknown") #TODO: find some way to display mlPa
 message("\n") # this message here just to improve expandability
 
 # create executable and link to dynamic libraries
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp) #TODO: complete wrapper
 target_link_libraries(${PROJECT_NAME} ${ARMADILLO_LIBRARIES}) #TODO: link mlPack
