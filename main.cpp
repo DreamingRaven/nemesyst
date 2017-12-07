@@ -1,4 +1,5 @@
 #include <iostream>
+#include <armadillo>
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
