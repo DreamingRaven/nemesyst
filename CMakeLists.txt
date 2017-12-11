@@ -10,16 +10,18 @@ set(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 
 # find libraries/ packages for use
 find_package(Armadillo REQUIRED)
-#find_package(mlpack REQUIRED) # mlpack cannot be found normally
+#find_package(mlpack REQUIRED) # mlpack cannot be found normally with previous method
+set(MLPACK_LIBRARIES /usr/lib/libmlpack.so) # libmlpack.so specifically found
 include_directories(${ARMADILLO_INCLUDE_DIRS})
 
 # display key information for debug purposes
 message([STATUS] " components:\n\tName \t\t\tVersion \tPath \n\t${PROJECT_NAME} \t${PROJECT_VERSION} \t\t${CMAKE_SOURCE_DIR} ")
 message("\tCMake \t\t\t${CMAKE_VERSION} \t\t${CMAKE_ROOT} ")
-message("\tArmadillo \t\t${ARMADILLO_VERSION_STRING} \t${ARMADILLO_INCLUDE_DIRS}")
+message("\tArmadillo \t\t${ARMADILLO_VERSION_STRING} \tlib:${ARMADILLO_LIBRARIES} src:${ARMADILLO_INCLUDE_DIRS}")
 message("\tmlPack \t\t\tunknown \tunknown") #TODO: find some way to display mlPack information
+
 message("\n") # this message here just to improve expandability
 
 # create executable and link to dynamic libraries
 add_executable(${PROJECT_NAME} main.cpp) #TODO: complete wrapper
-target_link_libraries(${PROJECT_NAME} ${ARMADILLO_LIBRARIES}) #TODO: link mlPack
+target_link_libraries(${PROJECT_NAME} ${ARMADILLO_LIBRARIES} ${MLPACK_LIBRARIES}) #TODO: link mlPack
