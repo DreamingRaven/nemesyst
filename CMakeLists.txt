@@ -21,7 +21,6 @@ message([STATUS] " components:\n\tName \t\t\tVersion \tPath \n\t${PROJECT_NAME} 
 message("\tCMake \t\t\t${CMAKE_VERSION} \t\t${CMAKE_ROOT} ")
 message("\tArmadillo \t\t${ARMADILLO_VERSION_STRING} \tlib: ${ARMADILLO_LIBRARIES} src: ${ARMADILLO_INCLUDE_DIRS}")
 message("\tmlPack \t\t\tunknown \tlib: ${MLPACK_LIBRARIES}") #TODO: find some way to display mlPack information
-
 message("\n") # this message here just to improve expandability
 
 # create executable and link to dynamic libraries
