@@ -38,17 +38,24 @@ topXTags = movieMetaData.groupby('movieId').head(10)
 userAvgRating = ratings.groupby('userId')['rating'].mean()
 movieAvgRating = ratings.groupby('movieId')['rating'].mean()
 
+# check if users line up
 numUsers = len(set(ratings['userId']))
 numUserRatings = len(userAvgRating)
 lastUserId = (ratings.tail(1).iloc[0])[0]
-flagAreNoUsersMissing = 0
+listUniqueUsers = list(ratings['userId'].unique())
 
-if numUsers == numUserRatings and numUsers == lastUserId:
-    flagAreNoUsersMissing = 1
+# check if movies line up
+numMovies = len(set(ratings['movieId']))
+numMovieRatings = len(movieAvgRating)
+ratings.sort_values(['movieId', 'userId'], ascending=[True, False], inplace=True) # this changes order for movies so cannot recombine
+lastMovieId = (ratings.tail(1).iloc[0])[1] #fek
+listUniqueMovies = list(ratings['movieId'].unique())
 
+# create the final data frame
 df = pd.DataFrame()
-df['userAvgRating'] = df.index
-#df['userId'] = df.reset_index()
+df['userAvgRating'] = userAvgRating
+df['userId'] = listUniqueUsers
+
 
 #rating_tags = pd.merge(ratings, tags)
 
