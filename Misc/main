@@ -36,7 +36,7 @@ topXTags = movieMetaData.groupby('movieId').head(10)
 #test = movieMetaData.groupby('movieId', 'relevance').nlargest(5)#[:].nlargest(5, 'relevance')
 #test = movieMetaData.groupby('movieId')
 userAvgRating = ratings.groupby('userId')['rating'].mean()
-movieAvgRating = ratings.groupby('movieId')['rating'].mean()
+
 
 # check if users line up
 numUsers = len(set(ratings['userId']))
@@ -44,19 +44,32 @@ numUserRatings = len(userAvgRating)
 lastUserId = (ratings.tail(1).iloc[0])[0]
 listUniqueUsers = list(ratings['userId'].unique())
 
-# check if movies line up
+# check if movies line up first reorder the list
+ratings.sort_values(['movieId', 'userId'], ascending=[True, False], inplace=True) # this changes order for movies so cannot recombine
+movieAvgRating = ratings.groupby('movieId')['rating'].mean()
 numMovies = len(set(ratings['movieId']))
 numMovieRatings = len(movieAvgRating)
-ratings.sort_values(['movieId', 'userId'], ascending=[True, False], inplace=True) # this changes order for movies so cannot recombine
 lastMovieId = (ratings.tail(1).iloc[0])[1] #fek
 listUniqueMovies = list(ratings['movieId'].unique())
 
-# create the final data frame
-df = pd.DataFrame()
-df['userAvgRating'] = userAvgRating
-df['userId'] = listUniqueUsers
+# user avg ratings as data frame
+userAvgRatingWithId = pd.DataFrame()
+userAvgRatingWithId['userAvgRating'] = userAvgRating
+userAvgRatingWithId['userId'] = listUniqueUsers
 
+# movie avg ratings as data frame
+movieAvgRatingWithId = pd.DataFrame()
+movieAvgRatingWithId['movieAvgRating'] = movieAvgRating
+movieAvgRatingWithId['movieId'] = listUniqueMovies
 
+ratings = pd.merge(ratings, movieAvgRatingWithId)
+ratings = pd.merge(ratings, userAvgRatingWithId)
+
+ratings.sort_values(['movieId', 'userId'], ascending=[True, True], inplace=True)
 #rating_tags = pd.merge(ratings, tags)
+
+# exporting datasets
+#ratings.to_csv('pythonRatings', encoding='utf-8', index=False)
+#movieMetaData.to_csv('pythonMovieMetaData', encoding='utf-8', index=False)
 
 print('you smell')
