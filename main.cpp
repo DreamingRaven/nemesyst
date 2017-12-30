@@ -35,8 +35,8 @@ int main(int argc, char* argv[]) {
     //mlpack::data::Load("../DataSets/ml-20m/ratings.csv", data, true);
     if(fileArgPos)
     {
-
-        //mlpack::data::Load( const filePath, data, true);
+        std::string* filePath;
+        mlpack::data::Load("../../../DataSets/ml-20m/pythonRatings.csv", data, true);
     }
 
 

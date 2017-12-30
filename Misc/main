@@ -69,7 +69,7 @@ ratings.sort_values(['movieId', 'userId'], ascending=[True, True], inplace=True)
 #rating_tags = pd.merge(ratings, tags)
 
 # exporting datasets
-ratings.to_csv('pythonRatings', encoding='utf-8', index=False)
-movieMetaData.to_csv('pythonMovieMetaData', encoding='utf-8', index=False)
+#ratings.to_csv('pythonRatings', encoding='utf-8', index=False)
+#movieMetaData.to_csv('pythonMovieMetaData', encoding='utf-8', index=False)
 
-print('you smell')
+print("end")
