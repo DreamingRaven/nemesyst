@@ -1,0 +1,3 @@
+#!bin/bash
+# Entry point of RavenRecSyst & toolchain
+sh dataWrangler
