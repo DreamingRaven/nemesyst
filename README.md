@@ -1,5 +1,5 @@
-# OpenRecSyst
-Open source C++ recommender system focusing on neural-net; GAN techniques.
+# RavenRecSyst
+Experimental recommender systems using c++, python, bash, cmake, as a toolchain.
 
 # Introduction
 
