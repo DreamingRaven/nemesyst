@@ -1,0 +1,11 @@
+#!/bin/bash
+# if there are no cli arguments:
+if [ $# -eq 0 ]; then
+	# use defaults
+	echo -e "[ dataWrangler ] No arguments, using defaults."
+	#file = "../../DataSets/ml-20m/pythonRatings.csv"
+fi
+
+python ./Misc/debug.py
+python ./Misc/movieLenseWrangler.py "../../DataSets/ml-20m/"
+#echo "$1"
