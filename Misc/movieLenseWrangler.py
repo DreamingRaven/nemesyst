@@ -16,7 +16,7 @@ print(prePend, "Args: ", str(sys.argv))
 # setting data folder path with possible args(a if condition else b)
 dataFolderPath = "../../../DataSets/ml-20m/" # this is the default path
 dataFolderPath = dataFolderPath if len(sys.argv) == 1 else sys.argv[1]
-print(prePend, "Data path:", cwd + dataFolderPath)
+print(prePend, "Data path:", dataFolderPath)
 
 # import ratings (most important)
 filePathRatings = dataFolderPath + 'ratings.csv'
@@ -50,7 +50,6 @@ topXTags = movieMetaData.groupby('movieId').head(10)
 #test = movieMetaData.groupby('movieId')
 userAvgRating = ratings.groupby('userId')['rating'].mean()
 
-
 # check if users line up
 numUsers = len(set(ratings['userId']))
 numUserRatings = len(userAvgRating)
@@ -82,8 +81,8 @@ ratings.sort_values(['movieId', 'userId'], ascending=[True, True], inplace=True)
 #rating_tags = pd.merge(ratings, tags)
 
 # exporting datasets
-#ratings.to_csv('pythonRatings.csv', encoding='utf-8', index=False)
-#movieMetaData.to_csv('pythonMovieMetaData.csv', encoding='utf-8', index=False)
+ratings.to_csv( (dataFolderPath + "pMLRatings.csv"), encoding='utf-8', index=False)
+movieMetaData.to_csv( (dataFolderPath + "pMLMetadata.csv"), encoding='utf-8', index=False)
 
 print(prePend, "Combining ratings with movie tags.")
 
