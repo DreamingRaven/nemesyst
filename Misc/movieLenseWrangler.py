@@ -44,10 +44,7 @@ movieTags = pd.merge(tagRelevance, tagName)
 movieMetaData = pd.merge(movieTags, movieName)
 
 movieMetaData.sort_values(['movieId', 'relevance'], ascending=[True, False], inplace=True)
-#topXTags = movieMetaData.groupby('movieId')['relevance'].nlargest(5)
 topXTags = movieMetaData.groupby('movieId').head(10)
-#test = movieMetaData.groupby('movieId', 'relevance').nlargest(5)#[:].nlargest(5, 'relevance')
-#test = movieMetaData.groupby('movieId')
 userAvgRating = ratings.groupby('userId')['rating'].mean()
 
 # check if users line up
@@ -80,10 +77,20 @@ ratings = pd.merge(ratings, userAvgRatingWithId)
 ratings.sort_values(['movieId', 'userId'], ascending=[True, True], inplace=True)
 #rating_tags = pd.merge(ratings, tags)
 
-# exporting datasets
-ratings.to_csv( (dataFolderPath + "pMLRatings.csv"), encoding='utf-8', index=False)
-movieMetaData.to_csv( (dataFolderPath + "pMLMetadata.csv"), encoding='utf-8', index=False)
+# check if data sets exist if not, generate.
+if os.path.isfile(dataFolderPath + "pMLRatings.csv"):
+    print(prePend, "pMLRatings.csv found... Skipping.")
+else:
+    print(prePend, "pMLRatings.csv not found... Generating.")
+    ratings.to_csv( (dataFolderPath + "pMLRatings.csv"), encoding='utf-8', index=False)
 
-print(prePend, "Combining ratings with movie tags.")
+if os.path.isfile(dataFolderPath + "pMLMetadata.csv"):
+    print(prePend, "pMLMetadata.csv found... Skipping.")
+else:
+    print(prePend, "pMLMetadata.csv not found... Generating.")
+    movieMetaData.to_csv( (dataFolderPath + "pMLMetadata.csv"), encoding='utf-8', index=False)
+
+#ratings.to_csv( (dataFolderPath + "pMLRatings.csv"), encoding='utf-8', index=False)
+#movieMetaData.to_csv( (dataFolderPath + "pMLMetadata.csv"), encoding='utf-8', index=False)
 
 print(prePend, "Fin.")

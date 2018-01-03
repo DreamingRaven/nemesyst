@@ -18,14 +18,20 @@ dataFolderPath = "../../../DataSets/ml-20m/" # this is the default path
 dataFolderPath = dataFolderPath if len(sys.argv) == 1 else sys.argv[1]
 print(prePend, "Data path:", dataFolderPath)
 
-# input data
-ratings = pd.read_csv(dataFolderPath + 'pMLRatings.csv')
-metadata = pd.read_csv(dataFolderPath + 'pMLMetadata.csv')
+# check if data exists
+if os.path.isfile(dataFolderPath + "pML.csv"):
+    print(prePend, "pML.csv found... Skipping.")
+else: # else generate csv
+    print(prePend, "pML.csv not found... Generating.")
 
-# combining data
-pML = ratings
+    # inputting data
+    ratings = pd.read_csv(dataFolderPath + 'pMLRatings.csv')
+    metadata = pd.read_csv(dataFolderPath + 'pMLMetadata.csv')
 
-# output data
-pML.to_csv( (dataFolderPath + "pML.csv"), encoding='utf-8', index=False)
+    # combining data
+    pML = ratings
+
+    # outputting data
+    pML.to_csv( (dataFolderPath + "pML.csv"), encoding='utf-8', index=False)
 
 print(prePend, "Fin.")
