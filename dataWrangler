@@ -9,4 +9,5 @@ fi
 python ./Misc/debug.py
 python ./Misc/movieLenseWrangler.py "../../DataSets/ml-20m/"
 python ./Misc/movieLenseDataCombiner.py "../../DataSets/ml-20m/"
+python ./Misc/monteCarlo.py "../../DataSets/ml-20m/" "pML.csv"
 #echo "$1"
