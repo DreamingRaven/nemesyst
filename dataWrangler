@@ -1,14 +1,19 @@
 #!/bin/bash
 # if there are no cli arguments:
 date
+#dataFolder="scopeTest"
 if [ $# -eq 0 ]; then
 	# use defaults
 	echo -e "[ dataWrangler ] No arguments, using defaults."
-	#file = "../../DataSets/ml-20m/pythonRatings.csv"
+	dataFolder="../../DataSets/ml-20m/"
+else
+	echo -e "[ dataWrangler ] Arguments provided, setting."
+	dataFolder=$1
 fi
 
 python ./Misc/debug.py
 python ./Misc/movieLenseWrangler.py "../../DataSets/ml-20m/"
 python ./Misc/movieLenseDataCombiner.py "../../DataSets/ml-20m/"
 python ./Misc/monteCarlo.py "../../DataSets/ml-20m/" "pML.csv"
+python ./Misc/knn.py "../../DataSets/ml-20m/" "test.csv" "train.csv"
 #echo "$1"
