@@ -28,7 +28,7 @@ else:
     # import ratings (most important)
     filePathRatings = dataFolderPath + 'ratings.csv'
     ratings = pd.read_csv(filePathRatings)
-    
+
     # import tags of movies
     filePathTags = dataFolderPath + 'tags.csv'
     tags = pd.read_csv(filePathTags)
