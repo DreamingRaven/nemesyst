@@ -1,6 +1,7 @@
 #!usr/bin/env python3.6
 import os
 import sys
+import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 import numpy as np
 
@@ -29,6 +30,13 @@ print(prePend, "Test file name: ", testFileName)
 # setting data file name
 trainFileName = "train.csv"  # default value
 trainFileName = sys.argv[3] if len(sys.argv) >= 4 else trainFileName
-print(prePend, "Train test %: ", trainFileName)
+print(prePend, "Train file name: ", trainFileName)
+
+# import data sets
+#test = pd.read_csv(dataFolderPath + testFileName)
+#train = pd.read_csv(dataFolderPath + trainFileName)
+
+#nnModel = NearestNeighbors(n_neighbors=2, algorithm="ball_tree").fit(train)
+#distances, indices = nnModel.kneighbors(test)
 
 print(prePend, "Fin.")
