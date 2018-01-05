@@ -21,5 +21,5 @@ python ./Misc/monteCarlo.py $dataFolder "pML.csv"
 python ./Misc/knn.py $dataFolder "test.csv" "train.csv" &
 #mlpack_knn --reference_file=${dataFolder}train.csv --output_model_file=${dataFolder}mlpack_model_knn_out.txt
 echo -e "[ mlpack_knn cpp ] Avante! Show that sh-ython whos boss."
-mlpack_knn -q ${dataFolder}test.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
+mlpack_knn -q ${dataFolder}test_noLabel.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
 #wait
