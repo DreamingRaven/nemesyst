@@ -18,6 +18,6 @@ python ./Misc/movieLenseWrangler.py $dataFolder
 python ./Misc/movieLenseDataCombiner.py $dataFolder
 python ./Misc/monteCarlo.py $dataFolder "pML.csv"
 # learning algorithms
-#python ./Misc/knn.py $dataFolder "test.csv" "train.csv" &
-#mlpack_knn --reference_file=${dataFolder}train.csv --output_model_file=${dataFolder}mlpack_model_knn_out.txt
+python ./Misc/knn.py $dataFolder "test.csv" "train.csv" &
+mlpack_knn --reference_file=${dataFolder}train.csv --output_model_file=${dataFolder}mlpack_model_knn_out.txt
 #wait

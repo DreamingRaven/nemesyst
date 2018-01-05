@@ -1,3 +1,14 @@
 #!bin/bash
 # Entry point of RavenRecSyst & toolchain
-sh dataWrangler "../../DataSets/ml-20m/"
+
+if [ $# -eq 0 ]; then
+        # use defaults
+        echo -e "[ ravenRecSyst ] No arguments, using defaults."
+        dataFolderML="../../DataSets/ml-20m/"
+else
+        echo -e "[ ravenRecSyst ] Arguments provided, setting."
+        dataFolderML=$1
+fi
+
+# call dataWrangler for each data set (netflix wrangler not included yet)
+sh dataWrangler $dataFolderML
