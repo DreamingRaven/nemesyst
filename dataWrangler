@@ -19,5 +19,6 @@ python ./Misc/movieLenseDataCombiner.py $dataFolder
 python ./Misc/monteCarlo.py $dataFolder "pML.csv"
 # learning algorithms
 python ./Misc/knn.py $dataFolder "test.csv" "train.csv" &
-mlpack_knn --reference_file=${dataFolder}train.csv --output_model_file=${dataFolder}mlpack_model_knn_out.txt
+#mlpack_knn --reference_file=${dataFolder}train.csv --output_model_file=${dataFolder}mlpack_model_knn_out.txt
+mlpack_knn -q ${dataFolder}test.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
 #wait
