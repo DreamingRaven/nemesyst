@@ -42,5 +42,8 @@ else: # else generate test train set CSVs
     train, test = train_test_split(wholeData, test_size=testSize)
     train.to_csv( (dataFolderPath + "train.csv"), encoding='utf-8', index=False)
     test.to_csv( (dataFolderPath + "test.csv"), encoding='utf-8', index=False)
+    # creating true test set without label
+    test = test.drop('rating', axis=1)
+    test.to_csv( (dataFolderPath + "test_noLabel.csv"), encoding='utf-8', index=False)
 
 print(prePend, "Fin.")

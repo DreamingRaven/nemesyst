@@ -36,7 +36,10 @@ print(prePend, "Train file name: ", trainFileName)
 test = pd.read_csv(dataFolderPath + testFileName)
 train = pd.read_csv(dataFolderPath + trainFileName)
 
+# train model
 nnModel = NearestNeighbors(n_neighbors=2, algorithm="ball_tree").fit(train)
+
+# find distances to test set
 distances, indices = nnModel.kneighbors(test)
 
 print(prePend, "Fin.")
