@@ -2,8 +2,9 @@
 #define MAIN_ORS
 
 #include <iostream>
+#include <Eigen/Dense> // the lib tensorflow uses as its highly efficient linear algebra lib
 //#include <mlpack/core.hpp> // please make sure path is set properly in CMakeLists.txt
-//#include <tensorflow>
+//#include <tensorflow> //
 //#include <armadillo>
 
 // prototype misc functions

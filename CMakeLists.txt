@@ -10,7 +10,9 @@ set(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 
 # find libraries/ packages for use
 find_package(Armadillo REQUIRED)
-#find_package(mlpack REQUIRED) # mlpack cannot be found normally with previous method
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+#find_package(TensorFlow REQUIRED)
+#find_package(mlpack REQUIRED) # mlpack cannot be found normally with previous method here for example do not use!
 set(MLPACK_LIBRARIES /usr/lib/libmlpack.so) # libmlpack.so specifically found
 set(MLPACK_INCLUDE_DIRS /usr/include/mlpack) # specifying mlpack src files directory
 include_directories(${ARMADILLO_INCLUDE_DIRS})
@@ -25,4 +27,4 @@ message("\n") # this message here just to improve expandability
 
 # create executable and link to dynamic libraries
 add_executable(${PROJECT_NAME} main.cpp) #TODO: complete wrapper
-target_link_libraries(${PROJECT_NAME} ${ARMADILLO_LIBRARIES} ${MLPACK_LIBRARIES}) #TODO: link mlPack
+target_link_libraries(${PROJECT_NAME} ${ARMADILLO_LIBRARIES} ${MLPACK_LIBRARIES} Eigen3::Eigen) #TODO: link mlPack
