@@ -21,7 +21,7 @@ dataFolderPath = dataFolderPath if len(sys.argv) == 1 else sys.argv[1]
 print(prePend, "Data path:", dataFolderPath)
 
 # check if data exists
-if os.path.isfile(dataFolderPath + "pML.csv"): # and 1 == 0:
+if os.path.isfile(dataFolderPath + "pML.csv") and 1 == 0:
     print(prePend, "pML.csv found... Skipping.")
 else: # else generate csv
     print(prePend, "pML.csv not found... Generating.")
@@ -50,16 +50,17 @@ else: # else generate csv
 
     reformedMetaData = pd.DataFrame() # create the empty metadata half
 
+    i = 0 # not important here so you can see progress
     for name, group in eachMoviesTags:
-        print(prePend, name, " ",type(name), " ", type(group))
-        #print(prePend, group)
+        i += 1
         # group is of type pandas DataFrame meaning concat will be easier
         groupTemp = group.transpose() # transpose to be tag column major order
         groupTemp.columns = groupTemp.iloc[2] # make a specific row the columns
         groupTemp = groupTemp.drop(['tag', 'movieId'], 0) # remove some rows
         groupTemp = groupTemp.reset_index(drop=True) # get rid of previous index
-
-        print(groupTemp, type(groupTemp))
+        groupTemp['movieId'] = name # add id column
+        #if (i % 10) == 0:
+        print(prePend, "progress:", i, "/", len(eachMoviesTags), " movieId: ", groupTemp['movieId'][0])
 
     # df.to_csv((dataFolderPath + "zFullFeatureFile.csv"), encoding='utf-8', index=False)
 
