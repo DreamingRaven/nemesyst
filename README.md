@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Experimental recommender system; C++, Python, bash, CMake; TensorFlow, MLpack toolchain.
+Experimental recommender system; C++, Python, bash, CMake; TensorFlow, MLpack toolchain.*
 
 This experimental recommender system is part of an ongoing masters thesis, which purposely compares the use of 
 Generative Adversarial Neural Networks (GANs) with certain other traditional and prevalent machine learning (ML) 
@@ -17,6 +17,10 @@ Quick Definitions (Wiki)
 * [ML](https://en.wikipedia.org/wiki/Machine_learning) - Machine Learning
 * [GAN](https://en.wikipedia.org/wiki/Generative_adversarial_network) - Generative Adversarial Networks
 * [MEA](https://en.wikipedia.org/wiki/Mean_absolute_error) - Mean Absolute Error
+
+*please note, the majority of single run scripts (such as data pre-processing) are done synchronously and in a single 
+threaded manner. The TensorFlow and certain C++ implementations for the model building which may need to be repeated
+ will however not be single threaded and may not be calculated synchronously.
 
 ---Rework Me---
 
