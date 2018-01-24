@@ -9,6 +9,10 @@ Generative Adversarial Neural Networks (GANs) with certain other traditional and
 recommender system techniques. This recommender system is evaluated by the common method of rating prediction 
 via mean absolute error (MEA).
 
+This recommender system currentley predicts using the [MovieLense 20M](https://grouplens.org/datasets/movielens/20m/),
+ and [Netflix (2007)](https://www.kaggle.com/netflix-inc/netflix-prize-data) datasets. In future this recommender system
+  (minus certain data specific steps) will have functionality with databases, specifically mongoDB.
+
 Quick references
 * [Keystone Paper](https://arxiv.org/pdf/1707.07435.pdf) - 
 Deep Learning based Recommender System: A Survey and New Perspectives [sic]
