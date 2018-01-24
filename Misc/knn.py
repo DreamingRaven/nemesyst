@@ -1,10 +1,9 @@
-#!usr/bin/env python3.6
+#!/usr/bin/env python3.6
 import os
 import sys
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 import numpy as np
-
 
 # creating prepend variable for logging
 prePend = "[ " + os.path.basename(sys.argv[0]) + " ] "

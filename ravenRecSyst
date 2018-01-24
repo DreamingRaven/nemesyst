@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 # Entry point of RavenRecSyst & toolchain
 
 if [ $# -eq 0 ]; then

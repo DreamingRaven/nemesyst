@@ -13,8 +13,10 @@ fi
 
 # template + testing template
 python ./Misc/template.py
+
 # debug
 python ./Misc/debug.py
+
 # data preperation
 python ./Misc/movieLenseWrangler.py $dataFolder
 python ./Misc/movieLenseDataCombiner.py $dataFolder
@@ -24,6 +26,7 @@ python ./Misc/monteCarlo.py $dataFolder "pML.csv"
 #python ./Misc/knn.py $dataFolder "test.csv" "train.csv" &
 #echo -e "[ mlpack_knn cpp ] Avante! Show that sh-ython whos boss."
 #mlpack_knn -q ${dataFolder}test_noLabel.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
+
 wait
 
 # testing tensorflow

@@ -1,4 +1,4 @@
-#!usr/bin/env python3.6
+#!/usr/bin/env python3.6
 
 # quick python file to wrangle movieLense data set
 import pandas as pd
