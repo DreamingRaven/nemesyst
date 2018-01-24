@@ -27,35 +27,32 @@ dataFileName = sys.argv[2] if len(sys.argv) >= 3 else dataFileName
 print(prePend, "Data file name: ", dataFileName)
 
 # third arg
-# setting data file name
+# setting test/train split
 testSize = 0.2  # default value
 testSize = float(sys.argv[3]) if len(sys.argv) >= 4 else testSize
 print(prePend, "Split test %: ", testSize)
 
 # fourth arg
-# setting data file name
+# setting data output test file name
 testFileName = "test.csv"  # default value
 testFileName = sys.argv[4] if len(sys.argv) >= 5 else testFileName
 print(prePend, "Data file name: ", testFileName)
 
 # fifth arg
-# setting data file name
+# setting data output train file name
 trainFileName = "train.csv"  # default value
 trainFileName = sys.argv[5] if len(sys.argv) >= 6 else trainFileName
 print(prePend, "Data file name: ", trainFileName)
 
 # check if data exists
-if (os.path.isfile(dataFolderPath + "train.csv") and
-    os.path.isfile(dataFolderPath + "test.csv")):
-    print(prePend, "test & training.csv found... Skipping.")
-else: # else generate test train set CSVs
-    print(prePend, "test & training.csv not found... Generating.")
+if (os.path.isfile(dataFolderPath + trainFileName) and
+    os.path.isfile(dataFolderPath + testFileName)):  # and 1 == 0:
+    print(prePend, testFileName, " & ", trainFileName, " found... Skipping.")
+else:  # else generate test train set CSVs
+    print(prePend,  testFileName, " & ", trainFileName, "not found... Generating.")
     wholeData = pd.read_csv(dataFolderPath + dataFileName)
     train, test = train_test_split(wholeData, test_size=testSize)
-    train.to_csv( (dataFolderPath + "train.csv"), encoding='utf-8', index=False)
-    test.to_csv( (dataFolderPath + "test.csv"), encoding='utf-8', index=False)
-    # creating true test set without label
-    test = test.drop('rating', axis=1)
-    test.to_csv( (dataFolderPath + "test_noLabel.csv"), encoding='utf-8', index=False)
+    train.to_csv( (dataFolderPath + trainFileName), encoding='utf-8', index=False)
+    test.to_csv( (dataFolderPath + testFileName), encoding='utf-8', index=False)
 
 print(prePend, "Fin.")
