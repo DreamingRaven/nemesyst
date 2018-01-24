@@ -6,8 +6,8 @@ Experimental recommender system; C++, Python, bash, CMake; TensorFlow, MLpack to
 
 This experimental recommender system is part of an ongoing masters thesis, which purposely compares the use of 
 Generative Adversarial Neural Networks (GANs) with certain other traditional and prevalent machine learning (ML) 
-recommender system techniques. This recommender system is evaluated by rating prediction via mean absolute
-error (MEA).
+recommender system techniques. This recommender system is evaluated by the common method of rating prediction 
+via mean absolute error (MEA).
 
 Quick references
 * [Keystone Paper](https://arxiv.org/pdf/1707.07435.pdf) - 
