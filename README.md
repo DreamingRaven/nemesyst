@@ -17,6 +17,11 @@ Quick references
 * [Keystone Paper](https://arxiv.org/pdf/1707.07435.pdf) - 
 Deep Learning based Recommender System: A Survey and New Perspectives [sic]
 
+Baseline algorithms:
+* [kNN](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm)[(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true)
+* [SVD](https://en.wikipedia.org/wiki/Singular-value_decomposition)[(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true)
+* [RNN](https://en.wikipedia.org/wiki/Recurrent_neural_network)[(why)](https://arxiv.org/abs/1707.07435)
+
 Quick Definitions (Wiki)
 * [ML](https://en.wikipedia.org/wiki/Machine_learning) - Machine Learning
 * [GAN](https://en.wikipedia.org/wiki/Generative_adversarial_network) - Generative Adversarial Networks
