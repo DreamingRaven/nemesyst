@@ -27,7 +27,7 @@ python ./Misc/monteCarlo.py $dataFolder "pML.csv" 0.2 "test.csv" "train.csv"
 # visualisations
 #figDir="Fig/"
 #mkdir -p figDir
-python ./Misc/seabornScatter.py $dataFolder "pML.csv" "rating" "timestamp"# figDir "img.png"
+python ./Misc/seabornScatter.py $dataFolder "pML.csv" "rating" "timestamp" # figDir "img.png"
 
 # baseline learning algorithms
 

@@ -45,7 +45,5 @@ dataSet = pd.read_csv(dataFolderPath + dataFileName)
 
 # plot this shizzle
 plot = sns.regplot(x=dataSet[xName], y=dataSet[yName])
-plot.plt.show()
-plot.savefig("fekme.png")
-fig = plot.fig
+fig = plot.get_figure()
 fig.savefig("shizzle.png")
