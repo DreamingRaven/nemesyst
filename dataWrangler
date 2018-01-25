@@ -31,8 +31,9 @@ echo "[ dataWrangler ] Image directory: ${figDir}"
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "timestamp" $figDir "crappyLines.png"
 
 # baseline learning algorithms
-
-python ./Misc/rnn.py
+python ./Misc/svd.py $dataFolder
+python ./Misc/mf.py $dataFolder
+python ./Misc/rnn.py $dataFolder
 #python ./Misc/knn.py $dataFolder "test.csv" "train.csv" &
 #echo -e "[ mlpack_knn cpp ] Avante! Show that sh-ython whos boss."
 #mlpack_knn -q ${dataFolder}test_noLabel.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v

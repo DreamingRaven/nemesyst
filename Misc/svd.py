@@ -4,7 +4,9 @@
 import pandas as pd
 import os
 import sys
-import struct # used to accurately calculate python version bits (32/64)
+import struct  # used to accurately calculate python version bits (32/64)
+from scipy.sparse.linalg import svds
+
 
 # creating prepend variable for logging
 prePend = "[ " + os.path.basename(sys.argv[0]) + " ] "
@@ -20,5 +22,11 @@ print(prePend, "Args: ", str(sys.argv))
 dataFolderPath = "../../../DataSets/ml-20m/" # this is the default path
 dataFolderPath = dataFolderPath if len(sys.argv) == 1 else sys.argv[1]
 print(prePend, "Data path:", dataFolderPath)
+
+ratings = pd.read_csv(dataFolderPath + 'pML.csv')
+U, sigma, Vt = svds(ratings, k=(min(ratings.shape)-1))  # min dimension
+print(prePend, "U = ", U)
+print(prePend, "sigma = ", sigma)
+print(prePend, "Vt = ", Vt)
 
 print(prePend, "Fin.")
