@@ -29,4 +29,5 @@ Quick Definitions (Wiki)
 
 *please note, the majority of single run scripts (such as data pre-processing) are done synchronously and in a single 
 threaded manner. The TensorFlow and certain C++ implementations for the model building which may need to be repeated
- will however not be single threaded and may not be calculated synchronously.
+ will however not be single threaded and may not be calculated synchronously. Please do not run this application with
+ less than 4 threads available to prevent application level serialisation.
