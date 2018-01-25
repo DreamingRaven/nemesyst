@@ -6,6 +6,7 @@ if [ $# -eq 0 ]; then
 	# use defaults
 	echo -e "[ dataWrangler ] No arguments, using defaults."
 	dataFolder="../../DataSets/ml-20m/"
+	isDebug=true
 else
 	echo -e "[ dataWrangler ] Arguments provided, setting."
 	dataFolder=$1
@@ -24,7 +25,7 @@ python ./Misc/movieLenseDataCombiner.py $dataFolder
 python ./Misc/monteCarlo.py $dataFolder "pML.csv" 0.2 "test.csv" "train.csv"
 
 # visualisations
-python ./Misc/seabornScatter.py $dataFolder "pML.csv" "rating" "timestamp"
+python ./Misc/seabornScatter.py $dataFolder "pML.csv" "rating" "timestamp" &
 
 # baseline learning algorithms
 
@@ -34,7 +35,7 @@ python ./Misc/seabornScatter.py $dataFolder "pML.csv" "rating" "timestamp"
 #echo -e "[ mlpack_knn cpp ] Avante! Show that sh-ython whos boss."
 #mlpack_knn -q ${dataFolder}test_noLabel.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
 
-wait
+#wait
 
 # testing tensorflow
 echo -e "[ dataWrangler ] Testing tensorflow CPU output..."

@@ -9,7 +9,7 @@ import seaborn as sns
 
 # creating prepend variable for logging
 prePend = "[ " + os.path.basename(sys.argv[0]) + " ] "
-print(prePend, "Purpose: template to ensure consistency.")
+print(prePend, "Modular scatter plot visualiser.")
 print(prePend, "python version (bit): ", struct.calcsize("P") * 8) # check if 32 or 64 bit
 
 # outputting debug info
@@ -28,3 +28,23 @@ dataFileName = "pML.csv"  # default value
 dataFileName = sys.argv[2] if len(sys.argv) >= 3 else dataFileName
 print(prePend, "Data file name: ", dataFileName)
 
+# third arg
+# Y axis
+yName = "rating"  # default value
+yName = sys.argv[3] if len(sys.argv) >= 4 else yName
+print(prePend, "Y axis: ", yName)
+
+# fourth arg
+# X axis
+xName = "timestamp"  # default value
+xName = sys.argv[4] if len(sys.argv) >= 5 else xName
+print(prePend, "X axis: ", xName)
+
+# read in argument selected data
+dataSet = pd.read_csv(dataFolderPath + dataFileName)
+
+# plot this shizzle
+plot = sns.regplot(x=dataSet[xName], y=dataSet[yName])
+plot.plt.show()
+fig = plot.fig
+fig.savefig("shizzle.png")
