@@ -40,10 +40,22 @@ xName = "timestamp"  # default value
 xName = sys.argv[4] if len(sys.argv) >= 5 else xName
 print(prePend, "X axis: ", xName)
 
+# fifth arg
+# image folder path
+figFolderPath = "Fig/"  # default value
+figFolderPath = sys.argv[5] if len(sys.argv) >= 6 else figFolderPath
+print(prePend, "Image folder path (relative): ", figFolderPath)
+
+# sixth arg
+# image file name
+imageFileName = "crappyLines.png"  # default value
+imageFileName = sys.argv[6] if len(sys.argv) >= 7 else imageFileName
+print(prePend, "output image name: ", imageFileName)
+
 # read in argument selected data
 dataSet = pd.read_csv(dataFolderPath + dataFileName)
 
 # plot this shizzle
 plot = sns.regplot(x=dataSet[xName], y=dataSet[yName])
 fig = plot.get_figure()
-fig.savefig("shizzle.png")
+fig.savefig(figFolderPath + imageFileName)

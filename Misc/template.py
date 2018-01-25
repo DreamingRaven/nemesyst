@@ -21,3 +21,5 @@ dataFolderPath = "../../../DataSets/ml-20m/" # this is the default path
 dataFolderPath = dataFolderPath if len(sys.argv) == 1 else sys.argv[1]
 print(prePend, "Data path:", dataFolderPath)
 
+print(prePend, "Fin.")
+

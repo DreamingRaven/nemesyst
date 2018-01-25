@@ -25,9 +25,10 @@ python ./Misc/movieLenseDataCombiner.py $dataFolder
 python ./Misc/monteCarlo.py $dataFolder "pML.csv" 0.2 "test.csv" "train.csv"
 
 # visualisations
-#figDir="Fig/"
-#mkdir -p figDir
-python ./Misc/seabornScatter.py $dataFolder "pML.csv" "rating" "timestamp" # figDir "img.png"
+figDir="Fig/"
+mkdir -p $figDir
+echo "[ dataWrangler ] Image directory: ${figDir}"
+#python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "timestamp" $figDir "crappyLines.png"
 
 # baseline learning algorithms
 
