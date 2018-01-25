@@ -9,7 +9,7 @@ import struct # used to accurately calculate python version bits (32/64)
 # creating prepend variable for logging
 prePend = "[ " + os.path.basename(sys.argv[0]) + " ] "
 print(prePend, "Purpose: template to ensure consistency.")
-print(prePend, "python version (bit): ", struct.calcsize("P") * 8) # check if 32 or 64 bit
+print(prePend, "python version (bit): ", struct.calcsize("P") * 8)  # check if 32 or 64 bit
 
 # outputting debug info
 cwd = os.getcwd()
