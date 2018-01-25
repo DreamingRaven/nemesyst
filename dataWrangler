@@ -31,7 +31,7 @@ python ./Misc/seabornScatter.py $dataFolder "pML.csv" "rating" "timestamp" # fig
 
 # baseline learning algorithms
 
-python ./Misc/RNN.py
+python ./Misc/rnn.py
 #python ./Misc/knn.py $dataFolder "test.csv" "train.csv" &
 #echo -e "[ mlpack_knn cpp ] Avante! Show that sh-ython whos boss."
 #mlpack_knn -q ${dataFolder}test_noLabel.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
