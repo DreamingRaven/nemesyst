@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.6
 
-# quick python file to wrangle movieLense data set
+# modular file for splitting x.csv into test-train set by a ratio
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import os

@@ -23,6 +23,9 @@ python ./Misc/movieLenseDataCombiner.py $dataFolder
 # args:  <data directory relative path> <input.csv name> <ratio of train:test> <output test file name> <output train fn>
 python ./Misc/monteCarlo.py $dataFolder "pML.csv" 0.2 "test.csv" "train.csv"
 
+# visualisations
+python ./Misc/seabornScatter.py $dataFolder "pML.csv" "rating" "timestamp"
+
 # baseline learning algorithms
 
 

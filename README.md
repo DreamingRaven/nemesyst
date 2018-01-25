@@ -18,9 +18,9 @@ Quick references
 Deep Learning based Recommender System: A Survey and New Perspectives [sic]
 
 Baseline algorithms:
-* [kNN](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm)[(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true)
-* [SVD](https://en.wikipedia.org/wiki/Singular-value_decomposition)[(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true)
-* [RNN](https://en.wikipedia.org/wiki/Recurrent_neural_network)[(why)](https://arxiv.org/abs/1707.07435)
+* [kNN](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) [(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true)
+* [SVD](https://en.wikipedia.org/wiki/Singular-value_decomposition) [(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true)
+* [RNN](https://en.wikipedia.org/wiki/Recurrent_neural_network) [(why)](https://arxiv.org/abs/1707.07435)
 
 Quick Definitions (Wiki)
 * [ML](https://en.wikipedia.org/wiki/Machine_learning) - Machine Learning
@@ -30,10 +30,3 @@ Quick Definitions (Wiki)
 *please note, the majority of single run scripts (such as data pre-processing) are done synchronously and in a single 
 threaded manner. The TensorFlow and certain C++ implementations for the model building which may need to be repeated
  will however not be single threaded and may not be calculated synchronously.
-
----Rework Me---
-
-Incredibly important note:
-    In (your chosen installed directory)/OpenRecSyst/CMakeLists.txt:Line(14):set(MLPACK_LIBRARIES x)
-    this 'x' needs to be replaced with the compiled binary object location. E.G on linux
-    x = /usr/lib/libmlpack.so
