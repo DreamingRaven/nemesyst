@@ -35,10 +35,16 @@ print(prePend, "Train file name: ", trainFileName)
 test = pd.read_csv(dataFolderPath + testFileName)
 train = pd.read_csv(dataFolderPath + trainFileName)
 
+# remove target in test
+test_noLabel = test[test.columns.difference(['rating'])]
+
+# debug
+#print(test_noLabel.head())
+
 # train model
-nnModel = NearestNeighbors(n_neighbors=2, algorithm="ball_tree").fit(train)
+nnModel = NearestNeighbors(n_neighbors=5, algorithm="ball_tree").fit(train)
 
 # find distances to test set
-distances, indices = nnModel.kneighbors(test)
+distances, indices = nnModel.kneighbors(test_noLabel)
 
 print(prePend, "Fin.")

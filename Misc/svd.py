@@ -32,12 +32,15 @@ print(prePend, "Data file name: ", dataFileName)
 
 # import data
 dataSet = pd.read_csv(dataFolderPath + dataFileName)
+
+# GET IN SHAPE (b-dum ch)
 U, s, Vh = svds(dataSet, k=(min(dataSet.shape) - 1))  # min dimension
 print(prePend, "(", dataFileName, ").shape = ", dataSet.shape)
 print(prePend, "U.shape = ", U.shape)
 print(prePend, "s.shape = ", s.shape)
 print(prePend, "Vh.shape = ", Vh.shape)
 
+# don't be a pain! regenerate the data already Q_Q
 #sigma = np.zeros(dataSet.shape)
 #for i in range(min(sigma.shape)):
 #    sigma[i, i] = s[i]
