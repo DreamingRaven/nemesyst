@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(OpenRecSyst)
+project(RavenRecSyst)
 set(CMAKE_CXX_STANDARD 11)
 
 # setting version
@@ -19,10 +19,11 @@ include_directories(${ARMADILLO_INCLUDE_DIRS})
 include_directories(${MLPACK_INCLUDE_DIRS})
 
 # display key information for debug purposes
-message([STATUS] " components:\n\tName \t\t\tVersion \tPath \n\t${PROJECT_NAME} \t${PROJECT_VERSION} \t\tlib: ${CMAKE_BINARY_DIR} src: ${CMAKE_SOURCE_DIR} ")
+message([STATUS] "[ CMakeLists.txt ] components:\n\tName \t\t\tVersion \tPath \n\t${PROJECT_NAME} \t\t${PROJECT_VERSION} \t\tlib: ${CMAKE_BINARY_DIR} src: ${CMAKE_SOURCE_DIR} ")
 message("\tCMake \t\t\t${CMAKE_VERSION} \t\t${CMAKE_ROOT} ")
 message("\tArmadillo \t\t${ARMADILLO_VERSION_STRING} \tlib: ${ARMADILLO_LIBRARIES} src: ${ARMADILLO_INCLUDE_DIRS}")
 message("\tmlPack \t\t\tunknown \tlib: ${MLPACK_LIBRARIES} src: ${MLPACK_INCLUDE_DIRS}") #TODO: find some way to display mlPack information
+message("\tEigen \t\t${EIGEN_VERSION_STRING} \tlib: ${EIGEN_LIBRARIES} src: ${EIGEN_INCLUDE_DIRS}")
 message("\n") # this message here just to improve expandability
 
 # create executable and link to dynamic libraries

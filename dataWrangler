@@ -27,12 +27,14 @@ python ./Misc/template.py
 python ./Misc/debug.py
 
 # data preparation
+echo "[ dataWrangler ] ------ Data preparation ------"
 python ./Misc/movieLenseWrangler.py $dataFolder
 python ./Misc/movieLenseDataCombiner.py $dataFolder
 # args:  <data directory relative path> <input.csv name> <ratio of train:test> <output test file name> <output train fn>
 python ./Misc/monteCarlo.py $dataFolder "pML.csv" 0.2 "test.csv" "train.csv"
 
 # visualisations
+echo "[ dataWrangler ] ------ Visualisations -------"
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "timestamp" $figDir "rating-time-scatter-ml.png" &
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "movieAvgRating" $figDir "rating-movieAvgRating-scatter-ml.png" &
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "userAvgRating" $figDir "rating-userAvgRating-scatter-ml.png" &
@@ -40,6 +42,7 @@ python ./Misc/monteCarlo.py $dataFolder "pML.csv" 0.2 "test.csv" "train.csv"
 
 
 # baseline learning algorithms
+echo "[ dataWrangler ] ------- Learning algorithms ------"
 python ./Misc/svd.py $dataFolder "pML.csv" &
 python ./Misc/mf.py $dataFolder "pML.csv" #&
 python ./Misc/rnn.py $dataFolder "pML.csv" #&
@@ -47,7 +50,8 @@ python ./Misc/rnn.py $dataFolder "pML.csv" #&
 
 #echo -e "[ mlpack_knn cpp ] Avante! Show that sh-ython whos boss."
 #mlpack_knn -q ${dataFolder}test_noLabel.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
-#cmake -Bcmake-build-debug
+#cmake -B"cmake-build-debug/" .
+cmake -H. -Bcmake-build-debug -DCMAKE_BUILD_TYPE=Debug # cmake has some awkward command line args
 #wait
 
 # testing tensorflow
