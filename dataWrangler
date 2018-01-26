@@ -34,8 +34,10 @@ python ./Misc/monteCarlo.py $dataFolder "pML.csv" 0.2 "test.csv" "train.csv"
 
 # visualisations
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "timestamp" $figDir "rating-time-scatter-ml.png" &
-python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "movieAvgRating" $figDir "rating-movieAvgRating-scatter-ml.png" &
-python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "userAvgRating" $figDir "rating-userAvgRating-scatter-ml.png" &
+#python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "movieAvgRating" $figDir "rating-movieAvgRating-scatter-ml.png" &
+#python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "userAvgRating" $figDir "rating-userAvgRating-scatter-ml.png" &
+#python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "userAvgRating" $figDir "rating-userAvgRating-scatter-ml.png" &
+
 
 # baseline learning algorithms
 python ./Misc/svd.py $dataFolder "pML.csv" &
@@ -45,7 +47,7 @@ python ./Misc/rnn.py $dataFolder "pML.csv" #&
 
 #echo -e "[ mlpack_knn cpp ] Avante! Show that sh-ython whos boss."
 #mlpack_knn -q ${dataFolder}test_noLabel.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
-
+#cmake -Bcmake-build-debug
 #wait
 
 # testing tensorflow

@@ -38,6 +38,10 @@ print(prePend, "U.shape = ", U.shape)
 print(prePend, "s.shape = ", s.shape)
 print(prePend, "Vh.shape = ", Vh.shape)
 
-sigma = np.zeros(dataSet.shape)
+#sigma = np.zeros(dataSet.shape)
+#for i in range(min(sigma.shape)):
+#    sigma[i, i] = s[i]
+#a1 = np.dot(U, np.dot(sigma, Vh))
+#np.allclose(dataSet, a1)
 
 print(prePend, "Fin.")
