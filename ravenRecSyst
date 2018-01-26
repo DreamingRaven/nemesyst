@@ -4,7 +4,7 @@
 if [ $# -eq 0 ]; then
         # use defaults
         echo -e "[ ravenRecSyst ] No arguments, using defaults."
-        dataFolderML="../../DataSets/ml-20m/"
+        dataFolderML="../DataSets/ml-20m/"
 else
         echo -e "[ ravenRecSyst ] Arguments provided, setting."
         dataFolderML=$1

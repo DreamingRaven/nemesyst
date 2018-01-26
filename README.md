@@ -21,9 +21,9 @@ Baseline algorithms:
 * [kNN](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) 
 [(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true);
  K-nearest neighbors; traditional -> comparable
-* [SVD](https://en.wikipedia.org/wiki/Singular-value_decomposition) 
+* [SVD](https://en.wikipedia.org/wiki/Singular-value_decomposition); 
 [(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true);
-Singular-value decomposition
+Singular-value decomposition; hidden latent factors through eigen vectors
 * [MF](https://en.wikipedia.org/wiki/Matrix_decomposition) 
 [(why)](https://link.springer.com/content/pdf/10.1007%2Fs10115-018-1157-2.pdf);
 Matrix factorisation; prevalent -> comparable
