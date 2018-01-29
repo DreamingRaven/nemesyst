@@ -1,10 +1,12 @@
 #!/usr/bin/env python3.6
+import time  # realtime
+startTime = time.time()
 
 # quick python file to wrangle movieLense data set
 import pandas as pd
 import os
 import sys
-import struct # used to accurately calculate python version bits (32/64)
+import struct  # used to accurately calculate python version bits (32/64)
 
 # creating prepend variable for logging
 prePend = "[ " + os.path.basename(sys.argv[0]) + " ] "
@@ -21,4 +23,4 @@ dataFolderPath = "../../../DataSets/ml-20m/" # this is the default path
 dataFolderPath = dataFolderPath if len(sys.argv) == 1 else sys.argv[1]
 print(prePend, "Data path:", dataFolderPath)
 
-print(prePend, "Fin.")
+print(prePend, "Fin.", (time.time() - startTime), " seconds.")

@@ -11,4 +11,4 @@ else
 fi
 
 # call dataWrangler for each data set (netflix wrangler not included yet)
-sh dataWrangler $dataFolderML
+time sh dataWrangler $dataFolderML

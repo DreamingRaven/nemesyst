@@ -1,4 +1,6 @@
 #!/usr/bin/env python3.6
+import time  # realtime
+startTime = time.time()
 
 # quick python file to wrangle movieLense data set
 import pandas as pd
@@ -76,4 +78,4 @@ else: # else generate csv
     pML.to_csv( (dataFolderPath + "pML.csv"), encoding='utf-8', index=False)
     reformedMetaData.to_csv(dataFolderPath + "pMLMetaReformed.csv", encoding='utf-8', index=False)
 
-print(prePend, "Fin.")
+print(prePend, "Fin.", (time.time() - startTime), " seconds.")

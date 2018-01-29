@@ -46,14 +46,15 @@ echo "------- Learning algorithms ------"
 python ./Misc/svd.py $dataFolder "pML.csv" &
 python ./Misc/mf.py $dataFolder "pML.csv" #&
 python ./Misc/rnn.py $dataFolder "pML.csv" #&
-python ./Misc/knn.py $dataFolder "test.csv" "train.csv" 0.2 &
+#python ./Misc/knn.py $dataFolder "test.csv" "train.csv" 0.2 &
 
 #echo -e "[ mlpack_knn cpp ] Avante! Show that sh-ython whos boss."
 #mlpack_knn -q ${dataFolder}test_noLabel.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
 #cmake -B"cmake-build-debug/" .
 cmake -H. -Bcmake-build-debug -DCMAKE_BUILD_TYPE=Debug # cmake has some awkward command line args
-#wait
 
 # testing tensorflow
 echo -e "[ dataWrangler ] Testing tensorflow CPU output..."
 python ./Misc/tensorFlowCPUDebug.py
+
+wait

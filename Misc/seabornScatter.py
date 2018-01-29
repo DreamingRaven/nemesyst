@@ -1,4 +1,6 @@
 #!/usr/bin/env python3.6
+import time  # realtime
+startTime = time.time()
 
 # modular python file for scatter plots
 import pandas as pd
@@ -59,3 +61,5 @@ dataSet = pd.read_csv(dataFolderPath + dataFileName)
 plot = sns.regplot(x=dataSet[xName], y=dataSet[yName])
 fig = plot.get_figure()
 fig.savefig(figFolderPath + imageFileName)
+
+print(prePend, "Fin.", (time.time() - startTime), " seconds.")

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3.6
+import time  # realtime
+startTime = time.time()
 
 # quick python file to wrangle movieLense data set
 import pandas as pd
@@ -55,4 +57,4 @@ print(prePend, "Vh.shape = ", Vh.shape)
 #a1 = np.dot(U, np.dot(sigma, Vh))
 #np.allclose(dataSet, a1)
 
-print(prePend, "Fin.")
+print(prePend, "Fin.", (time.time() - startTime), " seconds.")

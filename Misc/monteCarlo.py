@@ -1,4 +1,6 @@
 #!/usr/bin/env python3.6
+import time  # realtime
+startTime = time.time()
 
 # modular file for splitting x.csv into test-train set by a ratio
 import pandas as pd
@@ -55,4 +57,4 @@ else:  # else generate test train set CSVs
     train.to_csv( (dataFolderPath + trainFileName), encoding='utf-8', index=False)
     test.to_csv( (dataFolderPath + testFileName), encoding='utf-8', index=False)
 
-print(prePend, "Fin.")
+print(prePend, "Fin.", (time.time() - startTime), " seconds.")

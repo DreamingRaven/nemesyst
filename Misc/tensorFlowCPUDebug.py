@@ -1,4 +1,7 @@
 #!/usr/bin/env python3.6
+import time  # realtime
+startTime = time.time()
+
 import tensorflow as tf
 import os
 import sys
@@ -18,4 +21,4 @@ a = tf.constant(10)
 b = tf.constant(72)
 print(prePend, "10 + 72 = ",sess.run(a+b))
 
-print(prePend, "Fin.")
+print(prePend, "Fin.", (time.time() - startTime), " seconds.")

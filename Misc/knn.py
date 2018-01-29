@@ -1,12 +1,16 @@
 #!/usr/bin/env python3.6
+import time  # realtime
+startTime = time.time()
+
 import os
 import sys
+import numpy as np
 import pandas as pd
+from sklearn.metrics import accuracy_score
 from sklearn.neighbors import NearestNeighbors
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.neighbors import KNeighborsRegressor
 from sklearn.model_selection import train_test_split
-import numpy as np
 
 # creating prepend variable for logging
 prePend = "[ " + os.path.basename(sys.argv[0]) + " ] "
@@ -40,9 +44,15 @@ testSize = 0.25  # default value
 testSize = float(sys.argv[4]) if len(sys.argv) >= 5 else testSize
 print(prePend, "Split test %: ", testSize)
 
+# fifth arg
+# setting target name
+targetName = "rating"  # default value
+targetName = sys.argv[5] if len(sys.argv) >= 6 else targetName
+print(prePend, "Target name: ", targetName)
+
 # import data sets
-test = pd.read_csv(dataFolderPath + testFileName)
-train = pd.read_csv(dataFolderPath + trainFileName)
+test = pd.read_csv(dataFolderPath + testFileName)  # not used for parameters
+train = pd.read_csv(dataFolderPath + trainFileName)  # further split
 
 # remove target in test # tbh its not necessary to store this
 #test_noLabel = test[test.columns.difference(['rating'])]
@@ -54,16 +64,20 @@ trainTrain, trainTest = train_test_split(train, test_size=testSize)
 #print(test_noLabel.head())
 
 # instantiate model
-knn = KNeighborsClassifier(n_neighbors=3)
+#knn = KNeighborsClassifier(n_neighbors=3)
+knn = KNeighborsRegressor(n_neighbors=3)
 
 # train model
 #nnModel = NearestNeighbors(n_neighbors=5, algorithm="ball_tree").fit(train)
-#knn.fit(train) # takes a tuple of(X, y) X = training data y = target vals
+# takes a tuple of(X, y) X = training data y = target vals
+knn.fit( trainTrain[ trainTrain.columns.difference([targetName]) ],
+         trainTrain[targetName])
 
 # find distances to test set / make predictions
 #distances, indices = nnModel.kneighbors(test_noLabel)
 #pred = knn.predict(test_noLabel)
+pred = knn.predict( trainTest[trainTrain.difference([targetName])] )
 
 #print(accuracy_score())
 
-print(prePend, "Fin.")
+print(prePend, "Fin.", (time.time() - startTime), " seconds.")
