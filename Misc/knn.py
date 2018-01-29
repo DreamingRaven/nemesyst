@@ -3,6 +3,9 @@ import os
 import sys
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 import numpy as np
 
 # creating prepend variable for logging
@@ -31,20 +34,36 @@ trainFileName = "train.csv"  # default value
 trainFileName = sys.argv[3] if len(sys.argv) >= 4 else trainFileName
 print(prePend, "Train file name: ", trainFileName)
 
+# fourth arg
+# setting test/train split
+testSize = 0.25  # default value
+testSize = float(sys.argv[4]) if len(sys.argv) >= 5 else testSize
+print(prePend, "Split test %: ", testSize)
+
 # import data sets
 test = pd.read_csv(dataFolderPath + testFileName)
 train = pd.read_csv(dataFolderPath + trainFileName)
 
-# remove target in test
-test_noLabel = test[test.columns.difference(['rating'])]
+# remove target in test # tbh its not necessary to store this
+#test_noLabel = test[test.columns.difference(['rating'])]
+
+# subsetting training set for validation preventing overfitting on real test
+trainTrain, trainTest = train_test_split(train, test_size=testSize)
 
 # debug
 #print(test_noLabel.head())
 
-# train model
-nnModel = NearestNeighbors(n_neighbors=5, algorithm="ball_tree").fit(train)
+# instantiate model
+knn = KNeighborsClassifier(n_neighbors=3)
 
-# find distances to test set
-distances, indices = nnModel.kneighbors(test_noLabel)
+# train model
+#nnModel = NearestNeighbors(n_neighbors=5, algorithm="ball_tree").fit(train)
+#knn.fit(train) # takes a tuple of(X, y) X = training data y = target vals
+
+# find distances to test set / make predictions
+#distances, indices = nnModel.kneighbors(test_noLabel)
+#pred = knn.predict(test_noLabel)
+
+#print(accuracy_score())
 
 print(prePend, "Fin.")

@@ -7,6 +7,7 @@ import sys
 import struct  # used to accurately calculate python version bits (32/64)
 import numpy as np
 from scipy.sparse.linalg import svds
+from scipy import linalg
 
 
 # creating prepend variable for logging
@@ -39,6 +40,13 @@ print(prePend, "(", dataFileName, ").shape = ", dataSet.shape)
 print(prePend, "U.shape = ", U.shape)
 print(prePend, "s.shape = ", s.shape)
 print(prePend, "Vh.shape = ", Vh.shape)
+
+# U, s, Vh = linalg.svd(dataSet)#, k=(min(dataSet.shape) - 1))  # min dimension
+# print(prePend, "(", dataFileName, ").shape = ", dataSet.shape)
+# print(prePend, "U.shape = ", U.shape)
+# print(prePend, "s.shape = ", s.shape)
+# print(prePend, "Vh.shape = ", Vh.shape)
+
 
 # don't be a pain! regenerate the data already Q_Q
 #sigma = np.zeros(dataSet.shape)

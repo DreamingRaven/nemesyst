@@ -23,7 +23,7 @@ Baseline algorithms:
  K-nearest neighbors; traditional -> comparable
 * [SVD](https://en.wikipedia.org/wiki/Singular-value_decomposition); 
 [(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true);
-Singular-value decomposition; hidden latent factors through eigen vectors
+Singular-value decomposition; hidden latent factors through eigen vectors; Derivative -> 3rd place Netflix prize
 * [MF](https://en.wikipedia.org/wiki/Matrix_decomposition) 
 [(why)](https://link.springer.com/content/pdf/10.1007%2Fs10115-018-1157-2.pdf);
 Matrix factorisation; prevalent -> comparable

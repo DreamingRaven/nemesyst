@@ -27,14 +27,14 @@ python ./Misc/template.py
 python ./Misc/debug.py
 
 # data preparation
-echo "[ dataWrangler ] ------ Data preparation ------"
+echo "------ Data preparation ------"
 python ./Misc/movieLenseWrangler.py $dataFolder
 python ./Misc/movieLenseDataCombiner.py $dataFolder
 # args:  <data directory relative path> <input.csv name> <ratio of train:test> <output test file name> <output train fn>
 python ./Misc/monteCarlo.py $dataFolder "pML.csv" 0.2 "test.csv" "train.csv"
 
 # visualisations
-echo "[ dataWrangler ] ------ Visualisations -------"
+echo "------ Visualisations -------"
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "timestamp" $figDir "rating-time-scatter-ml.png" &
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "movieAvgRating" $figDir "rating-movieAvgRating-scatter-ml.png" &
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "userAvgRating" $figDir "rating-userAvgRating-scatter-ml.png" &
@@ -42,11 +42,11 @@ echo "[ dataWrangler ] ------ Visualisations -------"
 
 
 # baseline learning algorithms
-echo "[ dataWrangler ] ------- Learning algorithms ------"
+echo "------- Learning algorithms ------"
 python ./Misc/svd.py $dataFolder "pML.csv" &
 python ./Misc/mf.py $dataFolder "pML.csv" #&
 python ./Misc/rnn.py $dataFolder "pML.csv" #&
-python ./Misc/knn.py $dataFolder "test.csv" "train.csv" &
+python ./Misc/knn.py $dataFolder "test.csv" "train.csv" 0.2 &
 
 #echo -e "[ mlpack_knn cpp ] Avante! Show that sh-ython whos boss."
 #mlpack_knn -q ${dataFolder}test_noLabel.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
