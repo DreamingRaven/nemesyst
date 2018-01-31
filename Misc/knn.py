@@ -55,7 +55,9 @@ print(prePend, "Target name: ", targetName)
 test = pd.read_csv(dataFolderPath + testFileName)  # not used for parameters
 train = pd.read_csv(dataFolderPath + trainFileName)  # further split
 
+# increasing scope
 knn = KNeighborsRegressor(n_neighbors=1)
+listResults = []
 
 # for loop which changes k, the number of neighbors to be used
 for i in range(1, 14, 3):
@@ -76,8 +78,15 @@ for i in range(1, 14, 3):
         # find distances to test set / make predictions
         pred = knn.predict( trainTest[trainTrain.columns.difference([targetName])] )
 
-        # first run (0.7786580092802942 MEA)
-        print(prePend, "MEA (k =", k, "run =", j, "): ", mean_absolute_error(trainTest[targetName], pred))
+        # output result # first run (0.7786580092802942 MEA)
+        MAE = mean_absolute_error(trainTest[targetName], pred)
+        print(prePend, "MEA (k =", k, "run =", j, "): ", MAE)
+        listResults.append([k, j, MAE])
+
+# combine list of lists into a DataFrame for speed
+results = pd.DataFrame(listResults, columns=['k', 'cycle', 'mae'])
+print(results)
+results.to_csv( (dataFolderPath + "/Model/knn_results.csv"), encoding='utf-8', index=False)
 
 # dump model onto persistent storage
 joblib.dump(knn, dataFolderPath + "/Model/knn.pkl")
