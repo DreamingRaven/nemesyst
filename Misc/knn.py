@@ -11,7 +11,7 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.model_selection import train_test_split
-from sklearn.externals import joblib  # lib to allow model presistence
+from sklearn.externals import joblib  # lib to allow model persistence
 
 # creating prepend variable for logging
 prePend = "[ " + os.path.basename(sys.argv[0]) + " ] "
@@ -23,7 +23,7 @@ print(prePend, "Args: ", str(sys.argv))
 
 # first arg
 # setting data folder path with possible args(a if condition else b)
-dataFolderPath = "../../../DataSets/ml-20m/"  # this is the default path
+dataFolderPath = "../DataSets/ml-20m/"  # this is the default path
 dataFolderPath = dataFolderPath if len(sys.argv) == 1 else sys.argv[1]
 print(prePend, "Data path: ", dataFolderPath)
 
@@ -55,26 +55,29 @@ print(prePend, "Target name: ", targetName)
 test = pd.read_csv(dataFolderPath + testFileName)  # not used for parameters
 train = pd.read_csv(dataFolderPath + trainFileName)  # further split
 
-# subsetting training set for validation preventing overfitting on real test
-trainTrain, trainTest = train_test_split(train, test_size=testSize)
+knn = KNeighborsRegressor(n_neighbors=1)
 
-# instantiate model
-knn = KNeighborsRegressor(n_neighbors=3)
+# for loop which changes k, the number of neighbors to be used
+for i in range(1, 14, 3):
+    # for loop for repeats of a single k on different data
+    for j in range(1, 4):
+        k = (i*2)
 
-# train model
-knn.fit( trainTrain[ trainTrain.columns.difference([targetName]) ],
-         trainTrain[targetName])
+        # subsetting training set for validation preventing overfitting on real test
+        trainTrain, trainTest = train_test_split(train, test_size=testSize)
 
-# find distances to test set / make predictions
-pred = knn.predict( trainTest[trainTrain.columns.difference([targetName])] )
+        # instantiate model at intervals
+        knn = KNeighborsRegressor(n_neighbors=k)
 
-# debug
-print(prePend, type(pred))
-print(prePend, pred)
-print(prePend, type(trainTest[targetName]))
-print((prePend, trainTest[targetName]))
+        # train model
+        knn.fit( trainTrain[ trainTrain.columns.difference([targetName]) ],
+                 trainTrain[targetName])
 
-print(mean_absolute_error(trainTest[targetName], pred))
+        # find distances to test set / make predictions
+        pred = knn.predict( trainTest[trainTrain.columns.difference([targetName])] )
+
+        # first run (0.7786580092802942 MEA)
+        print(prePend, "MEA (k =", k, "run =", j, "): ", mean_absolute_error(trainTest[targetName], pred))
 
 # dump model onto persistent storage
 joblib.dump(knn, dataFolderPath + "/Model/knn.pkl")

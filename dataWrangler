@@ -46,7 +46,7 @@ echo "------- Learning algorithms ------"
 python ./Misc/svd.py $dataFolder "pML.csv" &
 python ./Misc/mf.py $dataFolder "pML.csv" #&
 python ./Misc/rnn.py $dataFolder "pML.csv" #&
-python ./Misc/knn.py $dataFolder "test.csv" "train.csv" 0.2 &
+python ./Misc/knn.py $dataFolder "test.csv" "train.csv" 0.2 &  # 0.7786580092802942 MEA - at first
 
 #echo -e "[ mlpack_knn cpp ] Avante! Show that sh-ython whos boss."
 #mlpack_knn -q ${dataFolder}test_noLabel.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
