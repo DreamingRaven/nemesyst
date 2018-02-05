@@ -60,7 +60,7 @@ knn = KNeighborsRegressor(n_neighbors=1)
 listResults = []
 
 # for loop which changes k, the number of neighbors to be used
-for i in range(1, 14, 3):
+for i in range(1, 20, 3):
     # for loop for repeats of a single k on different data
     for j in range(1, 4):
         k = (i*2)
