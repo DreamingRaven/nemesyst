@@ -43,10 +43,8 @@ python ./Misc/rnn.py $dataFolder "pML.csv" #&
 python ./Misc/svd.py $dataFolder "pML.csv" #&
 #python ./Misc/svdpp.py $dataFolder "pML.csv" #&
 
-
-#echo -e "[ mlpack_knn cpp ] Avante! Show that sh-ython whos boss."
 #mlpack_knn -q ${dataFolder}test_noLabel.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
-#cmake -B"cmake-build-debug/" .
+
 cmake -H. -Bcmake-build-debug -DCMAKE_BUILD_TYPE=Debug &# cmake has some awkward command line args
 cmake -H. -Bcmake-build-release -DCMAKE_BUILD_TYPE=Release &
 
