@@ -37,28 +37,10 @@ dataFileName = "pML.csv"  # default value
 dataFileName = sys.argv[2] if len(sys.argv) >= 3 else dataFileName
 print(prePend, "Data file name: ", dataFileName)
 
-# import data
-#dataSet = pd.read_csv(dataFolderPath + dataFileName)
-
+# simple scikit-surprise usage
 data = Dataset.load_builtin('ml-1m')
 algo = SVD()  # instantiate model
 test = cross_validate(algo, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
 print(test)
 
 print(prePend, "Fin.", (time.time() - startTime), " seconds.")
-
-
-# GET IN SHAPE (b-dum ch)
-# U, s, Vh = svds(dataSet, k=(min(dataSet.shape) - 1))  # min dimension
-# print(prePend, "(", dataFileName, ").shape = ", dataSet.shape)
-# print(prePend, "U.shape = ", U.shape)
-# print(prePend, "s.shape = ", s.shape)
-# print(prePend, "Vh.shape = ", Vh.shape)
-
-# why is U changing shape ??
-# sigma = np.zeros(dataSet.shape)
-# for i in range(min(Vh.shape)):
-#     print(prePend, i, " shape: min=", min(Vh.shape))
-#     sigma[i, i] = s[i]
-# a1 = np.dot(U, np.dot(sigma, Vh))
-#np.allclose(dataSet, a1)
