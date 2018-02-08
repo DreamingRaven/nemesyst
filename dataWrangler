@@ -40,7 +40,6 @@ python ./Misc/svd.py $dataFolder "pML.csv" &
 python ./Misc/mf.py $dataFolder "pML.csv" #&
 python ./Misc/rnn.py $dataFolder "pML.csv" #&
 #python ./Misc/knn.py $dataFolder "test.csv" "train.csv" 0.2 &  # 0.7786580092802942 MEA - at first
-python ./Misc/svd.py $dataFolder "pML.csv" #&
 #python ./Misc/svdpp.py $dataFolder "pML.csv" #&
 
 #mlpack_knn -q ${dataFolder}test_noLabel.csv -r ${dataFolder}train.csv -n ${dataFolder}neighbors_out.csv -d ${dataFolder}distances_out.csv -k 10 -v
@@ -60,6 +59,6 @@ echo "------ Visualisations -------"
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "movieAvgRating" $figDir "rating-movieAvgRating-scatter-ml.png" &
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "userAvgRating" $figDir "rating-userAvgRating-scatter-ml.png" &
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "userAvgRating" $figDir "rating-userAvgRating-scatter-ml.png" &
-python ./Misc/seabornScatter.py $dataFolder "/Model/knn_results.csv" "mae" "k" $figDir "more_neighbors.png" &
+#python ./Misc/seabornScatter.py $dataFolder "Model/knn_results.csv" "mae" "k" $figDir "more_neighbors.png" &
 
 wait

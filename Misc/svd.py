@@ -23,7 +23,7 @@ print(prePend, "Current wd: ", cwd)
 print(prePend, "Args: ", str(sys.argv))
 
 # setting data folder path with possible args(a if condition else b)
-dataFolderPath = "../../../DataSets/ml-20m/"  # this is the default path
+dataFolderPath = "../DataSets/ml-20m/"  # this is the default path
 dataFolderPath = dataFolderPath if len(sys.argv) == 1 else sys.argv[1]
 print(prePend, "Data path:", dataFolderPath)
 
@@ -36,7 +36,7 @@ print(prePend, "Data file name: ", dataFileName)
 # simple scikit-surprise usage
 data = Dataset.load_builtin('ml-1m')
 algo = SVD()  # instantiate model
-test = cross_validate(algo, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
-print(test)
+concatenatedResults = cross_validate(algo, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
+print(concatenatedResults)
 
 print(prePend, "Fin.", (time.time() - startTime), " seconds.")
