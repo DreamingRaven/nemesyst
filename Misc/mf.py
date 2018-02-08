@@ -3,7 +3,6 @@ import time  # realtime
 startTime = time.time()
 
 # quick python file to wrangle movieLense data set
-import pandas as pd
 import os
 import sys
 import struct  # used to accurately calculate python version bits (32/64)

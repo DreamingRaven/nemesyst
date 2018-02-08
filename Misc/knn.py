@@ -4,11 +4,8 @@ startTime = time.time()
 
 import os
 import sys
-import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, mean_absolute_error
-from sklearn.neighbors import NearestNeighbors
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.externals import joblib  # lib to allow model persistence

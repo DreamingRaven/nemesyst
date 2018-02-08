@@ -34,9 +34,7 @@ dataFileName = "pML.csv"  # default value
 dataFileName = sys.argv[2] if len(sys.argv) >= 3 else dataFileName
 print(prePend, "Data file name: ", dataFileName)
 
-# import data
-#dataSet = pd.read_csv(dataFolderPath + dataFileName)
-
+# simple scikit-surprise usage
 data = Dataset.load_builtin('ml-1m')
 algo = SVDpp()  # instantiate model
 test = cross_validate(algo, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
