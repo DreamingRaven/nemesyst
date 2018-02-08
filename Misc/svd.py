@@ -7,7 +7,7 @@ startTime = time.time()
 import os
 import sys
 import struct  # used to accurately calculate python version bits (32/64)
-
+import pandas as pd
 from surprise import SVD
 from surprise import Dataset
 from surprise.model_selection import cross_validate
@@ -37,6 +37,7 @@ print(prePend, "Data file name: ", dataFileName)
 data = Dataset.load_builtin('ml-1m')
 algo = SVD()  # instantiate model
 concatenatedResults = cross_validate(algo, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
-print(concatenatedResults)
+print(prePend, pd.DataFrame.from_dict(concatenatedResults))
+print(prePend, os.path.basename(sys.argv[0]))
 
 print(prePend, "Fin.", (time.time() - startTime), " seconds.")
