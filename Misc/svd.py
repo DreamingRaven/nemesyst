@@ -13,11 +13,13 @@ from surprise import Dataset
 from surprise.model_selection import cross_validate
 
 # creating prepend variable for logging
-prePend = "[ " + os.path.basename(sys.argv[0]) + " ] "
+baseName = os.path.basename(sys.argv[0])  # file name with extension
+prePend = "[ " + baseName + " ] "  # prepended to print for debug
+fileNameNoExtension = os.path.splitext(baseName)[0]  # file name without extension
 print(prePend, "Purpose: calculating eigenvectors and eigenvalues to reduce size and predict missing")
 print(prePend, "python version (bit): ", struct.calcsize("P") * 8)  # check if 32 or 64 bit
 
-# outputting debug info
+# outputting more but different debug info
 cwd = os.getcwd()
 print(prePend, "Current wd: ", cwd)
 print(prePend, "Args: ", str(sys.argv))
@@ -37,7 +39,9 @@ print(prePend, "Data file name: ", dataFileName)
 data = Dataset.load_builtin('ml-1m')
 algo = SVD()  # instantiate model
 concatenatedResults = cross_validate(algo, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
-print(prePend, pd.DataFrame.from_dict(concatenatedResults))
-print(prePend, os.path.basename(sys.argv[0]))
+
+# outputting
+results = pd.DataFrame.from_dict(concatenatedResults)
+results.to_csv((dataFolderPath + "Model/" + fileNameNoExtension + ".csv"), encoding='utf-8', index=False)
 
 print(prePend, "Fin.", (time.time() - startTime), " seconds.")

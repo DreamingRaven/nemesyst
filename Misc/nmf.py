@@ -8,7 +8,7 @@ import os
 import sys
 import struct  # used to accurately calculate python version bits (32/64)
 import pandas as pd
-from surprise import SVDpp
+from surprise import NMF
 from surprise import Dataset
 from surprise.model_selection import cross_validate
 
@@ -19,13 +19,13 @@ fileNameNoExtension = os.path.splitext(baseName)[0]  # file name without extensi
 print(prePend, "Purpose: calculating eigenvectors and eigenvalues to reduce size and predict missing")
 print(prePend, "python version (bit): ", struct.calcsize("P") * 8)  # check if 32 or 64 bit
 
-# outputting debug info
+# outputting more but different debug info
 cwd = os.getcwd()
 print(prePend, "Current wd: ", cwd)
 print(prePend, "Args: ", str(sys.argv))
 
 # setting data folder path with possible args(a if condition else b)
-dataFolderPath = "../../../DataSets/ml-20m/"  # this is the default path
+dataFolderPath = "../DataSets/ml-20m/"  # this is the default path
 dataFolderPath = dataFolderPath if len(sys.argv) == 1 else sys.argv[1]
 print(prePend, "Data path:", dataFolderPath)
 
@@ -37,7 +37,7 @@ print(prePend, "Data file name: ", dataFileName)
 
 # simple scikit-surprise usage
 data = Dataset.load_builtin('ml-1m')
-algo = SVDpp()  # instantiate model
+algo = NMF()  # instantiate model
 concatenatedResults = cross_validate(algo, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
 
 # outputting
