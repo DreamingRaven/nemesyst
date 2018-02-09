@@ -60,6 +60,18 @@ echo "------ Visualisations -------"
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "movieAvgRating" $figDir "rating-movieAvgRating-scatter-ml.png" &
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "userAvgRating" $figDir "rating-userAvgRating-scatter-ml.png" &
 #python ./Misc/seabornScatter.py $dataFolder "test.csv" "rating" "userAvgRating" $figDir "rating-userAvgRating-scatter-ml.png" &
-#python ./Misc/seabornScatter.py $dataFolder "Model/knn_results.csv" "mae" "k" $figDir "more_neighbors.png" &
+#python ./Misc/seabornScatter.py $dataFolder "Model/knn.csv" "mae" "k" $figDir "more_neighbors.png" &
+
+python ./Misc/seabornScatter.py $dataFolder "Model/nmf.csv" "test_mae" "test_rmse" $figDir "nmf_mae_rmse.png" &
+python ./Misc/seabornScatter.py $dataFolder "Model/nmf.csv" "test_mae" "fit_time" $figDir "nmf_mae_fitTime.png" &
+
+python ./Misc/seabornScatter.py $dataFolder "Model/svd.csv" "test_mae" "test_rmse" $figDir "svd_mae_rmse.png" &
+python ./Misc/seabornScatter.py $dataFolder "Model/svd.csv" "test_mae" "fit_time" $figDir "svd_mae_fitTime.png" &
+
+python ./Misc/seabornScatter.py $dataFolder "Model/svdpp.csv" "test_mae" "test_rmse" $figDir "svdpp_mae_rmse.png" &
+python ./Misc/seabornScatter.py $dataFolder "Model/svdpp.csv" "test_mae" "fit_time" $figDir "svdpp_mae_fitTime.png" &
+
+#python ./Misc/seabornScatter.py $dataFolder "Model/knn.csv" "test_mae" "test_rmse" $figDir "knn_mae_rmse.png" &
+#python ./Misc/seabornScatter.py $dataFolder "Model/knn.csv" "test_mae" "fit_time" $figDir "knn_mae_fitTime.png" &
 
 wait
