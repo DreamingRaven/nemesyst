@@ -1,14 +1,34 @@
 #!/bin/bash
 # Entry point of RavenRecSyst & toolchain
 
-if [ $# -eq 0 ]; then
-        # use defaults
-        echo -e "[ ravenRecSyst ] No arguments, using defaults."
-        dataFolderML="../DataSets/ml-20m/"
-else
-        echo -e "[ ravenRecSyst ] Arguments provided, setting."
-        dataFolderML=$1
-fi
+#if [ $# -eq 0 ]; then
+#        # use defaults
+#        echo -e "[ ravenRecSyst ] No arguments, using defaults."
+#        dataFolderML="../DataSets/ml-20m/"
+#else
+#        echo -e "[ ravenRecSyst ] Arguments provided, setting."
+#        dataFolderML=$1
+#fi
+
+# handle cli args using getopts functionality
+while getopts ":D:" opt; do
+    case ${opt} in
+        D)
+            dataFolderML=${OPTARG} # folder of intended database location
+            ;;
+        \?)
+            echo "Invalid option: ${OPTARG}" 1>&2
+            exit 1
+            ;;
+        :)
+            echo "Invalid option: ${OPTARG} requires argument" 1>&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+dataFolderML=${dataFolderML:-"../DataSets/ml-20m/"}
+
 
 # call dataWrangler for each data set (netflix wrangler not included yet)
 time sh dataWrangler $dataFolderML
