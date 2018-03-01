@@ -1,15 +1,6 @@
 #!/bin/bash
 # Entry point of RavenRecSyst & toolchain
 
-#if [ $# -eq 0 ]; then
-#        # use defaults
-#        echo -e "[ ravenRecSyst ] No arguments, using defaults."
-#        dataFolderML="../DataSets/ml-20m/"
-#else
-#        echo -e "[ ravenRecSyst ] Arguments provided, setting."
-#        dataFolderML=$1
-#fi
-
 # handle cli args using getopts functionality
 while getopts ":D:" opt; do
     case ${opt} in
