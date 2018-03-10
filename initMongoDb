@@ -1,0 +1,72 @@
+#!/bin/bash
+# initMongoDb: file responsible for database generation and population
+
+date # print start date time
+
+# to streamline debug output
+bashName="initMongoDb"
+echo # yes yes I know
+echo "[ ${bashName} ] CWD: ${PWD}"
+
+# handle cli args using getopts functionality
+while getopts ":C:DI:N:P:U:d:p:u:" opt; do
+    case ${opt} in
+        C) # mongod collection
+            mongodColl=${OPTARG}
+            ;;
+        D)
+            debug=1
+            ;;
+        I) # mongod Ip
+            mongodIp=${OPTARG}
+            ;;
+        N) # mongo database name
+            mongodName=${OPTARG}
+            ;;
+        P) # mongod Port
+            mongodPort=${OPTARG}
+            ;;
+        U) # mongod url "mongodb://localhost:27017/"
+            mongodUrl=${OPTARG}
+            ;;
+        d) # Directory path to csv data (topmost will search sub)
+            dirCsv=${OPTARG}
+            ;;
+        p) # password
+            password=${OPTARG}
+            ;;
+        u) # username
+            username=${OPTARG}
+            ;;
+        \?)
+            echo "Invalid option: ${OPTARG}" 1>&2
+            exit 1
+            ;;
+        :)
+            echo "Invalid option: ${OPTARG} requires argument" 1>&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+
+# assign defaults if null
+mongodColl=${mongodColl:-"testColl"}
+mongodIp=${mongodIp:-"127.0.0.1"}
+mongodName=${mongodName:-"test"}
+mongodPort=${mongodPort:-"27017"}
+mongodUrl=${mongodUrl:-"mongodb://localhost:27017/"}
+dirCsv=${dirCsv:-"${HOME}/DataSets/TescoMockFascility/"}
+username=${username:-"Groot"}
+password=${password:-"i am groot"}
+
+# find relevant csv files
+csvFilePaths=$(find ${dirCsv} -name '*.csv') # get every .csv
+csvFilePaths=$(echo "${csvFilePaths}" | grep '/cases/') # filter by '/cases/'
+
+# for debug purposes display total
+total=$(echo "${csvFilePaths}" | wc -w)
+total=$((total - 1))
+echo "[ ${bashName} ] Total csv files: ${total}"
+
+time python ./src/addMongoDocument.py -P "${mongodPort}" -I "${mongodIp}" -U "${mongodUrl}" -N "${mongodName}" -u "${username}" -p "${password}" -C "${mongodColl}" -D "${csvFilePaths}"

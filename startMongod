@@ -1,0 +1,73 @@
+#!/bin/bash
+# start mongod with or without user authentication automagically
+
+# to streamline debug output
+bashName="startMongod"
+echo # yes yes I know
+echo "[ ${bashName} ] CWD: ${PWD}"
+
+# handle cli args using getopts functionality
+while getopts ":D:I:N:P:dp:r:u:" opt; do
+    case ${opt} in
+        D) # mongod data directory
+            desiredFolder=${OPTARG}
+            ;;
+        I) # mongod Ip
+            desiredIp=${OPTARG}
+            ;;
+        N) # mongo database name
+            desiredName=${OPTARG}
+            ;;
+        P) # mongod Port
+            desiredPort=${OPTARG}
+            ;;
+        d) # debug
+            debug=1
+            ;;
+        p) # password
+            password=${OPTARG}
+            ;;
+        r) # role desired
+            desiredRole=${OPTARG}
+            ;;
+        u) # username
+            username=${OPTARG}
+            ;;
+        \?)
+            echo "Invalid option: ${OPTARG}" 1>&2
+            exit 1
+            ;;
+        :)
+            echo "Invalid option: ${OPTARG} requires argument" 1>&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+
+# if no argument set default using parameter expansion " :- "
+desiredFolder=${desiredFolder:-"${HOME}/db/"}
+desiredIp=${desiredIp:-"127.0.0.1"}
+desiredPort=${desiredPort:-"27017"}
+desiredRole=${desiredRole:-"dbOwner"}
+
+# check if username is null to be created using parameter expansion '+' and 'x'
+if [ ${username} ] && [ ${password} ]; then
+    echo "[ ${bashName} ] creating user ${username} ${desiredName} ${desiredRole}"
+    # start mongod in background process and create user
+    mongod --bind_ip "${desiredIp}" --port "${desiredPort}" --dbpath "${desiredFolder}" &
+    sleep 1
+    mongodPid=$!
+    sleep 2 # making sure everything has time to update before connection
+    python src/initUser.py -N "${desiredName}" -p "${password}" -r "${desiredRole}" -u "${username}"
+    sleep 2 # giving database time to update before shutdown command
+    kill -2 ${mongodPid} # 2 == sigint
+else
+    echo "[ ${bashName} ] [ warning ] no (-u and -p) so not creating user "
+fi
+
+# restart mongod
+wait # wait for previous to shutdown
+mongod --auth --dbpath "${desiredFolder}" &
+echo "    ( --- Mongod sent to background, PID: ${!} --- )"
+sleep 2 # give database some time to launch
