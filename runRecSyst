@@ -1,0 +1,114 @@
+#!/bin/bash
+
+# this file is the entry point for calling the neural net,
+# I have separated this out entirely because I want to
+# encapsulate this functionality especialy since I wont
+# want the research experiments to bleed into a functional product
+
+date
+
+bashName="neuralNetwork"
+echo -e "\n[ ${bashName} ] CWD: ${PWD}"
+
+while getopts ":C:D:I:N:P:U:cd:ilp:r:u:v:" opt; do
+    case ${opt} in
+        C) # mongod collection
+            mongodColl=${OPTARG}
+            ;;
+        D) # mongod data directory
+            mongodDir=${OPTARG}
+            ;;
+        I) # mongod Ip
+            mongodIp=${OPTARG}
+            ;;
+        N) # mongo database name
+            mongodName=${OPTARG}
+            ;;
+        P) # mongod Port
+            mongodPort=${OPTARG}
+            ;;
+        U) # mongod url "mongodb://localhost:27017/"
+            mongodUrl=${OPTARG}
+            ;;
+        c) # clean data #TODO implement cleaner
+            toClean=true
+            ;;
+        d) # Directory path to csv data (topmost will search sub)
+            dirCsv=${OPTARG}
+            ;;
+        h) # Directory path to csv data (topmost will search sub)
+            displayHelp=true
+            ;;
+        i) # initialise mongod database {boolean}
+            toInit=true
+            ;;
+        l) # autologin?
+            toLogin=true
+            ;;
+        p) # password
+            password=${OPTARG}
+            ;;
+        r) # role of user
+            role=${OPTARG}
+            ;;
+        u) # username
+            username=${OPTARG}
+            ;;
+        v) # verbose / debug but d was taken
+            verbose=${OPTARG}
+            ;;
+        \?)
+            echo "[ ${bashName} ] Invalid option: ${OPTARG}" 1>&2
+            exit 1
+            ;;
+        :)
+            echo "[ ${bashName} ] Invalid option: ${OPTARG} requires argument" 1>&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+
+if [ ${displayHelp} ]; then
+    echo "Add help screen"
+    #TODO: Add help screen
+fi
+
+if [ -z ${username+x} ]; then
+    echo "please type username:"
+    read -s username
+fi
+
+if [ -z ${password+x} ]; then
+    echo "please type password:"
+    read -s password
+fi
+
+# setting defaults if not set by user
+mongodColl=${mongodColl:-"recSyst"}
+mongodDir=${mongodDir:-"${HOME}/db/"}
+mongodIp=${mongodIp:-"127.0.0.1"}
+mongodName=${mongodName:-"ref"}
+mongodPort=${mongodPort:-"27017"}
+mongodUrl=${mongodUrl:-"mongodb://localhost:27017/"}
+dirCsv=${dirCsv:-"${HOME}"}
+role=${role:-"readWrite"}
+
+# if any log level
+if [ ${verbose} ]; then
+    echo -e "[ ${bashName} ] Args: {
+    \t-C\tmongodColl = ${mongodColl},
+    \t-D\tmongodDir = ${mongodDir},
+    \t-I\tmongodIp = ${mongodIp},
+    \t-N\tmongodName = ${mongodName},
+    \t-P\tmongodPort = ${mongodPort},
+    \t-U\tmongodUrl = ${mongodUrl},
+    \t-c\ttoClean = ${toClean:-"null"}
+    \t-d\tdirPathtoCsv = ${dirCsv},
+    \t-i\ttoInit = ${toInit:-"null"},
+    \t-l\ttoLogin = ${toLogin:-"null"},
+    \t-u\tusername = ${username:-"null"},
+    \t-p\tpassword =  ${password:+"***"},
+    \t-v\tverbose =  ${verbose:-"null"},
+    }"
+fi
