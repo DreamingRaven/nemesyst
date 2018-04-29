@@ -26,7 +26,7 @@ while getopts ":C:D:I:N:P:U:cd:hilp:r:u:v:" opt; do
         U) # mongod url "mongodb://localhost:27017/"
             mongodUrl=${OPTARG}
             ;;
-        c) # clean data #TODO implement cleaner
+        c) # clean data
             toClean=true
             ;;
         d) # Directory path to csv data (topmost will search sub)

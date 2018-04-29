@@ -112,3 +112,7 @@ if [ ${verbose} ]; then
     \t-v\tverbose =  ${verbose:-"null"},
     }"
 fi
+
+mkdir -p ${mongodDir}
+
+#sh ./startMongod
