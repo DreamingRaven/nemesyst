@@ -10,7 +10,7 @@ date
 bashName="neuralNetwork"
 echo -e "\n[ ${bashName} ] CWD: ${PWD}"
 
-while getopts ":C:D:I:N:P:U:cd:ilp:r:u:v:" opt; do
+while getopts ":C:D:I:N:P:U:cd:hilp:r:u:v:" opt; do
     case ${opt} in
         C) # mongod collection
             mongodColl=${OPTARG}
@@ -70,7 +70,7 @@ done
 shift $((OPTIND -1))
 
 if [ ${displayHelp} ]; then
-    echo "Add help screen"
+    echo "[ ${bashName} ] Add help screen"
     #TODO: Add help screen
 fi
 
