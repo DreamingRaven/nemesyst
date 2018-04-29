@@ -3,42 +3,62 @@
 
 # to streamline debug output
 bashName="startMongod"
-echo # yes yes I know
-echo "[ ${bashName} ] CWD: ${PWD}"
+echo -e "\n[ ${bashName} ] CWD: ${PWD}"
 
 # handle cli args using getopts functionality
-while getopts ":D:I:N:P:dp:r:u:" opt; do
+while getopts ":C:D:I:N:P:U:cd:hilp:r:u:v:" opt; do
     case ${opt} in
+        C) # mongod collection
+            mongodColl=${OPTARG}
+            ;;
         D) # mongod data directory
-            desiredFolder=${OPTARG}
+            mongodDir=${OPTARG}
             ;;
         I) # mongod Ip
-            desiredIp=${OPTARG}
+            mongodIp=${OPTARG}
             ;;
         N) # mongo database name
-            desiredName=${OPTARG}
+            mongodName=${OPTARG}
             ;;
         P) # mongod Port
-            desiredPort=${OPTARG}
+            mongodPort=${OPTARG}
             ;;
-        d) # debug
-            debug=1
+        U) # mongod url "mongodb://localhost:27017/"
+            mongodUrl=${OPTARG}
+            ;;
+        c) # clean data #TODO implement cleaner
+            toClean=true
+            ;;
+        d) # Directory path to csv data (topmost will search sub)
+            dirCsv=${OPTARG}
+            ;;
+        h) # Directory path to csv data (topmost will search sub)
+            displayHelp=true
+            ;;
+        i) # initialise mongod database {boolean}
+            toInit=true
+            ;;
+        l) # autologin?
+            toLogin=true
             ;;
         p) # password
             password=${OPTARG}
             ;;
-        r) # role desired
-            desiredRole=${OPTARG}
+        r) # role of user
+            role=${OPTARG}
             ;;
         u) # username
             username=${OPTARG}
             ;;
+        v) # verbose / debug but d was taken
+            verbose=${OPTARG}
+            ;;
         \?)
-            echo "Invalid option: ${OPTARG}" 1>&2
+            echo "[ ${bashName} ] Invalid option: ${OPTARG}" 1>&2
             exit 1
             ;;
         :)
-            echo "Invalid option: ${OPTARG} requires argument" 1>&2
+            echo "[ ${bashName} ] Invalid option: ${OPTARG} requires argument" 1>&2
             exit 1
             ;;
     esac
@@ -46,20 +66,20 @@ done
 shift $((OPTIND -1))
 
 # if no argument set default using parameter expansion " :- "
-desiredFolder=${desiredFolder:-"${HOME}/db/"}
-desiredIp=${desiredIp:-"127.0.0.1"}
-desiredPort=${desiredPort:-"27017"}
-desiredRole=${desiredRole:-"dbOwner"}
+mongodDir=${mongodDir:-"${HOME}/db/"}
+mongodIp=${mongodIp:-"127.0.0.1"}
+mongodPort=${mongodPort:-"27017"}
+role=${role:-"dbOwner"}
 
 # check if username is null to be created using parameter expansion '+' and 'x'
 if [ ${username} ] && [ ${password} ]; then
-    echo "[ ${bashName} ] creating user ${username} ${desiredName} ${desiredRole}"
+    echo "[ ${bashName} ] creating user ${username} ${mongodName} ${role}"
     # start mongod in background process and create user
-    mongod --bind_ip "${desiredIp}" --port "${desiredPort}" --dbpath "${desiredFolder}" &
+    mongod --bind_ip "${mongodIp}" --port "${mongodPort}" --dbpath "${mongodDir}" --quiet &
     sleep 1
     mongodPid=$!
     sleep 2 # making sure everything has time to update before connection
-    python src/initUser.py -N "${desiredName}" -p "${password}" -r "${desiredRole}" -u "${username}"
+    python src/initUser.py -N "${mongodName}" -p "${password}" -r "${role}" -u "${username}"
     sleep 2 # giving database time to update before shutdown command
     kill -2 ${mongodPid} # 2 == sigint
 else
@@ -68,6 +88,6 @@ fi
 
 # restart mongod
 wait # wait for previous to shutdown
-mongod --auth --dbpath "${desiredFolder}" &
-echo "    ( --- Mongod sent to background, PID: ${!} --- )"
+mongod --auth --dbpath "${mongodDir}" --quiet &
+echo "    ( --- Mongod sent to background, PID: ${!} --- ${mongodName};  ${mongodIp}:${mongodPort} ${mongodDir})"
 sleep 2 # give database some time to launch
