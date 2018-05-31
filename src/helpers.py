@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: miscHelpers.py
 # @Last modified by:   georgeraven
-# @Last modified time: 2018-05-29
+# @Last modified time: 2018-05-31
 # @License: Please see LICENSE file in project root
 
 
@@ -125,6 +125,7 @@ def make_keras_picklable():
 
 def installer(path="./",
               urls=["https://github.com/DreamingRaven/RavenPythonLib"]):
+              
     # neat trick to always ensure path ends in seperator '/' by appending empty
     path = os.path.join(path, "") # e.g "/usr/bin" vs "/usr/bin/"
 
@@ -145,6 +146,7 @@ def installer(path="./",
 # featured version is not availiable
 def updater(path="./",
             urls=["https://github.com/DreamingRaven/RavenPythonLib"]):
+
     # neat trick to force filenames to always end in seperator "/"
     path = os.path.join(path, "") # e.g "/usr/bin" vs "/usr/bin/"
 

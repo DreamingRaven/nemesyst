@@ -3,13 +3,13 @@
 # @Date:   2018-05-16
 # @Filename: app.py
 # @Last modified by:   georgeraven
-# @Last modified time: 2018-05-29
+# @Last modified time: 2018-05-31
 # @License: Please see LICENSE file in project root
 
 
 
 import os, sys, inspect
-from src.miscHelpers import argz, installer, updater
+from src.helpers import argz, installer, updater
 from posixpath import basename, dirname
 
 
