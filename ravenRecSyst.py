@@ -15,7 +15,9 @@ from src.log import Log
 
 
 def main():
-    None
+    print("ohio", 3)
+
+
 
 # declaring usefull global variables
 home = os.path.expanduser("~")

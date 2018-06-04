@@ -96,4 +96,26 @@ where:
 * \*2\* is used in place of the users *pass* word, as above if new then desired password.
 * \*3\* is the *name* of the database to be used or generated
 
-Please see help screen for more options.
+lastly as above, for debugging purposes there is a logger with log levels:
+* -1 = Always shown + formatting
+*  0 = [INFO] information on current operation
+*  1 = [WARN] shows warnings of current operation
+*  2 = [ERROR] shows all errors of current operation
+*  3 = [DEBUG] a special mode that runs outside of main try catch and shows very verbose system operation
+
+To use this logger simply add option -v OR --loglevel with the desired level. Anything less than that level will also be shown, so level 2 will show [ERROR], [WARN], [INFO] and formatting messages, but not [DEBUG] messages.
+E.G:
+````
+**/ravenRecSyst.py -u *1* --p *2* --N *3* --loglevel 9001
+````
+("over nine thousand!") will show all log levels < 9000
+
+---
+
+## Closing examples
+for user 'georgeraven' creating 'GeorgeRaven' user with 'password' password, in database 'mehDatabaseName', who desires to debug at log level '3':
+````
+/home/georgeraven/RavenRecSyst/ravenRecSyst.py -u GeorgeRaven -p password -N mehDatabaseName -v 3
+````
+
+Please see help screen for more options there are many more but these are the main ones for localhost usage.
