@@ -1,5 +1,6 @@
 # RavenRecSyst
 
+Warning: this project has not yet reached it basic intended functionality, to be ready for normal usage will take time. If you see anything glaringly wrong please do open an issue, thanks. GR
 ## Introduction
 
 Experimental recommender system; C++, Python, bash, CMake, and TensorFlow.
