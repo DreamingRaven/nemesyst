@@ -1,8 +1,8 @@
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-05-22
 # @Filename: miscHelpers.py
-# @Last modified by:   georgeraven
-# @Last modified time: 2018-05-31
+# @Last modified by:   archer
+# @Last modified time: 2018-06-04
 # @License: Please see LICENSE file in project root
 
 
@@ -48,7 +48,7 @@ def argz(argv=None, description=None):
         help="mongod/ destination, url")
     parser.add_argument("-u", "--user",     default="Groot",
         help="mongo user, username",        required=True)
-    parser.add_argument("-v", "--verbose",  default=0, type=int,
+    parser.add_argument("-v", "--loglevel",  default=0, type=int,
         help="verbose output of errors and vals")
 
     parser.add_argument("--timeSteps",      default=25, type=int,
@@ -125,7 +125,7 @@ def make_keras_picklable():
 
 def installer(path="./",
               urls=["https://github.com/DreamingRaven/RavenPythonLib"]):
-              
+
     # neat trick to always ensure path ends in seperator '/' by appending empty
     path = os.path.join(path, "") # e.g "/usr/bin" vs "/usr/bin/"
 
