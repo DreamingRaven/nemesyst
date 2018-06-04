@@ -2,11 +2,11 @@
 
 ## Introduction
 
-Experimental recommender system; C++, Python, bash, CMake; TensorFlow, MLpack toolchain.*
+Experimental recommender system; C++, Python, bash, CMake, and TensorFlow.
 
-This experimental recommender system is part of an ongoing masters thesis, which purposely compares the use of 
-Generative Adversarial Neural Networks (GANs) with certain other traditional and prevalent machine learning (ML) 
-recommender system techniques. This recommender system is evaluated by the common method of rating prediction 
+This experimental recommender system is part of an ongoing masters thesis, which purposely compares the use of
+Generative Adversarial Neural Networks (GANs) with certain other traditional and prevalent machine learning (ML)
+recommender system techniques. This recommender system is evaluated by the common method of rating prediction
 via mean absolute error (MEA).
 
 This recommender system currentley predicts using the [MovieLense 20M](https://grouplens.org/datasets/movielens/20m/),
@@ -14,29 +14,53 @@ This recommender system currentley predicts using the [MovieLense 20M](https://g
   (minus certain data specific steps) will have functionality with databases, specifically mongoDB.
 
 Quick references
-* [Keystone Paper](https://arxiv.org/pdf/1707.07435.pdf) - 
+* [Keystone Paper](https://arxiv.org/pdf/1707.07435.pdf) -
 Deep Learning based Recommender System: A Survey and New Perspectives [sic]
 
 Baseline algorithms:
-* [kNN](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) 
+* [kNN](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm)
 [(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true);
- K-nearest neighbors; traditional -> comparable
-* [SVD](https://en.wikipedia.org/wiki/Singular-value_decomposition); 
+ K-nearest neighbors; traditional computer science technique -> comparable
+* [SVD](https://en.wikipedia.org/wiki/Singular-value_decomposition);
 [(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true);
 Singular-value decomposition; hidden latent factors through eigen vectors; Derivative -> 3rd place Netflix prize
-* [MF](https://en.wikipedia.org/wiki/Matrix_decomposition) 
+* [MF](https://en.wikipedia.org/wiki/Matrix_decomposition)
 [(why)](https://link.springer.com/content/pdf/10.1007%2Fs10115-018-1157-2.pdf);
 Matrix factorisation; prevalent -> comparable
-* [RNN](https://en.wikipedia.org/wiki/Recurrent_neural_network) 
+* [RNN](https://en.wikipedia.org/wiki/Recurrent_neural_network)
 [(why)](https://arxiv.org/abs/1707.07435);
-Recurrent neural network
+traditional neural network technique -> comparable
+
+Compared-to algorithms:
+* [LSTM](https://en.wikipedia.org/wiki/Long_short-term_memory); providing a control to directly compare the effect of GANs.
+* [LSTM + GAN](https://arxiv.org/abs/1611.09904)
 
 Quick Definitions (Wiki)
 * [ML](https://en.wikipedia.org/wiki/Machine_learning) - Machine Learning
 * [GAN](https://en.wikipedia.org/wiki/Generative_adversarial_network) - Generative Adversarial Networks
 * [MEA](https://en.wikipedia.org/wiki/Mean_absolute_error) - Mean Absolute Error
 
-*please note, the majority of single run scripts (such as data pre-processing) are done synchronously and in a single 
-threaded manner. The TensorFlow and certain C++ implementations for the model building which may need to be repeated
- will however not be single threaded and may not be calculated synchronously. Please do not run this application with
- less than 4 threads available to prevent application level serialisation.
+## Installation
+
+Simply: *
+````
+git clone https://github.com/DreamingRaven/RavenRecSyst
+````
+You will also have to install/ verify a few key dependancies.
+
+* [MongoDb](https://www.mongodb.com/)
+* Python modules:
+    * [Pymongo](https://api.mongodb.com/python/current/) for MongoDb
+    * [TensorFlow | TensorFlow-gpu](https://www.tensorflow.org/install/) for that juicy machine-learning
+    * [Bash](https://www.gnu.org/software/bash/) for simple system level operations
+* [GCC](https://gcc.gnu.org/) for compilation of c++ (not currentley needed but soon)
+* [CMake](https://cmake.org/) (not currently needed but soon)
+* C++ libraries:
+    * currentley none but will likeley use C++ soon.
+
+If any have been left out please create an issue and post any log messages.
+
+Other than those that should be all you need, as dependanices have been kept to as few as needed to make a good extensible result.
+
+
+\* Note: This system is being developed on linux (Arch Linux) and since the focus is not cross platform there has been no checking for windows support, meaning it may need tinkering if you would like to run it on windows, although I have made every attempt to make this as straight forward as possible, with minimal dependencies.
