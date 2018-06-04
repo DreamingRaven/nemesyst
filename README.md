@@ -40,6 +40,8 @@ Quick Definitions (Wiki)
 * [GAN](https://en.wikipedia.org/wiki/Generative_adversarial_network) - Generative Adversarial Networks
 * [MEA](https://en.wikipedia.org/wiki/Mean_absolute_error) - Mean Absolute Error
 
+---
+
 ## Installation
 
 Simply: *
@@ -64,3 +66,28 @@ Other than those that should be all you need, as dependanices have been kept to 
 
 
 \* Note: This system is being developed on linux (Arch Linux) and since the focus is not cross platform there has been no checking for windows support, meaning it may need tinkering if you would like to run it on windows, although I have made every attempt to make this as straight forward as possible, with minimal dependencies.
+
+---
+
+## Usage
+
+entry point is ./ravenRecSyst.py
+
+this recommender system should flag any issues with arguments automagically. For a list of what arguments are availiable:
+````
+**/ravenRecSyst.py -h
+````
+
+** is used in place of whatever the path is to the ravenRecSyst file location, since it will vary between systems. e.g the full bash command on my system would be:
+````
+ ~/RavenRecSyst/ravenRecSyst.py -h
+````
+
+standard usage for a localhost server with authentication (auth non optional forced):
+````
+**/ravenRecSyst.py --user *1* --pass *2* --name *3*
+````
+where:
+* \*1\* is used in place of your *user* name if this is a new db then desired username.
+* \*2\* is used in place of the users *pass* word, as above if new then desired password.
+* \*3\* is the *name* of the database to be used or generated
