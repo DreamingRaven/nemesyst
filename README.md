@@ -87,7 +87,13 @@ standard usage for a localhost server with authentication (auth non optional for
 ````
 **/ravenRecSyst.py --user *1* --pass *2* --name *3*
 ````
+or
+````
+**/ravenRecSyst.py -u *1* --p *2* --N *3*
+````
 where:
 * \*1\* is used in place of your *user* name if this is a new db then desired username.
 * \*2\* is used in place of the users *pass* word, as above if new then desired password.
 * \*3\* is the *name* of the database to be used or generated
+
+Please see help screen for more options.
