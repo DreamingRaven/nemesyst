@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: miscHelpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-04
+# @Last modified time: 2018-06-05
 # @License: Please see LICENSE file in project root
 
 
@@ -28,10 +28,12 @@ def argz(argv=None, description=None):
 
     parser.add_argument("-C", "--coll",     default="testColl",
         help="collection name to which data is to be added")
-    parser.add_argument("-c", "--clean",    default="",
-        help="file list to be cleaned space seperated")
+    parser.add_argument("-c", "--cleaner",    default="",
+        help="file inclusive path to cleaner file, for data specific cleaning")
     parser.add_argument("-D", "--dir",      default="~/db/",
         help="directory to store mongodb files/ launch files from")
+    parser.add_argument("-d", "--newData",      default="",
+        help="the directory or file of the new data to be added and cleaned")
     parser.add_argument("-I", "--ip",       default="127.0.0.1",
         help="mongod listener, ip address")
     parser.add_argument("-i", "--toInitDb", default=False, action="store_true",

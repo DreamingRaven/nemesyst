@@ -1,6 +1,6 @@
 # RavenRecSyst
 
-Warning: this project has not yet reached it basic intended functionality, to be ready for normal usage will take time. If you see anything glaringly wrong please do open an issue, thanks. GR
+Warning: this project has not yet reached it basic intended functionality, to be ready for normal usage will take time so some of the examples may not work currently. If you see anything glaringly wrong please do open an issue, thanks. GR
 ## Introduction
 
 Experimental recommender system; C++, Python, bash, CMake, and TensorFlow.
@@ -55,6 +55,7 @@ You will also have to install/ verify a few key dependancies.
 * Python modules:
     * [Pymongo](https://api.mongodb.com/python/current/) for MongoDb
     * [TensorFlow | TensorFlow-gpu](https://www.tensorflow.org/install/) for that juicy machine-learning
+    * [Keras](https://github.com/keras-team/keras) although tensorflow has recentley bundled its own keras
     * [Bash](https://www.gnu.org/software/bash/) for simple system level operations
 * [GCC](https://gcc.gnu.org/) for compilation of c++ (not currentley needed but soon)
 * [CMake](https://cmake.org/) (not currently needed but soon)

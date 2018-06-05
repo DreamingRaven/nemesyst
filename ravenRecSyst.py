@@ -3,7 +3,7 @@
 # @Date:   2018-05-16
 # @Filename: app.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-04
+# @Last modified time: 2018-06-05
 # @License: Please see LICENSE file in project root
 
 
@@ -15,9 +15,33 @@ from src.log import Log
 
 
 def main():
-    print("ohio", 3)
+
+    from RavenPythonLib.mongodb.mongo import Mongo
+    mongodb = Mongo(isDebug=True, mongoUser=args['user'], mongoPass=args['pass'], mongoIp=args['ip'],
+                  mongoDbName=args['name'], mongoCollName="cycles", mongoPort=args['port'], mongoUrl=args['url'])
+
+    mongodb.debug(print=print) # passing in print to use logger
+
+    print("Sucess init", 3)
+
+    # create databases (has to be on host system)
+    if(args["toInitDb"] == True):
+        print("init db ...", 3)
+
+    # clean + add data (can be remote)
+    if(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
+        print("cleaning new files in: " + args["newData"] + " using: "
+            + args["cleaner"] + "...", 3)
+
+    # predicting (can be remote)
+    if(None):
+        None
 
 
+
+#
+# following section is just preamble to set some defaults and to update
+#
 
 # declaring usefull global variables
 home = os.path.expanduser("~")
@@ -45,6 +69,7 @@ try: # TODO: devise a method to make erros in nested try, catch
     nucleon = Gupdater(path=path, urls=dependancies)
     nucleon.install()
     nucleon.update()
+    print("main updater success", 3)
 except:
     print("Gupdater failed, falling back: " + str(sys.exc_info()[1]), 1)
     installer(path=path, urls=dependancies)
@@ -55,6 +80,7 @@ try:
     from RavenPythonLib.loggers.basicLog import Log
     log = Log(logLevel=args["loglevel"])
     print = log.print # note no '()' as function address desired not itself
+    print("main logger success", 3)
 except:
     log = Log(logLevel=args["loglevel"])
     print = log.print
