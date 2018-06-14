@@ -3,7 +3,7 @@
 # @Date:   2018-05-16
 # @Filename: app.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-05
+# @Last modified time: 2018-06-14
 # @License: Please see LICENSE file in project root
 
 
@@ -16,11 +16,14 @@ from src.log import Log
 
 def main():
 
+    # imported here to allow for update first
     from RavenPythonLib.mongodb.mongo import Mongo
     mongodb = Mongo(isDebug=True, mongoUser=args['user'], mongoPass=args['pass'], mongoIp=args['ip'],
                   mongoDbName=args['name'], mongoCollName="cycles", mongoPort=args['port'], mongoUrl=args['url'])
 
     mongodb.debug(print=print) # passing in print to use logger
+    mongodb.start(print=print)
+    mongodb.stop(print=print)
 
     print("Sucess init", 3)
 
