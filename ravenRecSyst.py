@@ -26,7 +26,8 @@ def main():
     mongodb.start(print=print)
     mongodb.addUser(print=print)
     mongodb.stop(print=print)
-
+    
+    mongodb.start(print=print, auth=True)
 ##### testing above first
 
     print("Sucess init", 3)
