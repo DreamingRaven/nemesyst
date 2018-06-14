@@ -18,12 +18,16 @@ def main():
 
     # imported here to allow for update first
     from RavenPythonLib.mongodb.mongo import Mongo
-    mongodb = Mongo(isDebug=True, mongoUser=args['user'], mongoPass=args['pass'], mongoIp=args['ip'],
-                  mongoDbName=args['name'], mongoCollName="cycles", mongoPort=args['port'], mongoUrl=args['url'])
+    mongodb = Mongo(isDebug=True, mongoUser=args['user'], mongoPath=args['dir'],
+        mongoPass=args['pass'], mongoIp=args['ip'], mongoDbName=args['name'],
+        mongoCollName="cycles", mongoPort=args['port'], mongoUrl=args['url'])
 
     mongodb.debug(print=print) # passing in print to use logger
     mongodb.start(print=print)
+    mongodb.addUser(print=print)
     mongodb.stop(print=print)
+
+##### testing above first
 
     print("Sucess init", 3)
 
