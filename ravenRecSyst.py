@@ -35,18 +35,12 @@ def main():
     # start main authenticated mongodb service
     mongodb.start(print=print, auth=True)
 
-##### testing above first
-
     print("Sucess init", 3)
 
     # clean + add data (can be remote)
     if(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
         print("cleaning new files in: " + args["newData"] + " using: "
             + args["cleaner"] + "...", 3)
-
-    # predicting (can be remote)
-    if(None):
-        None
 
 
 
