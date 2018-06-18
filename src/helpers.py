@@ -40,7 +40,7 @@ def argz(argv=None, description=None):
         help="mongod listener, ip address")
     parser.add_argument("-l", "--toLogin",  default=False, action="store_true",
         help="if mongo should log in at end")
-    parser.add_argument("-N", "--name",     default="test",
+    parser.add_argument("-N", "--name",     default="RecSyst",
         help="mongo database, name",        required=True)
     parser.add_argument("-P", "--port",     default="27017",
         help="mongod listener, port")

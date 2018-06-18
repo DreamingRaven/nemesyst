@@ -8,7 +8,7 @@
 
 
 
-import os, sys, json, inspect
+import os, sys, json, inspect, time
 from src.helpers import argz, installer, updater
 from src.log import Log
 
@@ -24,19 +24,20 @@ def main():
 
     if(args["toInitDb"] == True):
         mongodb.debug(print=print) # passing in print to use logger
+        mongodb.stop(print=print) # stopping just in case it is already running
+        time.sleep(2) # delay to ensure db is closed properly
         mongodb.start(print=print)
         mongodb.addUser(print=print)
         # restart database with new user and with user authentication on
         mongodb.stop(print=print)
-        mongodb.start(print=print, auth=True)
+        time.sleep(2) # delay to ensure db is closed properly
+
+    # start main authenticated mongodb service
+    mongodb.start(print=print, auth=True)
 
 ##### testing above first
 
     print("Sucess init", 3)
-
-    # create databases (has to be on host system)
-    if(args["toInitDb"] == True):
-        print("init db ...", 3)
 
     # clean + add data (can be remote)
     if(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
