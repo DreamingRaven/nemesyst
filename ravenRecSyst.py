@@ -35,8 +35,6 @@ def main():
     # start main authenticated mongodb service
     mongodb.start(print=print, auth=True)
 
-    print("Sucess init", 3)
-
     # clean + add data (can be remote)
     if(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
         print("cleaning new files in: " + args["newData"] + " using: "
@@ -99,5 +97,6 @@ else:
     try:
         main()
         # raise ValueError('A very specific bad thing happened.')
+        # raise NotImplementedError('not currentley implemented')
     except:
         print(str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
