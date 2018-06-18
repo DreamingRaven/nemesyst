@@ -3,7 +3,7 @@
 # @Date:   2018-05-16
 # @Filename: app.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-14
+# @Last modified time: 2018-06-18
 # @License: Please see LICENSE file in project root
 
 
@@ -22,12 +22,14 @@ def main():
         mongoPass=args['pass'], mongoIp=args['ip'], mongoDbName=args['name'],
         mongoCollName="cycles", mongoPort=args['port'], mongoUrl=args['url'])
 
-    mongodb.debug(print=print) # passing in print to use logger
-    mongodb.start(print=print)
-    mongodb.addUser(print=print)
-    mongodb.stop(print=print)
-    
-    mongodb.start(print=print, auth=True)
+    if(args["toInitDb"] == True):
+        mongodb.debug(print=print) # passing in print to use logger
+        mongodb.start(print=print)
+        mongodb.addUser(print=print)
+        # restart database with new user and with user authentication on
+        mongodb.stop(print=print)
+        mongodb.start(print=print, auth=True)
+
 ##### testing above first
 
     print("Sucess init", 3)
@@ -102,6 +104,5 @@ else:
     try:
         main()
         # raise ValueError('A very specific bad thing happened.')
-
     except:
         print(str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
