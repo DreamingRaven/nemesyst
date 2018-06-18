@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: miscHelpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-05
+# @Last modified time: 2018-06-18
 # @License: Please see LICENSE file in project root
 
 
@@ -16,7 +16,7 @@ import tempfile
 import os, sys
 
 prePend = "[ " + os.path.basename(sys.argv[0]) + " ] "
-
+home = os.path.expanduser("~")
 
 
 def argz(argv=None, description=None):
@@ -30,7 +30,7 @@ def argz(argv=None, description=None):
         help="collection name to which data is to be added")
     parser.add_argument("-c", "--cleaner",    default="",
         help="file inclusive path to cleaner file, for data specific cleaning")
-    parser.add_argument("-D", "--dir",      default="~/db/",
+    parser.add_argument("-D", "--dir",      default=str(home + "/db"),
         help="directory to store mongodb files/ launch files from")
     parser.add_argument("-d", "--newData",      default="",
         help="the directory or file of the new data to be added and cleaned")
