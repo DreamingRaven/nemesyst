@@ -32,7 +32,7 @@ def main():
         mongodb.stop(print=print)
         time.sleep(2) # delay to ensure db is closed properly
 
-    if(args["toStartDb"]):
+    if(args["toStartDb"] == True):
         # start main authenticated mongodb service
         mongodb.start(print=print, auth=True)
 
@@ -40,16 +40,22 @@ def main():
     if(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
         print("cleaning new files in: " + args["newData"] + " using: "
             + args["cleaner"] + "...", 3)
+        raise NotImplementedError('Data Cleaning not currentley implemented')
 
-    # train
+
+    # train #TODO: implement selective training
+    if(args["toTrain"] == True):
+        raise NotImplementedError('Training not currentley implemented')
+
+    # test #TODO: implement complementary testing to training set selection
+    if(args["toTest"] == True):
+        raise NotImplementedError('Testing not currentley implemented')
+
+    # predict #TODO: selective prediction
     if(None):
-        None
+        raise NotImplementedError('Predicting not currentley implemented')
 
-    # predict
-    if(None):
-        None
-
-    if(args["toStopDb"]):
+    if(args["toStopDb"] == True):
         mongodb.stop(print=print)
 
 
@@ -103,7 +109,7 @@ except:
         str(sys.exc_info()[1]), 1)
 
 # if level3 (debug) prepare for some verbose shnitzel
-if(args["loglevel"] >= 3):
+if(args["loglevel"] >= 4):
     main()
 else:
     try:

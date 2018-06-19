@@ -50,6 +50,10 @@ def argz(argv=None, description=None):
         help="flag to start database, this starts in authentication only mode")
     parser.add_argument("-s", "--toStopDb", default=False, action="store_true",
         help="flag to stop database, this is the least priority action")
+    parser.add_argument("-T", "--toTrain", default=False, action="store_true",
+        help="flag to train on availiable dataset")
+    parser.add_argument("-t", "--toTest", default=False, action="store_true",
+        help="flag to test on availiable dataset")
     parser.add_argument("-U", "--url",      default="mongodb://localhost:27017/",
         help="mongod/ destination, url")
     parser.add_argument("-u", "--user",     default="Groot",
