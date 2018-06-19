@@ -36,10 +36,18 @@ def main():
         # start main authenticated mongodb service
         mongodb.start(print=print, auth=True)
 
-    # clean + add data (can be remote)
+    # clean + add data if file specified (can be remote)
     if(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
         print("cleaning new files in: " + args["newData"] + " using: "
             + args["cleaner"] + "...", 3)
+
+    # train
+    if(None):
+        None
+
+    # predict
+    if(None):
+        None
 
     if(args["toStopDb"]):
         mongodb.stop(print=print)
