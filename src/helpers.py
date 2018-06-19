@@ -141,11 +141,13 @@ def installer(path="./",
     path = os.path.join(path, "") # e.g "/usr/bin" vs "/usr/bin/"
 
     for url in urls:
+
         if (os.path.exists(path + os.path.basename(url)) == False):
             print(prePend, "find=false installing:",
                 path + os.path.basename(url))
             try:
                 os.system("cd " + path + "; git clone " + url)
+
             except:
                 print(prePend,
                     "Could not install:", url , "to",
@@ -165,6 +167,7 @@ def updater(path="./",
     try:
         print(prePend, "Updating self:")
         os.system("cd " + path + "; git pull")
+
     except:
         print(prePend + "Could not update self")
 
@@ -173,12 +176,14 @@ def updater(path="./",
         print(prePend, "Updating", os.path.basename(url) + ":" )
         try:
             os.system("cd " + path + os.path.basename(url) + "; git pull")
+
         except:
             print(prePend + "Could not update dependency: " + url)
 
 
 
 def clean(args, print=print):
+    
     print("cleaning: " + args["newData"] + " using: "
             + args["cleaner"] + "...", 3)
     try:
@@ -186,6 +191,7 @@ def clean(args, print=print):
             str(args["cleaner"]), str(args["newData"])
             ])
         print("cleaning complete", 3)
+
     except:
         print(prePend + "could not clean dataset:\n" +
             str(sys.exc_info()[0]) + " " +
