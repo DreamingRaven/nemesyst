@@ -38,7 +38,7 @@ def main():
 
     # clean + add data if file specified (can be remote)
     if(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
-        clean(cleanerPath=args["cleaner"], dataPath=args["newData"], print=print)
+        clean(args=args, print=print)
 
     if(args["toTrain"] == True):
         train(print=print)

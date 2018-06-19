@@ -178,14 +178,14 @@ def updater(path="./",
 
 
 
-def clean(cleanerPath, dataPath, print=print):
-    print("cleaning new files in: " + dataPath + " using: "
-            + cleanerPath + "...", 3)
+def clean(args, print=print):
+    print("cleaning: " + args["newData"] + " using: "
+            + args["cleaner"] + "...", 3)
     try:
         subprocess.call([
-            str(cleanerPath), str(dataPath)
+            str(args["cleaner"]), str(args["newData"])
             ])
-        raise NotImplementedError('data cleaning not currentley implemented')
+        print("cleaning complete", 3)
     except:
         print(prePend + "could not clean dataset:\n" +
             str(sys.exc_info()[0]) + " " +
