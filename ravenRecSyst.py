@@ -9,7 +9,7 @@
 
 
 import os, sys, json, inspect, time
-from src.helpers import argz, installer, updater
+from src.helpers import argz, installer, updater, clean
 from src.log import Log
 
 
@@ -40,8 +40,7 @@ def main():
     if(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
         print("cleaning new files in: " + args["newData"] + " using: "
             + args["cleaner"] + "...", 3)
-        raise NotImplementedError('Data Cleaning not currentley implemented')
-
+        clean(print=print)
 
     # train #TODO: implement selective training
     if(args["toTrain"] == True):

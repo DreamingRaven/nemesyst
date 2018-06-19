@@ -15,7 +15,8 @@ import types
 import tempfile
 import os, sys
 
-prePend = "[ " + os.path.basename(sys.argv[0]) + " ] "
+fileName = "helpers.py"
+prePend = "[ " + fileName + " ] "
 home = os.path.expanduser("~")
 
 
@@ -174,6 +175,54 @@ def updater(path="./",
             os.system("cd " + path + os.path.basename(url) + "; git pull")
         except:
             print(prePend + "Could not update dependency: " + url)
+
+
+
+def clean(print=print):
+
+    try:
+        raise NotImplementedError('data cleaning not currentley implemented')
+
+    except:
+        print(prePend + "could not clean dataset:\n" +
+            str(sys.exc_info()[0]) + " " +
+            str(sys.exc_info()[1]), 2)
+
+
+
+def train(print=print):
+
+    try:
+        raise NotImplementedError('data training not currentley implemented')
+
+    except:
+        print(prePend + "could not train dataset:\n" +
+            str(sys.exc_info()[0]) + " " +
+            str(sys.exc_info()[1]), 2)
+
+
+
+def test(print=print):
+
+    try:
+        raise NotImplementedError('data training not currentley implemented')
+
+    except:
+        print(prePend + "could not test dataset:\n" +
+            str(sys.exc_info()[0]) + " " +
+            str(sys.exc_info()[1]), 2)
+
+
+
+def predict(print=print):
+
+    try:
+        raise NotImplementedError('data training not currentley implemented')
+
+    except:
+        print(prePend + "could not predict on dataset:\n" +
+            str(sys.exc_info()[0]) + " " +
+            str(sys.exc_info()[1]), 2)
 
 
 
