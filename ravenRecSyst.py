@@ -46,7 +46,7 @@ def main():
         train(print=print)
 
     if(args["toTest"] == True):
-        train(print=print)
+        test(print=print)
 
     if(None):
         predict(print=print)

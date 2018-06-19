@@ -29,7 +29,7 @@ def argz(argv=None, description=None):
 
     parser.add_argument("-C", "--coll",     default="testColl",
         help="collection name to which data is to be added")
-    parser.add_argument("-c", "--cleaner",    default="",
+    parser.add_argument("-c", "--cleaner",  default="",
         help="file inclusive path to cleaner file, for data specific cleaning, should also specify --newData")
     parser.add_argument("-D", "--dir",      default=str(home + "/db"),
         help="directory to store mongodb files/ launch files from")
@@ -51,15 +51,15 @@ def argz(argv=None, description=None):
         help="flag to start database, this starts in authentication only mode")
     parser.add_argument("-s", "--toStopDb", default=False, action="store_true",
         help="flag to stop database, this is the least priority action")
-    parser.add_argument("-T", "--toTrain", default=False, action="store_true",
+    parser.add_argument("-T", "--toTrain",  default=False, action="store_true",
         help="flag to train on availiable dataset")
-    parser.add_argument("-t", "--toTest", default=False, action="store_true",
+    parser.add_argument("-t", "--toTest",   default=False, action="store_true",
         help="flag to test on availiable dataset")
     parser.add_argument("-U", "--url",      default="mongodb://localhost:27017/",
         help="mongod/ destination, url")
     parser.add_argument("-u", "--user",     default="Groot",
         help="mongo user, username",        required=True)
-    parser.add_argument("-v", "--loglevel",  default=0, type=int,
+    parser.add_argument("-v", "--loglevel", default=0, type=int,
         help="verbose output of errors and vals")
 
     parser.add_argument("--timeSteps",      default=25, type=int,
