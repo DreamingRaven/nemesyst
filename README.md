@@ -123,9 +123,9 @@ Note on log levels: loglevels > 3 will run outside of main try-catch statement f
 ---
 
 ## Closing examples
-for user 'georgeraven' creating 'GeorgeRaven' user with 'password' password, in database 'mehDatabaseName', who desires to debug at log level '3':
+for user 'georgeraven' creating 'GeorgeRaven' user with 'password' password, in database 'mehDatabaseName', who desires to debug at log level '3' and to launch database:
 ````
-/home/georgeraven/RavenRecSyst/ravenRecSyst.py -u GeorgeRaven -p password -N mehDatabaseName -v 3
+/home/georgeraven/RavenRecSyst/ravenRecSyst.py -u GeorgeRaven -p password -N mehDatabaseName -v 3 -i -S
 ````
 
 Please see help screen for more options there are many more but these are the main ones for localhost usage.
