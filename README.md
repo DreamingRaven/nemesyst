@@ -87,16 +87,23 @@ this recommender system should flag any issues with arguments automagically. For
 
 standard usage for a localhost server with authentication (auth non optional forced):
 ````
-**/ravenRecSyst.py --user *1* --pass *2* --name *3*
+**/ravenRecSyst.py --user *1* --pass *2* --name *3* --toInitDb --toStartDb
 ````
 or
 ````
-**/ravenRecSyst.py -u *1* --p *2* --N *3*
+**/ravenRecSyst.py -u *1* --p *2* --N *3* -i -S
 ````
 where:
 * \*1\* is used in place of your *user* name if this is a new db then desired username.
 * \*2\* is used in place of the users *pass* word, as above if new then desired password.
 * \*3\* is the *name* of the database to be used or generated
+
+And:
+* --user / -u is an an argument which allows you to then set the username which will be used in any subsequent operations E.G --toInitDb + --user will attempt to add that user to the database.
+* --pass / -p is a similar argument to --user except for the users password.
+* --name / -N sets what the database name is which will effect all operations that referance this name.
+* --toInitDb / -i is a flag with no subsequent argument, these kind of flags allow you to control what this sytem does, in this case initialising the database with a username password and a database name. --toInitDb only needs to be run once for each database you want to set up/ user.
+* --toStartDb / -s is much like --toInitDb except this actually starts the database wheras --toInitDb just sets it up, with username password and allows for it to be authentacatable. Please note however, --toStartDb always starts the database with authentication requirements, to reduce accessability where not needed.
 
 lastly as above, for debugging purposes there is a logger with log levels:
 * -1 = Always shown + formatting
@@ -106,11 +113,12 @@ lastly as above, for debugging purposes there is a logger with log levels:
 *  3 = [DEBUG] a special mode that runs outside of main try catch and shows very verbose system operation
 
 To use this logger simply add option -v OR --loglevel with the desired level. Anything less than that level will also be shown, so level 2 will show [ERROR], [WARN], [INFO] and formatting messages, but not [DEBUG] messages.
-E.G:
+E.G to show all possible messages in most verbose state:
 ````
 **/ravenRecSyst.py -u *1* --p *2* --N *3* --loglevel 9001
 ````
 ("over nine thousand!") will show all log levels < 9000
+Note on log levels: loglevels > 3 will run outside of main try-catch statement for extra verbosity.
 
 ---
 
