@@ -9,7 +9,7 @@
 
 
 import os, sys, json, inspect, time
-from src.helpers import argz, installer, updater, clean
+from src.helpers import argz, installer, updater, clean, train, test, predict
 from src.log import Log
 
 
@@ -42,26 +42,23 @@ def main():
             + args["cleaner"] + "...", 3)
         clean(print=print)
 
-    # train #TODO: implement selective training
     if(args["toTrain"] == True):
-        raise NotImplementedError('Training not currentley implemented')
+        train(print=print)
 
-    # test #TODO: implement complementary testing to training set selection
     if(args["toTest"] == True):
-        raise NotImplementedError('Testing not currentley implemented')
+        train(print=print)
 
-    # predict #TODO: selective prediction
     if(None):
-        raise NotImplementedError('Predicting not currentley implemented')
+        predict(print=print)
 
     if(args["toStopDb"] == True):
         mongodb.stop(print=print)
 
 
 
-#
+# # # # # # # # # #
 # following section is just preamble to set some defaults and to update
-#
+# # # # # # # # # #
 
 # declaring usefull global variables
 home = os.path.expanduser("~")
@@ -71,7 +68,7 @@ fileAndPath = inspect.getframeinfo(inspect.currentframe()).filename
 path = os.path.dirname(os.path.abspath(fileAndPath))
 
 prePend = "[ " + name + " ] "
-description = name + "; " + "RavenRecSyst entry point."
+description = name + "; " + "RavenRecSyst, a neural network based recommender system."
 
 dependancies = ["https://github.com/DreamingRaven/RavenPythonLib"]
 

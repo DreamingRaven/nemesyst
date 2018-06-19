@@ -30,11 +30,11 @@ def argz(argv=None, description=None):
     parser.add_argument("-C", "--coll",     default="testColl",
         help="collection name to which data is to be added")
     parser.add_argument("-c", "--cleaner",    default="",
-        help="file inclusive path to cleaner file, for data specific cleaning")
+        help="file inclusive path to cleaner file, for data specific cleaning, should also specify --newData")
     parser.add_argument("-D", "--dir",      default=str(home + "/db"),
         help="directory to store mongodb files/ launch files from")
     parser.add_argument("-d", "--newData",      default="",
-        help="the directory or file of the new data to be added and cleaned")
+        help="the directory or file of the new data to be added and cleaned, should also specify --cleaner")
     parser.add_argument("-I", "--ip",       default="127.0.0.1",
         help="mongod listener, ip address")
     parser.add_argument("-i", "--toInitDb", default=False, action="store_true",
