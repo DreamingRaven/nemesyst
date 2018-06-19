@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: miscHelpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-18
+# @Last modified time: 2018-06-19
 # @License: Please see LICENSE file in project root
 
 
@@ -37,7 +37,7 @@ def argz(argv=None, description=None):
     parser.add_argument("-I", "--ip",       default="127.0.0.1",
         help="mongod listener, ip address")
     parser.add_argument("-i", "--toInitDb", default=False, action="store_true",
-        help="mongod listener, ip address")
+        help="flag to initialise database")
     parser.add_argument("-l", "--toLogin",  default=False, action="store_true",
         help="if mongo should log in at end")
     parser.add_argument("-N", "--name",     default="RecSyst",
@@ -46,6 +46,10 @@ def argz(argv=None, description=None):
         help="mongod listener, port")
     parser.add_argument("-p", "--pass",     default="i am groot",
         help="mongo user, password",        required=True)
+    parser.add_argument("-S", "--toStartDb", default=False, action="store_true",
+        help="flag to start database, this starts in authentication only mode")
+    parser.add_argument("-s", "--toStopDb", default=False, action="store_true",
+        help="flag to stop database, this is the least priority action")
     parser.add_argument("-U", "--url",      default="mongodb://localhost:27017/",
         help="mongod/ destination, url")
     parser.add_argument("-u", "--user",     default="Groot",

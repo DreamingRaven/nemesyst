@@ -3,7 +3,7 @@
 # @Date:   2018-05-16
 # @Filename: app.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-18
+# @Last modified time: 2018-06-19
 # @License: Please see LICENSE file in project root
 
 
@@ -32,13 +32,17 @@ def main():
         mongodb.stop(print=print)
         time.sleep(2) # delay to ensure db is closed properly
 
-    # start main authenticated mongodb service
-    mongodb.start(print=print, auth=True)
+    if(args["toStartDb"]):
+        # start main authenticated mongodb service
+        mongodb.start(print=print, auth=True)
 
     # clean + add data (can be remote)
     if(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
         print("cleaning new files in: " + args["newData"] + " using: "
             + args["cleaner"] + "...", 3)
+
+    if(args["toStopDb"]):
+        mongodb.stop(print=print)
 
 
 
