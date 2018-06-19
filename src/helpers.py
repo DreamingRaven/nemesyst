@@ -183,14 +183,14 @@ def updater(path="./",
 
 
 def clean(args, print=print):
-    
+
     print("cleaning: " + args["newData"] + " using: "
             + args["cleaner"] + "...", 3)
     try:
         subprocess.call([
             str(args["cleaner"]), str(args["newData"])
             ])
-        print("cleaning complete", 3)
+        print("cleaning attempted", 3)
 
     except:
         print(prePend + "could not clean dataset:\n" +
