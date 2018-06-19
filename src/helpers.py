@@ -179,7 +179,8 @@ def updater(path="./",
 
 
 def clean(cleanerPath, dataPath, print=print):
-    print(prePend + cleanerPath + " -cleaning-> " + dataPath, 3)
+    print("cleaning new files in: " + dataPath + " using: "
+            + cleanerPath + "...", 3)
     try:
         subprocess.call([
             str(cleanerPath), str(dataPath)
