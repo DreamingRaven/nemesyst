@@ -205,7 +205,7 @@ def train(print=print):
 def test(print=print):
 
     try:
-        raise NotImplementedError('data training not currentley implemented')
+        raise NotImplementedError('data testing not currentley implemented')
 
     except:
         print(prePend + "could not test dataset:\n" +
@@ -217,7 +217,7 @@ def test(print=print):
 def predict(print=print):
 
     try:
-        raise NotImplementedError('data training not currentley implemented')
+        raise NotImplementedError('data predicting not currentley implemented')
 
     except:
         print(prePend + "could not predict on dataset:\n" +
