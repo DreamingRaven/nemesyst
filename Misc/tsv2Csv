@@ -1,0 +1,1 @@
+cat INFILE | tr "\\t" "," > OUTFILE
