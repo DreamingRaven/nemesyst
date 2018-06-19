@@ -13,7 +13,7 @@ import argparse
 
 import types
 import tempfile
-import os, sys
+import os, sys, subprocess
 
 fileName = "helpers.py"
 prePend = "[ " + fileName + " ] "
@@ -178,11 +178,13 @@ def updater(path="./",
 
 
 
-def clean(print=print):
-
+def clean(cleanerPath, dataPath, print=print):
+    print(prePend + cleanerPath + " -cleaning-> " + dataPath, 3)
     try:
+        subprocess.call([
+            str(cleanerPath), str(dataPath)
+            ])
         raise NotImplementedError('data cleaning not currentley implemented')
-
     except:
         print(prePend + "could not clean dataset:\n" +
             str(sys.exc_info()[0]) + " " +
