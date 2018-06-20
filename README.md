@@ -165,6 +165,35 @@ Pleae also ensure that you do not execute RavenRecSyst with administrator
 permissions as it is uneccessary and potentially harmfull if these files have
 been maliciously tampered as with any code base.
 
+#### Formatting
+
+For cleaning operations, please ensure that the data files passed in to
+--newData are in csv or end up in csv after you're cleaning file completes
+
+It is also neccessary that each individual file is a single csv table,
+with a header row which is the names you would like to use in the database for
+those columns.
+
+As an example:
+
+| name        | age | legs | has Furr |...| class   |
+|:-----------:|:---:|:----:|:--------:|:-:|:-------:|
+| Jimmy       | 9   | 4    | 1        |...| dog     |
+| Dumbledore  | 115 | 2    | 1        |...| wizard  |
+| Margret     | 152 | 4    | 0        |   | turtle  |
+
+Resulting in database attribute names ["name", "age", "legs", "has Furr", ...,
+ "class"]
+
+The spaces and casing of the words will be enshrined, which means if they are
+inconsistent between tables they will be completeley different things. Please
+ensure there are no special characters specifically any not in this list:
+* alphanumeric
+* hyphen
+* underscore
+
+As those characters will have to be stripped or they will result in headaches.
+
 ### Training
 (not yet implemented)
 
