@@ -110,15 +110,15 @@ lastly as above, for debugging purposes there is a logger with log levels:
 *  0 = [INFO] information on current operation
 *  1 = [WARN] shows warnings of current operation
 *  2 = [ERROR] shows all errors of current operation
-*  3 = [DEBUG] a special mode that runs outside of main try catch and shows very verbose system operation
+*  3 = [DEBUG] main debugging level, displays all availiable debug prints and statements
+*  4 = [noTry] a special log level, that runs recSyst outside of main try catch for full, verbose information on any errors
 
 To use this logger simply add option -v OR --loglevel with the desired level. Anything less than that level will also be shown, so level 2 will show [ERROR], [WARN], [INFO] and formatting messages, but not [DEBUG] messages.
 E.G to show all possible messages in most verbose state:
 ````
 **/ravenRecSyst.py -u *1* --p *2* --N *3* --loglevel 9001
 ````
-("over nine thousand!") will show all log levels < 9000
-Note on log levels: loglevels > 3 will run outside of main try-catch statement for extra verbosity.
+("over nine thousand!") 9001 will show all log levels < 9001
 
 ---
 
