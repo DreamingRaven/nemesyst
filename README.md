@@ -122,6 +122,60 @@ E.G to show all possible messages in most verbose state:
 
 ---
 
+## Application Specific Customisation
+
+RavenRecSyst includes customisable modules that should be used to get the
+functionality you need. These modules should be executable and will be called
+by RavenRecSyst to do data/ application specific operations.
+
+There will be 4 such modules; these were included since there is no way to
+create things such as a universal dataset cleaner, as each data set has its own
+nuances.
+
+### Cleaning
+RavenRecSyst supports arbitray cleaning code execution.* To tell RavenRecSyst
+which file is you're cleaning file simply use the -c / --cleaner argument
+followed by the file inclusive path to the (executable) cleaner file.
+
+An example using the default cleaner:
+```
+**/ravenRecSyst.py *yourOtherArguments* --cleaner **/examples/cleaner --newData *1*
+```
+Where:
+* \*\* is the inclusive path to wherever you have RavenRecSyst/ directory, read
+usage section.
+* \*1\* is the inclusive file path or folder of files which are to be cleaned
+
+Both arguments provided to --cleaner and --newData will be used as arguments to
+you're cleaner file. See \*\*/examples/cleaner.py for a boiler plate template.
+
+Notice --newData is also specified, as the cleaner will not be used if there is
+nothing to clean.
+
+Once cleaning is complete, RavenRecSyst will use the same files/ folder of files
+provided to --newData and put them into mongoDb for you. You may want to verify
+that this has been done correctly using a tool such as MongoDb compass or
+using the RavenRecSysts -l flag to log you in so you can inspect mongoDb
+manually.
+
+\* please note: this is a potential security concern if this file is edited to
+include malicious code, please make sure that all files in this project have
+minimum write premissions on you're system so that they can not be used as such.
+Pleae also ensure that you do not execute RavenRecSyst with administrator
+permissions as it is uneccessary and potentially harmfull if these files have
+been maliciously tampered as with any code base.
+
+### Training
+(not yet implemented)
+
+### Testing
+(not yet implemented)
+
+### Predicting
+(not yet implemented)
+
+---
+
 ## Closing examples
 for user 'georgeraven' creating 'GeorgeRaven' user with 'password' password, in database 'mehDatabaseName', who desires to debug at log level '3' and to launch database:
 ````
