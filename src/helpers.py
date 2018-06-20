@@ -1,8 +1,8 @@
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-05-22
-# @Filename: miscHelpers.py
+# @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-19
+# @Last modified time: 2018-06-20
 # @License: Please see LICENSE file in project root
 
 
@@ -188,7 +188,9 @@ def clean(args, print=print):
             + args["cleaner"] + "...", 3)
     try:
         subprocess.call([
-            str(args["cleaner"]), str(args["newData"])
+            str(args["cleaner"]),
+            "-d"                , str(args["newData"]),
+            "-c"                , str(args["cleaner"])
             ])
         print("cleaning attempted", 3)
 
