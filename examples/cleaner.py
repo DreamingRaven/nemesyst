@@ -9,7 +9,10 @@
 import sys, os, argparse
 
 
-# this is the file that needs adjusting depending on the needs of the project
+
+# this is the default file called for cleaning, modify this to you're needs,
+# or pass call ravenRecSyst with -c argument and specify path to whatever
+# cleaning file you have created
 def main(args):
 
     # insert you're cleaning code here
@@ -18,8 +21,9 @@ def main(args):
     # to use one of these arguments call it using args["cleaner"]
     # once you have cleaned the files (or not) they will be automagically
     # added to mongodb
+    print("\nTemplate cleaner here!")
     print("Cleaner:", args["cleaner"])
-    print("newData:", args["newData"])
+    print("newData:", args["newData"], "\n")
 
 
 
