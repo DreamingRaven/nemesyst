@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-20
+# @Last modified time: 2018-06-21
 # @License: Please see LICENSE file in project root
 
 
@@ -83,7 +83,20 @@ def argz(argv=None, description=None):
     parser.add_argument("--intuitivePlots", default=0, type=int,
         help="set the total number intuitive plots to gen")
 
-    return vars(parser.parse_args(argv))
+    args = vars(parser.parse_args(argv))
+    # identifying arguments by name which are paths to be normalised
+    pathArgNames = ["cleaner", "dir", "newData"]
+
+    return normaliseArgs(args=args, pathArgNames=pathArgNames)
+
+
+
+def normaliseArgs(args, pathArgNames):
+
+    for argName in pathArgNames:
+        args[argName] = str(os.path.abspath(args[argName]))
+
+    return args
 
 
 
