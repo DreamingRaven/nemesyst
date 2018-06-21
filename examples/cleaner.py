@@ -4,7 +4,7 @@
 # @Date:   2018-06-19
 # @Filename: cleaner.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-20
+# @Last modified time: 2018-06-21
 # @License: Please see LICENSE file in project root
 import sys, os, argparse
 
@@ -44,7 +44,7 @@ def argz(argv, description=None):
     return vars(parser.parse_args(argv))
 
 # setting up to make things nice
-name = os.path.basename(sys.argv[0])
+name = os.path.basename(os.path.abspath(sys.argv[0]))
 prePend = "[ " + name + " ] "
 
 description = str("cleaner file for adaptation to users needs, " +
