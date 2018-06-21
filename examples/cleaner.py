@@ -7,26 +7,62 @@
 # @Last modified time: 2018-06-21
 # @License: Please see LICENSE file in project root
 import sys, os, argparse
+import pandas as pd
+import numpy as np
 
+from fnmatch import fnmatch # file matching
 
 
 # this is the default file called for cleaning, modify this to you're needs,
 # or pass call ravenRecSyst with -c argument and specify path to whatever
 # cleaning file you have created
+def clean(chunk):
+
+    # cleaning code goes here!!!!
+    
+    # This should be able to clean on "chunks" which
+    # could be portions of files. These chunks are used to ensure that
+    # memory usage does not exceed availiable memory
+    return chunk.dropna(axis=1)
+
+
+
 def main(args):
 
-    # insert you're cleaning code here
     # the neccessary arguments are passed to main through "args"
     # you can see each availiable argument in the argz function below
     # to use one of these arguments call it using args["cleaner"]
     # once you have cleaned the files (or not) they will be automagically
     # added to mongodb
-    print("\nTemplate cleaner here!")
-    print("Cleaner:", args["cleaner"])
-    print("newData:", args["newData"], "\n")
+    path = os.path.abspath(args["newData"])
 
+    if(os.path.isfile(path)):
+        filePaths = [path]
 
+    elif(os.path.isdir(path)):
+        filePaths = []
+        pattern = "*.csv"
+        # since path points to folder, find all matching files in subdirs
+        for path_t, subdirs, files in os.walk(path):
+            for name in files:
+                # if file name matches a pattern
+                if fnmatch(name, pattern):
+                    filePath = os.path.join(path_t, name)
+                    filePaths.append(filePath)
 
+    else:
+        filePaths = []
+        raise ValueError(str("Could not find valid files using path: " + path))
+
+    for filePath in filePaths:
+        print(prePend + "processing: " + filePath)
+        # check if clean data file exists and delete it if it does
+        # create new data file
+        chunkSize = 10 ** 6 # to the power of
+        for chunk in pd.read_csv(filePath, chunksize=chunkSize):
+            chunk = clean(chunk)
+            # chunk.to_csv()
+            # append to data file
 
 
 
