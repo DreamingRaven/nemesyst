@@ -19,11 +19,11 @@ from fnmatch import fnmatch # file matching
 def clean(chunk):
 
     # cleaning code goes here!!!!
-    
+
     # This should be able to clean on "chunks" which
     # could be portions of files. These chunks are used to ensure that
     # memory usage does not exceed availiable memory
-    return chunk.dropna(axis=1)
+    return chunk.dropna(axis=0)
 
 
 
@@ -55,8 +55,14 @@ def main(args):
         raise ValueError(str("Could not find valid files using path: " + path))
 
     for filePath in filePaths:
-        print(prePend + "processing: " + filePath)
-        # check if clean data file exists and delete it if it does
+
+        suffix = ".data"
+        destFilePath = str(filePath + suffix)
+        print(prePend + "processing: " + filePath + "\t->\t" + destFilePath)
+
+        # ensure destination file does not already exist
+        clearFiles(filePath=destFilePath)
+
         # create new data file
         chunkSize = 10 ** 6 # to the power of
         for chunk in pd.read_csv(filePath, chunksize=chunkSize):
@@ -64,7 +70,10 @@ def main(args):
             # chunk.to_csv()
             # append to data file
 
-
+def clearFiles(filePath):
+    if(os.path.isfile(filePath)):
+        print(prePend + "clearing: " + filePath)
+        os.remove(filePath)
 
 def argz(argv, description=None):
     if(description == None):
