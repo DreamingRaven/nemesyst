@@ -104,7 +104,7 @@ except:
     print("Main logger could not be loaded, falling back: " +
         str(sys.exc_info()[1]), 1)
 
-# if level3 (debug) prepare for some verbose shnitzel
+# if >level3 (debug) prepare for some verbose shnitzel
 if(args["loglevel"] >= 4):
     main()
 else:

@@ -6,7 +6,7 @@
 # @Last modified by:   archer
 # @Last modified time: 2018-06-21
 # @License: Please see LICENSE file in project root
-import sys, os, argparse
+import csv, sys, os, argparse
 import pandas as pd
 import numpy as np
 
@@ -63,17 +63,21 @@ def main(args):
         # ensure destination file does not already exist
         clearFiles(filePath=destFilePath)
 
-        # create new data file
+        iteration = 0
         chunkSize = 10 ** 6 # to the power of
         for chunk in pd.read_csv(filePath, chunksize=chunkSize):
             chunk = clean(chunk)
+            iteration = iteration + 1
             # chunk.to_csv()
-            # append to data file
+
+
 
 def clearFiles(filePath):
     if(os.path.isfile(filePath)):
         print(prePend + "clearing: " + filePath)
         os.remove(filePath)
+
+
 
 def argz(argv, description=None):
     if(description == None):
@@ -87,6 +91,8 @@ def argz(argv, description=None):
         help="the directory or file of the new data to be added and cleaned, should also specify --cleaner")
 
     return vars(parser.parse_args(argv))
+
+
 
 # setting up to make things nice
 name = os.path.basename(os.path.abspath(sys.argv[0]))
