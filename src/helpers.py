@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-21
+# @Last modified time: 2018-06-25
 # @License: Please see LICENSE file in project root
 
 
@@ -59,29 +59,33 @@ def argz(argv=None, description=None):
         help="mongod/ destination, url")
     parser.add_argument("-u", "--user",     default="Groot",
         help="mongo user, username",        required=True)
-    parser.add_argument("-v", "--loglevel", default=0, type=int,
+    parser.add_argument("-v", "--loglevel", default=0,      type=int,
         help="verbose output of errors and vals")
 
-    parser.add_argument("--timeSteps",      default=25, type=int,
+    parser.add_argument("--timeSteps",      default=25,     type=int,
         help="how many unfolded rnn cells exist and inputs to take")
-    parser.add_argument("--testSize",       default=0.2, type=int,
+    parser.add_argument("--testSize",       default=0.2,    type=int,
         help="total size * test size = total test set size")
     parser.add_argument("--activation",     default="tanh",
         help="cell activation functions")
-    parser.add_argument("--dimensionality", default=19, type=int,
+    parser.add_argument("--dimensionality", default=19,     type=int,
         help="total feature space")
-    parser.add_argument("--layers",         default=2, type=int,
+    parser.add_argument("--layers",         default=2,      type=int,
         help="how many RNNs should be fully connected")
     parser.add_argument("--lossMetric",     default="mae",
         help="what loss function should be used")
     parser.add_argument("--optimizer",      default="sgd",
         help="what optimizer should be used")
-    parser.add_argument("--randomSeed",     default=22, type=int,
+    parser.add_argument("--randomSeed",     default=22,     type=int,
         help="set random seed to make results consistent")
-    parser.add_argument("--epochs",         default=20, type=int,
+    parser.add_argument("--epochs",         default=20,     type=int,
         help="set the total number of epochs (repeats) to do")
-    parser.add_argument("--intuitivePlots", default=0, type=int,
+    parser.add_argument("--intuitivePlots", default=0,      type=int,
         help="set the total number intuitive plots to gen")
+    parser.add_argument("--suffix",         default=".data",
+        help="set the suffix to append to generated clean data files")
+    parser.add_argument("--chunkSize",      default=10**6,  type=int,
+        help="sets the size in rows of csv to be read in as chunks")
 
     args = vars(parser.parse_args(argv))
     # identifying arguments by name which are paths to be normalised
@@ -203,7 +207,9 @@ def clean(args, print=print):
         subprocess.call([
             str(args["cleaner"]),
             "-d"                , str(args["newData"]),
-            "-c"                , str(args["cleaner"])
+            "-c"                , str(args["cleaner"]),
+            "--suffix"           , str(args["suffix"]),
+            "--chunkSize"       , str(args["chunkSize"])
             ])
         print("cleaning attempted", 3)
 

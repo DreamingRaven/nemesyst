@@ -26,7 +26,7 @@ def clean(chunk):
 
     # some operations on chunks
     # chunk = chunk.dropna(axis=0)
-    # return chunks
+
     return chunk
 
 
@@ -38,6 +38,10 @@ def main(args):
     # to use one of these arguments call it using args["cleaner"]
     # once you have cleaned the files (or not) they will be automagically
     # added to mongodb
+
+    chunkSize = args["chunkSize"]
+    suffix = args["suffix"]
+
     path = os.path.abspath(args["newData"])
 
     if(os.path.isfile(path)):
@@ -60,7 +64,6 @@ def main(args):
 
     for filePath in filePaths:
 
-        suffix = ".data"
         destFilePath = str(filePath + suffix)
         print(prePend + "processing: " + filePath + "\t->\t" + destFilePath)
 
@@ -68,7 +71,6 @@ def main(args):
         clearFiles(filePath=destFilePath)
 
         iteration = 0
-        chunkSize = 10 ** 6 # to the power of
         for chunk in pd.read_csv(filePath, chunksize=chunkSize):
             chunk = clean(chunk)
             iteration = iteration + 1
@@ -89,10 +91,14 @@ def argz(argv, description=None):
 
     parser = argparse.ArgumentParser(description=description)
 
-    parser.add_argument("-c", "--cleaner",      default="", required=True,
+    parser.add_argument("-c", "--cleaner",      default="",     required=True,
         help="file inclusive path to cleaner file, for data specific cleaning, should also specify --newData")
-    parser.add_argument("-d", "--newData",      default="", required=True,
+    parser.add_argument("-d", "--newData",      default="",     required=True,
         help="the directory or file of the new data to be added and cleaned, should also specify --cleaner")
+    parser.add_argument("--suffix",             default=".data", required=False,
+        help="suffix to be appended to generated cleaned data files")
+    parser.add_argument("--chunkSize",         default=10**6,   required=False,
+        help="sets the size in rows of csv to be read in as chunks", type=int)
 
     return vars(parser.parse_args(argv))
 
