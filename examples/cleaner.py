@@ -4,7 +4,7 @@
 # @Date:   2018-06-19
 # @Filename: cleaner.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-21
+# @Last modified time: 2018-06-25
 # @License: Please see LICENSE file in project root
 import csv, sys, os, argparse
 import pandas as pd
@@ -23,7 +23,11 @@ def clean(chunk):
     # This should be able to clean on "chunks" which
     # could be portions of files. These chunks are used to ensure that
     # memory usage does not exceed availiable memory
-    return chunk.dropna(axis=0)
+
+    # some operations on chunks
+    # chunk = chunk.dropna(axis=0)
+    # return chunks
+    return chunk
 
 
 
