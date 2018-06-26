@@ -1,24 +1,28 @@
 # RavenRecSyst
 
 Warning: this project has not yet reached it basic intended functionality, to be ready for normal usage will take time so some of the examples may not work currently. If you see anything glaringly wrong please do open an issue, thanks. GR
+
 ## Introduction
 
-Experimental recommender system; C++, Python, bash, CMake, and TensorFlow.
+Experimental generalisable recommender system; C++, Python, bash, CMake, and TensorFlow.
 
 This experimental recommender system is part of an ongoing masters thesis, which purposely compares the use of
 Generative Adversarial Neural Networks (GANs) with certain other traditional and prevalent machine learning (ML)
 recommender system techniques. This recommender system is evaluated by the common method of rating prediction
 via mean absolute error (MEA).
 
-This recommender system currentley predicts using the [MovieLense 20M](https://grouplens.org/datasets/movielens/20m/),
- and [Netflix (2007)](https://www.kaggle.com/netflix-inc/netflix-prize-data) datasets. In future this recommender system
-  (minus certain data specific steps) will have functionality with databases, specifically mongoDB.
+Along the way however I decided to make everything as configurable/ generalisable as possible. This recommender system allows for custom cleaning script calls, and custom machine learning scripts all while the nuanced operations are completed automagically, such as transforming then loading the chosen data into mongoDB, allowing for interesting distributed applications to do with combining mongodb with machine learning. The use of mongodb also allows this program to act clay-like, keeping track of program state to be reloaded, reused, monitored etc, just as clay would keep the shape impressed upon it. It keeps track of each model trained, as a seperate document in the models collection, with the models binary also being saved so it can be directly replayed with simple calls.
+
+This recommender system used to predict exclusiveley using [MovieLense 20M](https://grouplens.org/datasets/movielens/20m/),
+ and [Netflix (2007)](https://www.kaggle.com/netflix-inc/netflix-prize-data) datasets. Now however it can predict using any data set, given an appropriate cleaning script path to the -c / --cleaner argument.
+
+If you are interested in the masters itself the plan was to explicitly compare recommender system algorithms with newer neural network approaches, although this program can use any supplied algorithm. Find below some specifics...
 
 Quick references
 * [Keystone Paper](https://arxiv.org/pdf/1707.07435.pdf) -
 Deep Learning based Recommender System: A Survey and New Perspectives [sic]
 
-Baseline algorithms:
+Baseline algorithms (most will be removed as they are just masters specific functions, except RNN):
 * [kNN](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm)
 [(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true);
  K-nearest neighbors; traditional computer science technique -> comparable
@@ -57,17 +61,13 @@ You will also have to install/ verify a few key dependancies.
     * [TensorFlow | TensorFlow-gpu](https://www.tensorflow.org/install/) for that juicy machine-learning
     * [Keras](https://github.com/keras-team/keras) although tensorflow has recentley bundled its own keras
     * [Bash](https://www.gnu.org/software/bash/) for simple system level operations
-* [GCC](https://gcc.gnu.org/) for compilation of c++ (not currentley needed but soon)
-* [CMake](https://cmake.org/) (not currently needed but soon)
-* C++ libraries:
-    * currentley none but will likeley use C++ soon.
 
 If any have been left out please create an issue and post any log messages.
 
 Other than those that should be all you need, as dependanices have been kept to as few as needed to make a good extensible result.
 
 
-\* Note: This system is being developed on linux (Arch Linux) and since the focus is not cross platform there has been no checking for windows support, meaning it may need tinkering if you would like to run it on windows, although I have made every attempt to make this as straight forward as possible, with minimal dependencies.
+\* Note: This system is being developed on linux (Arch Linux) and since the focus is not cross platform there has been no checking for windows support, meaning it may need tinkering if you would like to run it on windows, although I have made every attempt to make this as straight forward as possible, with minimal dependencies and sanitising paths for cross platform use.
 
 ---
 
@@ -80,10 +80,11 @@ this recommender system should flag any issues with arguments automagically. For
 **/ravenRecSyst.py -h
 ````
 
-** is used in place of whatever the path is to the ravenRecSyst file location, since it will vary between systems. e.g the full bash command on my system would be:
+** is used in place of whatever the path is to the RavenRecSyst root directory location, since it will vary between systems. e.g the full bash command on my system would be:
 ````
  ~/RavenRecSyst/ravenRecSyst.py -h
 ````
+where '~' is expanded by bash to /home/whateverYourUserNameIs
 
 standard usage for a localhost server with authentication (auth non optional forced):
 ````

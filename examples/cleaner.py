@@ -27,8 +27,9 @@ def clean(chunk):
     # could be portions of files. These chunks are used to ensure that
     # memory usage does not exceed availiable memory
 
-    # some operations on chunks
-    # chunk = chunk.dropna(axis=1)
+    # some operations on chunks, whatever you want to clean up
+    # chunk = chunk.dropna(axis='rows')
+
 
     return chunk
 
