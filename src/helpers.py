@@ -230,7 +230,10 @@ def importData(path, suffix, mongodb, chunkSize=10**6, print=print):
     path = os.path.abspath(path)
 
     if(os.path.isfile(path)):
-        filePaths = [path]
+        filePaths = []
+        fileDirPath, file = os.path.split(path)
+        importData(path=fileDirPath, suffix=suffix, mongodb=mongodb,
+            chunkSize=chunkSize, print=print)
 
     elif(os.path.isdir(path)):
         filePaths = []

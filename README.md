@@ -4,7 +4,7 @@ Warning: this project has not yet reached it basic intended functionality, to be
 
 ## Introduction
 
-Experimental generalisable recommender system; C++, Python, bash, CMake, and TensorFlow.
+Experimental generalisable recommender system; Python, bash, and TensorFlow.
 
 This experimental recommender system is part of an ongoing masters thesis, which purposely compares the use of
 Generative Adversarial Neural Networks (GANs) with certain other traditional and prevalent machine learning (ML)
