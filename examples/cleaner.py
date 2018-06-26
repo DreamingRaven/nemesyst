@@ -25,7 +25,7 @@ def clean(chunk):
     # memory usage does not exceed availiable memory
 
     # some operations on chunks
-    # chunk = chunk.dropna(axis=0)
+    # chunk = chunk.dropna(axis=1)
 
     return chunk
 
@@ -73,15 +73,32 @@ def main(args):
         iteration = 0
         for chunk in pd.read_csv(filePath, chunksize=chunkSize):
             chunk = clean(chunk)
+
+            if(iteration == 0):
+                writeToFile(chunk=chunk, filePath=destFilePath,
+                toIncHeader=True)
+            else:
+                writeToFile(chunk=chunk, filePath=destFilePath)
+
             iteration = iteration + 1
-            # chunk.to_csv()
 
 
 
 def clearFiles(filePath):
     if(os.path.isfile(filePath)):
-        print(prePend + "clearing: " + filePath)
+        print(prePend + "clearing previous: " + filePath)
         os.remove(filePath)
+
+
+
+def writeToFile(chunk, filePath, toIncHeader=False):
+
+    # this if statement allows a speedup by calling 'w' atleast once
+    if(toIncHeader == True):
+        chunk.to_csv(filePath, mode='w', header=True,  index=False)
+
+    else:
+        chunk.to_csv(filePath, mode='a', header=False, index=False)
 
 
 
@@ -97,7 +114,7 @@ def argz(argv, description=None):
         help="the directory or file of the new data to be added and cleaned, should also specify --cleaner")
     parser.add_argument("--suffix",             default=".data", required=False,
         help="suffix to be appended to generated cleaned data files")
-    parser.add_argument("--chunkSize",         default=10**6,   required=False,
+    parser.add_argument("--chunkSize",         default=10**8,   required=False,
         help="sets the size in rows of csv to be read in as chunks", type=int)
 
     return vars(parser.parse_args(argv))

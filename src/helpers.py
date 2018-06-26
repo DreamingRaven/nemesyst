@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-25
+# @Last modified time: 2018-06-26
 # @License: Please see LICENSE file in project root
 
 
@@ -211,12 +211,17 @@ def clean(args, print=print):
             "--suffix"           , str(args["suffix"]),
             "--chunkSize"       , str(args["chunkSize"])
             ])
-        print("cleaning attempted", 3)
+        print("cleaner returned", 3)
 
     except:
         print(prePend + "could not clean dataset:\n" +
             str(sys.exc_info()[0]) + " " +
             str(sys.exc_info()[1]), 2)
+
+
+
+def importData(path, suffix, mongodb, print=print):
+    print(str(path) + " " + str(suffix) + " " + str(type(mongodb)), 3)
 
 
 

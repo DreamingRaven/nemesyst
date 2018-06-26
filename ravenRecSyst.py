@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
+
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-21
+# @Last modified time: 2018-06-26
 # @License: Please see LICENSE file in project root
 
 
 
 import os, sys, json, inspect, time
-from src.helpers import argz, installer, updater, clean, train, test, predict
+from src.helpers import argz, installer, updater, clean, train, test, predict, importData
 from src.log import Log
 
 
@@ -39,6 +40,7 @@ def main():
     # clean + add data if file specified (can be remote)
     if(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
         clean(args=args, print=print)
+        importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb, print=print)
 
     if(args["toTrain"] == True):
         train(print=print)
@@ -72,7 +74,6 @@ description = name + "; " + "RavenRecSyst, a neural network based recommender sy
 
 dependancies = ["https://github.com/DreamingRaven/RavenPythonLib"]
 
-# capture arguments in dict then put into json for bash
 args = argz(sys.argv[1:], description=description)
 args_json = json.loads(json.dumps(args))
 
@@ -110,7 +111,7 @@ if(args["loglevel"] >= 4):
 else:
     try:
         main()
-        # raise ValueError('A very specific bad thing happened.')
+        # raise ValueError('value x not valid; ...')
         # raise NotImplementedError('not currentley implemented')
     except:
         print(str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
