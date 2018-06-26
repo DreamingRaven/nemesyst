@@ -14,6 +14,9 @@ import argparse
 import types
 import tempfile
 import os, sys, subprocess
+import pandas as pd
+import numpy as np
+from fnmatch import fnmatch
 
 fileName = "helpers.py"
 prePend = "[ " + fileName + " ] "
@@ -220,9 +223,37 @@ def clean(args, print=print):
 
 
 
-def importData(path, suffix, mongodb, print=print):
-    print(str(path) + " " + str(suffix) + " " + str(type(mongodb)), 3)
+def importData(path, suffix, mongodb, chunkSize=10**6, print=print):
+    print("importing data: " + str(path) + " " + str(suffix), 3)
 
+    # ensuring path is cross platform
+    path = os.path.abspath(path)
+
+    if(os.path.isfile(path)):
+        filePaths = [path]
+
+    elif(os.path.isdir(path)):
+        filePaths = []
+        pattern = "*" + suffix
+        # since path points to folder, find all matching files in subdirs
+        for path_t, subdirs, files in os.walk(path):
+            for name in files:
+                # if file name matches a pattern
+                if fnmatch(name, pattern):
+                    filePath = os.path.join(path_t, name)
+                    filePaths.append(filePath)
+
+    else:
+        filePaths = []
+        raise ValueError(str("Could not find valid files using: " + path + " " +
+            pattern))
+
+    for filePath in filePaths:
+
+        print(prePend + "importing: " + filePath + " -> mongoDb", 3)
+
+        for chunk in pd.read_csv(filePath, chunksize=chunkSize):
+            None
 
 
 def train(print=print):

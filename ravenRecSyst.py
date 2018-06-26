@@ -40,7 +40,8 @@ def main():
     # clean + add data if file specified (can be remote)
     if(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
         clean(args=args, print=print)
-        importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb, print=print)
+        importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb,
+         chunkSize=args["chunkSize"], print=print)
 
     if(args["toTrain"] == True):
         train(print=print)

@@ -4,8 +4,11 @@
 # @Date:   2018-06-19
 # @Filename: cleaner.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-25
+# @Last modified time: 2018-06-26
 # @License: Please see LICENSE file in project root
+
+
+
 import csv, sys, os, argparse
 import pandas as pd
 import numpy as np
@@ -39,10 +42,9 @@ def main(args):
     # once you have cleaned the files (or not) they will be automagically
     # added to mongodb
 
+    path = os.path.abspath(args["newData"])
     chunkSize = args["chunkSize"]
     suffix = args["suffix"]
-
-    path = os.path.abspath(args["newData"])
 
     if(os.path.isfile(path)):
         filePaths = [path]
