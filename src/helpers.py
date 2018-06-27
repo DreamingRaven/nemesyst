@@ -87,7 +87,7 @@ def argz(argv=None, description=None):
         help="set the total number intuitive plots to gen")
     parser.add_argument("--suffix",         default=".data",
         help="set the suffix to append to generated clean data files")
-    parser.add_argument("--chunkSize",      default=10**6,  type=int,
+    parser.add_argument("--chunkSize",      default=10**8,  type=int,
         help="sets the size in rows of csv to be read in as chunks")
 
     args = vars(parser.parse_args(argv))
@@ -252,8 +252,6 @@ def importData(path, suffix, mongodb, chunkSize=10**6, print=print):
             pattern))
 
     for filePath in filePaths:
-
-        # print(prePend + "importing: " + filePath + " -> mongoDb", 3)
 
         for chunk in pd.read_csv(filePath, chunksize=chunkSize):
             None
