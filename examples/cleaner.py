@@ -4,7 +4,7 @@
 # @Date:   2018-06-19
 # @Filename: cleaner.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-26
+# @Last modified time: 2018-06-27
 # @License: Please see LICENSE file in project root
 
 
@@ -49,10 +49,12 @@ def main(args):
 
     if(os.path.isfile(path)):
         filePaths = [path]
+        folderPath, file = os.path.split(path)
 
     elif(os.path.isdir(path)):
         filePaths = []
         pattern = "*.csv"
+        folderPath = path
         # since path points to folder, find all matching files in subdirs
         for path_t, subdirs, files in os.walk(path):
             for name in files:
@@ -65,43 +67,42 @@ def main(args):
         filePaths = []
         raise ValueError(str("Could not find valid files using path: " + path))
 
+    print("clearing any previous '" + suffix + "' files in: " + folderPath)
+    clearFiles(folderPath, pattern=str("*" + suffix))
+    print("generating '" + suffix + "' documents in: " + folderPath)
+
     for filePath in filePaths:
 
         destFilePath = str(filePath + suffix)
-        print(prePend + "processing: " + filePath + "\t->\t" + destFilePath)
-
-        # ensure destination file does not already exist
-        clearFiles(filePath=destFilePath)
-
-        iteration = 0
         for chunk in pd.read_csv(filePath, chunksize=chunkSize):
             chunk = clean(chunk)
-
-            if(iteration == 0):
-                writeToFile(chunk=chunk, filePath=destFilePath,
-                toIncHeader=True)
-            else:
-                writeToFile(chunk=chunk, filePath=destFilePath)
-
-            iteration = iteration + 1
+            writeToFile(df=chunk, filePath=destFilePath)
 
 
 
-def clearFiles(filePath):
-    if(os.path.isfile(filePath)):
-        print(prePend + "clearing previous: " + filePath)
-        os.remove(filePath)
+def clearFiles(path_t, pattern="*.data"):
+
+    if(os.path.isfile(path_t)):
+        os.remove(path_t)
+
+    elif(os.path.isdir(path_t)):
+        for path, subdirs, files in os.walk(path_t):
+            for name in files:
+                if fnmatch(name, pattern):
+                    filePath = os.path.join(path, name)
+                    os.remove(filePath)
 
 
 
-def writeToFile(chunk, filePath, toIncHeader=False):
+def writeToFile(df, filePath):
 
-    # this if statement allows a speedup by calling 'w' atleast once
-    if(toIncHeader == True):
-        chunk.to_csv(filePath, mode='w', header=True,  index=False)
+    if(os.path.isfile(filePath) == False):
+        df.to_csv(filePath, mode='w', header=True,  index=False)
+        # print("Write: ", filePath)
 
     else:
-        chunk.to_csv(filePath, mode='a', header=False, index=False)
+        df.to_csv(filePath, mode='a', header=False, index=False)
+        # print("Append: " + filePath)
 
 
 

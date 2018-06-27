@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-26
+# @Last modified time: 2018-06-27
 # @License: Please see LICENSE file in project root
 
 
@@ -253,7 +253,7 @@ def importData(path, suffix, mongodb, chunkSize=10**6, print=print):
 
     for filePath in filePaths:
 
-        print(prePend + "importing: " + filePath + " -> mongoDb", 3)
+        # print(prePend + "importing: " + filePath + " -> mongoDb", 3)
 
         for chunk in pd.read_csv(filePath, chunksize=chunkSize):
             None
