@@ -89,6 +89,8 @@ def argz(argv=None, description=None):
         help="set the suffix to append to generated clean data files")
     parser.add_argument("--chunkSize",      default=10**8,  type=int,
         help="sets the size in rows of csv to be read in as chunks")
+    parser.add_argument("--toJustImport",   default=False, action="store_true",
+        help="sets flag to just import without cleaning")
 
     args = vars(parser.parse_args(argv))
     # identifying arguments by name which are paths to be normalised
@@ -257,6 +259,16 @@ def predict(print=print):
             str(sys.exc_info()[0]) + " " +
             str(sys.exc_info()[1]), 2)
 
+
+
+def getDirPath(path):
+    folderPath, file = os.path.split(path)
+    return folderPath
+
+
+def getFileName(path):
+    folderPath, file = os.path.split(path)
+    return file
 
 
 if __name__ == "__main__":

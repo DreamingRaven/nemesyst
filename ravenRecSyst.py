@@ -39,7 +39,10 @@ def main():
         mongodb.start(print=print, auth=True)
 
     # clean + add data if file specified (can be remote)
-    if(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
+    if(args["toJustImport"] == True) and (os.path.exists(args["newData"])):
+        importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb,
+            chunkSize=args["chunkSize"], print=print)
+    elif(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
         clean(args=args, print=print)
         importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb,
          chunkSize=args["chunkSize"], print=print)

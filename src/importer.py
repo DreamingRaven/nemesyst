@@ -11,8 +11,11 @@
 import os, sys
 import pandas as pd
 from fnmatch import fnmatch
+from src.helpers import getFileName, getDirPath
 
-def importData(path, suffix, mongodb, chunkSize=10**6, print=print):
+
+
+def importData(path, suffix, mongodb, chunkSize=10**6, print=print, collName=None):
 
     print("importing data: " + str(path) + " " + str(suffix), 3)
 
@@ -41,7 +44,15 @@ def importData(path, suffix, mongodb, chunkSize=10**6, print=print):
         raise ValueError(str("Could not find valid files using: " + path + " " +
             pattern))
 
+    # print(mongodb)
+
     for filePath in filePaths:
 
+        print("file: " + getFileName(path=filePath), 3)
+
         for chunk in pd.read_csv(filePath, chunksize=chunkSize):
-            None
+            mongodb.importCsv(filePath, print=print)
+
+            #TODO: current assumption is that each document is already less than
+            # 16 MB so then there wont be a need to append to documents but
+            # this should probably be additional functionality
