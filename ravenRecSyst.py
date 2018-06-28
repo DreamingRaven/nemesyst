@@ -4,13 +4,14 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-26
+# @Last modified time: 2018-06-28
 # @License: Please see LICENSE file in project root
 
 
 
 import os, sys, json, inspect, time
-from src.helpers import argz, installer, updater, clean, train, test, predict, importData
+from src.helpers import argz, installer, updater, clean, train, test, predict
+from src.importer import importData
 from src.log import Log
 
 
