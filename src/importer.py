@@ -17,7 +17,6 @@ from src.helpers import getFileName, getDirPath
 
 def importData(path, suffix, mongodb, chunkSize=10**6, print=print, collName=None):
 
-    print("importing data: " + str(path) + " " + str(suffix), 3)
 
     # ensuring path is cross platform
     path = os.path.abspath(path)
@@ -31,6 +30,7 @@ def importData(path, suffix, mongodb, chunkSize=10**6, print=print, collName=Non
     elif(os.path.isdir(path)):
         filePaths = []
         pattern = "*" + suffix
+        print("importing data: " + str(path) + " " + str(suffix) + " ...", 3)
         # since path points to folder, find all matching files in subdirs
         for path_t, subdirs, files in os.walk(path):
             for name in files:
@@ -44,15 +44,12 @@ def importData(path, suffix, mongodb, chunkSize=10**6, print=print, collName=Non
         raise ValueError(str("Could not find valid files using: " + path + " " +
             pattern))
 
-    # print(mongodb)
+    mongodb.connect()
 
     for filePath in filePaths:
-
-        print("file: " + getFileName(path=filePath), 3)
-
         for chunk in pd.read_csv(filePath, chunksize=chunkSize):
             mongodb.importCsv(filePath, print=print)
 
-            #TODO: current assumption is that each document is already less than
+            # TODO: current assumption is that each document is already less than
             # 16 MB so then there wont be a need to append to documents but
             # this should probably be additional functionality

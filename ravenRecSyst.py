@@ -22,7 +22,7 @@ def main():
     from RavenPythonLib.mongodb.mongo import Mongo
     mongodb = Mongo(isDebug=True, mongoUser=args['user'], mongoPath=args['dir'],
         mongoPass=args['pass'], mongoIp=args['ip'], mongoDbName=args['name'],
-        mongoCollName="cycles", mongoPort=args['port'], mongoUrl=args['url'])
+        mongoCollName=args['coll'], mongoPort=args['port'], mongoUrl=args['url'])
 
     if(args["toInitDb"] == True):
         mongodb.debug(print=print) # passing in print to use logger
@@ -37,7 +37,7 @@ def main():
     if(args["toStartDb"] == True):
         # start main authenticated mongodb service
         mongodb.start(print=print, auth=True)
-
+    mongodb.debug(print=print)
     # clean + add data if file specified (can be remote)
     if(args["toJustImport"] == True) and (os.path.exists(args["newData"])):
         importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb,
