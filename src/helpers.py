@@ -226,10 +226,11 @@ def clean(args, print=print):
 
 
 
-def train(args, print=print):
+def train(args, database=None, print=print):
 
     try:
-        nn = NeuralNetwork(logger=print)
+        nn = NeuralNetwork(db=database, logger=print)
+        nn.debug()
         nn.autogen()
         raise NotImplementedError('data training not currentley implemented')
 

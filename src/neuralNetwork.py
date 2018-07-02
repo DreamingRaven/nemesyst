@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # @Author: George Onoufriou <archer>
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
@@ -20,27 +22,28 @@ class NeuralNetwork():
 
     home = os.path.expanduser("~")
     fileName = "neuralNetwork"
-    prePend = "[ " + fileName + "] "
+    prePend = "[ " + fileName + " ] "
 
 
 
-    def __init__(self, logger=print):
+    def __init__(self, logger=print, db=None):
         self.log = logger
-        None
-        # raise NotImplementedError('NN.__init__() not currentley implemented')
+        self.db = db
+        self.log(self.prePend + "NN.init() success", 3)
 
 
 
     def debug(self):
-        None
-        raise NotImplementedError('NN.debug() not currentley implemented')
+        self.log(self.prePend       + "\n"  +
+                 "\tdb obj: " + str(self.db)  + "\n"  +
+                 "\tlogger: " + str(self.log),
+                 0)
 
 
 
     def autogen(self):
         None
         self.make_keras_picklable()
-        self.log(self.prePend + "hells yes", 3)
         raise NotImplementedError('NN.autogen() not currentley implemented')
 
 

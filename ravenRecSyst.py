@@ -37,6 +37,7 @@ def main():
     if(args["toStartDb"] == True):
         # start main authenticated mongodb service
         mongodb.start(print=print, auth=True)
+
     mongodb.debug(print=print)
     # clean + add data if file specified (can be remote)
     if(args["toJustImport"] == True) and (os.path.exists(args["newData"])):
@@ -48,7 +49,7 @@ def main():
          chunkSize=args["chunkSize"], print=print)
 
     if(args["toTrain"] == True):
-        train(args=args, print=print)
+        train(args=args, database=mongodb, print=print)
 
     if(args["toTest"] == True):
         test(args=args, print=print)
