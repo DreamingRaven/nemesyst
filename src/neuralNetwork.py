@@ -33,6 +33,7 @@ class NeuralNetwork():
 
     def debug(self):
         None
+        raise NotImplementedError('NN.debug() not currentley implemented')
 
 
 
@@ -52,11 +53,25 @@ class NeuralNetwork():
 
     def loadModel():
         None
+        raise NotImplementedError('NN.loadModel() not currentley implemented')
 
 
 
     def saveModel():
         None
+        raise NotImplementedError('NN.saveModel() not currentley implemented')
+
+
+
+    def train():
+        None
+        raise NotImplementedError('NN.tain() not currentley implemented')
+
+
+
+    def test():
+        None
+        raise NotImplementedError('NN.test() not currentley implemented')
 
 
 
