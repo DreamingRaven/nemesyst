@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-28
+# @Last modified time: 2018-07-02
 # @License: Please see LICENSE file in project root
 
 
@@ -41,7 +41,7 @@ def argz(argv=None, description=None):
     parser.add_argument("-I", "--ip",       default="127.0.0.1",
         help="mongod listener, ip address")
     parser.add_argument("-i", "--toInitDb", default=False, action="store_true",
-        help="flag to initialise database")
+        help="flag to initialise database with user")
     parser.add_argument("-l", "--toLogin",  default=False, action="store_true",
         help="if mongo should log in at end")
     parser.add_argument("-N", "--name",     default="RecSyst",
@@ -225,11 +225,11 @@ def clean(args, print=print):
 
 
 
-def train(print=print):
+def train(args, print=print):
 
     try:
-        raise NotImplementedError('data training not currentley implemented')
 
+        raise NotImplementedError('data training not currentley implemented')
     except:
         print(prePend + "could not train dataset:\n" +
             str(sys.exc_info()[0]) + " " +
@@ -237,7 +237,7 @@ def train(print=print):
 
 
 
-def test(print=print):
+def test(args, print=print):
 
     try:
         raise NotImplementedError('data testing not currentley implemented')
@@ -249,7 +249,7 @@ def test(print=print):
 
 
 
-def predict(print=print):
+def predict(args, print=print):
 
     try:
         raise NotImplementedError('data predicting not currentley implemented')

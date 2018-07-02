@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-28
+# @Last modified time: 2018-07-02
 # @License: Please see LICENSE file in project root
 
 
@@ -48,13 +48,13 @@ def main():
          chunkSize=args["chunkSize"], print=print)
 
     if(args["toTrain"] == True):
-        train(print=print)
+        train(args=args, print=print)
 
     if(args["toTest"] == True):
-        test(print=print)
+        test(args=args, print=print)
 
     if(None):
-        predict(print=print)
+        predict(args=args, print=print)
 
     if(args["toStopDb"] == True):
         mongodb.stop(print=print)
