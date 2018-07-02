@@ -17,6 +17,7 @@ import os, sys, subprocess
 import pandas as pd
 import numpy as np
 from fnmatch import fnmatch
+from src.neuralNetwork import NeuralNetwork
 
 fileName = "helpers.py"
 prePend = "[ " + fileName + " ] "
@@ -228,8 +229,10 @@ def clean(args, print=print):
 def train(args, print=print):
 
     try:
-
+        nn = NeuralNetwork(logger=print)
+        nn.autogen()
         raise NotImplementedError('data training not currentley implemented')
+
     except:
         print(prePend + "could not train dataset:\n" +
             str(sys.exc_info()[0]) + " " +
