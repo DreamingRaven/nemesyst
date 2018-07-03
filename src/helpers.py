@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-02
+# @Last modified time: 2018-07-03
 # @License: Please see LICENSE file in project root
 
 
@@ -215,7 +215,8 @@ def clean(args, print=print):
             "-d"                , str(args["newData"]),
             "-c"                , str(args["cleaner"]),
             "--suffix"           , str(args["suffix"]),
-            "--chunkSize"       , str(args["chunkSize"])
+            "--chunkSize"       , str(args["chunkSize"]),
+            "--timeSteps"       , str(args["timeSteps"]),
             ])
         print("cleaner returned", 3)
 

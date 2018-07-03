@@ -4,7 +4,7 @@
 # @Date:   2018-06-19
 # @Filename: cleaner.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-27
+# @Last modified time: 2018-07-03
 # @License: Please see LICENSE file in project root
 
 
@@ -120,6 +120,8 @@ def argz(argv, description=None):
         help="suffix to be appended to generated cleaned data files")
     parser.add_argument("--chunkSize",         default=10**8,   required=False,
         help="sets the size in rows of csv to be read in as chunks", type=int)
+    parser.add_argument("--timeSteps",         default=30,      required=True,
+        help="sets the length of timesteps to use. E.G 30 for 30 rows long", type=int)
 
     return vars(parser.parse_args(argv))
 
