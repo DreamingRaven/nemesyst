@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-02
+# @Last modified time: 2018-07-09
 # @License: Please see LICENSE file in project root
 
 
@@ -18,8 +18,9 @@ from src.log import Log
 
 def main():
 
-    # imported here to allow for update first
+    # imported here to allow for update prior to main to occur firt
     from RavenPythonLib.mongodb.mongo import Mongo
+
     mongodb = Mongo(isDebug=True, mongoUser=args['user'], mongoPath=args['dir'],
         mongoPass=args['pass'], mongoIp=args['ip'], mongoDbName=args['name'],
         mongoCollName=args['coll'], mongoPort=args['port'], mongoUrl=args['url'])
@@ -63,7 +64,7 @@ def main():
 
 
 # # # # # # # # # #
-# following section is just preamble to set some defaults and to update
+# following section is just preamble to set some defaults and to update codebase
 # # # # # # # # # #
 
 

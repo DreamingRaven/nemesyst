@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-02
+# @Last modified time: 2018-07-09
 # @License: Please see LICENSE file in project root
 
 
@@ -26,7 +26,7 @@ class NeuralNetwork():
 
 
 
-    def __init__(self, logger=print, db=None):
+    def __init__(self, db, logger=print):
         self.log = logger
         self.db = db
         self.log(self.prePend + "NN.init() success", 3)

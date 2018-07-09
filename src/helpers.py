@@ -2,18 +2,13 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-03
+# @Last modified time: 2018-07-09
 # @License: Please see LICENSE file in project root
 
 
 
-import time
-import datetime
-import argparse
-
-import types
-import tempfile
-import os, sys, subprocess
+import os, sys, subprocess, tempfile, types, json, \
+       argparse, datetime, time, configparser
 import pandas as pd
 import numpy as np
 from fnmatch import fnmatch
@@ -22,9 +17,22 @@ from src.neuralNetwork import NeuralNetwork
 fileName = "helpers.py"
 prePend = "[ " + fileName + " ] "
 home = os.path.expanduser("~")
+rootPath, _ = os.path.split(os.path.abspath(sys.argv[0]))
 
 
+# the super argument handler prioritizing command line falling back to config file
 def argz(argv=None, description=None):
+
+    # importing json pipeline config file for later use
+    try:
+        with open(rootPath + "/config/rrs_pipeline.json", 'r') as f:
+            config = json.load(f)
+    except:
+        print(prePend + "could not find config file:\n" +
+            str(sys.exc_info()[0]) + " " +
+            str(sys.exc_info()[1]) , 1)
+
+    # now assigning to arguments
 
     if(description == None):
         description = "MongoDb related args"
@@ -92,6 +100,8 @@ def argz(argv=None, description=None):
         help="sets the size in rows of csv to be read in as chunks")
     parser.add_argument("--toJustImport",   default=False, action="store_true",
         help="sets flag to just import without cleaning")
+    parser.add_argument("--pipeline",         default=".data",
+        help="set the suffix to append to generated clean data files")
 
     args = vars(parser.parse_args(argv))
     # identifying arguments by name which are paths to be normalised
