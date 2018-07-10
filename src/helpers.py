@@ -27,18 +27,12 @@ def argz(argv=None, description=None, prevArgs=None):
     config = None
     # importing config file after the config file location is known in prevArgs
     if(prevArgs != None):
-        None
+        config = configparser.ConfigParser()
+        # configFiles_paths = [str(rootPath + "/config/rrs_ml.ini", prevArgs["config"]]
+        config.read(prevArgs["config"])
 
-    # importing json pipeline config file for later use
-    if(prevArgs != None):
-        try:
-            with open(rootPath + "/config/rrs_pipeline.json", 'r') as f:
-                config = json.load(f)
-                print(config)
-        except:
-            print(prePend + "could not find config file:\n" +
-            str(sys.exc_info()[0]) + " " +
-            str(sys.exc_info()[1]) , 1)
+        # print(config.get("default", "key1"))
+        # print(config["default"]["key1"])
 
     if(description == None):
         description = "MongoDb related args"
@@ -106,8 +100,11 @@ def argz(argv=None, description=None, prevArgs=None):
         help="sets the size in rows of csv to be read in as chunks")
     parser.add_argument("--toJustImport",   default=False, action="store_true",
         help="sets flag to just import without cleaning")
-    parser.add_argument("--pipeline",         default="",
+    parser.add_argument("--pipeline",         default=str(rootPath + "/config/rrs_pipeline.json"),
         help="set the path to the json pipeline file")
+    parser.add_argument("--config",         default=str(rootPath + "/config/rrs_ml.ini"),
+        help="set the main config file for ravenRecSyst using absolute path")
+
 
     args = vars(parser.parse_args(argv))
 
@@ -115,6 +112,18 @@ def argz(argv=None, description=None, prevArgs=None):
     pathArgNames = ["cleaner", "dir", "newData"]
     normalArgs = normaliseArgs(args=args, pathArgNames=pathArgNames)
 
+    # importing json pipeline config file after the args are in their final form
+    if(prevArgs != None):
+        try:
+            #TODO: add an arg for this
+            with open(normalArgs["pipeline"], 'r') as f:
+                pipeline = json.load(f)
+        except:
+            print(prePend + "could not load a .json config file:\n" +
+            str(sys.exc_info()[0]) + " " +
+            str(sys.exc_info()[1]) , 1)
+
+    # run again if args do not include config files I.E they have no previous state
     if(prevArgs != None):
         return normalArgs
     else:
