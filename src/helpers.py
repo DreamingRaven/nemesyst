@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-09
+# @Last modified time: 2018-07-10
 # @License: Please see LICENSE file in project root
 
 
@@ -21,18 +21,24 @@ rootPath, _ = os.path.split(os.path.abspath(sys.argv[0]))
 
 
 # the super argument handler prioritizing command line falling back to config file
-def argz(argv=None, description=None):
+def argz(argv=None, description=None, prevArgs=None):
+
+    # declaring outside scope to make it clear what scope it is destined for
+    config = None
+    # importing config file after the config file location is known in prevArgs
+    if(prevArgs != None):
+        None
 
     # importing json pipeline config file for later use
-    try:
-        with open(rootPath + "/config/rrs_pipeline.json", 'r') as f:
-            config = json.load(f)
-    except:
-        print(prePend + "could not find config file:\n" +
+    if(prevArgs != None):
+        try:
+            with open(rootPath + "/config/rrs_pipeline.json", 'r') as f:
+                config = json.load(f)
+                print(config)
+        except:
+            print(prePend + "could not find config file:\n" +
             str(sys.exc_info()[0]) + " " +
             str(sys.exc_info()[1]) , 1)
-
-    # now assigning to arguments
 
     if(description == None):
         description = "MongoDb related args"
@@ -100,19 +106,25 @@ def argz(argv=None, description=None):
         help="sets the size in rows of csv to be read in as chunks")
     parser.add_argument("--toJustImport",   default=False, action="store_true",
         help="sets flag to just import without cleaning")
-    parser.add_argument("--pipeline",         default=".data",
-        help="set the suffix to append to generated clean data files")
+    parser.add_argument("--pipeline",         default="",
+        help="set the path to the json pipeline file")
 
     args = vars(parser.parse_args(argv))
+
     # identifying arguments by name which are paths to be normalised
     pathArgNames = ["cleaner", "dir", "newData"]
+    normalArgs = normaliseArgs(args=args, pathArgNames=pathArgNames)
 
-    return normaliseArgs(args=args, pathArgNames=pathArgNames)
+    if(prevArgs != None):
+        return normalArgs
+    else:
+        return argz(argv=argv, description=description, prevArgs=normalArgs)
 
 
 
 def normaliseArgs(args, pathArgNames):
 
+    # normalizing args identified in list
     for argName in pathArgNames:
         args[argName] = str(os.path.abspath(args[argName]))
 
