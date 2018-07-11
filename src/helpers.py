@@ -33,7 +33,7 @@ def argz(argv=None, description=None, prevArgs=None):
 
         # print(config.get("default", "key1"))
         # print(config["DEFAULT"]["key1"])
-        # print(config["final"]["key1"])
+        # print(type(config["options"]["dir"]))
 
     if(description == None):
         description = "MongoDb related args"
@@ -93,8 +93,6 @@ def argz(argv=None, description=None, prevArgs=None):
         help="set random seed to make results consistent")
     parser.add_argument("--epochs",         default=20,     type=int,
         help="set the total number of epochs (repeats) to do")
-    parser.add_argument("--intuitivePlots", default=0,      type=int,
-        help="set the total number intuitive plots to gen")
     parser.add_argument("--suffix",         default=".data",
         help="set the suffix to append to generated clean data files")
     parser.add_argument("--chunkSize",      default=10**8,  type=int,
