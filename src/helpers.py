@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-10
+# @Last modified time: 2018-07-11
 # @License: Please see LICENSE file in project root
 
 
@@ -32,7 +32,8 @@ def argz(argv=None, description=None, prevArgs=None):
         config.read(prevArgs["config"])
 
         # print(config.get("default", "key1"))
-        # print(config["default"]["key1"])
+        # print(config["DEFAULT"]["key1"])
+        # print(config["final"]["key1"])
 
     if(description == None):
         description = "MongoDb related args"
