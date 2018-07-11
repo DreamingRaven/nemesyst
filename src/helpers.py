@@ -32,8 +32,7 @@ def argz(argv=None, description=None, prevArgs=None):
         config.read(prevArgs["config"])
 
         # print(config.get("default", "key1"))
-        # print(config["DEFAULT"]["key1"])
-        # print(type(config["options"]["dir"]))
+        print(bool(config["options"]["loglevel"]))
 
     if(description == None):
         description = "MongoDb related args"
