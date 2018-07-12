@@ -53,72 +53,104 @@ def argz(argv=None, description=None, prevArgs=None):
         default=str( argDeflt( config, options, "newData", str("")) ),
         help="the directory or file of the new data to be added and cleaned, should also specify --cleaner")
     parser.add_argument("-I", "--ip",
-        default="127.0.0.1",
+        default=str( argDeflt(config, options, "ip", str("127.0.0.1")) ),
         help="mongod listener, ip address")
     parser.add_argument("-i", "--toInitDb",
-        default=False, action="store_true",
+        default=bool( argDeflt( config, options, "toInitDb", False, isBool=True) ),
+        action="store_true",
         help="flag to initialise database with user")
     parser.add_argument("-l", "--toLogin",
-        default=False, action="store_true",
+        default=bool( argDeflt( config, options, "toLogin", False, isBool=True) ),
+        action="store_true",
         help="if mongo should log in at end")
     parser.add_argument("-N", "--name",
-        default="RecSyst",
-        help="mongo database, name",        required=True)
+        default=str( argDeflt( config, options, "name", str("RecSyst")) ),
+        help="mongo database, name",
+        required=False)
     parser.add_argument("-P", "--port",
-        default="27017",
+        default=str( argDeflt( config, options, "port", str("27017")) ),
         help="mongod listener, port")
     parser.add_argument("-p", "--pass",
-        default="i am groot",
-        help="mongo user, password",        required=True)
+        default=str( argDeflt( config, options, "pass", str("iamgroot")) ),
+        help="mongo user, password",
+        required=False)
     parser.add_argument("-S", "--toStartDb",
-        default=False, action="store_true",
+        default=bool( argDeflt( config, options, "toStartDb", False, isBool=True) ),
+        action="store_true",
         help="flag to start database, this starts in authentication only mode")
     parser.add_argument("-s", "--toStopDb",
-        default=False, action="store_true",
+        default=bool( argDeflt( config, options, "toStopDb", False, isBool=True) ),
+        action="store_true",
         help="flag to stop database, this is the least priority action")
     parser.add_argument("-T", "--toTrain",
-        default=False, action="store_true",
+        default=bool( argDeflt( config, options, "toTrain", False, isBool=True) ),
+        action="store_true",
         help="flag to train on availiable dataset")
     parser.add_argument("-t", "--toTest",
-        default=False, action="store_true",
+        default=bool( argDeflt( config, options, "toTest", False, isBool=True) ),
+        action="store_true",
         help="flag to test on availiable dataset")
     parser.add_argument("-U", "--url",
-        default="mongodb://localhost:27017/",
+        default=str( argDeflt( config, options, "url", str("mongodb://localhost:27017/")) ),
         help="mongod/ destination, url")
     parser.add_argument("-u", "--user",
-        default="Groot",
-        help="mongo user, username",        required=True)
+        default=str( argDeflt( config, options, "user", str("groot")) ),
+        help="mongo user, username",
+        required=False)
     parser.add_argument("-v", "--loglevel",
-        default=0,      type=int,
+        default=int( argDeflt( config, options, "loglevel", int(0)) ),
+        type=int,
         help="verbose output of errors and vals")
 
-    parser.add_argument("--timeSteps",      default=25,     type=int,
-        help="how many unfolded rnn cells exist and inputs to take")
-    parser.add_argument("--testSize",       default=0.2,    type=int,
+    parser.add_argument("--timeSteps",
+        default=int( argDeflt( config, options, "timeSteps", int(25)) ),
+        type=int,
+        help="how many unfolded rnn cells exist and inputs to expect to take")
+    parser.add_argument("--testSize",
+        default=float( argDeflt( config, options, "testSize", float(0.2)) ),
+        type=float,
         help="total size * test size = total test set size")
-    parser.add_argument("--activation",     default="tanh",
-        help="cell activation functions")
-    parser.add_argument("--dimensionality", default=19,     type=int,
+    parser.add_argument("--activation",
+        default=str( argDeflt( config, options, "activation", str("tanh")) ),
+        help="cell activation functions from keras")
+    parser.add_argument("--dimensionality", # is this even neccessary?
+        default=int( argDeflt( config, options, "dimensionality", int(19)) ),
+        type=int,
         help="total feature space")
-    parser.add_argument("--layers",         default=2,      type=int,
+    parser.add_argument("--layers",
+        default=int( argDeflt( config, options, "layers", int(2)) ),
+        type=int,
         help="how many RNNs should be fully connected")
-    parser.add_argument("--lossMetric",     default="mae",
+    parser.add_argument("--lossMetric",
+        default=str( argDeflt( config, options, "lossMetric", str("mae")) ),
         help="what loss function should be used")
-    parser.add_argument("--optimizer",      default="sgd",
+    parser.add_argument("--optimizer",
+        default=str( argDeflt( config, options, "optimizer", str("sgd")) ),
         help="what optimizer should be used")
-    parser.add_argument("--randomSeed",     default=22,     type=int,
+    parser.add_argument("--randomSeed",
+        default=int( argDeflt( config, options, "randomSeed", int(22)) ),
+        type=int,
         help="set random seed to make results consistent")
-    parser.add_argument("--epochs",         default=20,     type=int,
+    parser.add_argument("--epochs",
+        default=int( argDeflt( config, options, "epochs", int(20)) ),
+        type=int,
         help="set the total number of epochs (repeats) to do")
-    parser.add_argument("--suffix",         default=".data",
+    parser.add_argument("--suffix",
+        default=str( argDeflt( config, options, "suffix", str(".data")) ),
         help="set the suffix to append to generated clean data files")
-    parser.add_argument("--chunkSize",      default=10**8,  type=int,
+    parser.add_argument("--chunkSize",
+        default=int( argDeflt( config, options, "chunkSize", int(10**8)) ),
+        type=int,
         help="sets the size in rows of csv to be read in as chunks")
-    parser.add_argument("--toJustImport",   default=False, action="store_true",
+    parser.add_argument("--toJustImport",
+        default=bool( argDeflt( config, options, "toJustImport", False, isBool=True) ),
+        action="store_true",
         help="sets flag to just import without cleaning")
-    parser.add_argument("--pipeline",         default=str(rootPath + "/config/rrs_pipeline.json"),
+    parser.add_argument("--pipeline",
+        default=str( argDeflt( config, options, "pipeline", str(rootPath + "/config/rrs_pipeline.json")) ),
         help="set the path to the json pipeline file")
-    parser.add_argument("--config",         default=str(rootPath + "/config/rrs_ml.ini"),
+    parser.add_argument("--config",
+        default=str( argDeflt( config, options, "config", str(rootPath + "/config/rrs_ml.ini")) ),
         help="set the main config file for ravenRecSyst using absolute path")
 
     args = vars(parser.parse_args(argv))
@@ -156,18 +188,21 @@ def normaliseArgs(args, pathArgNames):
 
 
 
-def argDeflt(conf, section, key, fallbackVal):
+def argDeflt(conf, section, key, fallbackVal, isBool=False):
 
     #TODO: this is very awkward because it might be called where conf is None
     try:
-        val = conf[str(section)][str(key)]
-
+        val = ""
+        if(isBool == False):
+            val = conf[str(section)][str(key)]
+        else:
+            val = conf.getboolean(str(section), str(key))
 
         if(val == ""):
-            print(key, "=", fallbackVal, ";\t", bool(val), type(val))
+            # print(key, "=\t", fallbackVal, ";\t", bool(fallbackVal), type(val))
             return fallbackVal
         else:
-            print(key, "=", val, ";\t", bool(val), type(val))
+            # print(key, "=\t", val, ";\t", bool(val), type(val))
             return val
 
     except:
