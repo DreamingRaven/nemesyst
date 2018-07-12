@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-11
+# @Last modified time: 2018-07-12
 # @License: Please see LICENSE file in project root
 
 
@@ -25,53 +25,68 @@ def argz(argv=None, description=None, prevArgs=None):
 
     # declaring outside scope to make it clear what scope it is destined for
     config = None
+    options = "options"
     # importing config file after the config file location is known in prevArgs
     if(prevArgs != None):
         config = configparser.ConfigParser()
         # configFiles_paths = [str(rootPath + "/config/rrs_ml.ini", prevArgs["config"]]
         config.read(prevArgs["config"])
 
-        # print(config.get("default", "key1"))
-        print(bool(config["options"]["loglevel"]))
-
     if(description == None):
         description = "MongoDb related args"
 
     parser = argparse.ArgumentParser(description=description)
 
-    parser.add_argument("-C", "--coll",     default="testColl",
+    parser.add_argument("-C", "--coll",
+        default=str( argDeflt(config, options, "coll", "testColl") ),
         help="collection name to which data is to be added")
-    parser.add_argument("-c", "--cleaner",  default="",
+    parser.add_argument("-c", "--cleaner",
+        default=str( argDeflt(config, options, "cleaner", "" ) ),
         help="file inclusive path to cleaner file, for data specific cleaning, should also specify --newData")
-    parser.add_argument("-D", "--dir",      default=str(home + "/db"),
+    parser.add_argument("-D", "--dir",
+        default=str(home + "/db"),
         help="directory to store mongodb files/ launch files from")
-    parser.add_argument("-d", "--newData",      default="",
+    parser.add_argument("-d", "--newData",
+        default="",
         help="the directory or file of the new data to be added and cleaned, should also specify --cleaner")
-    parser.add_argument("-I", "--ip",       default="127.0.0.1",
+    parser.add_argument("-I", "--ip",
+        default="127.0.0.1",
         help="mongod listener, ip address")
-    parser.add_argument("-i", "--toInitDb", default=False, action="store_true",
+    parser.add_argument("-i", "--toInitDb",
+        default=False, action="store_true",
         help="flag to initialise database with user")
-    parser.add_argument("-l", "--toLogin",  default=False, action="store_true",
+    parser.add_argument("-l", "--toLogin",
+        default=False, action="store_true",
         help="if mongo should log in at end")
-    parser.add_argument("-N", "--name",     default="RecSyst",
+    parser.add_argument("-N", "--name",
+        default="RecSyst",
         help="mongo database, name",        required=True)
-    parser.add_argument("-P", "--port",     default="27017",
+    parser.add_argument("-P", "--port",
+        default="27017",
         help="mongod listener, port")
-    parser.add_argument("-p", "--pass",     default="i am groot",
+    parser.add_argument("-p", "--pass",
+        default="i am groot",
         help="mongo user, password",        required=True)
-    parser.add_argument("-S", "--toStartDb", default=False, action="store_true",
+    parser.add_argument("-S", "--toStartDb",
+        default=False, action="store_true",
         help="flag to start database, this starts in authentication only mode")
-    parser.add_argument("-s", "--toStopDb", default=False, action="store_true",
+    parser.add_argument("-s", "--toStopDb",
+        default=False, action="store_true",
         help="flag to stop database, this is the least priority action")
-    parser.add_argument("-T", "--toTrain",  default=False, action="store_true",
+    parser.add_argument("-T", "--toTrain",
+        default=False, action="store_true",
         help="flag to train on availiable dataset")
-    parser.add_argument("-t", "--toTest",   default=False, action="store_true",
+    parser.add_argument("-t", "--toTest",
+        default=False, action="store_true",
         help="flag to test on availiable dataset")
-    parser.add_argument("-U", "--url",      default="mongodb://localhost:27017/",
+    parser.add_argument("-U", "--url",
+        default="mongodb://localhost:27017/",
         help="mongod/ destination, url")
-    parser.add_argument("-u", "--user",     default="Groot",
+    parser.add_argument("-u", "--user",
+        default="Groot",
         help="mongo user, username",        required=True)
-    parser.add_argument("-v", "--loglevel", default=0,      type=int,
+    parser.add_argument("-v", "--loglevel",
+        default=0,      type=int,
         help="verbose output of errors and vals")
 
     parser.add_argument("--timeSteps",      default=25,     type=int,
@@ -136,6 +151,17 @@ def normaliseArgs(args, pathArgNames):
         args[argName] = str(os.path.abspath(args[argName]))
 
     return args
+
+
+
+def argDeflt(conf, section, key, fallbackVal):
+    #TODO: this is very awkward because it might be called where conf is None
+    try:
+        val = conf[str(section)][str(key)]
+        # print(key, "=", val, ";\t", bool(val), type(val))
+        return val
+    except:
+        return fallbackVal
 
 
 
