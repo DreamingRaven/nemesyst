@@ -14,10 +14,13 @@ import numpy as np
 from fnmatch import fnmatch
 from src.neuralNetwork import NeuralNetwork
 
+
+
 fileName = "helpers.py"
 prePend = "[ " + fileName + " ] "
 home = os.path.expanduser("~")
 rootPath, _ = os.path.split(os.path.abspath(sys.argv[0]))
+
 
 
 # the super argument handler prioritizing command line falling back to config file
@@ -44,10 +47,10 @@ def argz(argv=None, description=None, prevArgs=None):
         default=str( argDeflt(config, options, "cleaner", "" ) ),
         help="file inclusive path to cleaner file, for data specific cleaning, should also specify --newData")
     parser.add_argument("-D", "--dir",
-        default=str(home + "/db"),
+        default=str( argDeflt( config, options, "dir", str(home + "/db"))),
         help="directory to store mongodb files/ launch files from")
     parser.add_argument("-d", "--newData",
-        default="",
+        default=str( argDeflt( config, options, "newData", str("")) ),
         help="the directory or file of the new data to be added and cleaned, should also specify --cleaner")
     parser.add_argument("-I", "--ip",
         default="127.0.0.1",
@@ -118,7 +121,6 @@ def argz(argv=None, description=None, prevArgs=None):
     parser.add_argument("--config",         default=str(rootPath + "/config/rrs_ml.ini"),
         help="set the main config file for ravenRecSyst using absolute path")
 
-
     args = vars(parser.parse_args(argv))
 
     # identifying arguments by name which are paths to be normalised
@@ -155,11 +157,19 @@ def normaliseArgs(args, pathArgNames):
 
 
 def argDeflt(conf, section, key, fallbackVal):
+
     #TODO: this is very awkward because it might be called where conf is None
     try:
         val = conf[str(section)][str(key)]
-        # print(key, "=", val, ";\t", bool(val), type(val))
-        return val
+
+
+        if(val == ""):
+            print(key, "=", fallbackVal, ";\t", bool(val), type(val))
+            return fallbackVal
+        else:
+            print(key, "=", val, ";\t", bool(val), type(val))
+            return val
+
     except:
         return fallbackVal
 
