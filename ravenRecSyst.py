@@ -37,8 +37,8 @@ def main():
     if(args["toStartDb"] == True):
         # start main authenticated mongodb service
         mongodb.start(print=print, auth=True)
-
-    mongodb.debug(print=print)
+        mongodb.debug(print=print)
+        
     # clean + add data if file specified (can be remote)
     if(args["toJustImport"] == True) and (os.path.exists(args["newData"])):
         importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb,

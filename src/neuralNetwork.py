@@ -3,8 +3,8 @@
 # @Author: George Onoufriou <archer>
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
-# @Last modified by:   archer
-# @Last modified time: 2018-07-09
+# @Last modified by:   georgeraven
+# @Last modified time: 2018-07-15
 # @License: Please see LICENSE file in project root
 
 
@@ -14,7 +14,8 @@ import os, sys
 from keras.models import Sequential
 from keras.layers import Dense, Activation, LSTM
 
-
+# link for getting distinct values in collection for test train splitting
+# http://api.mongodb.com/python/1.4/api/pymongo/collection.html#pymongo.collection.Collection.distinct
 
 class NeuralNetwork():
 
