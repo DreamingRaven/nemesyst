@@ -1,8 +1,8 @@
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-05-22
 # @Filename: helpers.py
-# @Last modified by:   archer
-# @Last modified time: 2018-07-12
+# @Last modified by:   georgeraven
+# @Last modified time: 2018-07-15
 # @License: Please see LICENSE file in project root
 
 
@@ -182,7 +182,9 @@ def normaliseArgs(args, pathArgNames):
 
     # normalizing args identified in list
     for argName in pathArgNames:
-        args[argName] = str(os.path.abspath(args[argName]))
+        # this if statement prevents abspath from interpreting "" as current dir
+        if(args[argName] != ""):
+            args[argName] = str(os.path.abspath(args[argName]))
 
     return args
 
