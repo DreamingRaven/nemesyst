@@ -89,7 +89,7 @@ class NeuralNetwork():
             self.model.compile(optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
 
 
-
+# https://machinelearningmastery.com/return-sequences-and-return-states-for-lstms-in-keras/
     def lstm(self):
         self.log(self.prePend + "Creating LSTM", -1)
         model = Sequential()
