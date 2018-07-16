@@ -73,7 +73,6 @@ class NeuralNetwork():
             self.generateModel()
             self.compile()
 
-        raise NotImplementedError('NN.autogen() not currentley implemented')
 
 
     def generateModel(self):
@@ -87,21 +86,55 @@ class NeuralNetwork():
     def compile(self):
 
         if(self.model != None):
-            None
-        raise NotImplementedError('NN.compile() not currentley implemented')
+            self.model.compile(optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
+
 
 
     def lstm(self):
         self.log(self.prePend + "Creating LSTM", -1)
         model = Sequential()
-        self.model = model
+
+        self.log(
+            self.prePend                                                   + "\n" +
+            "\t" + "type:\t\t"         + str(self.args["type"])            + "\n" +
+            "\t" + "layers:\t\t"       + str(self.args["layers"])          + "\n" +
+            "\t" + "timesteps:\t"      + str(self.args["timeSteps"])       + "\n" +
+            "\t" + "dimensionality:\t" + str(self.args["dimensionality"])  + "\n" +
+            "\t" + "activation:\t"     + str(self.args["activation"])      + "\n",
+            3
+        )
+
+        # gen layers
+        raise NotImplementedError('NN.lstm() not currentley implemented')
+        # for unused in range(args["layers"]-1):
+        #     model.add(LSTM(timeSteps, activation=activation, return_sequences=True, input_shape=(None, dimensionality) ))
+        # model.add(LSTM(timeSteps, activation=activation, input_shape=(None, dimensionality) ))
+        # model.add(Dense(1)) # since regression output is dense 1
+        # self.model = model
 
 
 
     def rnn(self):
         self.log(self.prePend + "Creating RNN", -1)
         model = Sequential()
-        self.model = model
+
+        self.log(
+            self.prePend                                                   + "\n" +
+            "\t" + "type:\t\t"         + str(self.args["type"])            + "\n" +
+            "\t" + "layers:\t\t"       + str(self.args["layers"])          + "\n" +
+            "\t" + "timesteps:\t"      + str(self.args["timeSteps"])       + "\n" +
+            "\t" + "dimensionality:\t" + str(self.args["dimensionality"])  + "\n" +
+            "\t" + "activation:\t"     + str(self.args["activation"])      + "\n",
+            3
+        )
+
+        # gen layers
+        for unused in range(self.args["layers"]):  # don't need to use iterator just pure loop
+            model.add(Dense(self.args["timeSteps"],
+                input_dim=self.args["dimensionality"],
+                activation=self.args["activation"]))
+        model.add(Dense(1)) # this dense 1 is the output layer since this is regression
+        self.model = model # if nothing errored now we can assign model
 
 
 

@@ -68,9 +68,7 @@ def main():
 
 
 # declaring usefull global variables
-home = os.path.expanduser("~")
-name = os.path.basename(os.path.abspath(sys.argv[0]))
-
+name = os.path.basename(os.path.abspath(sys.argv[0])) # as in this files name
 fileAndPath = inspect.getframeinfo(inspect.currentframe()).filename
 path = os.path.dirname(os.path.abspath(fileAndPath))
 
