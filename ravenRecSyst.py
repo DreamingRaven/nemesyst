@@ -3,8 +3,8 @@
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
-# @Last modified by:   georgeraven
-# @Last modified time: 2018-07-15
+# @Last modified by:   archer
+# @Last modified time: 2018-07-16
 # @License: Please see LICENSE file in project root
 
 
@@ -30,15 +30,14 @@ def main():
         time.sleep(2) # delay to ensure db is closed properly
         mongodb.start(print=print)
         mongodb.addUser(print=print)
-        # restart database with new user and with user authentication on
-        mongodb.stop(print=print)
+        mongodb.stop(print=print) # stopping database ready for future use
         time.sleep(2) # delay to ensure db is closed properly
 
     if(args["toStartDb"] == True):
         # start main authenticated mongodb service
         mongodb.start(print=print, auth=True)
         mongodb.debug(print=print)
-        
+
     # clean + add data if file specified (can be remote)
     if(args["toJustImport"] == True) and (os.path.exists(args["newData"])):
         importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb,

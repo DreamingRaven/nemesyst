@@ -1,8 +1,8 @@
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-05-22
 # @Filename: helpers.py
-# @Last modified by:   georgeraven
-# @Last modified time: 2018-07-15
+# @Last modified by:   archer
+# @Last modified time: 2018-07-16
 # @License: Please see LICENSE file in project root
 
 
@@ -102,6 +102,9 @@ def argz(argv=None, description=None, prevArgs=None):
         type=int,
         help="verbose output of errors and vals")
 
+    parser.add_argument("--type",
+        default=str( argDeflt( config, options, "type", str("lstm")) ),
+        help="what loss function should be used")
     parser.add_argument("--timeSteps",
         default=int( argDeflt( config, options, "timeSteps", int(25)) ),
         type=int,
@@ -329,13 +332,28 @@ def clean(args, print=print):
 
 
 
+def getPipeline(pipePath, print=print):
+    try:
+        with open(pipePath) as f:
+            return json.load(f)
+    except:
+        print(prePend + "could not get pipeline from: " + str(pipePath) + "\n" +
+            str(sys.exc_info()[0]) + " " +
+            str(sys.exc_info()[1]), 2)
+
+
+
 def train(args, database=None, print=print):
 
     try:
-        nn = NeuralNetwork(db=database, logger=print)
+        nn = NeuralNetwork(db=database,
+                           logger=print,
+                           args=args,
+                           pipeline=getPipeline(args["pipeline"], print=print)
+                          )
         nn.debug()
+        nn.getCursor()
         nn.autogen()
-        raise NotImplementedError('data training not currentley implemented')
 
     except:
         print(prePend + "could not train dataset:\n" +
