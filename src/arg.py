@@ -97,6 +97,10 @@ def argz(argv=None, description=None, prevArgs=None):
         type=int,
         help="verbose output of errors and vals")
 
+    parser.add_argument("--batchSize",
+        default=int( argDeflt( config, options, "batchSize", int(1)) ),
+        type=int,
+        help="sets the batchsize to be used, i.e how many samples before the model weights are updated")
     parser.add_argument("--type",
         default=str( argDeflt( config, options, "type", str("lstm")) ),
         help="what loss function should be used")
