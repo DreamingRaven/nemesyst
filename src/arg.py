@@ -101,6 +101,9 @@ def argz(argv=None, description=None, prevArgs=None):
         default=int( argDeflt( config, options, "batchSize", int(1)) ),
         type=int,
         help="sets the batchsize to be used, i.e how many samples before the model weights are updated")
+    parser.add_argument("--target",
+        default=str( argDeflt( config, options, "target", str("target")) ),
+        help="what loss function should be used")
     parser.add_argument("--type",
         default=str( argDeflt( config, options, "type", str("lstm")) ),
         help="what loss function should be used")

@@ -156,8 +156,17 @@ class NeuralNetwork():
 
 
     #TODO: this should be in mongodb class itself
-    def next(self, docs=1):
-        return None
+    def nextDataset(self, docs=1):
+        data = None
+        try:
+            None
+        except StopIteration:
+            print("cursor is empty", 1)
+        except:
+            print(self.prePend + "could not get next data point from mongodb:\n" +
+                str(self.sys.exc_info()[0]) + " " +
+                str(self.sys.exc_info()[1]) , 2)
+        return data
 
 
 
@@ -169,7 +178,9 @@ class NeuralNetwork():
             # numSamples = type(self.cursor)
 
             while(self.cursor.alive):
-                numSamplesTrained = numSamplesTrained + self.args["batchSize"]
+                data = self.nextDataset(self.args["batchSize"])
+                self.log(str(data), 0)
+                # numSamplesTrained = numSamplesTrained + self.args["batchSize"]
                 # self.log("Im alive " + str(numSamplesTrained) + "/" + str(numSamples), 3)
         else:
             self.log("could not train, either model not generated or cursor does not exist", 2)
