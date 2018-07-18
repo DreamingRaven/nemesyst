@@ -205,21 +205,4 @@ def getFileName(path):
 
 
 if __name__ == "__main__":
-    from sys import argv
-
-    args = argz(argv[1:]) # get all command line args
-    print(args['ip'])
-
-    ts = getTimestamp()
-    dt1 = getDateTime()
-    dt2 = getDateTime(ts)
-    ts1 = getTimestamp(dt1)
-    ts2 = getTimestamp(dt2)
-
-    print("Timestamps should match as should datetimes:",
-          "\nts =", ts, "\t\t\tgenerated timestamp",
-          "\ndt1 =", dt1, "\tgenerated datetime",
-          "\ndt2 =", dt2, "\tconverted from generated timestamp (ts)",
-          "\nts1 =", ts1, "\t\t\tconverted from generated datetime (dt1)",
-          "\nts2 =", ts2, "\t\t\tconverted from generated datetime (dt2)"
-          )
+    None
