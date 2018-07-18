@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-16
+# @Last modified time: 2018-07-18
 # @License: Please see LICENSE file in project root
 
 
@@ -150,10 +150,10 @@ def argz(argv=None, description=None, prevArgs=None):
         action="store_true",
         help="sets flag to just import without cleaning")
     parser.add_argument("--pipeline",
-        default=str( argDeflt( config, options, "pipeline", str(rootPath + "/config/rrs_pipeline.json")) ),
+        default=str( argDeflt( config, options, "pipeline", str(rootPath + "/config/pipeline.json")) ),
         help="set the path to the json pipeline file")
     parser.add_argument("--config",
-        default=str( argDeflt( config, options, "config", str(rootPath + "/config/rrs_ml.ini")) ),
+        default=str( argDeflt( config, options, "config", str(rootPath + "/config/config.ini")) ),
         help="set the main config file for ravenRecSyst using absolute path")
 
     args = vars(parser.parse_args(argv))

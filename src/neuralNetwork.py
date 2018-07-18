@@ -108,13 +108,13 @@ class NeuralNetwork():
             3
         )
 
-        self.log(self.prePend + "Creating LSTM", -1)
         # gen layers
         for unused in range(self.args["layers"]-1):
             model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], return_sequences=True, batch_input_shape=bInShape))
         model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], batch_input_shape=bInShape))
         model.add(Dense(1)) # since regression output is dense 1
         self.model = model
+        self.log(self.prePend + "LSTM created", -1)
 
 
 
@@ -131,7 +131,6 @@ class NeuralNetwork():
             3
         )
 
-        self.log(self.prePend + "Creating RNN", -1)
         # gen layers
         for unused in range(self.args["layers"]):  # don't need to use iterator just pure loop
             model.add(Dense(self.args["timeSteps"],
@@ -139,6 +138,7 @@ class NeuralNetwork():
                 activation=self.args["activation"]))
         model.add(Dense(1)) # this dense 1 is the output layer since this is regression
         self.model = model # if nothing errored now we can assign model
+        self.log(self.prePend + "RNN created", -1)
 
 
 
