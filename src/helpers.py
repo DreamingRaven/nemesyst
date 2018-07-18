@@ -162,6 +162,7 @@ def train(args, database=None, print=print):
         nn.debug()
         nn.getCursor()
         nn.autogen()
+        nn.train()
 
     except:
         print(prePend + "could not train dataset:\n" +

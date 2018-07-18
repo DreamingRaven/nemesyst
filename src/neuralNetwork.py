@@ -103,6 +103,7 @@ class NeuralNetwork():
             "\t" + "layers:\t\t"       + str(self.args["layers"])          + "\n" +
             "\t" + "timesteps:\t"      + str(self.args["timeSteps"])       + "\n" +
             "\t" + "dimensionality:\t" + str(self.args["dimensionality"])  + "\n" +
+            "\t" + "batchSize:\t"      + str(self.args["batchSize"])       + "\n" +
             "\t" + "batchInShape:\t"   + str(bInShape)                     + "\n" +
             "\t" + "activation:\t"     + str(self.args["activation"])      + "\n",
             3
@@ -154,9 +155,24 @@ class NeuralNetwork():
 
 
 
+    #TODO: this should be in mongodb class itself
+    def next(self, docs=1):
+        return None
+
+
+
     def train(self):
-        None
-        raise NotImplementedError('NN.tain() not currentley implemented')
+
+        if(self.model) and (self.cursor):
+            self.log("training..." , -1)
+            numSamplesTrained = 0
+            # numSamples = type(self.cursor)
+
+            while(self.cursor.alive):
+                numSamplesTrained = numSamplesTrained + self.args["batchSize"]
+                # self.log("Im alive " + str(numSamplesTrained) + "/" + str(numSamples), 3)
+        else:
+            self.log("could not train, either model not generated or cursor does not exist", 2)
 
 
 
