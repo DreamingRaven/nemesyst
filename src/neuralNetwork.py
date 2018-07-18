@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-16
+# @Last modified time: 2018-07-18
 # @License: Please see LICENSE file in project root
 
 
@@ -87,12 +87,15 @@ class NeuralNetwork():
 
         if(self.model != None):
             self.model.compile(optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
+        else:
+            print("No model to compile, can not NN.compile()", 1)
 
 
 # https://machinelearningmastery.com/return-sequences-and-return-states-for-lstms-in-keras/
     def lstm(self):
-        self.log(self.prePend + "Creating LSTM", -1)
+
         model = Sequential()
+        bInShape = (1, self.args["timeSteps"], self.args["dimensionality"])
 
         self.log(
             self.prePend                                                   + "\n" +
@@ -100,22 +103,22 @@ class NeuralNetwork():
             "\t" + "layers:\t\t"       + str(self.args["layers"])          + "\n" +
             "\t" + "timesteps:\t"      + str(self.args["timeSteps"])       + "\n" +
             "\t" + "dimensionality:\t" + str(self.args["dimensionality"])  + "\n" +
+            "\t" + "batchInShape:\t"   + str(bInShape)                     + "\n" +
             "\t" + "activation:\t"     + str(self.args["activation"])      + "\n",
             3
         )
 
+        self.log(self.prePend + "Creating LSTM", -1)
         # gen layers
-        raise NotImplementedError('NN.lstm() not currentley implemented')
-        # for unused in range(args["layers"]-1):
-        #     model.add(LSTM(timeSteps, activation=activation, return_sequences=True, input_shape=(None, dimensionality) ))
-        # model.add(LSTM(timeSteps, activation=activation, input_shape=(None, dimensionality) ))
-        # model.add(Dense(1)) # since regression output is dense 1
-        # self.model = model
+        for unused in range(self.args["layers"]-1):
+            model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], return_sequences=True, batch_input_shape=bInShape))
+        model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], batch_input_shape=bInShape))
+        model.add(Dense(1)) # since regression output is dense 1
+        self.model = model
 
 
 
     def rnn(self):
-        self.log(self.prePend + "Creating RNN", -1)
         model = Sequential()
 
         self.log(
@@ -128,6 +131,7 @@ class NeuralNetwork():
             3
         )
 
+        self.log(self.prePend + "Creating RNN", -1)
         # gen layers
         for unused in range(self.args["layers"]):  # don't need to use iterator just pure loop
             model.add(Dense(self.args["timeSteps"],
