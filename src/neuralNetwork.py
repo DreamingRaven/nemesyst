@@ -169,19 +169,6 @@ class NeuralNetwork():
                 document = self.cursor.next()
                 data.append(pd.DataFrame(document))
 
-            # get the next batch of data
-            # for x in range(batchSize):
-                # data.append(self.cursor[x + self.cursorPosition])
-            # if(batchSize > 1):
-                # self.cursor.batch_size(batchSize)
-            # self.cursor.batch_size(5)
-            # self.log(self.cursor.next(), 0)
-            # data.append(self.cursor[x + self.cursorPosition])
-            # for doc in self.cursor:
-                # self.log(doc, 0)
-                # input("prenter loop")
-            # input("prenter")
-
         except StopIteration:
             self.log("cursor is empty", 1)
         except:
