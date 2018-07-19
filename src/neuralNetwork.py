@@ -4,13 +4,14 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-18
+# @Last modified time: 2018-07-19
 # @License: Please see LICENSE file in project root
 
 
 
 import pickle
 import os, sys
+import pandas as pd
 from keras.models import Sequential
 from keras.layers import Dense, Activation, LSTM
 
@@ -38,6 +39,7 @@ class NeuralNetwork():
         self.pipeline = pipeline
         self.args = args
         self.cursor = None
+        self.cursorPosition = None
         self.log(self.prePend + "NN.init() success", 3)
 
 
@@ -50,6 +52,7 @@ class NeuralNetwork():
             # can i just point out how smooth the next line is and the complex
             # -ity that is going on behind the scenes
             self.cursor = self.db.getData(pipeline=pipeline)
+            self.cursorPosition = 0
 
 
 
@@ -89,6 +92,7 @@ class NeuralNetwork():
             self.model.compile(optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
         else:
             print("No model to compile, can not NN.compile()", 1)
+
 
 
 # https://machinelearningmastery.com/return-sequences-and-return-states-for-lstms-in-keras/
@@ -156,16 +160,34 @@ class NeuralNetwork():
 
 
     #TODO: this should be in mongodb class itself
-    def nextDataset(self, docs=1):
-        data = None
+    def nextDataset(self, batchSize=1):
+        data = []
         try:
-            None
+            # apparentley you cant get batches using cursor D:
+            # why the hell do they have cursor.batch_size() then :C
+            for unused in range(batchSize):
+                document = self.cursor.next()
+                data.append(pd.DataFrame(document))
+
+            # get the next batch of data
+            # for x in range(batchSize):
+                # data.append(self.cursor[x + self.cursorPosition])
+            # if(batchSize > 1):
+                # self.cursor.batch_size(batchSize)
+            # self.cursor.batch_size(5)
+            # self.log(self.cursor.next(), 0)
+            # data.append(self.cursor[x + self.cursorPosition])
+            # for doc in self.cursor:
+                # self.log(doc, 0)
+                # input("prenter loop")
+            # input("prenter")
+
         except StopIteration:
-            print("cursor is empty", 1)
+            self.log("cursor is empty", 1)
         except:
-            print(self.prePend + "could not get next data point from mongodb:\n" +
-                str(self.sys.exc_info()[0]) + " " +
-                str(self.sys.exc_info()[1]) , 2)
+            self.log(self.prePend + "could not get next data point from mongodb:\n" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]) , 2)
         return data
 
 
@@ -174,13 +196,13 @@ class NeuralNetwork():
 
         if(self.model) and (self.cursor):
             self.log("training..." , -1)
-            numSamplesTrained = 0
             # numSamples = type(self.cursor)
 
+            # keep looping while cursor can give more data
             while(self.cursor.alive):
                 data = self.nextDataset(self.args["batchSize"])
                 self.log(str(data), 0)
-                # numSamplesTrained = numSamplesTrained + self.args["batchSize"]
+                # self.cursorPosition = self.cursorPosition + self.args["batchSize"]
                 # self.log("Im alive " + str(numSamplesTrained) + "/" + str(numSamples), 3)
         else:
             self.log("could not train, either model not generated or cursor does not exist", 2)
