@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-19
+# @Last modified time: 2018-07-23
 # @License: Please see LICENSE file in project root
 
 
@@ -188,7 +188,9 @@ class NeuralNetwork():
             # keep looping while cursor can give more data
             while(self.cursor.alive):
                 dataBatch = self.nextDataset(self.args["batchSize"])
-                self.log(str(dataBatch), 0)
+                # self.log(str(dataBatch), 0)
+                for inputData in dataBatch:
+                    self.log(self.prePend + str(inputData.head(3)), 0)
                 # self.cursorPosition = self.cursorPosition + self.args["batchSize"]
                 # self.log("Im alive " + str(numSamplesTrained) + "/" + str(numSamples), 3)
         else:
