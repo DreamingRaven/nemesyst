@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-18
+# @Last modified time: 2018-07-19
 # @License: Please see LICENSE file in project root
 
 
@@ -40,7 +40,7 @@ def getDateTime(timeStamp=None):
         timeStamp = int(time.time())
         return datetime.datetime.utcfromtimestamp(timeStamp)
     else:
-        return datetime.datetime.utcfromtimestamp(timeStamp)#.strftime('%Y-%m-%d %H:%M:%S') # converts to string
+        return datetime.datetime.utcfromtimestamp(timeStamp)
 
 
 

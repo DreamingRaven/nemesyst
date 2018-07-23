@@ -170,7 +170,7 @@ class NeuralNetwork():
                 data.append(pd.DataFrame(document))
 
         except StopIteration:
-            self.log("cursor is empty", 1)
+            self.log("cursor has been emptied", -1)
         except:
             self.log(self.prePend + "could not get next data point from mongodb:\n" +
                 str(sys.exc_info()[0]) + " " +
@@ -187,8 +187,8 @@ class NeuralNetwork():
 
             # keep looping while cursor can give more data
             while(self.cursor.alive):
-                data = self.nextDataset(self.args["batchSize"])
-                self.log(str(data), 0)
+                dataBatch = self.nextDataset(self.args["batchSize"])
+                self.log(str(dataBatch), 0)
                 # self.cursorPosition = self.cursorPosition + self.args["batchSize"]
                 # self.log("Im alive " + str(numSamplesTrained) + "/" + str(numSamples), 3)
         else:
