@@ -163,11 +163,16 @@ class NeuralNetwork():
     def nextDataset(self, batchSize=1):
         data = []
         try:
-            # apparentley you cant get batches using cursor D:
-            # why the hell do they have cursor.batch_size() then :C
+            # # get the batch
+            # self.cursor.batch_size(batchSize)
+            # something = self.cursor.next()
+            # print(type(something))
+            # document = pd.DataFrame(something)
+            # print(document, type(document))
+
+            # setting batchSize on cursor seems to do nothing
             for unused in range(batchSize):
                 document = self.cursor.next()
-                print(document)
                 data.append(pd.DataFrame(document))
 
         except StopIteration:
