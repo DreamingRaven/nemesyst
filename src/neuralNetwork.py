@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-23
+# @Last modified time: 2018-07-24
 # @License: Please see LICENSE file in project root
 
 
@@ -167,10 +167,17 @@ class NeuralNetwork():
             # why the hell do they have cursor.batch_size() then :C
             for unused in range(batchSize):
                 document = self.cursor.next()
+                print(document)
                 data.append(pd.DataFrame(document))
 
         except StopIteration:
             self.log("cursor has been emptied", -1)
+        except ValueError:
+            self.log("Value Error: please make sure that something other than \
+                plain values are returned by your pipeline e.g include an array \
+                of objects then check the following error:" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]) , 2)
         except:
             self.log(self.prePend + "could not get next data point from mongodb:\n" +
                 str(sys.exc_info()[0]) + " " +
@@ -188,9 +195,9 @@ class NeuralNetwork():
             # keep looping while cursor can give more data
             while(self.cursor.alive):
                 dataBatch = self.nextDataset(self.args["batchSize"])
-                # self.log(str(dataBatch), 0)
                 for inputData in dataBatch:
-                    self.log(self.prePend + str(inputData.head(3)), 0)
+                    self.log(self.prePend + str(inputData), 0)
+                    self.log(self.prePend + str(list(inputData.loc[0, "data"])), 0)
                 # self.cursorPosition = self.cursorPosition + self.args["batchSize"]
                 # self.log("Im alive " + str(numSamplesTrained) + "/" + str(numSamples), 3)
         else:
