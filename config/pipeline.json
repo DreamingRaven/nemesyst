@@ -5,7 +5,7 @@
     "_id": "$_id",
     "data":
       { "$push": {
-          "whatNameYouWant":    "$data.anyFeatureFromEmbeddedArrayHere",
+          "whatNameYouWant":    "$data.anyFeatureFromEmbeddedArrayHereByName",
           "nameYouWant2":       "$data.andAgainHere",
           "nameYouWant3":       "$data.hereTooEtc",
           "maybeItsNotInArray": "$thenDontPrefixTheArrayKeyEgDataAsAbove"
