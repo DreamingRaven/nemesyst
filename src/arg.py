@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-18
+# @Last modified time: 2018-07-25
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -27,8 +27,12 @@ def argz(argv=None, description=None, prevArgs=None):
     # importing config file after the config file location is known in prevArgs
     if(prevArgs != None):
         config = configparser.ConfigParser()
-        # configFiles_paths = [str(rootPath + "/config/rrs_ml.ini", prevArgs["config"]]
         config.read(prevArgs["config"])
+    else:
+        # this allows for the default config to be read first then redirected
+        # to the overidden one
+        config = configparser.ConfigParser()
+        config.read(str(rootPath + "/config/config.ini"))
 
     if(description == None):
         description = "MongoDb related args"
