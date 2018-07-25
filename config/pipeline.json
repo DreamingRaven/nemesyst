@@ -1,3 +1,16 @@
 [
-  
+  {"$unwind": "$data"},
+  {"$group":
+    {
+    "_id": "$_id",
+    "data":
+      { "$push": {
+          "whatNameYouWant":    "$data.anyFeatureFromEmbeddedArrayHere",
+          "nameYouWant2":       "$data.andAgainHere",
+          "nameYouWant3":       "$data.hereTooEtc",
+          "maybeItsNotInArray": "$thenDontPrefixTheArrayKeyEgDataAsAbove"
+      }},
+    "target": {"$first": "$targetFeature"}
+    }
+  }
 ]
