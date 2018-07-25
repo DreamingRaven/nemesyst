@@ -60,7 +60,7 @@ You will also have to install/ verify a few key dependancies.
     * [Pymongo](https://api.mongodb.com/python/current/) for MongoDb
     * [TensorFlow | TensorFlow-gpu](https://www.tensorflow.org/install/) for that juicy machine-learning
     * [Keras](https://github.com/keras-team/keras) although tensorflow has recentley bundled its own keras
-    * [Bash](https://www.gnu.org/software/bash/) for simple system level operations
+- [Bash](https://www.gnu.org/software/bash/) for simple system level operations
 
 If any have been left out please create an issue and post any log messages.
 
@@ -206,7 +206,12 @@ As those characters will have to be stripped or they will result in headaches.
 Each file with the extension given by the --suffix option in the directory given by --newData option will become a mongoDB document as is. So please prepare, chunk and clean files in the manner in which you expect them to become documents.
 
 ### Training
-(not yet implemented)
+After cleaning data or inserting clean data, it is neccessary to retrieve again the data from
+the database. For this reason RavenRecSyst supports [aggregate pipelines](https://docs.mongodb.com/manual/core/aggregation-pipeline/), which not only
+allow you to get existing data from the database but allows you to perform complex operations
+on the data prior to getting it from the database in a non permanent manner; aggregate pipelines in this manner allow you to rapidly test small changes on the clean data set without having to reopen csv files or re-clean to calculate things like sums of a column etc, provided post cleaning the data has not been scrubbed of features you required to do tweaks, clearly you cant calculate sum of a column that no longer exists in the clean dataset. Any pipeline present in [pipeline.json](https://github.com/DreamingRaven/RavenRecSyst/blob/master/config/pipeline.json) will be used to create a cursor which in turn will iterate over your data set. Please see pipeline section for more information.
+
+To train the data set (currentley completing documentation)
 
 ### Testing
 (not yet implemented)
