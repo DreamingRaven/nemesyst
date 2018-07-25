@@ -121,6 +121,22 @@ E.G to show all possible messages in most verbose state:
 ````
 ("over nine thousand!") 9001 will show all log levels < 9001
 
+### All the options
+
+This is a current list but **/ravenRecSyst.py --help will always be prefered.
+
+| option       | alternate | default                  | isFlag | class  | description   |
+|:------------:|:---------:|:------------------------:|:------:|:------:|:-------------:|
+| \-\-coll     | \-C       | "testColl"               | 0      | mongo  | sets collection to operate on |
+| \-\-cleaner  | \-c       | **/examples/cleaner.py   | 0      | import | specifies path to executable cleaner file  |
+| \-\-dir      | \-D       | ~/db                     | 0      | mongo  | specifies path to mongoDb files  |
+| \-\-newData  | \-d       | None                     | 0      | import | specifies path to .csv data folder  |
+| \-\-ip       | \-I       | 127.0.0.1                | 0      | mongo | specifies ip of database  |
+| \-\-toInitDb | \-i       | False                    | 1      | mongo | flags new user auth to create |
+| \-\-toLogin  | \-l       | False                    | 1      | mongo | flags to log user into db for them |
+| \-\-name     | \-N       | "RecSyst"                | 0      | mongo | specifies the name of the mongoDb DB  |
+|------------|---------|------------------------|------|------|---still being filled in---|
+
 ### Config Files / Persistent Behavioral Changes
 
 While RavenRecSyst supports a lengthy list of command line options: which dictate the flow and operation of the algorithm, it may be desireable to have a peristent set of options which one can use to reduce the need to repeatedley type out consistentley used commands.
@@ -215,10 +231,22 @@ Pipelines can be confusing at first, but stick with it, they are incredibly powe
 
 The results of the pipeline are at a minimum an '_id' field, but RavenRecSyst requires two other fields, a "data" field and a "target" field; The "data" field should contain the exact data you would like to train on for a whole single example; The "target" field should contain a matching .. well target, so preciseley what you would like to backpropogate with. Clearly in the example case of predicting new data there is no "target" to include, but a pipeline which pushed something that doesnt exist into an array or single value will just be left empty anyway, which means you can use the same pipeline for training testing and predicting if you leave the "target" field in the aggregate pipeline, as it will be easily and intuitiveley dealt with.
 
-Currentley RavenRecSyst does not support multivariate targets, specifically any "target" with more than one value, this is a future addition. 
+Currentley RavenRecSyst does not support multivariate targets, specifically any "target" with more than one value, this is a future addition.
 
 ### Training
-To train the data set (currentley completing documentation)
+To train the data set you first require a pipeline (see pipelines section). This pipeline is what will create an interatable mongoDb cursor which can retrieve the data you want in the manner you want it retrieved.
+
+The conditions that need to be met to allow for training:
+- An initialised mongoDb database with username and password ( --toInitDb, --user, --pass )
+- The desired collection name where the data should be stored or is stored to be known ( --coll )
+- The database having data in the above collection ( --coll --newData, --cleaner | --coll --toJustImport )
+- The afformetioned database to be currentley running ( --toStartDb )
+- A working pipeline file in [default location](https://github.com/DreamingRaven/RavenRecSyst/blob/master/config/pipeline.json) or specified using options ( None | --pipeline )
+- Specifying the manner in which you would like to train, E.G. rnn, or lstm etc ... ( --type, --timeSteps ... )
+
+If all the above conditions are met at the point of training (they can all be done in one command and automatically run in the correct order), then you can specify the --toTrain flag.
+
+(currentley completing documentation)
 
 ### Testing
 (currentley completing documentation)
