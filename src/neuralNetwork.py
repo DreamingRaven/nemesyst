@@ -166,7 +166,7 @@ class NeuralNetwork():
             # setting batchSize on cursor seems to do nothing
             for unused in range(batchSize):
                 document = self.cursor.next()
-                data.append(pd.DataFrame(document))
+                data.append(document)
 
         except StopIteration:
             self.log("cursor has been emptied", -1)
@@ -188,17 +188,14 @@ class NeuralNetwork():
 
         if(self.model) and (self.cursor):
             self.log("training..." , -1)
-            # numSamples = type(self.cursor)
 
             # keep looping while cursor can give more data
             while(self.cursor.alive):
                 dataBatch = self.nextDataset(self.args["batchSize"])
-                for fullMongoDoc in dataBatch:
-                    # self.log(self.prePend + str(fullMongoDoc), 0)
-                    data = pd.DataFrame(list(fullMongoDoc.loc[:, "data"]))
-                    self.log(self.prePend + str(data), 0)
-                # self.cursorPosition = self.cursorPosition + self.args["batchSize"]
-                # self.log("Im alive " + str(numSamplesTrained) + "/" + str(numSamples), 3)
+                for mongoDoc in dataBatch:
+                    data = pd.DataFrame(list(mongoDoc["data"]))
+                    # self.log(self.prePend + str(data), 0)
+
         else:
             self.log("could not train, either model not generated or cursor does not exist", 2)
 
