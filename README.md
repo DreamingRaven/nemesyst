@@ -205,16 +205,23 @@ As those characters will have to be stripped or they will result in headaches.
 
 Each file with the extension given by the --suffix option in the directory given by --newData option will become a mongoDB document as is. So please prepare, chunk and clean files in the manner in which you expect them to become documents.
 
-### Training
+#### Pipelines
 After cleaning data or inserting clean data, it is neccessary to retrieve again the data from
 the database. For this reason RavenRecSyst supports [aggregate pipelines](https://docs.mongodb.com/manual/core/aggregation-pipeline/), which not only
 allow you to get existing data from the database but allows you to perform complex operations
-on the data prior to getting it from the database in a non permanent manner; aggregate pipelines in this manner allow you to rapidly test small changes on the clean data set without having to reopen csv files or re-clean to calculate things like sums of a column etc, provided post cleaning the data has not been scrubbed of features you required to do tweaks, clearly you cant calculate sum of a column that no longer exists in the clean dataset. Any pipeline present in [pipeline.json](https://github.com/DreamingRaven/RavenRecSyst/blob/master/config/pipeline.json) will be used to create a cursor which in turn will iterate over your data set. Please see pipeline section for more information.
+on the data prior to getting it from the database in a non permanent manner; aggregate pipelines in this manner allow you to rapidly test small changes on the clean data set without having to reopen csv files or re-clean to calculate things like sums of a column etc, provided post cleaning the data has not been scrubbed of features you required to do tweaks, clearly you cant calculate sum of a column that no longer exists in the clean dataset. Any pipeline present in [pipeline.json](https://github.com/DreamingRaven/RavenRecSyst/blob/master/config/pipeline.json) will be used to create a cursor which in turn will iterate over your data set. This can of course be overidden, you can specify the pipeline file using the --pipeline option.
 
+Pipelines can be confusing at first, but stick with it, they are incredibly powerfull tools that allow you to change things rapidly, efficientley, and with minimal fuss once you know what you are doing. I know firsthand how offputting they can be but im so glad I stuck with them myself: So muuch powweeerrrr.
+
+The results of the pipeline are at a minimum an '_id' field, but RavenRecSyst requires two other fields, a "data" field and a "target" field; The "data" field should contain the exact data you would like to train on for a whole single example; The "target" field should contain a matching .. well target, so preciseley what you would like to backpropogate with. Clearly in the example case of predicting new data there is no "target" to include, but a pipeline which pushed something that doesnt exist into an array or single value will just be left empty anyway, which means you can use the same pipeline for training testing and predicting if you leave the "target" field in the aggregate pipeline, as it will be easily and intuitiveley dealt with.
+
+Currentley RavenRecSyst does not support multivariate targets, specifically any "target" with more than one value, this is a future addition. 
+
+### Training
 To train the data set (currentley completing documentation)
 
 ### Testing
-(not yet implemented)
+(currentley completing documentation)
 
 ### Predicting
 (not yet implemented)
