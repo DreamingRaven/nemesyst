@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-24
+# @Last modified time: 2018-07-25
 # @License: Please see LICENSE file in project root
 
 
@@ -193,9 +193,10 @@ class NeuralNetwork():
             # keep looping while cursor can give more data
             while(self.cursor.alive):
                 dataBatch = self.nextDataset(self.args["batchSize"])
-                for inputData in dataBatch:
-                    self.log(self.prePend + str(inputData), 0)
-                    self.log(self.prePend + str(list(inputData.loc[0, "data"])), 0)
+                for fullMongoDoc in dataBatch:
+                    # self.log(self.prePend + str(fullMongoDoc), 0)
+                    data = pd.DataFrame(list(fullMongoDoc.loc[:, "data"]))
+                    self.log(self.prePend + str(data), 0)
                 # self.cursorPosition = self.cursorPosition + self.args["batchSize"]
                 # self.log("Im alive " + str(numSamplesTrained) + "/" + str(numSamples), 3)
         else:
