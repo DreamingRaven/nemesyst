@@ -131,9 +131,9 @@ This is a current list but **/ravenRecSyst.py --help will always be prefered.
 | \-\-cleaner  | \-c       | **/examples/cleaner.py   | 0      | import | specifies path to executable cleaner file  |
 | \-\-dir      | \-D       | ~/db                     | 0      | mongo  | specifies path to mongoDb files  |
 | \-\-newData  | \-d       | None                     | 0      | import | specifies path to .csv data folder  |
-| \-\-ip       | \-I       | 127.0.0.1                | 0      | mongo | specifies ip of database  |
+| \-\-ip       | \-I (eye) | 127.0.0.1                | 0      | mongo | specifies ip of database  |
 | \-\-toInitDb | \-i       | False                    | 1      | mongo | flags new user auth to create |
-| \-\-toLogin  | \-l       | False                    | 1      | mongo | flags to log user into db for them |
+| \-\-toLogin  | \-l (ell) | False                    | 1      | mongo | flags to log user into db for them |
 | \-\-name     | \-N       | "RecSyst"                | 0      | mongo | specifies the name of the mongoDb DB  |
 |------------|---------|------------------------|------|------|---still being filled in---|
 
