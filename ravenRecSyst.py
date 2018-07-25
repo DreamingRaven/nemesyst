@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-19
+# @Last modified time: 2018-07-25
 # @License: Please see LICENSE file in project root
 
 
@@ -53,7 +53,7 @@ def main():
         train(args=args, database=mongodb, print=print)
 
     if(args["toTest"] == True):
-        test(args=args, print=print)
+        test(args=args, database=mongodb, print=print)
 
     if(None):
         predict(args=args, print=print)

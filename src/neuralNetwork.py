@@ -110,7 +110,7 @@ class NeuralNetwork():
             "\t" + "batchSize:\t"      + str(self.args["batchSize"])       + "\n" +
             "\t" + "batchInShape:\t"   + str(bInShape)                     + "\n" +
             "\t" + "activation:\t"     + str(self.args["activation"])      + "\n",
-            3
+            0
         )
 
         # gen layers
@@ -119,6 +119,7 @@ class NeuralNetwork():
         model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], batch_input_shape=bInShape))
         model.add(Dense(1)) # since regression output is dense 1
         self.model = model
+
         self.log(self.prePend + "LSTM created", -1)
 
 
@@ -133,7 +134,7 @@ class NeuralNetwork():
             "\t" + "timesteps:\t"      + str(self.args["timeSteps"])       + "\n" +
             "\t" + "dimensionality:\t" + str(self.args["dimensionality"])  + "\n" +
             "\t" + "activation:\t"     + str(self.args["activation"])      + "\n",
-            3
+            0
         )
 
         # gen layers
@@ -143,6 +144,7 @@ class NeuralNetwork():
                 activation=self.args["activation"]))
         model.add(Dense(1)) # this dense 1 is the output layer since this is regression
         self.model = model # if nothing errored now we can assign model
+
         self.log(self.prePend + "RNN created", -1)
 
 
@@ -194,7 +196,8 @@ class NeuralNetwork():
                 dataBatch = self.nextDataset(self.args["batchSize"])
                 for mongoDoc in dataBatch:
                     data = pd.DataFrame(list(mongoDoc["data"]))
-                    # self.log(self.prePend + str(data), 0)
+                    self._model_train(data=data, target=mongoDoc["target"],
+                        id=mongoDoc["_id"])
 
         else:
             self.log("could not train, either model not generated or cursor does not exist", 2)
@@ -202,8 +205,37 @@ class NeuralNetwork():
 
 
     def test(self):
-        None
-        raise NotImplementedError('NN.test() not currentley implemented')
+
+        if(self.model) and (self.cursor):
+            self.log("testing..." , -1)
+
+            # keep looping while cursor can give more data
+            while(self.cursor.alive):
+                dataBatch = self.nextDataset(self.args["batchSize"])
+                for mongoDoc in dataBatch:
+                    data = pd.DataFrame(list(mongoDoc["data"]))
+                    self._model_test(data=data, target="placeholder")
+
+        else:
+            self.log("could not train, either model not generated or cursor does not exist", 2)
+
+
+
+    def _model_train(self, data, target, id):
+        try:
+            self.log(target)
+        except:
+            self.log(self.prePend + "could not train:\t" + id + "\n" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]) , 3)
+
+
+
+    def _model_test(self, data, target):
+        try:
+            None
+        except:
+            None
 
 
 

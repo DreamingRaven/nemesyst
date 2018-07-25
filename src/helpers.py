@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-19
+# @Last modified time: 2018-07-25
 # @License: Please see LICENSE file in project root
 
 
@@ -159,7 +159,7 @@ def train(args, database=None, print=print):
                            args=args,
                            pipeline=getPipeline(args["pipeline"], print=print)
                           )
-        nn.debug()
+        # nn.debug()
         nn.getCursor()
         nn.autogen()
         nn.train()
@@ -171,10 +171,18 @@ def train(args, database=None, print=print):
 
 
 
-def test(args, print=print):
+def test(args, database=None, print=print):
 
     try:
-        raise NotImplementedError('data testing not currentley implemented')
+        nn = NeuralNetwork(db=database,
+                           logger=print,
+                           args=args,
+                           pipeline=getPipeline(args["pipeline"], print=print)
+                          )
+        # nn.debug()
+        nn.getCursor()
+        nn.autogen()
+        nn.test()
 
     except:
         print(prePend + "could not test dataset:\n" +
