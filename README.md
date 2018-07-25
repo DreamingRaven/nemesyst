@@ -123,7 +123,7 @@ E.G to show all possible messages in most verbose state:
 
 ### All the options
 
-This is a current list but **/ravenRecSyst.py --help will always be prefered and this is not going to be as up to date or verbose, just a basic overview.
+This is a current list but **/ravenRecSyst.py --help will always be prefered and this is not going to be as up to date or verbose, just a basic overview. For any in depth queries see the argparse [parser.add_arguments](https://github.com/DreamingRaven/RavenRecSyst/blob/master/src/arg.py)
 
 | option       | alternate | default                  | isFlag | class  | description   |
 |:------------:|:---------:|:------------------------:|:------:|:------:|:-------------:|
@@ -131,36 +131,36 @@ This is a current list but **/ravenRecSyst.py --help will always be prefered and
 | \-\-cleaner  | \-c       | **/examples/cleaner.py   | 0      | import | specifies path to executable cleaner file  |
 | \-\-dir      | \-D       | ~/db                     | 0      | mongo  | specifies path to mongoDb files  |
 | \-\-newData  | \-d       | None                     | 0      | import | specifies path to .csv data folder  |
-| \-\-ip       | \-I (eye) | 127.0.0.1                | 0      | mongo | specifies ip of database  |
-| \-\-toInitDb | \-i       | False                    | 1      | mongo | flags new user auth to create |
-| \-\-toLogin  | \-l (ell) | False                    | 1      | mongo | flags to log user into db for them |
-| \-\-name     | \-N       | "RecSyst"                | 0      | mongo | specifies the name of the mongoDb DB  |
-| \-\-port     | \-P       | 27017                    | 0      | mongo | specifies the mongoDb port |
-| \-\-pass     | \-p       | iamgroot                 | 0      | auth  | specifies the password for mongoDb auth  |
-| \-\-toStartDb| \-S       | False                    | 1      | mongo | flags to start mongoDb (with auth) |
-| \-\-toStopDb | \-s       | False                    | 1      | mongo | flags to stop db in -D path |
-| \-\-toTrain  | \-T       | False                    | 1      | ann   | flags to train |
-| \-\-toTest   | \-t       | False                    | 1      | ann   | flags to test  |
-| \-\-url      | \-U       |mongodb://localhost:27017/| 0      | mongo | specifies mongoDb url  |
-| \-\-user     | \-u       | groot                    | 0      | auth  | specifies the mongoDb usernam for auth  |
-| \-\-loglevel | \-v       | 2                        | 0      | debug | specifies the min loglevel to log  |
+| \-\-ip       | \-I (eye) | 127.0.0.1                | 0      | mongo  | specifies ip of database  |
+| \-\-toInitDb | \-i       | False                    | 1      | mongo  | flags new user auth to create |
+| \-\-toLogin  | \-l (ell) | False                    | 1      | mongo  | flags to log user into db for them |
+| \-\-name     | \-N       | "RecSyst"                | 0      | mongo  | specifies the name of the mongoDb DB  |
+| \-\-port     | \-P       | 27017                    | 0      | mongo  | specifies the mongoDb port |
+| \-\-pass     | \-p       | iamgroot                 | 0      | auth   | specifies the password for mongoDb auth  |
+| \-\-toStartDb| \-S       | False                    | 1      | mongo  | flags to start mongoDb (with auth) |
+| \-\-toStopDb | \-s       | False                    | 1      | mongo  | flags to stop db in -D path |
+| \-\-toTrain  | \-T       | False                    | 1      | ann    | flags to train |
+| \-\-toTest   | \-t       | False                    | 1      | ann    | flags to test  |
+| \-\-url      | \-U       |mongodb://localhost:27017/| 0      | mongo  | specifies mongoDb url  |
+| \-\-user     | \-u       | groot                    | 0      | auth   | specifies the mongoDb usernam for auth  |
+| \-\-loglevel | \-v       | 2                        | 0      | debug  | specifies the min loglevel to log  |
 | \-\-batchSize|           | 1                        | 0      | mongo ann | specifies the size of batches to use |
 | \-\-target   |           | target                   | 0      | mongo ann | specifies the name of target feature |
 | \-\-type     |           | lstm                     | 0      | ann       | specifies the type of neural network to create |
 | \-\-timeSteps|           | 25                       | 0      | ann       | specifies if sequential type, num cells of rnn |
 | \-\-testSize |           | 0.2                      | 0      | validation| specifies the % size of test set |
-| \-\-activation|          | tanh                     | 0      | ann  | specifies keras activation alg |
-| \-\-dimensionality|      |                          | 0      | ann  | specifies num of features in data during learning and predicting |
-| \-\-layers   |           | 1                        | 0      | ann  | specifies num of layers in things like lstm |
-| \-\-lossMetic|           | mae                      | 0      | ann  | specifies keras loss metric |
-| \-\-optimizer|           | sgd                      | 0      | ann  | specifies keras optimiser |
-| \-\-randomSeed|          | 42                       | 0      | ann  | specifies random seed (unused) |
-| \-\-epochs   |           | 1                        | 0      | ann  | specifies num of keras epochs |
-| \-\-suffix   |           | .data                    | 0      | rrs  | specifies extension of all temporary data files |
-| \-\-chunkSize|           | 10000000                 | 0      | rrs  | specifies the maximum number of rows to be processed in imported csv file at a time |
-| \-\-toJustImport|        | False                    | 1      | rrs  | flags using residual temporary files without cleaning to import to db |
-| \-\-pipeline |           | **/config/pipeline.json  | 0      |config| specifies file path to pipeline.json file |
-| \-\-config   |           | **/config/config.ini     | 0      |config| specifies file path to config.ini file |
+| \-\-activation|          | tanh                     | 0      | ann    | specifies keras activation alg |
+| \-\-dimensionality|      |                          | 0      | ann    | specifies num of features in data during learning and predicting |
+| \-\-layers   |           | 1                        | 0      | ann    | specifies num of layers in things like lstm |
+| \-\-lossMetic|           | mae                      | 0      | ann    | specifies keras loss metric |
+| \-\-optimizer|           | sgd                      | 0      | ann    | specifies keras optimiser |
+| \-\-randomSeed|          | 42                       | 0      | ann    | specifies random seed (unused) |
+| \-\-epochs   |           | 1                        | 0      | ann    | specifies num of keras epochs |
+| \-\-suffix   |           | .data                    | 0      | rrs    | specifies extension of all temporary data files |
+| \-\-chunkSize|           | 10000000                 | 0      | rrs    | specifies the maximum number of rows to be processed in imported csv file at a time |
+| \-\-toJustImport|        | False                    | 1      | rrs    | flags using residual temporary files without cleaning to import to db |
+| \-\-pipeline |           | **/config/pipeline.json  | 0      | config | specifies file path to pipeline.json file |
+| \-\-config   |           | **/config/config.ini     | 0      | config | specifies file path to config.ini file |
 
 ### Config Files / Persistent Behavioral Changes
 
