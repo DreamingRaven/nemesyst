@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-25
+# @Last modified time: 2018-07-26
 # @License: Please see LICENSE file in project root
 
 
@@ -12,6 +12,7 @@
 import pickle
 import os, sys
 import pandas as pd
+import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Activation, LSTM
 
@@ -95,11 +96,11 @@ class NeuralNetwork():
 
 
 
-# https://machinelearningmastery.com/return-sequences-and-return-states-for-lstms-in-keras/
     def lstm(self):
 
         model = Sequential()
-        bInShape = (1, self.args["timeSteps"], self.args["dimensionality"])
+        #TODO: off by one error please for the love of god george
+        bInShape = (1, self.args["timeSteps"]+1, self.args["dimensionality"])
 
         self.log(
             self.prePend                                                   + "\n" +
@@ -117,7 +118,7 @@ class NeuralNetwork():
         for unused in range(self.args["layers"]-1):
             model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], return_sequences=True, batch_input_shape=bInShape))
         model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], batch_input_shape=bInShape))
-        model.add(Dense(1)) # since regression output is dense 1
+        model.add(Dense(1))
         self.model = model
 
         self.log(self.prePend + "LSTM created", -1)
@@ -195,8 +196,17 @@ class NeuralNetwork():
             while(self.cursor.alive):
                 dataBatch = self.nextDataset(self.args["batchSize"])
                 for mongoDoc in dataBatch:
+
+                    #TODO this is fine if both are pushed lists
                     data = pd.DataFrame(list(mongoDoc["data"]))
-                    self._model_train(data=data, target=mongoDoc["target"],
+                    data = np.expand_dims(data.values, axis=0)
+
+                    #TODO this needs to be generalised
+                    target = int(round(float(mongoDoc["target"])))
+                    target = np.full((1, 1), target)
+
+                    # print("test", int(round(float(mongoDoc["target"]))))
+                    self._model_train(data=data, target=target,
                         id=mongoDoc["_id"])
 
         else:
@@ -223,11 +233,33 @@ class NeuralNetwork():
 
     def _model_train(self, data, target, id):
         try:
-            self.log(target)
+            #TODO: off by one ... you fool george, sort this out
+            expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
+
+            # check if shape meets expectations
+            if(data.shape == expectShape):
+                # self.log(str(data.shape) + " == " + str(expectShape), 3)
+                # self.log(str(data))
+                # self.log( "\n" +
+                    # "\ttarget: "     +         str(target)     + "\n" +
+                    # "\tdataShape:"   +         str(data.shape) + "\n" +
+                    # "\tdesireShape:" +         str(expectShape)+ "\n"
+                # ,3)
+
+                # self.model.summary()
+                self.model.fit(x=data, y=target, batch_size=self.args["timeSteps"],
+                    epochs=self.args["epochs"], verbose=1, callbacks=None,
+                    validation_split=0, validation_data=None, shuffle=False,
+                    class_weight=None, sample_weight=None, initial_epoch=0,
+                    steps_per_epoch=None, validation_steps=None)
+
+            else:
+                self.log(str(data.shape) + " != " + str(expectShape), 3)
+
         except:
-            self.log(self.prePend + "could not train:\t" + id + "\n" +
+            self.log(self.prePend + "could not train:\t" + str(id) + "\n" +
                 str(sys.exc_info()[0]) + " " +
-                str(sys.exc_info()[1]) , 3)
+                str(sys.exc_info()[1]), 2)
 
 
 
