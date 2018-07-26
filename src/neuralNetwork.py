@@ -35,11 +35,12 @@ class NeuralNetwork():
 
     def __init__(self, db, pipeline, args, logger=print):
 
-        self.log = logger
         self.db = db
-        self.pipeline = pipeline
         self.args = args
+        self.log = logger
         self.cursor = None
+        self.history = None
+        self.pipeline = pipeline
         self.cursorPosition = None
         self.log(self.prePend + "NN.init() success", 3)
 
@@ -157,8 +158,12 @@ class NeuralNetwork():
 
 
     def saveModel(self):
-        None
-        raise NotImplementedError('NN.saveModel() not currentley implemented')
+        if(self.model != None):
+            stateDict = self.args
+            print(type(self.pipeline))
+            stateDict["pipe"] = str(self.pipeline)
+            del stateDict["pass"]
+            self.db.shoveJson(stateDict, collName="states")
 
 
 
@@ -208,7 +213,7 @@ class NeuralNetwork():
                     # print("test", int(round(float(mongoDoc["target"]))))
                     self._model_train(data=data, target=target,
                         id=mongoDoc["_id"])
-
+            self.saveModel()
         else:
             self.log("could not train, either model not generated or cursor does not exist", 2)
 
@@ -238,16 +243,9 @@ class NeuralNetwork():
 
             # check if shape meets expectations
             if(data.shape == expectShape):
-                # self.log(str(data.shape) + " == " + str(expectShape), 3)
-                # self.log(str(data))
-                # self.log( "\n" +
-                    # "\ttarget: "     +         str(target)     + "\n" +
-                    # "\tdataShape:"   +         str(data.shape) + "\n" +
-                    # "\tdesireShape:" +         str(expectShape)+ "\n"
-                # ,3)
 
                 # self.model.summary()
-                self.model.fit(x=data, y=target, batch_size=self.args["timeSteps"],
+                self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
                     epochs=self.args["epochs"], verbose=1, callbacks=None,
                     validation_split=0, validation_data=None, shuffle=False,
                     class_weight=None, sample_weight=None, initial_epoch=0,
