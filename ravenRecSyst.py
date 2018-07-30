@@ -121,4 +121,4 @@ else:
         # raise ValueError('value x not valid; ...')
         # raise NotImplementedError('not currentley implemented')
     except:
-        print(str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
+        print(prePend + str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
