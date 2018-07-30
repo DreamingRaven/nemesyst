@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-26
+# @Last modified time: 2018-07-30
 # @License: Please see LICENSE file in project root
 
 
@@ -55,6 +55,8 @@ class NeuralNetwork():
             # -ity that is going on behind the scenes
             self.cursor = self.db.getData(pipeline=pipeline)
             self.cursorPosition = 0
+            # this is to allow a higher try catch to delete it
+            return self.cursor
 
 
 
@@ -188,6 +190,8 @@ class NeuralNetwork():
             self.log(self.prePend + "could not get next data point from mongodb:\n" +
                 str(sys.exc_info()[0]) + " " +
                 str(sys.exc_info()[1]) , 2)
+            # if(self.cursor != None):
+                # self.cursor.close()
         return data
 
 

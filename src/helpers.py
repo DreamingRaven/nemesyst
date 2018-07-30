@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-25
+# @Last modified time: 2018-07-30
 # @License: Please see LICENSE file in project root
 
 
@@ -153,14 +153,14 @@ def getPipeline(pipePath, print=print):
 
 def train(args, database=None, print=print):
 
+    cursor = None
     try:
         nn = NeuralNetwork(db=database,
                            logger=print,
                            args=args,
                            pipeline=getPipeline(args["pipeline"], print=print)
                           )
-        # nn.debug()
-        nn.getCursor()
+        cursor = nn.getCursor()
         nn.autogen()
         nn.train()
 
@@ -168,11 +168,15 @@ def train(args, database=None, print=print):
         print(prePend + "could not train dataset:\n" +
             str(sys.exc_info()[0]) + " " +
             str(sys.exc_info()[1]), 2)
+    finally:
+        if(cursor != None) and (cursor.alive):
+            cursor.close()
 
 
 
 def test(args, database=None, print=print):
 
+    cursor = None
     try:
         nn = NeuralNetwork(db=database,
                            logger=print,
@@ -180,7 +184,7 @@ def test(args, database=None, print=print):
                            pipeline=getPipeline(args["pipeline"], print=print)
                           )
         # nn.debug()
-        nn.getCursor()
+        cursor = nn.getCursor()
         nn.autogen()
         nn.test()
 
@@ -188,7 +192,9 @@ def test(args, database=None, print=print):
         print(prePend + "could not test dataset:\n" +
             str(sys.exc_info()[0]) + " " +
             str(sys.exc_info()[1]), 2)
-
+    finally:
+        if(cursor != None) and (cursor.alive):
+            cursor.close()
 
 
 def predict(args, print=print):

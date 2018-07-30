@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-26
+# @Last modified time: 2018-07-30
 # @License: Please see LICENSE file in project root
 
 
@@ -59,6 +59,7 @@ def main():
         predict(args=args, print=print)
 
     if(args["toStopDb"] == True):
+        time.sleep(2) # making sure server has time to start
         mongodb.stop(print=print)
 
 
