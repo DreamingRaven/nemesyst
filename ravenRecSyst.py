@@ -24,7 +24,8 @@ def main():
 
     mongodb = Mongo(isDebug=True, mongoUser=args['user'], mongoPath=args['dir'],
         mongoPass=args['pass'], mongoIp=args['ip'], mongoDbName=args['name'],
-        mongoCollName=args['coll'], mongoPort=args['port'], mongoUrl=args['url'])
+        mongoCollName=args['coll'], mongoPort=args['port'], mongoUrl=args['url'],
+        mongoCursorTimeout=args['mongoCursorTimeout'])
 
     if(args["toInitDb"] == True):
         mongodb.debug(print=print) # passing in print to use logger
