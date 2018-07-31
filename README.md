@@ -161,6 +161,7 @@ This is a current list but **/ravenRecSyst.py --help will always be prefered and
 | \-\-toJustImport|        | False                    | 1      | rrs    | flags using residual temporary files without cleaning to import to db |
 | \-\-pipeline |           | **/config/pipeline.json  | 0      | config | specifies file path to pipeline.json file |
 | \-\-config   |           | **/config/config.ini     | 0      | config | specifies file path to config.ini file |
+| \-\-mongoCursorTimeout   |           | 600     | 0      | mongo | specifies the time in milliseconds to allow a cursor to remain inacive before it is deleted |
 
 ### Config Files / Persistent Behavioral Changes
 
@@ -259,7 +260,7 @@ The results of the pipeline are at a minimum an '_id' field, but RavenRecSyst re
 Currentley RavenRecSyst does not support multivariate targets, specifically any "target" with more than one value, this is a future addition.
 
 ### Training
-To train the data set you first require a pipeline (see pipelines section). This pipeline is what will create an interatable mongoDb cursor which can retrieve the data you want in the manner you want it retrieved.
+To train the data set you first require a pipeline (see pipelines section). This pipeline is what will create an interatable mongoDb cursor which can retrieve the data you want in the manner you want it retrieved, please see previous section "Pipelines".
 
 The conditions that need to be met to allow for training:
 - An initialised mongoDb database with username and password ( --toInitDb, --user, --pass )
@@ -271,7 +272,9 @@ The conditions that need to be met to allow for training:
 
 If all the above conditions are met at the point of training (they can all be done in one command and automatically run in the correct order), then you can specify the --toTrain flag.
 
-(currentley completing documentation)
+````
+**/RavenRecSyst/ravenRecSyst.py --toTrain
+````
 
 ### Testing
 (currentley completing documentation)
