@@ -36,13 +36,13 @@ def main():
         mongodb.stop(print=print) # stopping database ready for future use
         time.sleep(2) # delay to ensure db is closed properly
 
-    if(args["toLogin"] == True):
-        mongodb.login()
-
     if(args["toStartDb"] == True):
         # start main authenticated mongodb service
         mongodb.start(print=print, auth=True)
         mongodb.debug(print=print)
+
+    if(args["toLogin"] == True):
+        mongodb.login()
 
     # clean + add data if file specified (can be remote)
     if(args["toJustImport"] == True) and (os.path.exists(args["newData"])):
