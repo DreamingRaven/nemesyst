@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-30
+# @Last modified time: 2018-07-31
 # @License: Please see LICENSE file in project root
 
 
@@ -35,6 +35,9 @@ def main():
         mongodb.addUser(print=print)
         mongodb.stop(print=print) # stopping database ready for future use
         time.sleep(2) # delay to ensure db is closed properly
+
+    if(args["toLogin"] == True):
+        mongodb.login()
 
     if(args["toStartDb"] == True):
         # start main authenticated mongodb service
