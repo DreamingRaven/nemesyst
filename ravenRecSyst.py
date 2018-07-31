@@ -32,6 +32,7 @@ def main():
         mongodb.stop(print=print) # stopping just in case it is already running
         time.sleep(2) # delay to ensure db is closed properly
         mongodb.start(print=print)
+        time.sleep(2) # similar delay but for startup
         mongodb.addUser(print=print)
         mongodb.stop(print=print) # stopping database ready for future use
         time.sleep(2) # delay to ensure db is closed properly
@@ -39,6 +40,7 @@ def main():
     if(args["toStartDb"] == True):
         # start main authenticated mongodb service
         mongodb.start(print=print, auth=True)
+        time.sleep(2)
         mongodb.debug(print=print)
 
     if(args["toLogin"] == True):
