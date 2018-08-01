@@ -12,6 +12,7 @@ import pickle
 import os, sys
 import pandas as pd
 import numpy as np
+import datetime
 from bson import objectid, Binary
 from keras.models import Sequential
 from keras.layers import Dense, Activation, LSTM
@@ -267,6 +268,7 @@ class NeuralNetwork():
             print(type(self.pipeline))
             stateDict["pipe"] = str(self.pipeline)
             del stateDict["pass"]
+            stateDict["utc"] = datetime.datetime.utcnow()
 
             # save model
             self.make_keras_picklable()
