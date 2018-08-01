@@ -4,15 +4,15 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-31
+# @Last modified time: 2018-08-01
 # @License: Please see LICENSE file in project root
-
 
 
 import pickle
 import os, sys
 import pandas as pd
 import numpy as np
+from bson import objectid, Binary
 from keras.models import Sequential
 from keras.layers import Dense, Activation, LSTM
 
@@ -76,7 +76,6 @@ class NeuralNetwork():
         # check cursor has been created atleast before attempting to use it
         if(self.cursor != None):
             # adjust keras so it can save its binary to databases and declare vars
-            self.make_keras_picklable()
             self.generateModel()
             self.compile()
 
@@ -159,16 +158,6 @@ class NeuralNetwork():
 
 
 
-    def saveModel(self):
-        if(self.model != None):
-            stateDict = self.args
-            print(type(self.pipeline))
-            stateDict["pipe"] = str(self.pipeline)
-            del stateDict["pass"]
-            self.db.shoveJson(stateDict, collName="states")
-
-
-
     #TODO: this should be in mongodb class itself
     def nextDataset(self, batchSize=1):
         data = []
@@ -247,14 +236,15 @@ class NeuralNetwork():
             if(data.shape == expectShape):
 
                 # self.model.summary()
-                self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
-                    epochs=self.args["epochs"], verbose=1, callbacks=None,
+                hist = self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
+                    epochs=self.args["epochs"], verbose=0, callbacks=None,
                     validation_split=0, validation_data=None, shuffle=False,
                     class_weight=None, sample_weight=None, initial_epoch=0,
                     steps_per_epoch=None, validation_steps=None)
 
             else:
-                self.log(str(data.shape) + " != " + str(expectShape), 3)
+                self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
+                    + str(expectShape), 3)
 
         except:
             self.log(self.prePend + "could not train:\t" + str(id) + "\n" +
@@ -271,7 +261,24 @@ class NeuralNetwork():
 
 
 
+    def saveModel(self):
+        if(self.model != None):
+            stateDict = self.args
+            print(type(self.pipeline))
+            stateDict["pipe"] = str(self.pipeline)
+            del stateDict["pass"]
+
+            # save model
+            self.make_keras_picklable()
+            model_bytes = pickle.dumps(self.model)
+            stateDict['model_bin'] = Binary(model_bytes)
+
+            self.db.shoveJson(stateDict, collName="states")
+
+
+
     def make_keras_picklable(self):
+        import tempfile
         import keras.models
         import h5py
 
@@ -290,6 +297,6 @@ class NeuralNetwork():
                 model = keras.models.load_model(fd.name)
                 self.__dict__ = model.__dict__
 
-                cls = keras.models.Model
-                cls.__getstate__ = __getstate__
-                cls.__setstate__ = __setstate__
+        cls = keras.models.Model
+        cls.__getstate__ = __getstate__
+        cls.__setstate__ = __setstate__
