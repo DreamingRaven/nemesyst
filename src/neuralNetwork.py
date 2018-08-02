@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-01
+# @Last modified time: 2018-08-02
 # @License: Please see LICENSE file in project root
 
 
@@ -198,11 +198,10 @@ class NeuralNetwork():
                     data = pd.DataFrame(list(mongoDoc["data"]))
                     data = np.expand_dims(data.values, axis=0)
 
-                    #TODO this needs to be generalised
-                    target = int(round(float(mongoDoc["target"])))
+                    #TODO needs generalisation for many to many or one to many
+                    target = mongoDoc["target"]
                     target = np.full((1, 1), target)
 
-                    # print("test", int(round(float(mongoDoc["target"]))))
                     self._model_train(data=data, target=target,
                         id=mongoDoc["_id"])
             self.saveModel()
@@ -265,7 +264,6 @@ class NeuralNetwork():
     def saveModel(self):
         if(self.model != None):
             stateDict = self.args
-            print(type(self.pipeline))
             stateDict["pipe"] = str(self.pipeline)
             del stateDict["pass"]
             stateDict["utc"] = datetime.datetime.utcnow()
