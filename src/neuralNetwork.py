@@ -44,6 +44,8 @@ class NeuralNetwork():
         self.pipeline = pipeline
         self.cursorPosition = None
         self.log(self.prePend + "NN.init() success", 3)
+        # control shutting up tensorflow
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(1)
 
 
 
