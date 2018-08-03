@@ -1,6 +1,6 @@
 # RavenRecSyst
 
-Warning: this project has not yet reached it basic intended functionality, to be ready for normal usage will take time so some of the examples may not work currently. If you see anything glaringly wrong please do open an issue, thanks. GR
+Warning: this project has not yet reached all its intended functionality, and the documentation still needs further additions; To be ready for normal usage will take time so some of the examples may not work currently. If you see anything glaringly wrong please do open an issue, thanks. GR
 
 ## Introduction
 
@@ -11,7 +11,7 @@ Generative Adversarial Neural Networks (GANs) with certain other traditional and
 recommender system techniques. This recommender system is evaluated by the common method of rating prediction
 via mean absolute error (MEA).
 
-Along the way however I decided to make everything as configurable/ generalisable as possible. This recommender system allows for custom cleaning script calls, and custom machine learning scripts all while the nuanced operations are completed automagically, such as transforming then loading the chosen data into mongoDB, allowing for interesting distributed applications to do with combining mongodb with machine learning. The use of mongodb also allows this program to act clay-like, keeping track of program state to be reloaded, reused, monitored etc, just as clay would keep the shape impressed upon it. It keeps track of each model trained, as a seperate document in the models collection, with the models binary also being saved so it can be directly replayed with simple calls.
+Along the way however I decided to make everything as configurable/ generalisable as possible. This system has become a framework for the application of machine learning into a wider environment, fascilitated by this configurability; Including config and pipeline files, custom cleaning script calls, and custom machine learning scripts all while the nuanced operations are completed automagically, such as transforming then loading the chosen data into mongoDB, allowing for interesting distributed applications to do with combining mongodb with machine learning. The use of mongodb also allows this program to act clay-like, keeping track of program state to be reloaded, reused, monitored etc, just as clay would keep the shape impressed upon it. It keeps track of each model trained, as a seperate document in the models collection, with the models binary also being saved so it can be directly replayed with simple calls.
 
 This recommender system used to predict exclusiveley using [MovieLense 20M](https://grouplens.org/datasets/movielens/20m/),
  and [Netflix (2007)](https://www.kaggle.com/netflix-inc/netflix-prize-data) datasets. Now however it can predict using any data set, given an appropriate cleaning script path to the -c / --cleaner argument.
