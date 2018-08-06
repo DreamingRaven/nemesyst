@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-18
+# @Last modified time: 2018-07-30
 # @License: Please see LICENSE file in project root
 
 
@@ -40,7 +40,7 @@ def getDateTime(timeStamp=None):
         timeStamp = int(time.time())
         return datetime.datetime.utcfromtimestamp(timeStamp)
     else:
-        return datetime.datetime.utcfromtimestamp(timeStamp)#.strftime('%Y-%m-%d %H:%M:%S') # converts to string
+        return datetime.datetime.utcfromtimestamp(timeStamp)
 
 
 
@@ -153,14 +153,14 @@ def getPipeline(pipePath, print=print):
 
 def train(args, database=None, print=print):
 
+    cursor = None
     try:
         nn = NeuralNetwork(db=database,
                            logger=print,
                            args=args,
                            pipeline=getPipeline(args["pipeline"], print=print)
                           )
-        nn.debug()
-        nn.getCursor()
+        cursor = nn.getCursor()
         nn.autogen()
         nn.train()
 
@@ -168,19 +168,33 @@ def train(args, database=None, print=print):
         print(prePend + "could not train dataset:\n" +
             str(sys.exc_info()[0]) + " " +
             str(sys.exc_info()[1]), 2)
+    finally:
+        if(cursor != None) and (cursor.alive):
+            cursor.close()
 
 
 
-def test(args, print=print):
+def test(args, database=None, print=print):
 
+    cursor = None
     try:
-        raise NotImplementedError('data testing not currentley implemented')
+        nn = NeuralNetwork(db=database,
+                           logger=print,
+                           args=args,
+                           pipeline=getPipeline(args["pipeline"], print=print)
+                          )
+        # nn.debug()
+        cursor = nn.getCursor()
+        nn.autogen()
+        nn.test()
 
     except:
         print(prePend + "could not test dataset:\n" +
             str(sys.exc_info()[0]) + " " +
             str(sys.exc_info()[1]), 2)
-
+    finally:
+        if(cursor != None) and (cursor.alive):
+            cursor.close()
 
 
 def predict(args, print=print):

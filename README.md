@@ -1,6 +1,6 @@
 # RavenRecSyst
 
-Warning: this project has not yet reached it basic intended functionality, to be ready for normal usage will take time so some of the examples may not work currently. If you see anything glaringly wrong please do open an issue, thanks. GR
+Warning: this project has not yet reached all its intended functionality, and the documentation still needs further additions; To be ready for normal usage will take time so some of the examples may not work currently. If you see anything glaringly wrong please do open an issue, thanks. GR
 
 ## Introduction
 
@@ -11,7 +11,7 @@ Generative Adversarial Neural Networks (GANs) with certain other traditional and
 recommender system techniques. This recommender system is evaluated by the common method of rating prediction
 via mean absolute error (MEA).
 
-Along the way however I decided to make everything as configurable/ generalisable as possible. This recommender system allows for custom cleaning script calls, and custom machine learning scripts all while the nuanced operations are completed automagically, such as transforming then loading the chosen data into mongoDB, allowing for interesting distributed applications to do with combining mongodb with machine learning. The use of mongodb also allows this program to act clay-like, keeping track of program state to be reloaded, reused, monitored etc, just as clay would keep the shape impressed upon it. It keeps track of each model trained, as a seperate document in the models collection, with the models binary also being saved so it can be directly replayed with simple calls.
+Along the way however I decided to make everything as configurable/ generalisable as possible. This system has become a framework for the application of machine learning into a wider environment, fascilitated by this configurability; Including config and pipeline files, custom cleaning script calls, and custom machine learning scripts all while the nuanced operations are completed automagically, such as transforming then loading the chosen data into mongoDB, allowing for interesting distributed applications to do with combining mongodb with machine learning. The use of mongodb also allows this program to act clay-like, keeping track of program state to be reloaded, reused, monitored etc, just as clay would keep the shape impressed upon it. It keeps track of each model trained, as a seperate document in the models collection, with the models binary also being saved so it can be directly replayed with simple calls.
 
 This recommender system used to predict exclusiveley using [MovieLense 20M](https://grouplens.org/datasets/movielens/20m/),
  and [Netflix (2007)](https://www.kaggle.com/netflix-inc/netflix-prize-data) datasets. Now however it can predict using any data set, given an appropriate cleaning script path to the -c / --cleaner argument.
@@ -60,7 +60,7 @@ You will also have to install/ verify a few key dependancies.
     * [Pymongo](https://api.mongodb.com/python/current/) for MongoDb
     * [TensorFlow | TensorFlow-gpu](https://www.tensorflow.org/install/) for that juicy machine-learning
     * [Keras](https://github.com/keras-team/keras) although tensorflow has recentley bundled its own keras
-    * [Bash](https://www.gnu.org/software/bash/) for simple system level operations
+- [Bash](https://www.gnu.org/software/bash/) for simple system level operations
 
 If any have been left out please create an issue and post any log messages.
 
@@ -121,11 +121,53 @@ E.G to show all possible messages in most verbose state:
 ````
 ("over nine thousand!") 9001 will show all log levels < 9001
 
+### All the options
+
+This is a current list but **/ravenRecSyst.py --help will always be prefered and this is not going to be as up to date or verbose, just a basic overview. For any in depth queries see the argparse [parser.add_arguments](https://github.com/DreamingRaven/RavenRecSyst/blob/master/src/arg.py)
+
+| option       | alternate | default                  | isFlag | class  | description   |
+|:------------:|:---------:|:------------------------:|:------:|:------:|:-------------:|
+| \-\-coll     | \-C       | "testColl"               | 0      | mongo  | sets collection to operate on |
+| \-\-cleaner  | \-c       | **/examples/cleaner.py   | 0      | import | specifies path to executable cleaner file  |
+| \-\-dir      | \-D       | ~/db                     | 0      | mongo  | specifies path to mongoDb files  |
+| \-\-newData  | \-d       | None                     | 0      | import | specifies path to .csv data folder  |
+| \-\-ip       | \-I (eye) | 127.0.0.1                | 0      | mongo  | specifies ip of database  |
+| \-\-toInitDb | \-i       | False                    | 1      | mongo  | flags new user auth to create |
+| \-\-toLogin  | \-l (ell) | False                    | 1      | mongo  | flags to log user into db for them |
+| \-\-name     | \-N       | "RecSyst"                | 0      | mongo  | specifies the name of the mongoDb DB  |
+| \-\-port     | \-P       | 27017                    | 0      | mongo  | specifies the mongoDb port |
+| \-\-pass     | \-p       | iamgroot                 | 0      | auth   | specifies the password for mongoDb auth  |
+| \-\-toStartDb| \-S       | False                    | 1      | mongo  | flags to start mongoDb (with auth) |
+| \-\-toStopDb | \-s       | False                    | 1      | mongo  | flags to stop db in -D path |
+| \-\-toTrain  | \-T       | False                    | 1      | ann    | flags to train |
+| \-\-toTest   | \-t       | False                    | 1      | ann    | flags to test  |
+| \-\-url      | \-U       |mongodb://localhost:27017/| 0      | mongo  | specifies mongoDb url  |
+| \-\-user     | \-u       | groot                    | 0      | auth   | specifies the mongoDb usernam for auth  |
+| \-\-loglevel | \-v       | 2                        | 0      | debug  | specifies the min loglevel to log  |
+| \-\-batchSize|           | 1                        | 0      | mongo ann | specifies the size of batches to use |
+| \-\-target   |           | target                   | 0      | mongo ann | specifies the name of target feature |
+| \-\-type     |           | lstm                     | 0      | ann       | specifies the type of neural network to create |
+| \-\-timeSteps|           | 25                       | 0      | ann       | specifies if sequential type, num cells of rnn |
+| \-\-testSize |           | 0.2                      | 0      | validation| specifies the % size of test set |
+| \-\-activation|          | tanh                     | 0      | ann    | specifies keras activation alg |
+| \-\-dimensionality|      |                          | 0      | ann    | specifies num of features in data during learning and predicting |
+| \-\-layers   |           | 1                        | 0      | ann    | specifies num of layers in things like lstm |
+| \-\-lossMetic|           | mae                      | 0      | ann    | specifies keras loss metric |
+| \-\-optimizer|           | sgd                      | 0      | ann    | specifies keras optimiser |
+| \-\-randomSeed|          | 42                       | 0      | ann    | specifies random seed (unused) |
+| \-\-epochs   |           | 1                        | 0      | ann    | specifies num of keras epochs |
+| \-\-suffix   |           | .data                    | 0      | rrs    | specifies extension of all temporary data files |
+| \-\-chunkSize|           | 10000000                 | 0      | rrs    | specifies the maximum number of rows to be processed in imported csv file at a time |
+| \-\-toJustImport|        | False                    | 1      | rrs    | flags using residual temporary files without cleaning to import to db |
+| \-\-pipeline |           | **/config/pipeline.json  | 0      | config | specifies file path to pipeline.json file |
+| \-\-config   |           | **/config/config.ini     | 0      | config | specifies file path to config.ini file |
+| \-\-mongoCursorTimeout   |           | 600     | 0      | mongo | specifies the time in milliseconds to allow a cursor to remain inacive before it is deleted |
+
 ### Config Files / Persistent Behavioral Changes
 
 While RavenRecSyst supports a lengthy list of command line options: which dictate the flow and operation of the algorithm, it may be desireable to have a peristent set of options which one can use to reduce the need to repeatedley type out consistentley used commands.
 
-For this RavenRecSyst supports .ini config files, the default / boilerplate of which can be found in [\*\*/RavenRecSyst/config/rrs_ml.ini](https://github.com/DreamingRaven/RavenRecSyst/blob/master/config/rrs_ml.ini). This is implemented using [pythons configparser library](https://docs.python.org/3/library/configparser.html) and all keynames are shared with the command line interface although the config file only supports the long format e.g. 'user' instead of --user but not 'u' instead of -u. There is also an order of priority, cli > config > fallbacks; Explicitly, command line options will always take precedence to allow for quick customisation without having to persistentley change any underlying configuration file; Least priority is are the fallbacks which are only used if no cli or config file options exist.
+For this RavenRecSyst supports .ini config files, the default / boilerplate of which can be found in [\*\*/RavenRecSyst/config/rrs_ml.ini](https://github.com/DreamingRaven/RavenRecSyst/blob/master/config/config.ini). This is implemented using [pythons configparser library](https://docs.python.org/3/library/configparser.html) and all keynames are shared with the command line interface although the config file only supports the long format e.g. 'user' instead of --user but not 'u' instead of -u. There is also an order of priority, cli > config > fallbacks; Explicitly, command line options will always take precedence to allow for quick customisation without having to persistentley change any underlying configuration file; Least priority is are the fallbacks which are only used if no cli or config file options exist.
 
 Note however the config file above has sections called [options] and [DEFAULT], please refrain from changing the default section and instead overide the defaults by adding entries inside the options section which is the one specifically called by RavenRecSyst. This will mean you always have the original default options as a referance point for overiding.
 
@@ -205,11 +247,37 @@ As those characters will have to be stripped or they will result in headaches.
 
 Each file with the extension given by the --suffix option in the directory given by --newData option will become a mongoDB document as is. So please prepare, chunk and clean files in the manner in which you expect them to become documents.
 
+#### Pipelines
+After cleaning data or inserting clean data, it is neccessary to retrieve again the data from
+the database. For this reason RavenRecSyst supports [aggregate pipelines](https://docs.mongodb.com/manual/core/aggregation-pipeline/), which not only
+allow you to get existing data from the database but allows you to perform complex operations
+on the data prior to getting it from the database in a non permanent manner; aggregate pipelines in this manner allow you to rapidly test small changes on the clean data set without having to reopen csv files or re-clean to calculate things like sums of a column etc, provided post cleaning the data has not been scrubbed of features you required to do tweaks, clearly you cant calculate sum of a column that no longer exists in the clean dataset. Any pipeline present in [pipeline.json](https://github.com/DreamingRaven/RavenRecSyst/blob/master/config/pipeline.json) will be used to create a cursor which in turn will iterate over your data set. This can of course be overidden, you can specify the pipeline file using the --pipeline option.
+
+Pipelines can be confusing at first, but stick with it, they are incredibly powerfull tools that allow you to change things rapidly, efficientley, and with minimal fuss once you know what you are doing. I know firsthand how offputting they can be but im so glad I stuck with them myself: So muuch powweeerrrr.
+
+The results of the pipeline are at a minimum an '_id' field, but RavenRecSyst requires two other fields, a "data" field and a "target" field; The "data" field should contain the exact data you would like to train on for a whole single example; The "target" field should contain a matching .. well target, so preciseley what you would like to backpropogate with. Clearly in the example case of predicting new data there is no "target" to include, but a pipeline which pushed something that doesnt exist into an array or single value will just be left empty anyway, which means you can use the same pipeline for training testing and predicting if you leave the "target" field in the aggregate pipeline, as it will be easily and intuitiveley dealt with.
+
+Currentley RavenRecSyst does not support multivariate targets, specifically any "target" with more than one value, this is a future addition.
+
 ### Training
-(not yet implemented)
+To train the data set you first require a pipeline (see pipelines section). This pipeline is what will create an interatable mongoDb cursor which can retrieve the data you want in the manner you want it retrieved, please see previous section "Pipelines".
+
+The conditions that need to be met to allow for training:
+- An initialised mongoDb database with username and password ( --toInitDb, --user, --pass )
+- The desired collection name where the data should be stored or is stored to be known ( --coll )
+- The database having data in the above collection ( --coll --newData, --cleaner | --coll --toJustImport )
+- The afformetioned database to be currentley running ( --toStartDb )
+- A working pipeline file in [default location](https://github.com/DreamingRaven/RavenRecSyst/blob/master/config/pipeline.json) or specified using options ( None | --pipeline )
+- Specifying the manner in which you would like to train, E.G. rnn, or lstm etc ... ( --type, --timeSteps ... )
+
+If all the above conditions are met at the point of training (they can all be done in one command and automatically run in the correct order), then you can specify the --toTrain flag.
+
+````
+**/RavenRecSyst/ravenRecSyst.py --toTrain
+````
 
 ### Testing
-(not yet implemented)
+(currentley completing documentation)
 
 ### Predicting
 (not yet implemented)

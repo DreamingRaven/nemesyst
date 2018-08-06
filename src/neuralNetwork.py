@@ -4,14 +4,16 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-19
+# @Last modified time: 2018-08-02
 # @License: Please see LICENSE file in project root
-
 
 
 import pickle
 import os, sys
 import pandas as pd
+import numpy as np
+import datetime
+from bson import objectid, Binary
 from keras.models import Sequential
 from keras.layers import Dense, Activation, LSTM
 
@@ -34,13 +36,16 @@ class NeuralNetwork():
 
     def __init__(self, db, pipeline, args, logger=print):
 
-        self.log = logger
         self.db = db
-        self.pipeline = pipeline
         self.args = args
+        self.log = logger
         self.cursor = None
+        self.history = None
+        self.pipeline = pipeline
         self.cursorPosition = None
         self.log(self.prePend + "NN.init() success", 3)
+        # control shutting up tensorflow
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(1)
 
 
 
@@ -53,6 +58,8 @@ class NeuralNetwork():
             # -ity that is going on behind the scenes
             self.cursor = self.db.getData(pipeline=pipeline)
             self.cursorPosition = 0
+            # this is to allow a higher try catch to delete it
+            return self.cursor
 
 
 
@@ -72,7 +79,6 @@ class NeuralNetwork():
         # check cursor has been created atleast before attempting to use it
         if(self.cursor != None):
             # adjust keras so it can save its binary to databases and declare vars
-            self.make_keras_picklable()
             self.generateModel()
             self.compile()
 
@@ -95,11 +101,11 @@ class NeuralNetwork():
 
 
 
-# https://machinelearningmastery.com/return-sequences-and-return-states-for-lstms-in-keras/
     def lstm(self):
 
         model = Sequential()
-        bInShape = (1, self.args["timeSteps"], self.args["dimensionality"])
+        #TODO: off by one error please for the love of god george
+        bInShape = (1, self.args["timeSteps"]+1, self.args["dimensionality"])
 
         self.log(
             self.prePend                                                   + "\n" +
@@ -110,15 +116,16 @@ class NeuralNetwork():
             "\t" + "batchSize:\t"      + str(self.args["batchSize"])       + "\n" +
             "\t" + "batchInShape:\t"   + str(bInShape)                     + "\n" +
             "\t" + "activation:\t"     + str(self.args["activation"])      + "\n",
-            3
+            0
         )
 
         # gen layers
         for unused in range(self.args["layers"]-1):
             model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], return_sequences=True, batch_input_shape=bInShape))
         model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], batch_input_shape=bInShape))
-        model.add(Dense(1)) # since regression output is dense 1
+        model.add(Dense(1))
         self.model = model
+
         self.log(self.prePend + "LSTM created", -1)
 
 
@@ -133,7 +140,7 @@ class NeuralNetwork():
             "\t" + "timesteps:\t"      + str(self.args["timeSteps"])       + "\n" +
             "\t" + "dimensionality:\t" + str(self.args["dimensionality"])  + "\n" +
             "\t" + "activation:\t"     + str(self.args["activation"])      + "\n",
-            3
+            0
         )
 
         # gen layers
@@ -143,6 +150,7 @@ class NeuralNetwork():
                 activation=self.args["activation"]))
         model.add(Dense(1)) # this dense 1 is the output layer since this is regression
         self.model = model # if nothing errored now we can assign model
+
         self.log(self.prePend + "RNN created", -1)
 
 
@@ -153,24 +161,23 @@ class NeuralNetwork():
 
 
 
-    def saveModel(self):
-        None
-        raise NotImplementedError('NN.saveModel() not currentley implemented')
-
-
-
     #TODO: this should be in mongodb class itself
     def nextDataset(self, batchSize=1):
         data = []
         try:
-            # apparentley you cant get batches using cursor D:
-            # why the hell do they have cursor.batch_size() then :C
+            # setting batchSize on cursor seems to do nothing
             for unused in range(batchSize):
                 document = self.cursor.next()
-                data.append(pd.DataFrame(document))
+                data.append(document)
 
         except StopIteration:
-            self.log("cursor is empty", 1)
+            self.log("cursor has been emptied", -1)
+        except ValueError:
+            self.log("Value Error: please make sure that something other than \
+                plain values are returned by your pipeline e.g include an array \
+                of objects then check the following error:" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]) , 2)
         except:
             self.log(self.prePend + "could not get next data point from mongodb:\n" +
                 str(sys.exc_info()[0]) + " " +
@@ -183,26 +190,97 @@ class NeuralNetwork():
 
         if(self.model) and (self.cursor):
             self.log("training..." , -1)
-            # numSamples = type(self.cursor)
 
             # keep looping while cursor can give more data
             while(self.cursor.alive):
-                data = self.nextDataset(self.args["batchSize"])
-                self.log(str(data), 0)
-                # self.cursorPosition = self.cursorPosition + self.args["batchSize"]
-                # self.log("Im alive " + str(numSamplesTrained) + "/" + str(numSamples), 3)
+                dataBatch = self.nextDataset(self.args["batchSize"])
+                for mongoDoc in dataBatch:
+
+                    #TODO this is fine if both are pushed lists
+                    data = pd.DataFrame(list(mongoDoc["data"]))
+                    data = np.expand_dims(data.values, axis=0)
+
+                    #TODO needs generalisation for many to many or one to many
+                    target = mongoDoc["target"]
+                    target = np.full((1, 1), target)
+
+                    self._model_train(data=data, target=target,
+                        id=mongoDoc["_id"])
+            self.saveModel()
         else:
             self.log("could not train, either model not generated or cursor does not exist", 2)
 
 
 
     def test(self):
-        None
-        raise NotImplementedError('NN.test() not currentley implemented')
+
+        if(self.model) and (self.cursor):
+            self.log("testing..." , -1)
+
+            # keep looping while cursor can give more data
+            while(self.cursor.alive):
+                dataBatch = self.nextDataset(self.args["batchSize"])
+                for mongoDoc in dataBatch:
+                    data = pd.DataFrame(list(mongoDoc["data"]))
+                    self._model_test(data=data, target="placeholder")
+
+        else:
+            self.log("could not train, either model not generated or cursor does not exist", 2)
+
+
+
+    def _model_train(self, data, target, id):
+        try:
+            #TODO: off by one ... you fool george, sort this out
+            expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
+
+            # check if shape meets expectations
+            if(data.shape == expectShape):
+
+                # self.model.summary()
+                hist = self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
+                    epochs=self.args["epochs"], verbose=0, callbacks=None,
+                    validation_split=0, validation_data=None, shuffle=False,
+                    class_weight=None, sample_weight=None, initial_epoch=0,
+                    steps_per_epoch=None, validation_steps=None)
+
+            else:
+                self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
+                    + str(expectShape), 3)
+
+        except:
+            self.log(self.prePend + "could not train:\t" + str(id) + "\n" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]), 2)
+
+
+
+    def _model_test(self, data, target):
+        try:
+            None
+        except:
+            None
+
+
+
+    def saveModel(self):
+        if(self.model != None):
+            stateDict = self.args
+            stateDict["pipe"] = str(self.pipeline)
+            del stateDict["pass"]
+            stateDict["utc"] = datetime.datetime.utcnow()
+
+            # save model
+            self.make_keras_picklable()
+            model_bytes = pickle.dumps(self.model)
+            stateDict['model_bin'] = Binary(model_bytes)
+
+            self.db.shoveJson(stateDict, collName="states")
 
 
 
     def make_keras_picklable(self):
+        import tempfile
         import keras.models
         import h5py
 
@@ -221,6 +299,6 @@ class NeuralNetwork():
                 model = keras.models.load_model(fd.name)
                 self.__dict__ = model.__dict__
 
-                cls = keras.models.Model
-                cls.__getstate__ = __getstate__
-                cls.__setstate__ = __setstate__
+        cls = keras.models.Model
+        cls.__getstate__ = __getstate__
+        cls.__setstate__ = __setstate__

@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-18
+# @Last modified time: 2018-07-31
 # @License: Please see LICENSE file in project root
 
 
@@ -19,17 +19,20 @@ from src.log import Log
 
 def main():
 
-    # imported here to allow for update prior to main to occur firt
+    # imported here as prior to main the program is updated
     from RavenPythonLib.mongodb.mongo import Mongo
+
     mongodb = Mongo(isDebug=True, mongoUser=args['user'], mongoPath=args['dir'],
         mongoPass=args['pass'], mongoIp=args['ip'], mongoDbName=args['name'],
-        mongoCollName=args['coll'], mongoPort=args['port'], mongoUrl=args['url'])
+        mongoCollName=args['coll'], mongoPort=args['port'], mongoUrl=args['url'],
+        mongoCursorTimeout=args['mongoCursorTimeout'])
 
     if(args["toInitDb"] == True):
         mongodb.debug(print=print) # passing in print to use logger
         mongodb.stop(print=print) # stopping just in case it is already running
         time.sleep(2) # delay to ensure db is closed properly
         mongodb.start(print=print)
+        time.sleep(2) # similar delay but for startup
         mongodb.addUser(print=print)
         mongodb.stop(print=print) # stopping database ready for future use
         time.sleep(2) # delay to ensure db is closed properly
@@ -37,7 +40,11 @@ def main():
     if(args["toStartDb"] == True):
         # start main authenticated mongodb service
         mongodb.start(print=print, auth=True)
+        time.sleep(2)
         mongodb.debug(print=print)
+
+    if(args["toLogin"] == True):
+        mongodb.login()
 
     # clean + add data if file specified (can be remote)
     if(args["toJustImport"] == True) and (os.path.exists(args["newData"])):
@@ -52,12 +59,13 @@ def main():
         train(args=args, database=mongodb, print=print)
 
     if(args["toTest"] == True):
-        test(args=args, print=print)
+        test(args=args, database=mongodb, print=print)
 
     if(None):
         predict(args=args, print=print)
 
     if(args["toStopDb"] == True):
+        time.sleep(2) # making sure server has time to start
         mongodb.stop(print=print)
 
 
@@ -118,4 +126,4 @@ else:
         # raise ValueError('value x not valid; ...')
         # raise NotImplementedError('not currentley implemented')
     except:
-        print(str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
+        print(prePend + str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
