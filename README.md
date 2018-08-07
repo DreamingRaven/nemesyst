@@ -162,6 +162,7 @@ This is a current list but **/ravenRecSyst.py --help will always be prefered and
 | \-\-pipeline |           | **/config/pipeline.json  | 0      | config | specifies file path to pipeline.json file |
 | \-\-config   |           | **/config/config.ini     | 0      | config | specifies file path to config.ini file |
 | \-\-mongoCursorTimeout   |           | 600     | 0      | mongo | specifies the time in milliseconds to allow a cursor to remain inacive before it is deleted |
+| \-\-kerLogMax|           | 0                        | 0      | ann    | specifies the maximum log level of keras log/ print statements |
 
 ### Config Files / Persistent Behavioral Changes
 
