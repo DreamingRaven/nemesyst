@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-30
+# @Last modified time: 2018-08-07
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -165,6 +165,10 @@ def argz(argv=None, description=None, prevArgs=None):
         default=int( argDeflt( config, options, "mongoCursorTimeout", int(600000)) ),
         type=int,
         help="set the time in milliseconds for cursors to timeout")
+    parser.add_argument("--kerLogMax",
+        default=int( argDeflt( config, options, "kerLogMax", int(0)) ),
+        type=int,
+        help="set the max log level for keras to log")
 
     args = vars(parser.parse_args(argv))
 
