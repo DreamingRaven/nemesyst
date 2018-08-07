@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-02
+# @Last modified time: 2018-08-07
 # @License: Please see LICENSE file in project root
 
 
@@ -60,6 +60,8 @@ class NeuralNetwork():
             self.cursorPosition = 0
             # this is to allow a higher try catch to delete it
             return self.cursor
+        else:
+            self.log(prePend + "could not generate cursor as cursor already exists or no pipeline is provided", 1)
 
 
 
@@ -206,7 +208,12 @@ class NeuralNetwork():
 
                     self._model_train(data=data, target=target,
                         id=mongoDoc["_id"])
+            # cursor is now dead so make it None
+            self.cursor = None
+            # save the resulting model
             self.saveModel()
+            # since this is training we need training accuracy so need to regen cursor
+            self.getCursor()
         else:
             self.log("could not train, either model not generated or cursor does not exist", 2)
 
@@ -215,17 +222,20 @@ class NeuralNetwork():
     def test(self):
 
         if(self.model) and (self.cursor):
-            self.log("testing..." , -1)
+            if(self.cursor.alive):
+                self.log("testing..." , -1)
 
-            # keep looping while cursor can give more data
-            while(self.cursor.alive):
-                dataBatch = self.nextDataset(self.args["batchSize"])
-                for mongoDoc in dataBatch:
-                    data = pd.DataFrame(list(mongoDoc["data"]))
-                    self._model_test(data=data, target="placeholder")
+                # keep looping while cursor can give more data
+                while(self.cursor.alive):
+                    dataBatch = self.nextDataset(self.args["batchSize"])
+                    for mongoDoc in dataBatch:
+                        data = pd.DataFrame(list(mongoDoc["data"]))
+                        self._model_test(data=data, target="placeholder")
+            else:
+                self.log(prePend + "could not test model on data as cursor is not alive/ holds no data" , 2)
 
         else:
-            self.log("could not train, either model not generated or cursor does not exist", 2)
+            self.log(prePend + "could not test, either model or cursor does not exist", 2)
 
 
 
@@ -238,15 +248,15 @@ class NeuralNetwork():
             if(data.shape == expectShape):
 
                 # self.model.summary()
-                hist = self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
-                    epochs=self.args["epochs"], verbose=0, callbacks=None,
-                    validation_split=0, validation_data=None, shuffle=False,
-                    class_weight=None, sample_weight=None, initial_epoch=0,
-                    steps_per_epoch=None, validation_steps=None)
+                self.history = self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
+                    epochs=self.args["epochs"], verbose=self.args["kerLogMax"],
+                    callbacks=None, validation_split=0, validation_data=None,
+                    shuffle=False, class_weight=None, sample_weight=None,
+                    initial_epoch=0, steps_per_epoch=None, validation_steps=None)
 
             else:
                 self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
-                    + str(expectShape), 3)
+                    + str(expectShape), 1)
 
         except:
             self.log(self.prePend + "could not train:\t" + str(id) + "\n" +
