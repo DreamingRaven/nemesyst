@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-07
+# @Last modified time: 2018-08-08
 # @License: Please see LICENSE file in project root
 
 
@@ -39,6 +39,7 @@ class NeuralNetwork():
         self.db = db
         self.args = args
         self.log = logger
+        self.error = None
         self.cursor = None
         self.history = None
         self.pipeline = pipeline
@@ -214,6 +215,8 @@ class NeuralNetwork():
             self.saveModel()
             # since this is training we need training accuracy so need to regen cursor
             self.getCursor()
+            # now getting training set accuracy by calling test on the same data trained on
+            self.test()
         else:
             self.log("could not train, either model not generated or cursor does not exist", 2)
 
@@ -248,7 +251,7 @@ class NeuralNetwork():
             if(data.shape == expectShape):
 
                 # self.model.summary()
-                self.history = self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
+                self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
                     epochs=self.args["epochs"], verbose=self.args["kerLogMax"],
                     callbacks=None, validation_split=0, validation_data=None,
                     shuffle=False, class_weight=None, sample_weight=None,

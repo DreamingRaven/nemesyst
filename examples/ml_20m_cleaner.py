@@ -4,7 +4,7 @@
 # @Date:   2018-06-19
 # @Filename: cleaner.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-03
+# @Last modified time: 2018-08-07
 # @License: Please see LICENSE file in project root
 
 
@@ -128,8 +128,8 @@ def argz(argv, description=None):
 
 
 # setting up to make things nice
-name = os.path.basename(os.path.abspath(sys.argv[0]))
-prePend = "[ " + name + " ] "
+cleanerName = os.path.basename(os.path.abspath(sys.argv[0]))
+prePend = "[ " + cleanerName + " ] "
 
 description = str("cleaner file for adaptation to users needs, " +
               "these files deal with data cleaning")

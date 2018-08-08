@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-31
+# @Last modified time: 2018-08-08
 # @License: Please see LICENSE file in project root
 
 
@@ -95,13 +95,16 @@ print = log.print
 
 # attempting update/ falling back
 try: # TODO: devise a method to make erros in nested try, catch
-    from RavenPythonLib.updaters.gitUpdate import Gupdater
-    nucleon = Gupdater(path=path, urls=dependancies)
-    nucleon.install()
-    nucleon.update()
-    print("main updater success", 3)
+    if(args["toUpdate"] == True):
+        from RavenPythonLib.updaters.gitUpdate import Gupdater
+        nucleon = Gupdater(path=path, urls=dependancies)
+        nucleon.install()
+        nucleon.update()
+        print(prePend + "main updater success", 3)
+    else:
+        print(prePend + "Skipping update/ installation since there is no --toUpdate flag given", 0)
 except:
-    print("Gupdater failed, falling back: " + str(sys.exc_info()[1]), 1)
+    print(prePend + "G-updater failed, try setting --toUpdate flag. falling back: " + str(sys.exc_info()[1]), 1)
     installer(path=path, urls=dependancies)
     updater(path=path, urls=dependancies)
 
@@ -110,11 +113,11 @@ try:
     from RavenPythonLib.loggers.basicLog import Log
     log = Log(logLevel=args["loglevel"])
     print = log.print # note no '()' as function address desired not itself
-    print("main logger success", 3)
+    print(prePend + "main logger success", 3)
 except:
     log = Log(logLevel=args["loglevel"])
     print = log.print
-    print("Main logger could not be loaded, falling back: " +
+    print(prePend + "Main logger could not be loaded, try setting --toUpdate flag. falling back: " +
         str(sys.exc_info()[1]), 1)
 
 # if >level3 (debug) prepare for some verbose shnitzel
@@ -125,5 +128,8 @@ else:
         main()
         # raise ValueError('value x not valid; ...')
         # raise NotImplementedError('not currentley implemented')
+    except ModuleNotFoundError:
+        print(prePend + "A dependancy module is missing, try updating using '--toUpdate' flag, else 'git pull'. Finally check python dependancies exist e.g Keras " +
+        str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
     except:
         print(prePend + str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)

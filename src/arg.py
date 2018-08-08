@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-07
+# @Last modified time: 2018-08-08
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -169,6 +169,10 @@ def argz(argv=None, description=None, prevArgs=None):
         default=int( argDeflt( config, options, "kerLogMax", int(0)) ),
         type=int,
         help="set the max log level for keras to log")
+    parser.add_argument("--toUpdate",
+        default=bool( argDeflt( config, options, "toUpdate", False, isBool=True) ),
+        action="store_true",
+        help="sets flag to automate updating and for first time installation")
 
     args = vars(parser.parse_args(argv))
 
