@@ -313,6 +313,7 @@ be found on the
 documentation page. Also a quick note the dot notation as in '$data.X' means sub key X in data, I.E call a key that is nested within another key. The $ symbol is used to mean variables, so '$data.X' = the value associated with that key e.g 22, 'data.X' = the string "data.X".
 
 Results in:
+
 | key           | value 0 | value 1 | value 2 |...| value timeSteps-1   |
 |:-------------:|:-------:|:-------:|:-------:|:-:|:-------------------:|
 | id            | someIdNumber |    |         |...|                     |
