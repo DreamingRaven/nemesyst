@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-08
+# @Last modified time: 2018-08-09
 # @License: Please see LICENSE file in project root
 
 
@@ -39,12 +39,14 @@ class NeuralNetwork():
         self.db = db
         self.args = args
         self.log = logger
-        self.error = None
         self.cursor = None
         self.history = None
         self.pipeline = pipeline
         self.cursorPosition = None
         self.log(self.prePend + "NN.init() success", 3)
+        self.sumError = None
+        self.numExamples = None
+        self.numValidExamples = None
         # control shutting up tensorflow
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(1)
 
@@ -81,7 +83,6 @@ class NeuralNetwork():
 
         # check cursor has been created atleast before attempting to use it
         if(self.cursor != None):
-            # adjust keras so it can save its binary to databases and declare vars
             self.generateModel()
             self.compile()
 
@@ -190,15 +191,49 @@ class NeuralNetwork():
 
 
     def train(self):
+        self.modler(toTrain=True)
+        self.log(self.prePend +
+            "\n\tsumError: " + str(self.sumError) +
+            " \n\tnumExamples: " + str(self.numExamples) +
+            " \n\tnumValidExamples " + str(self.numValidExamples) +
+            " \n\tmeanError: " + str(self.sumError / self.numValidExamples),
+            0)
+        # save the resulting model
+        self.saveModel()
 
+
+    def test(self):
+        self.modler(toTrain=False)
+        self.log(self.prePend +
+            "\n\tsumError: " + str(self.sumError) +
+            " \n\tnumExamples: " + str(self.numExamples) +
+            " \n\tnumValidExamples " + str(self.numValidExamples) +
+            " \n\tmeanError: " + str(self.sumError / self.numValidExamples),
+            0)
+
+
+    # the universal interface that allows the code of both test and train to be
+    # one single set. "Don't repeat yourself"
+    def modler(self, toTrain=None):
+        sumError = 0
+        numExamples = 0
+        self.numValidExamples = 0
+
+
+        # check if model exists and that cursor exists
         if(self.model) and (self.cursor):
-            self.log("training..." , -1)
+
+            if(toTrain == True):
+                self.log("training on " + self.args["coll"] + " ..." , -1)
+            else:
+                self.log("testing on "  + self.args["coll"] + " ..." , -1)
+
 
             # keep looping while cursor can give more data
             while(self.cursor.alive):
                 dataBatch = self.nextDataset(self.args["batchSize"])
                 for mongoDoc in dataBatch:
-
+                    numExamples = numExamples + 1
                     #TODO this is fine if both are pushed lists
                     data = pd.DataFrame(list(mongoDoc["data"]))
                     data = np.expand_dims(data.values, axis=0)
@@ -207,42 +242,32 @@ class NeuralNetwork():
                     target = mongoDoc["target"]
                     target = np.full((1, 1), target)
 
-                    self._model_train(data=data, target=target,
-                        id=mongoDoc["_id"])
-            # cursor is now dead so make it None
-            self.cursor = None
-            # save the resulting model
-            self.saveModel()
-            # since this is training we need training accuracy so need to regen cursor
-            self.getCursor()
-            # now getting training set accuracy by calling test on the same data trained on
-            self.test()
-        else:
-            self.log("could not train, either model not generated or cursor does not exist", 2)
+                    if(toTrain == True):
+                        self.testTrainer(data=data, target=target,
+                            id=mongoDoc["_id"], toTrain=True)
+                    else:
+                        sumError = sumError + self.testTrainer(data=data,
+                            target=target, id=mongoDoc["_id"], toTrain=False)
 
-
-
-    def test(self):
-
-        if(self.model) and (self.cursor):
-            if(self.cursor.alive):
-                self.log("testing..." , -1)
-
-                # keep looping while cursor can give more data
-                while(self.cursor.alive):
-                    dataBatch = self.nextDataset(self.args["batchSize"])
-                    for mongoDoc in dataBatch:
-                        data = pd.DataFrame(list(mongoDoc["data"]))
-                        self._model_test(data=data, target="placeholder")
+            if(toTrain == True):
+                # cursor is now dead so make it None
+                self.cursor = None
+                # since this is training we need training accuracy so need to regen cursor
+                self.getCursor()
+                # call self again but to test now
+                self.modler(toTrain=False)
             else:
-                self.log(prePend + "could not test model on data as cursor is not alive/ holds no data" , 2)
-
+                self.sumError = sumError
+                self.numExamples = numExamples
         else:
-            self.log(prePend + "could not test, either model or cursor does not exist", 2)
+            if(toTrain == True):
+                self.log("could not train, either model not generated or cursor does not exist" , 2)
+            else:
+                self.log("could not test, either model not generated or cursor does not exist..." , -1)
 
 
 
-    def _model_train(self, data, target, id):
+    def testTrainer(self, data, target, id, toTrain=False):
         try:
             #TODO: off by one ... you fool george, sort this out
             expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
@@ -250,29 +275,32 @@ class NeuralNetwork():
             # check if shape meets expectations
             if(data.shape == expectShape):
 
-                # self.model.summary()
-                self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
-                    epochs=self.args["epochs"], verbose=self.args["kerLogMax"],
-                    callbacks=None, validation_split=0, validation_data=None,
-                    shuffle=False, class_weight=None, sample_weight=None,
-                    initial_epoch=0, steps_per_epoch=None, validation_steps=None)
+                if(toTrain == True):
+                    # self.model.summary()
+                    self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
+                        epochs=self.args["epochs"], verbose=self.args["kerLogMax"],
+                        callbacks=None, validation_split=0, validation_data=None,
+                        shuffle=False, class_weight=None, sample_weight=None,
+                        initial_epoch=0, steps_per_epoch=None, validation_steps=None)
+                else:
+                    self.numValidExamples = self.numValidExamples + 1
+                    return self.model.evaluate(x=data, y=target,
+                        batch_size=self.args["batchSize"],
+                        verbose=self.args["kerLogMax"])
 
             else:
                 self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
                     + str(expectShape), 1)
 
         except:
-            self.log(self.prePend + "could not train:\t" + str(id) + "\n" +
-                str(sys.exc_info()[0]) + " " +
-                str(sys.exc_info()[1]), 2)
-
-
-
-    def _model_test(self, data, target):
-        try:
-            None
-        except:
-            None
+            if(self.args["toTrain"]):
+                self.log(self.prePend + "could not train:\t" + str(id) + "\n" +
+                    str(sys.exc_info()[0]) + " " +
+                    str(sys.exc_info()[1]), 2)
+            else:
+                self.log(self.prePend + "could not test:\t" + str(id) + "\n" +
+                    str(sys.exc_info()[0]) + " " +
+                    str(sys.exc_info()[1]), 2)
 
 
 
@@ -282,13 +310,20 @@ class NeuralNetwork():
             stateDict["pipe"] = str(self.pipeline)
             del stateDict["pass"]
             stateDict["utc"] = datetime.datetime.utcnow()
-
+            if(self.sumError):
+                stateDict["sumError"] = self.sumError
+            if(self.numExamples):
+                stateDict["numSamples"] = self.numExamples
+            if(self.numValidExamples):
+                stateDict["numValidSamples"] = self.numValidExamples
+            if(self.sumError) and (self.numValidExamples):
+                stateDict["meanError"] = self.sumError / self.numValidExamples
             # save model
             self.make_keras_picklable()
             model_bytes = pickle.dumps(self.model)
             stateDict['model_bin'] = Binary(model_bytes)
 
-            self.db.shoveJson(stateDict, collName="states")
+            self.db.shoveJson(stateDict, collName=str(self.args["modelColl"]))
 
 
 

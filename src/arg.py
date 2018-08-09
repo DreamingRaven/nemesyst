@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-08
+# @Last modified time: 2018-08-09
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -173,6 +173,10 @@ def argz(argv=None, description=None, prevArgs=None):
         default=bool( argDeflt( config, options, "toUpdate", False, isBool=True) ),
         action="store_true",
         help="sets flag to automate updating and for first time installation")
+    parser.add_argument("--modelColl",
+        default=str( argDeflt( config, options, "modelColl", str("modelStates")) ),
+        help="set the collection to which state will be tracked and model binary kept")
+
 
     args = vars(parser.parse_args(argv))
 
