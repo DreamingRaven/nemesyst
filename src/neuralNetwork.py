@@ -175,7 +175,6 @@ class NeuralNetwork():
             for unused in range(batchSize):
                 document = self.cursor.next()
                 data.append(document)
-
         except StopIteration:
             self.log("cursor has been emptied", -1)
         except ValueError:
@@ -233,7 +232,7 @@ class NeuralNetwork():
 
             # keep looping while cursor can give more data
             while(self.cursor.alive):
-                dataBatch = self.nextDataset(self.args["batchSize"])
+                dataBatch = self.nextDataset(1)
                 for mongoDoc in dataBatch:
                     numExamples = numExamples + 1
                     #TODO this is fine if both are pushed lists
@@ -248,8 +247,13 @@ class NeuralNetwork():
                         self.testTrainer(data=data, target=target,
                             id=mongoDoc["_id"], toTrain=True)
                     else:
-                        sumError = sumError + self.testTrainer(data=data,
-                            target=target, id=mongoDoc["_id"], toTrain=False)
+                        try:
+                            sumError = sumError + self.testTrainer(data=data,
+                                target=target, id=mongoDoc["_id"], toTrain=False)
+                        except TypeError:
+                            self.log("Type Error: likeley because NN.testTrainer returned nothing" +
+                                str(sys.exc_info()[0]) + " " +
+                                str(sys.exc_info()[1]), 2)
 
             if(toTrain == True):
                 # cursor is now dead so make it None
