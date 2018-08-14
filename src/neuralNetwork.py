@@ -119,7 +119,7 @@ class NeuralNetwork():
             "\t" + "dimensionality:\t" + str(self.args["dimensionality"])  + "\n" +
             "\t" + "batchSize:\t"      + str(self.args["batchSize"])       + "\n" +
             "\t" + "batchInShape:\t"   + str(bInShape)                     + "\n" +
-            "\t" + "epochs:\t"         + str(self.args["epochs"])          + "\n" +
+            "\t" + "epochs:\t\t"       + str(self.args["epochs"])          + "\n" +
             "\t" + "activation:\t"     + str(self.args["activation"])      + "\n",
             0
         )
