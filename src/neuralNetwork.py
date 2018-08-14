@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-09
+# @Last modified time: 2018-08-14
 # @License: Please see LICENSE file in project root
 
 
@@ -119,6 +119,7 @@ class NeuralNetwork():
             "\t" + "dimensionality:\t" + str(self.args["dimensionality"])  + "\n" +
             "\t" + "batchSize:\t"      + str(self.args["batchSize"])       + "\n" +
             "\t" + "batchInShape:\t"   + str(bInShape)                     + "\n" +
+            "\t" + "epochs:\t"         + str(self.args["epochs"])          + "\n" +
             "\t" + "activation:\t"     + str(self.args["activation"])      + "\n",
             0
         )
@@ -143,6 +144,7 @@ class NeuralNetwork():
             "\t" + "layers:\t\t"       + str(self.args["layers"])          + "\n" +
             "\t" + "timesteps:\t"      + str(self.args["timeSteps"])       + "\n" +
             "\t" + "dimensionality:\t" + str(self.args["dimensionality"])  + "\n" +
+            "\t" + "epochs:\t\t"       + str(self.args["epochs"])          + "\n" +
             "\t" + "activation:\t"     + str(self.args["activation"])      + "\n",
             0
         )
