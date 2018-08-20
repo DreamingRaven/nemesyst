@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-07-30
+# @Last modified time: 2018-08-20
 # @License: Please see LICENSE file in project root
 
 
@@ -185,7 +185,7 @@ def test(args, database=None, print=print):
                           )
         # nn.debug()
         cursor = nn.getCursor()
-        nn.autogen()
+        # nn.autogen()
         nn.test()
 
     except:
