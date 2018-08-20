@@ -169,6 +169,9 @@ This is a current list but **/ravenRecSyst.py --help will always be prefered and
 | \-\-mongoCursorTimeout   |           | 600     | 0      | mongo | specifies the time in milliseconds to allow a cursor to remain inacive before it is deleted |
 | \-\-kerLogMax|           | 0                        | 0      | ann    | specifies the maximum log level of keras log/ print statements |
 | \-\-toUpdate |           | False                    | 1      | rrs    | flag to update / install ravenRecSyst and RavenPythonLib |
+| \-\-modelColl|           | modelStates              | 0      | mongo  | specifies the collection to store model states and history in |
+| \-\-identifier|          | getpass.getuser()        | 0      | mongo  | specifies an identifier so you can differentiate between model sources easily |
+| \-\-tfLogMin |           | 1                        | 0      | tf     | specifies how verbose you want tensorflow to be i.e TF_CPP_MIN_LOG_LEVEL |
 
 ### Config Files / Persistent Behavioral Changes
 
