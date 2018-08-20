@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-14
+# @Last modified time: 2018-08-20
 # @License: Please see LICENSE file in project root
 
 
@@ -251,9 +251,9 @@ class NeuralNetwork():
                             sumError = sumError + self.testTrainer(data=data,
                                 target=target, id=mongoDoc["_id"], toTrain=False)
                         except TypeError:
-                            self.log("Type Error: likeley because NN.testTrainer returned nothing" +
+                            self.log("NN.testTrainer returned nothing" +
                                 str(sys.exc_info()[0]) + " " +
-                                str(sys.exc_info()[1]), 2)
+                                str(sys.exc_info()[1]), 3)
 
             if(toTrain == True):
                 # cursor is now dead so make it None
