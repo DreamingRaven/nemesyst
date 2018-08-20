@@ -89,6 +89,11 @@ class NeuralNetwork():
 
 
 
+    def getModel(self):
+        self.log(self.prePend + "attempting to get most recent model")
+
+
+
     def generateModel(self):
         if( "lstm" == self.args["type"]):
             self.lstm()
