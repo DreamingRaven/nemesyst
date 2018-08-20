@@ -297,6 +297,7 @@ class NeuralNetwork():
             else:
                 self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
                     + str(expectShape), 1)
+                return 0
 
         except:
             if(self.args["toTrain"]):
