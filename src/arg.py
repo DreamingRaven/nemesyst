@@ -2,11 +2,11 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-09
+# @Last modified time: 2018-08-20
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
-       argparse, configparser
+       argparse, configparser, getpass
 from fnmatch import fnmatch
 
 
@@ -176,6 +176,10 @@ def argz(argv=None, description=None, prevArgs=None):
     parser.add_argument("--modelColl",
         default=str( argDeflt( config, options, "modelColl", str("modelStates")) ),
         help="set the collection to which state will be tracked and model binary kept")
+    parser.add_argument("--identifier",
+        default=str( argDeflt( config, options, "identifier", str(getpass.getuser())) ),
+        help="set an identifier for collections to be able to filter models serves no direct purpose")
+
 
 
     args = vars(parser.parse_args(argv))
