@@ -179,6 +179,10 @@ def argz(argv=None, description=None, prevArgs=None):
     parser.add_argument("--identifier",
         default=str( argDeflt( config, options, "identifier", str(getpass.getuser())) ),
         help="set an identifier for collections to be able to filter models serves no direct purpose")
+    parser.add_argument("--tfLogMin",
+        default=int( argDeflt( config, options, "tfLogMin", int(1)) ),
+        type=int,
+        help="set the minimum log level for tensorflow, i.e TF_CPP_MIN_LOG_LEVEL")
 
 
 

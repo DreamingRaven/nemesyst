@@ -48,7 +48,7 @@ class NeuralNetwork():
         self.numExamples = None
         self.numValidExamples = None
         # control shutting up tensorflow
-        os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(1)
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
 
 
