@@ -39,6 +39,7 @@ class NeuralNetwork():
         self.db = db
         self.args = args
         self.log = logger
+        self.model = None # highly experimental early assignment
         self.cursor = None
         self.history = None
         self.pipeline = pipeline
@@ -193,24 +194,15 @@ class NeuralNetwork():
 
     def train(self):
         self.modler(toTrain=True)
-        self.log(self.prePend +
-            "\n\tsumError: " + str(self.sumError) +
-            " \n\tnumExamples: " + str(self.numExamples) +
-            " \n\tnumValidExamples " + str(self.numValidExamples) +
-            " \n\tmeanError: " + str(self.sumError / self.numValidExamples),
-            0)
-        # save the resulting model
         self.saveModel()
 
 
     def test(self):
+        if(self.model):
+            self.log(self.prePend + "model already in memory using it for testing", 3)
+        else:
+            self.log(self.prePend + "model not already in memory attempting retrieval", 3)
         self.modler(toTrain=False)
-        self.log(self.prePend +
-            "\n\tsumError: " + str(self.sumError) +
-            " \n\tnumExamples: " + str(self.numExamples) +
-            " \n\tnumValidExamples " + str(self.numValidExamples) +
-            " \n\tmeanError: " + str(self.sumError / self.numValidExamples),
-            0)
 
 
     # the universal interface that allows the code of both test and train to be
@@ -265,12 +257,24 @@ class NeuralNetwork():
             else:
                 self.sumError = sumError
                 self.numExamples = numExamples
+            self.modlerStatusMessage()
         else:
             if(toTrain == True):
-                self.log("could not train, either model not generated or cursor does not exist" , 2)
+                self.log(self.prePend +
+                    "could not train, either model not generated or cursor does not exist"
+                    , 2)
             else:
-                self.log("could not test, either model not generated or cursor does not exist..." , -1)
+                self.log(self.prePend +
+                    "Aborting test model does not exist; unable to continue"
+                    , 2)
 
+    def modlerStatusMessage(self):
+        self.log(self.prePend +
+            "\n\tsumError: " + str(self.sumError) +
+            " \n\tnumExamples: " + str(self.numExamples) +
+            " \n\tnumValidExamples " + str(self.numValidExamples) +
+            " \n\tmeanError: " + str(self.sumError / self.numValidExamples),
+            0)
 
 
     def testTrainer(self, data, target, id, toTrain=False):
