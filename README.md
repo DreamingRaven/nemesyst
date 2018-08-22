@@ -1,4 +1,6 @@
-# Nemesyst (formerly: RavenRecSyst)
+# Nemesyst
+
+###### (formerly: RavenRecSyst)
 
 Please note: The examples in ./examples folder are still being written, in particular the movilense 20 million (ml_20m). This documentation is also in the process of being further updated with more examples and adding to testing and prediction sections. If you have any issues or see anything glaringly wrong please open an issue.
 
@@ -63,10 +65,10 @@ If any have been left out please create an issue and post any log messages.
 
 Then simply: *
 ````
-git clone https://github.com/DreamingRaven/RavenRecSyst
+git clone https://github.com/DreamingRaven/Nemesyst
 ````
 ````
-./RavenRecSyst/ravenRecSyst.py --toUpdate
+./Nemesyst/nemesyst.py --toUpdate
 ````
 
 Other than those that should be all you need, as dependanices have been kept to as few as needed to make a good extensible result.
@@ -78,26 +80,26 @@ Other than those that should be all you need, as dependanices have been kept to 
 
 ## Usage
 
-The entry point file is [ravenRecSyst.py](https://github.com/DreamingRaven/RavenRecSyst/blob/master/ravenRecSyst.py)
+The entry point file is [nemesyst.py](https://github.com/DreamingRaven/Nemesyst/blob/master/nemesyst.py)
 
 This recommender system should flag any issues with arguments automagically. For a list of what arguments are availiable:
 ````
-**/ravenRecSyst.py -h
+**/nemesyst.py -h
 ````
 
-** is used in place of whatever the path is to the RavenRecSyst root directory location, since it will vary between systems. e.g the full bash command on my system would be:
+** is used in place of whatever the path is to the Nemesyst root directory location, since it will vary between systems. e.g the full bash command on my system would be:
 ````
- ~/RavenRecSyst/ravenRecSyst.py -h
+ ~/Nemesyst/nemesyst.py -h
 ````
 where '~' is expanded by bash to /home/whateverYourUserNameIs
 
 standard usage for a localhost server with authentication (auth non optional forced):
 ````
-**/ravenRecSyst.py --user *1* --pass *2* --name *3* --toInitDb --toStartDb
+**/nemesyst.py --user *1* --pass *2* --name *3* --toInitDb --toStartDb
 ````
 or
 ````
-**/ravenRecSyst.py -u *1* --p *2* --N *3* -i -S
+**/nemesyst.py -u *1* --p *2* --N *3* -i -S
 ````
 where:
 * \*1\* is used in place of your *user* name if this is a new db then desired username.
@@ -122,13 +124,13 @@ lastly as above, for debugging purposes there is a logger with log levels:
 To use this logger simply add option -v OR --loglevel with the desired level. Anything less than that level will also be shown, so level 2 will show [ERROR], [WARN], [INFO] and formatting messages, but not [DEBUG] messages.
 E.G to show all possible messages in most verbose state:
 ````
-**/ravenRecSyst.py -u *1* --p *2* --N *3* --loglevel 9001
+**/nemesyst.py -u *1* --p *2* --N *3* --loglevel 9001
 ````
 ("over nine thousand!") 9001 will show all log levels < 9001
 
 ### All the options
 
-This is a current list but **/ravenRecSyst.py --help will always be prefered and this is not going to be as up to date or verbose, just a basic overview. For any in depth queries see the argparse [parser.add_arguments](https://github.com/DreamingRaven/RavenRecSyst/blob/master/src/arg.py)
+This is a current list but **/nemesyst.py --help will always be prefered and this is not going to be as up to date or verbose, just a basic overview. For any in depth queries see the argparse [parser.add_arguments](https://github.com/DreamingRaven/Nemesyst/blob/master/src/arg.py)
 
 | option       | alternate | default                  | isFlag | class  | description   |
 |:------------:|:---------:|:------------------------:|:------:|:------:|:-------------:|
@@ -168,42 +170,42 @@ This is a current list but **/ravenRecSyst.py --help will always be prefered and
 | \-\-config   |           | **/config/config.ini     | 0      | config | specifies file path to config.ini file |
 | \-\-mongoCursorTimeout   |           | 600     | 0      | mongo | specifies the time in milliseconds to allow a cursor to remain inacive before it is deleted |
 | \-\-kerLogMax|           | 0                        | 0      | ann    | specifies the maximum log level of keras log/ print statements |
-| \-\-toUpdate |           | False                    | 1      | rrs    | flag to update / install ravenRecSyst and RavenPythonLib |
+| \-\-toUpdate |           | False                    | 1      | rrs    | flag to update / install nemesyst and RavenPythonLib |
 | \-\-modelColl|           | modelStates              | 0      | mongo  | specifies the collection to store model states and history in |
 | \-\-identifier|          | getpass.getuser()        | 0      | mongo  | specifies an identifier so you can differentiate between model sources easily |
 | \-\-tfLogMin |           | 1                        | 0      | tf     | specifies how verbose you want tensorflow to be i.e TF_CPP_MIN_LOG_LEVEL |
 
 ### Config Files / Persistent Behavioral Changes
 
-While RavenRecSyst supports a lengthy list of command line options: which dictate the flow and operation of the algorithm, it may be desireable to have a peristent set of options which one can use to reduce the need to repeatedley type out consistentley used commands.
+While Nemesyst supports a lengthy list of command line options: which dictate the flow and operation of the algorithm, it may be desireable to have a peristent set of options which one can use to reduce the need to repeatedley type out consistentley used commands.
 
-For this RavenRecSyst supports .ini config files, the default / boilerplate of which can be found in [\*\*/RavenRecSyst/config/rrs_ml.ini](https://github.com/DreamingRaven/RavenRecSyst/blob/master/config/config.ini). This is implemented using [pythons configparser library](https://docs.python.org/3/library/configparser.html) and all keynames are shared with the command line interface although the config file only supports the long format e.g. 'user' instead of --user but not 'u' instead of -u. There is also an order of priority, cli > config > fallbacks; Explicitly, command line options will always take precedence to allow for quick customisation without having to persistentley change any underlying configuration file; Least priority is are the fallbacks which are only used if no cli or config file options exist.
+For this Nemesyst supports .ini config files, the default / boilerplate of which can be found in [\*\*/Nemesyst/config/rrs_ml.ini](https://github.com/DreamingRaven/Nemesyst/blob/master/config/config.ini). This is implemented using [pythons configparser library](https://docs.python.org/3/library/configparser.html) and all keynames are shared with the command line interface although the config file only supports the long format e.g. 'user' instead of --user but not 'u' instead of -u. There is also an order of priority, cli > config > fallbacks; Explicitly, command line options will always take precedence to allow for quick customisation without having to persistentley change any underlying configuration file; Least priority is are the fallbacks which are only used if no cli or config file options exist.
 
-Note however the config file above has sections called [options] and [DEFAULT], please refrain from changing the default section and instead overide the defaults by adding entries inside the options section which is the one specifically called by RavenRecSyst. This will mean you always have the original default options as a referance point for overiding.
+Note however the config file above has sections called [options] and [DEFAULT], please refrain from changing the default section and instead overide the defaults by adding entries inside the options section which is the one specifically called by Nemesyst. This will mean you always have the original default options as a referance point for overiding.
 
 ---
 
 ## Application Specific Customisation
 
-RavenRecSyst includes customisable modules that should be used to get the
+Nemesyst includes customisable modules that should be used to get the
 functionality you need. These modules should be executable and will be called
-by RavenRecSyst to do data/ application specific operations.
+by Nemesyst to do data/ application specific operations.
 
 There will be 4 such modules; these were included since there is no way to
 create things such as a universal dataset cleaner, as each data set has its own
 nuances.
 
 ### Cleaning
-RavenRecSyst supports arbitray cleaning code execution.* To tell RavenRecSyst
+Nemesyst supports arbitray cleaning code execution.* To tell Nemesyst
 which file is you're cleaning file simply use the -c / --cleaner argument
 followed by the file inclusive path to the (executable) cleaner file.
 
 An example using the default cleaner:
 ```
-**/ravenRecSyst.py *yourOtherArguments* --cleaner **/examples/cleaner --newData *1*
+**/nemesyst.py *yourOtherArguments* --cleaner **/examples/cleaner --newData *1*
 ```
 Where:
-* \*\* is the inclusive path to wherever you have RavenRecSyst/ directory, read
+* \*\* is the inclusive path to wherever you have Nemesyst/ directory, read
 usage section.
 * \*1\* is the inclusive file path or folder of files which are to be cleaned
 
@@ -213,7 +215,7 @@ you're cleaner file. See \*\*/examples/cleaner.py for a boiler plate template.
 Notice --newData is also specified, as the cleaner will not be used if there is
 nothing to clean.
 
-Once cleaning is complete, RavenRecSyst will use the same files/ folder of files
+Once cleaning is complete, Nemesyst will use the same files/ folder of files
 provided to --newData and put them into mongoDb for you. You may want to verify
 that this has been done correctly using a tool such as MongoDb compass or
 using the RavenRecSysts -l flag to log you in so you can inspect mongoDb
@@ -222,7 +224,7 @@ manually.
 \* please note: this is a potential security concern if this file is edited to
 include malicious code, please make sure that all files in this project have
 minimum write premissions on you're system so that they can not be used as such.
-Pleae also ensure that you do not execute RavenRecSyst with administrator
+Pleae also ensure that you do not execute Nemesyst with administrator
 permissions as it is uneccessary and potentially harmfull if these files have
 been maliciously tampered as with any code base.
 
@@ -259,13 +261,13 @@ Each file with the extension given by the --suffix option in the directory given
 
 #### Pipelines
 After cleaning data or inserting clean data, it is neccessary to retrieve again the data from
-the database. For this reason RavenRecSyst supports [aggregate pipelines](https://docs.mongodb.com/manual/core/aggregation-pipeline/), which not only
+the database. For this reason Nemesyst supports [aggregate pipelines](https://docs.mongodb.com/manual/core/aggregation-pipeline/), which not only
 allow you to get existing data from the database but allows you to perform complex operations
-on the data prior to getting it from the database in a non permanent manner; aggregate pipelines in this manner allow you to rapidly test small changes on the clean data set without having to reopen csv files or re-clean to calculate things like sums of a column etc, provided post cleaning the data has not been scrubbed of features you required to do tweaks, clearly you cant calculate sum of a column that no longer exists in the clean dataset. Any pipeline present in [pipeline.json](https://github.com/DreamingRaven/RavenRecSyst/blob/master/config/pipeline.json) will be used to create a cursor which in turn will iterate over your data set. This can of course be overidden, you can specify the pipeline file using the --pipeline option.
+on the data prior to getting it from the database in a non permanent manner; aggregate pipelines in this manner allow you to rapidly test small changes on the clean data set without having to reopen csv files or re-clean to calculate things like sums of a column etc, provided post cleaning the data has not been scrubbed of features you required to do tweaks, clearly you cant calculate sum of a column that no longer exists in the clean dataset. Any pipeline present in [pipeline.json](https://github.com/DreamingRaven/Nemesyst/blob/master/config/pipeline.json) will be used to create a cursor which in turn will iterate over your data set. This can of course be overidden, you can specify the pipeline file using the --pipeline option.
 
 Pipelines can be confusing at first, but stick with it, they are incredibly powerfull tools that allow you to change things rapidly, efficientley, and with minimal fuss once you know what you are doing. I know firsthand how offputting they can be but im so glad I stuck with them myself: So muuch powweeerrrr.
 
-The results of the pipeline are at a minimum an '_id' field, but RavenRecSyst requires two other fields, a "data" field and a "target" field; The "data" field should contain the exact data you would like to train on for a whole single example; The "target" field should contain a matching .. well target, so preciseley what you would like to backpropogate with. Clearly in the example case of predicting new data there is no "target" to include, but a pipeline which pushed something that doesnt exist into an array or single value will just be left empty anyway, which means you can use the same pipeline for training testing and predicting if you leave the "target" field in the aggregate pipeline, as it will be easily and intuitiveley dealt with.
+The results of the pipeline are at a minimum an '_id' field, but Nemesyst requires two other fields, a "data" field and a "target" field; The "data" field should contain the exact data you would like to train on for a whole single example; The "target" field should contain a matching .. well target, so preciseley what you would like to backpropogate with. Clearly in the example case of predicting new data there is no "target" to include, but a pipeline which pushed something that doesnt exist into an array or single value will just be left empty anyway, which means you can use the same pipeline for training testing and predicting if you leave the "target" field in the aggregate pipeline, as it will be easily and intuitiveley dealt with.
 
 Pipeline:
 ```
@@ -287,7 +289,7 @@ Pipeline:
 You will need to inspect the database to see how your data is structured to
 be able to write your pipeline file.
 
-Given a single normal mongoDb document generated by ravenRecSyst.py->importer.py:
+Given a single normal mongoDb document generated by nemesyst.py->importer.py:
 ```
 {
   {"id": someIdNumber},
@@ -323,7 +325,7 @@ Results in:
 | whatNameToGiveIt| 22   | 66       | 13      |...| 17                  |
 | anotherName   | tomato | apples   | cucumb  |...| pillow              |
 
-Currentley RavenRecSyst does not support multivariate targets, specifically any "target" with more than one value, this is a future addition.
+Currentley Nemesyst does not support multivariate targets, specifically any "target" with more than one value, this is a future addition.
 
 ### Training
 To train the data set you first require a pipeline (see pipelines section). This pipeline is what will create an interatable mongoDb cursor which can retrieve the data you want in the manner you want it retrieved, please see previous section "Pipelines".
@@ -334,13 +336,13 @@ The conditions that need to be met to allow for training:
 - The afformetioned database to be currentley running ( --toStartDb )
 - The desired collection name where the data should be stored or is stored to be known ( --coll )
 - The database having data in the above collection ( --coll --newData, --cleaner | --coll --toJustImport )
-- A working pipeline file in [default location](https://github.com/DreamingRaven/RavenRecSyst/blob/master/config/pipeline.json) or specified using options ( None | --pipeline )
+- A working pipeline file in [default location](https://github.com/DreamingRaven/Nemesyst/blob/master/config/pipeline.json) or specified using options ( None | --pipeline )
 - Specifying the manner in which you would like to train, E.G. rnn, or lstm etc ... ( --type, --timeSteps ... )
 
 If all the above conditions are met at the point of training (they can all be done in one command and automatically run in the correct order), then you can specify the --toTrain flag.
 
 ````
-**/RavenRecSyst/ravenRecSyst.py --toTrain
+**/Nemesyst/nemesyst.py --toTrain
 ````
 
 ### Testing
@@ -350,11 +352,11 @@ requires that a model have been trained and exists in the "states" collection.
 
 If not parameter is given (currentley you cant specify) then it will pull the most
 recent model. This will test on the data set pointed to by --coll. As such you
-will need to re-run ravenRecSyst.py to swap from training to testing if you want
+will need to re-run nemesyst.py to swap from training to testing if you want
 to train on one set and test on another.
 
 ````
-**RavenRecSyst/ravenRecSyst.py --toTest
+**Nemesyst/nemesyst.py --toTest
 ````
 
 ### Predicting
@@ -365,7 +367,7 @@ to train on one set and test on another.
 ## Closing examples
 for user 'georgeraven' creating 'GeorgeRaven' user with 'password' password, in database 'mehDatabaseName', who desires to debug at log level '3' and to launch database:
 ````
-/home/georgeraven/RavenRecSyst/ravenRecSyst.py -u GeorgeRaven -p password -N mehDatabaseName -v 3 -i -S
+/home/georgeraven/Nemesyst/nemesyst.py -u GeorgeRaven -p password -N mehDatabaseName -v 3 -i -S
 ````
 
 Please see help screen for more options there are many more but these are the main ones for localhost usage.
