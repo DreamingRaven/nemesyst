@@ -206,7 +206,7 @@ class NeuralNetwork():
 
 
 
-    def perdict(self):
+    def predict(self):
         if(self.model):
             self.log(self.prePend + "model already in memory using it for testing", 3)
         else:
