@@ -85,8 +85,7 @@ class NeuralNetwork():
         model_cursor = self.db.getMostRecent(query={}, collName=self.args["modelColl"])
         model_metadata = pd.DataFrame(list(model_cursor))
         self.log(self.prePend +
-            "\n\tLoaded model " + str(model_metadata["_id"]) + " :" +
-            "\n\t\tActivation:" + str(model_metadata["type"])
+            str(model_metadata.to_dict('records'))
             ,0)
         model_bin = dict(model_metadata['model_bin'])[0]
         self.model = pickle.loads(model_bin)
