@@ -207,7 +207,7 @@ class NeuralNetwork():
         else:
             self.log(self.prePend + "model not already in memory attempting retrieval", 3)
             self.getModel()
-        self.modler(toTrain=False)
+        self.modler(toTest=True)
 
 
 
@@ -217,7 +217,7 @@ class NeuralNetwork():
         else:
             self.log(self.prePend + "model not already in memory attempting retrieval", 3)
             self.getModel()
-        self.modler(toTrain=False)
+        self.modler(toPredict=True)
 
 
 
@@ -234,8 +234,10 @@ class NeuralNetwork():
 
             if(toTrain == True):
                 self.log("training on " + self.args["coll"] + " ..." , -1)
-            else:
+            elif(toTest == True):
                 self.log("testing on "  + self.args["coll"] + " ..." , -1)
+            elif(toPredict == True):
+                self.log("predicting on "  + self.args["coll"] + " ..." , -1)
 
 
             # keep looping while cursor can give more data
@@ -254,7 +256,7 @@ class NeuralNetwork():
                     if(toTrain == True):
                         self.testTrainer(data=data, target=target,
                             id=mongoDoc["_id"], toTrain=True)
-                    else:
+                    elif(toTest == True):
                         try:
                             sumError = sumError + self.testTrainer(data=data,
                                 target=target, id=mongoDoc["_id"], toTrain=False)
@@ -262,6 +264,8 @@ class NeuralNetwork():
                             self.log("NN.testTrainer returned nothing" +
                                 str(sys.exc_info()[0]) + " " +
                                 str(sys.exc_info()[1]), 3)
+                    elif(toPredict == True):
+                        None
 
             if(toTrain == True):
                 # cursor is now dead so make it None
@@ -269,12 +273,16 @@ class NeuralNetwork():
                 # since this is training we need training accuracy so need to regen cursor
                 self.getCursor()
                 # call self again but to test now
-                self.modler(toTrain=False)
+                self.modler(toTest=True)
+                self.modlerStatusMessage()
 
-            else:
+            elif(toTest == True):
                 self.sumError = sumError
                 self.numExamples = numExamples
-            self.modlerStatusMessage()
+                self.modlerStatusMessage()
+
+            elif(toPredict == True):
+                self.log("straight prediction still being implemented, wait like ~ a day", 2)
 
         else:
             if(toTrain == True):
