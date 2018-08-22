@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-21
+# @Last modified time: 2018-08-22
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -183,6 +183,10 @@ def argz(argv=None, description=None, prevArgs=None):
         default=int( argDeflt( config, options, "tfLogMin", int(1)) ),
         type=int,
         help="set the minimum log level for tensorflow, i.e TF_CPP_MIN_LOG_LEVEL")
+    parser.add_argument("--toPredict",
+        default=bool( argDeflt( config, options, "toPredict", False, isBool=True) ),
+        action="store_true",
+        help="sets flag to predict based on data in a collection")
 
 
 

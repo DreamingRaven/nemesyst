@@ -61,8 +61,8 @@ def main():
     if(args["toTest"] == True):
         test(args=args, database=mongodb, print=print)
 
-    if(None):
-        predict(args=args, print=print)
+    if(args["toPredict"] == True):
+        predict(args=args, database=mongodb, print=print)
 
     if(args["toStopDb"] == True):
         time.sleep(2) # making sure server has time to start

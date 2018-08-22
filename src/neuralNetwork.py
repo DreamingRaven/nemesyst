@@ -4,13 +4,13 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-21
+# @Last modified time: 2018-08-22
 # @License: Please see LICENSE file in project root
 
 
 
 import pickle
-import os, sys
+import os, sys, pprint
 import pandas as pd
 import numpy as np
 import datetime
@@ -84,6 +84,10 @@ class NeuralNetwork():
         #TODO: allow for user to modify this query
         model_cursor = self.db.getMostRecent(query={}, collName=self.args["modelColl"])
         model_metadata = pd.DataFrame(list(model_cursor))
+        experiment = model_metadata.to_dict('records')
+        del experiment[0]["model_bin"] # no one wants to see the binary
+        self.log(self.prePend + "Loading model:",0)
+        pprint.pprint(experiment)
         model_bin = dict(model_metadata['model_bin'])[0]
         self.model = pickle.loads(model_bin)
         self.compile()
@@ -196,18 +200,30 @@ class NeuralNetwork():
         self.saveModel()
 
 
+
     def test(self):
         if(self.model):
             self.log(self.prePend + "model already in memory using it for testing", 3)
         else:
             self.log(self.prePend + "model not already in memory attempting retrieval", 3)
             self.getModel()
-        self.modler(toTrain=False)
+        self.modler(toTest=True)
+
+
+
+    def predict(self):
+        if(self.model):
+            self.log(self.prePend + "model already in memory using it for testing", 3)
+        else:
+            self.log(self.prePend + "model not already in memory attempting retrieval", 3)
+            self.getModel()
+        self.modler(toPredict=True)
+
 
 
     # the universal interface that allows the code of both test and train to be
     # one single set. "Don't repeat yourself"
-    def modler(self, toTrain=None):
+    def modler(self, toTrain=False, toTest=False, toPredict=False):
         sumError = 0
         numExamples = 0
         self.numValidExamples = 0
@@ -218,8 +234,10 @@ class NeuralNetwork():
 
             if(toTrain == True):
                 self.log("training on " + self.args["coll"] + " ..." , -1)
-            else:
+            elif(toTest == True):
                 self.log("testing on "  + self.args["coll"] + " ..." , -1)
+            elif(toPredict == True):
+                self.log("predicting on "  + self.args["coll"] + " ..." , -1)
 
 
             # keep looping while cursor can give more data
@@ -238,7 +256,7 @@ class NeuralNetwork():
                     if(toTrain == True):
                         self.testTrainer(data=data, target=target,
                             id=mongoDoc["_id"], toTrain=True)
-                    else:
+                    elif(toTest == True):
                         try:
                             sumError = sumError + self.testTrainer(data=data,
                                 target=target, id=mongoDoc["_id"], toTrain=False)
@@ -246,6 +264,8 @@ class NeuralNetwork():
                             self.log("NN.testTrainer returned nothing" +
                                 str(sys.exc_info()[0]) + " " +
                                 str(sys.exc_info()[1]), 3)
+                    elif(toPredict == True):
+                        self.predictor(data=data, id=mongoDoc["_id"])
 
             if(toTrain == True):
                 # cursor is now dead so make it None
@@ -253,12 +273,16 @@ class NeuralNetwork():
                 # since this is training we need training accuracy so need to regen cursor
                 self.getCursor()
                 # call self again but to test now
-                self.modler(toTrain=False)
+                self.modler(toTest=True)
+                self.modlerStatusMessage()
 
-            else:
+            elif(toTest == True):
                 self.sumError = sumError
                 self.numExamples = numExamples
-            self.modlerStatusMessage()
+                self.modlerStatusMessage()
+
+            elif(toPredict == True):
+                self.log("straight prediction still being implemented, wait like ~ a day", 2)
 
         else:
             if(toTrain == True):
@@ -307,7 +331,7 @@ class NeuralNetwork():
                 return 0
 
         except:
-            if(self.args["toTrain"]):
+            if(self.args["toTrain"]): # falling back to args directly just incase is something on the way fked up
                 self.log(self.prePend + "could not train:\t" + str(id) + "\n" +
                     str(sys.exc_info()[0]) + " " +
                     str(sys.exc_info()[1]), 2)
@@ -315,6 +339,28 @@ class NeuralNetwork():
                 self.log(self.prePend + "could not test:\t" + str(id) + "\n" +
                     str(sys.exc_info()[0]) + " " +
                     str(sys.exc_info()[1]), 2)
+
+
+
+    def predictor(self, data, id):
+        try:
+            #TODO: off by one ... you fool george, sort this out
+            expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
+
+            # check if shape meets expectations
+            if(data.shape == expectShape):
+                self.model.predict(x=data, batch_size=self.args["batchSize"],
+                    verbose=self.args["kerLogMax"])
+
+            else:
+                self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
+                    + str(expectShape), 1)
+                return -1
+
+        except:
+            self.log(self.prePend + "could not predict:\t" + str(id) + "\n" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]), 2)
 
 
 

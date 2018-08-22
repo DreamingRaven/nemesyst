@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-20
+# @Last modified time: 2018-08-22
 # @License: Please see LICENSE file in project root
 
 
@@ -183,9 +183,7 @@ def test(args, database=None, print=print):
                            args=args,
                            pipeline=getPipeline(args["pipeline"], print=print)
                           )
-        # nn.debug()
         cursor = nn.getCursor()
-        # nn.autogen()
         nn.test()
 
     except:
@@ -197,15 +195,26 @@ def test(args, database=None, print=print):
             cursor.close()
 
 
-def predict(args, print=print):
 
+def predict(args, database=None, print=print):
+
+    cursor = None
     try:
-        raise NotImplementedError('data predicting not currentley implemented')
+        nn = NeuralNetwork(db=database,
+                           logger=print,
+                           args=args,
+                           pipeline=getPipeline(args["pipeline"], print=print)
+                          )
+        cursor = nn.getCursor()
+        nn.predict()
 
     except:
         print(prePend + "could not predict on dataset:\n" +
             str(sys.exc_info()[0]) + " " +
             str(sys.exc_info()[1]), 2)
+    finally:
+        if(cursor != None) and (cursor.alive):
+            cursor.close()
 
 
 
