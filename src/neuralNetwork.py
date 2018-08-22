@@ -200,6 +200,7 @@ class NeuralNetwork():
         self.saveModel()
 
 
+
     def test(self):
         if(self.model):
             self.log(self.prePend + "model already in memory using it for testing", 3)
@@ -222,7 +223,7 @@ class NeuralNetwork():
 
     # the universal interface that allows the code of both test and train to be
     # one single set. "Don't repeat yourself"
-    def modler(self, toTrain=None):
+    def modler(self, toTrain=False, toTest=False, toPredict=False):
         sumError = 0
         numExamples = 0
         self.numValidExamples = 0
