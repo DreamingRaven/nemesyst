@@ -10,7 +10,7 @@
 
 
 import pickle
-import os, sys
+import os, sys, pprint
 import pandas as pd
 import numpy as np
 import datetime
@@ -85,10 +85,9 @@ class NeuralNetwork():
         model_cursor = self.db.getMostRecent(query={}, collName=self.args["modelColl"])
         model_metadata = pd.DataFrame(list(model_cursor))
         experiment = model_metadata.to_dict('records')
-        del experiment["model_bin"] # no one wants to see the binary
-        self.log(self.prePend +
-            str(experiment)
-            ,0)
+        del experiment[0]["model_bin"] # no one wants to see the binary
+        self.log(self.prePend + "Loading model:",0)
+        pprint.pprint(experiment)
         model_bin = dict(model_metadata['model_bin'])[0]
         self.model = pickle.loads(model_bin)
         self.compile()
