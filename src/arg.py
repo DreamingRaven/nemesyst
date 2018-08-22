@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-20
+# @Last modified time: 2018-08-21
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -191,17 +191,6 @@ def argz(argv=None, description=None, prevArgs=None):
     # identifying arguments by name which are paths to be normalised
     pathArgNames = ["cleaner", "dir", "newData"]
     normalArgs = normaliseArgs(args=args, pathArgNames=pathArgNames)
-
-    # importing json pipeline config file after the args are in their final form
-    if(prevArgs != None):
-        try:
-            #TODO: add an arg for this
-            with open(normalArgs["pipeline"], 'r') as f:
-                pipeline = json.load(f)
-        except:
-            print(prePend + "could not load a .json config file:\n" +
-            str(sys.exc_info()[0]) + " " +
-            str(sys.exc_info()[1]) , 1)
 
     # run again if args do not include config files I.E they have no previous state
     if(prevArgs != None):

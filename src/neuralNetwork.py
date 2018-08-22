@@ -4,8 +4,9 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-20
+# @Last modified time: 2018-08-21
 # @License: Please see LICENSE file in project root
+
 
 
 import pickle
@@ -16,11 +17,6 @@ import datetime
 from bson import objectid, Binary
 from keras.models import Sequential
 from keras.layers import Dense, Activation, LSTM
-
-
-
-# link for getting distinct values in collection for test train splitting
-# http://api.mongodb.com/python/1.4/api/pymongo/collection.html#pymongo.collection.Collection.distinct
 
 
 
@@ -42,13 +38,11 @@ class NeuralNetwork():
         self.model = None # highly experimental early assignment
         self.cursor = None
         self.history = None
-        self.pipeline = pipeline
-        self.cursorPosition = None
-        self.log(self.prePend + "NN.init() success", 3)
         self.sumError = None
         self.numExamples = None
+        self.pipeline = pipeline
         self.numValidExamples = None
-        # control shutting up tensorflow
+        self.log(self.prePend + "NN.init() success", 3)
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
 
@@ -58,10 +52,7 @@ class NeuralNetwork():
         if(self.cursor == None) or (pipeline != None):
             pipeline = pipeline if pipeline is not None else self.pipeline
             self.db.connect()
-            # can i just point out how smooth the next line is and the complex
-            # -ity that is going on behind the scenes
             self.cursor = self.db.getData(pipeline=pipeline)
-            self.cursorPosition = 0
             # this is to allow a higher try catch to delete it
             return self.cursor
         else:
@@ -78,14 +69,24 @@ class NeuralNetwork():
                  0)
 
 
-    # this just seeks to control where the model is created from,
-    # either retrievef from database or compiled for the first time
-    def autogen(self):
 
-        # check cursor has been created atleast before attempting to use it
+    # automagic model generation
+    def autogen(self):
         if(self.cursor != None):
             self.generateModel()
             self.compile()
+
+
+    #TODO: check this through yet untested
+    def getModel(self):
+        self.make_keras_picklable()
+
+        #TODO: allow for user to modify this query
+        model_cursor = self.db.getMostRecent(query={}, collName=self.args["modelColl"])
+        model_metadata = pd.DataFrame(list(model_cursor))
+        model_bin = dict(model_metadata['model_bin'])[0]
+        self.model = pickle.loads(model_bin)
+        self.compile()
 
 
 
@@ -98,7 +99,6 @@ class NeuralNetwork():
 
 
     def compile(self):
-
         if(self.model != None):
             self.model.compile(optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
         else:
@@ -107,7 +107,6 @@ class NeuralNetwork():
 
 
     def lstm(self):
-
         model = Sequential()
         #TODO: off by one error please for the love of god george
         bInShape = (1, self.args["timeSteps"]+1, self.args["dimensionality"])
@@ -202,6 +201,7 @@ class NeuralNetwork():
             self.log(self.prePend + "model already in memory using it for testing", 3)
         else:
             self.log(self.prePend + "model not already in memory attempting retrieval", 3)
+            self.getModel()
         self.modler(toTrain=False)
 
 
@@ -254,15 +254,18 @@ class NeuralNetwork():
                 self.getCursor()
                 # call self again but to test now
                 self.modler(toTrain=False)
+
             else:
                 self.sumError = sumError
                 self.numExamples = numExamples
             self.modlerStatusMessage()
+
         else:
             if(toTrain == True):
                 self.log(self.prePend +
                     "could not train, either model not generated or cursor does not exist"
                     , 2)
+
             else:
                 self.log(self.prePend +
                     "Aborting test model does not exist; unable to continue"
@@ -329,11 +332,11 @@ class NeuralNetwork():
                 stateDict["numValidSamples"] = self.numValidExamples
             if(self.sumError) and (self.numValidExamples):
                 stateDict["meanError"] = self.sumError / self.numValidExamples
+
             # save model
             self.make_keras_picklable()
             model_bytes = pickle.dumps(self.model)
             stateDict['model_bin'] = Binary(model_bytes)
-
             self.db.shoveJson(stateDict, collName=str(self.args["modelColl"]))
 
 
