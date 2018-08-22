@@ -361,6 +361,10 @@ to train on one set and test on another.
 
 ### Predicting
 (documentation still being written)
+Prediction also requires the exact same conditions, it currentley still requires the target field provided from pipeline, but you can just use 0 as it is not actually neccessary for prediction.
+````
+**Nemesyst/nemesyst.py --toPredict
+````
 
 ---
 
