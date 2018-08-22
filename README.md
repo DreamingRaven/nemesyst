@@ -360,7 +360,7 @@ to train on one set and test on another.
 ````
 
 ### Predicting
-(not yet implemented)
+(documentation still being written)
 
 ---
 
@@ -371,3 +371,7 @@ for user 'georgeraven' creating 'GeorgeRaven' user with 'password' password, in 
 ````
 
 Please see help screen for more options there are many more but these are the main ones for localhost usage.
+
+### Asside
+
+For all those fellow Arch(Linux)-ers out there, we are "Arch Nemesysts" :D
