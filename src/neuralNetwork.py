@@ -265,7 +265,7 @@ class NeuralNetwork():
                                 str(sys.exc_info()[0]) + " " +
                                 str(sys.exc_info()[1]), 3)
                     elif(toPredict == True):
-                        None
+                        self.predictor(data=data, id=mongoDoc["_id"])
 
             if(toTrain == True):
                 # cursor is now dead so make it None
@@ -331,7 +331,7 @@ class NeuralNetwork():
                 return 0
 
         except:
-            if(self.args["toTrain"]):
+            if(self.args["toTrain"]): # falling back to args directly just incase is something on the way fked up
                 self.log(self.prePend + "could not train:\t" + str(id) + "\n" +
                     str(sys.exc_info()[0]) + " " +
                     str(sys.exc_info()[1]), 2)
@@ -339,6 +339,28 @@ class NeuralNetwork():
                 self.log(self.prePend + "could not test:\t" + str(id) + "\n" +
                     str(sys.exc_info()[0]) + " " +
                     str(sys.exc_info()[1]), 2)
+
+
+
+    def predictor(self, data, id):
+        try:
+            #TODO: off by one ... you fool george, sort this out
+            expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
+
+            # check if shape meets expectations
+            if(data.shape == expectShape):
+                self.model.predict(x=data, batch_size=self.args["batchSize"],
+                    verbose=self.args["kerLogMax"])
+
+            else:
+                self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
+                    + str(expectShape), 1)
+                return -1
+
+        except:
+            self.log(self.prePend + "could not predict:\t" + str(id) + "\n" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]), 2)
 
 
 
