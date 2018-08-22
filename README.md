@@ -1,6 +1,6 @@
 # RavenRecSyst
 
-Warning: this project has not yet reached all its intended functionality, and the documentation still needs further additions; To be ready for normal usage will take time so some of the examples may not work currently. If you see anything glaringly wrong please do open an issue, thanks. GR
+Please note: The examples in ./examples folder are still being written, in particular the movilense 20 million (ml_20m). This documentation is also in the process of being further updated with more examples and adding to testing and prediction sections. If you have any issues or see anything glaringly wrong please open an issue.
 
 ## Introduction
 
