@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-21
+# @Last modified time: 2018-08-22
 # @License: Please see LICENSE file in project root
 
 
@@ -203,6 +203,17 @@ class NeuralNetwork():
             self.log(self.prePend + "model not already in memory attempting retrieval", 3)
             self.getModel()
         self.modler(toTrain=False)
+
+
+
+    def perdict(self):
+        if(self.model):
+            self.log(self.prePend + "model already in memory using it for testing", 3)
+        else:
+            self.log(self.prePend + "model not already in memory attempting retrieval", 3)
+            self.getModel()
+        self.modler(toTrain=False)
+
 
 
     # the universal interface that allows the code of both test and train to be
