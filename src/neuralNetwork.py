@@ -84,8 +84,10 @@ class NeuralNetwork():
         #TODO: allow for user to modify this query
         model_cursor = self.db.getMostRecent(query={}, collName=self.args["modelColl"])
         model_metadata = pd.DataFrame(list(model_cursor))
+        experiment = model_metadata.to_dict('records')
+        del experiment["model_bin"] # no one wants to see the binary
         self.log(self.prePend +
-            str(model_metadata.to_dict('records'))
+            str(experiment)
             ,0)
         model_bin = dict(model_metadata['model_bin'])[0]
         self.model = pickle.loads(model_bin)
