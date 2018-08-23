@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-22
+# @Last modified time: 2018-08-23
 # @License: Please see LICENSE file in project root
 
 
@@ -158,7 +158,7 @@ def train(args, database=None, print=print):
         nn = NeuralNetwork(db=database,
                            logger=print,
                            args=args,
-                           pipeline=getPipeline(args["pipeline"], print=print)
+                           data_pipeline=getPipeline(args["pipeline"], print=print)
                           )
         cursor = nn.getCursor()
         nn.autogen()
@@ -181,7 +181,7 @@ def test(args, database=None, print=print):
         nn = NeuralNetwork(db=database,
                            logger=print,
                            args=args,
-                           pipeline=getPipeline(args["pipeline"], print=print)
+                           data_pipeline=getPipeline(args["pipeline"], print=print)
                           )
         cursor = nn.getCursor()
         nn.test()
@@ -203,7 +203,7 @@ def predict(args, database=None, print=print):
         nn = NeuralNetwork(db=database,
                            logger=print,
                            args=args,
-                           pipeline=getPipeline(args["pipeline"], print=print)
+                           data_pipeline=getPipeline(args["pipeline"], print=print)
                           )
         cursor = nn.getCursor()
         nn.predict()
