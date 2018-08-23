@@ -86,6 +86,8 @@ class NeuralNetwork():
         if(self.model_pipeline != None):
             query=self.model_pipeline
 
+        self.log(self.prePend + "query is: " + str(query), 0)
+
         # attempt to get model using cursor
         model_cursor = self.db.getMostRecent(query=query, collName=self.args["modelColl"])
 
