@@ -285,7 +285,6 @@ class NeuralNetwork():
                 self.getCursor()
                 # call self again but to test now
                 self.modler(toTest=True)
-                self.modlerStatusMessage()
 
             elif(toTest == True):
                 self.sumError = sumError
@@ -293,8 +292,7 @@ class NeuralNetwork():
                 self.modlerStatusMessage()
 
             elif(toPredict == True):
-                self.log("straight prediction still being implemented, wait like ~ a day", 2)
-
+                None
         else:
             if(toTrain == True):
                 self.log(self.prePend +
@@ -360,8 +358,9 @@ class NeuralNetwork():
 
             # check if shape meets expectations
             if(data.shape == expectShape):
-                x = self.model.predict(x=data, batch_size=self.args["batchSize"],
-                    verbose=self.args["kerLogMax"])
+                # x = self.model.predict(x=data, batch_size=self.args["batchSize"],
+                    # verbose=self.args["kerLogMax"])
+                x = self.model.predict_on_batch(x=data)
                 self.log(str(x))
 
             else:
