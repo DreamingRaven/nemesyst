@@ -30,7 +30,7 @@ class NeuralNetwork():
 
 
 
-    def __init__(self, db, data_pipeline, args, model_pipeline=None logger=print):
+    def __init__(self, db, data_pipeline, args, model_pipeline=None, logger=print):
 
         self.db = db
         self.args = args
@@ -93,10 +93,10 @@ class NeuralNetwork():
 
         if(model_cursor != None):
             model_metadata = pd.DataFrame(list(model_cursor))
-            experiment = model_metadata.to_dict('records')
-            del experiment[0]["model_bin"] # no one wants to see the binary
+            model_dict = model_metadata.to_dict('records')
+            del model_dict[0]["model_bin"] # no one wants to see the binary
             self.log(self.prePend + "Loading model:",0)
-            pprint.pprint(experiment)
+            pprint.pprint(model_dict)
             model_bin = dict(model_metadata['model_bin'])[0]
             self.model = pickle.loads(model_bin)
             self.compile()

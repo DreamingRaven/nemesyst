@@ -181,9 +181,8 @@ def test(args, database=None, print=print):
         nn = NeuralNetwork(db=database,
                            logger=print,
                            args=args,
-                           data_pipeline=getPipeline(args["pipeline"],
-                           model_pipeline=getPipeline(args["modelPipe"])
-                           print=print)
+                           data_pipeline=getPipeline(args["pipeline"], print=print),
+                           model_pipeline=getPipeline(args["modelPipe"], print=print),
                           )
         cursor = nn.getCursor()
         nn.test()
@@ -205,9 +204,8 @@ def predict(args, database=None, print=print):
         nn = NeuralNetwork(db=database,
                            logger=print,
                            args=args,
-                           data_pipeline=getPipeline(args["pipeline"],
-                           model_pipeline=getPipeline(args["modelPipe"])
-                           print=print)
+                           data_pipeline=getPipeline(args["pipeline"], print=print),
+                           model_pipeline=getPipeline(args["modelPipe"], print=print),
                           )
         cursor = nn.getCursor()
         nn.predict()
