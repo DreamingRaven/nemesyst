@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-22
+# @Last modified time: 2018-08-23
 # @License: Please see LICENSE file in project root
 
 
@@ -30,7 +30,7 @@ class NeuralNetwork():
 
 
 
-    def __init__(self, db, pipeline, args, logger=print):
+    def __init__(self, db, data_pipeline, args, model_pipeline=None, logger=print):
 
         self.db = db
         self.args = args
@@ -40,7 +40,8 @@ class NeuralNetwork():
         self.history = None
         self.sumError = None
         self.numExamples = None
-        self.pipeline = pipeline
+        self.data_pipeline = data_pipeline
+        self.model_pipeline = model_pipeline # can be None
         self.numValidExamples = None
         self.log(self.prePend + "NN.init() success", 3)
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
@@ -50,7 +51,7 @@ class NeuralNetwork():
     def getCursor(self, pipeline=None):
 
         if(self.cursor == None) or (pipeline != None):
-            pipeline = pipeline if pipeline is not None else self.pipeline
+            pipeline = pipeline if pipeline is not None else self.data_pipeline
             self.db.connect()
             self.cursor = self.db.getData(pipeline=pipeline)
             # this is to allow a higher try catch to delete it
@@ -63,7 +64,7 @@ class NeuralNetwork():
     def debug(self):
         self.log(self.prePend       + "\n"  +
                  "\tdb obj: " + str(self.db)  + "\n"  +
-                 "\tdb pipeline: " + str(self.pipeline)  + "\n"  +
+                 "\tdb pipeline: " + str(self.data_pipeline)  + "\n"  +
                  "\tdb cursor: " + str(self.cursor)  + "\n"  +
                  "\tlogger: " + str(self.log),
                  0)
@@ -81,16 +82,26 @@ class NeuralNetwork():
     def getModel(self):
         self.make_keras_picklable()
 
-        #TODO: allow for user to modify this query
-        model_cursor = self.db.getMostRecent(query={}, collName=self.args["modelColl"])
-        model_metadata = pd.DataFrame(list(model_cursor))
-        experiment = model_metadata.to_dict('records')
-        del experiment[0]["model_bin"] # no one wants to see the binary
-        self.log(self.prePend + "Loading model:",0)
-        pprint.pprint(experiment)
-        model_bin = dict(model_metadata['model_bin'])[0]
-        self.model = pickle.loads(model_bin)
-        self.compile()
+        query={}
+        if(self.model_pipeline != None):
+            query=self.model_pipeline
+
+        self.log(self.prePend + "query is: " + str(query), 0)
+
+        # attempt to get model using cursor
+        model_cursor = self.db.getMostRecent(query=query, collName=self.args["modelColl"])
+
+        if(model_cursor != None):
+            model_metadata = pd.DataFrame(list(model_cursor))
+            model_dict = model_metadata.to_dict('records')
+            del model_dict[0]["model_bin"] # no one wants to see the binary
+            self.log(self.prePend + "Loading model:",0)
+            pprint.pprint(model_dict)
+            model_bin = dict(model_metadata['model_bin'])[0]
+            self.model = pickle.loads(model_bin)
+            self.compile()
+        else:
+            self.log(self.prePend + "could not get model cursor from database: ", 2)
 
 
 
@@ -349,8 +360,9 @@ class NeuralNetwork():
 
             # check if shape meets expectations
             if(data.shape == expectShape):
-                self.model.predict(x=data, batch_size=self.args["batchSize"],
+                x = self.model.predict(x=data, batch_size=self.args["batchSize"],
                     verbose=self.args["kerLogMax"])
+                self.log(str(x))
 
             else:
                 self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
@@ -367,7 +379,7 @@ class NeuralNetwork():
     def saveModel(self):
         if(self.model != None):
             stateDict = self.args
-            stateDict["pipe"] = str(self.pipeline)
+            stateDict["pipe"] = str(self.data_pipeline)
             del stateDict["pass"]
             stateDict["utc"] = datetime.datetime.utcnow()
             if(self.sumError):

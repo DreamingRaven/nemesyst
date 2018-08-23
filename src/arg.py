@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-22
+# @Last modified time: 2018-08-23
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -187,13 +187,17 @@ def argz(argv=None, description=None, prevArgs=None):
         default=bool( argDeflt( config, options, "toPredict", False, isBool=True) ),
         action="store_true",
         help="sets flag to predict based on data in a collection")
+    parser.add_argument("--modelPipe",
+        default=str( argDeflt( config, options, "modelPipe", str(rootPath + "/config/modelPipe.json")) ),
+        help="set the path to the json pipeline file")
+
 
 
 
     args = vars(parser.parse_args(argv))
 
     # identifying arguments by name which are paths to be normalised
-    pathArgNames = ["cleaner", "dir", "newData"]
+    pathArgNames = ["cleaner", "dir", "newData", "pipeline", "modelPipe"]
     normalArgs = normaliseArgs(args=args, pathArgNames=pathArgNames)
 
     # run again if args do not include config files I.E they have no previous state
