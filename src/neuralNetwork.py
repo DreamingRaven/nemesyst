@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-23
+# @Last modified time: 2018-08-28
 # @License: Please see LICENSE file in project root
 
 
@@ -107,9 +107,9 @@ class NeuralNetwork():
 
     def generateModel(self):
         if( "lstm" == self.args["type"]):
-            self.lstm()
+            self.model = self.lstm()
         elif("rnn" == self.args["type"]):
-            self.rnn()
+            self.model = self.rnn()
 
 
 
@@ -144,9 +144,9 @@ class NeuralNetwork():
             model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], return_sequences=True, batch_input_shape=bInShape))
         model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], batch_input_shape=bInShape))
         model.add(Dense(1))
-        self.model = model
-
         self.log(self.prePend + "LSTM created", -1)
+        return model
+
 
 
 
@@ -170,9 +170,9 @@ class NeuralNetwork():
                 input_dim=self.args["dimensionality"],
                 activation=self.args["activation"]))
         model.add(Dense(1)) # this dense 1 is the output layer since this is regression
-        self.model = model # if nothing errored now we can assign model
-
         self.log(self.prePend + "RNN created", -1)
+        return model # if nothing errored now we can assign model
+
 
 
 
