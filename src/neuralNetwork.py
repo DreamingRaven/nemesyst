@@ -141,9 +141,14 @@ class NeuralNetwork():
 
         # gen layers
         for unused in range(self.args["layers"]-1):
-            model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], return_sequences=True, batch_input_shape=bInShape))
-        model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], batch_input_shape=bInShape))
+            model.add(LSTM(self.args["intLayerDim"], activation=self.args["activation"], return_sequences=True, batch_input_shape=bInShape))
+        model.add(LSTM(self.args["intLayerDim"], activation=self.args["activation"], batch_input_shape=bInShape))
         model.add(Dense(1))
+        # gen layers
+        # for unused in range(self.args["layers"]-1):
+            # model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], return_sequences=True, batch_input_shape=bInShape))
+        # model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], batch_input_shape=bInShape))
+        # model.add(Dense(1))
         self.log(self.prePend + "LSTM created", -1)
         return model
 
@@ -331,15 +336,13 @@ class NeuralNetwork():
 
                 if(toTrain == True):
                     # self.model.summary()
-                    self.log(target, 3)
                     self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
                         epochs=self.args["epochs"], verbose=self.args["kerLogMax"],
                         callbacks=None, validation_split=0, validation_data=None,
-                        shuffle=False, class_weight=None, sample_weight=None,
+                        shuffle=True, class_weight=None, sample_weight=None,
                         initial_epoch=0, steps_per_epoch=None, validation_steps=None)
                 else:
                     self.numValidExamples = self.numValidExamples + 1
-                    self.log(target, 3)
                     return self.model.evaluate(x=data, y=target,
                         batch_size=self.args["batchSize"],
                         verbose=self.args["kerLogMax"])
@@ -376,7 +379,6 @@ class NeuralNetwork():
                     self.log(target, 0)
                 x = self.model.predict(x=data, batch_size=self.args["batchSize"],
                     verbose=self.args["kerLogMax"])
-                # x = self.model.predict_on_batch(x=data)
                 self.log(str(x))
 
             else:
