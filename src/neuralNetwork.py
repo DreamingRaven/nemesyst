@@ -144,11 +144,6 @@ class NeuralNetwork():
             model.add(LSTM(self.args["intLayerDim"], activation=self.args["activation"], return_sequences=True, batch_input_shape=bInShape))
         model.add(LSTM(self.args["intLayerDim"], activation=self.args["activation"], batch_input_shape=bInShape))
         model.add(Dense(1))
-        # gen layers
-        # for unused in range(self.args["layers"]-1):
-            # model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], return_sequences=True, batch_input_shape=bInShape))
-        # model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], batch_input_shape=bInShape))
-        # model.add(Dense(1))
         self.log(self.prePend + "LSTM created", -1)
         return model
 
