@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-23
+# @Last modified time: 2018-08-29
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -190,6 +190,10 @@ def argz(argv=None, description=None, prevArgs=None):
     parser.add_argument("--modelPipe",
         default=str( argDeflt( config, options, "modelPipe", str(rootPath + "/config/modelPipe.json")) ),
         help="set the path to the json pipeline file")
+    parser.add_argument("--intLayerDim",
+        default=int( argDeflt( config, options, "intLayerDim", int(512)) ),
+        type=int,
+        help="set the dimensionality between layers")
 
 
 
@@ -198,7 +202,10 @@ def argz(argv=None, description=None, prevArgs=None):
 
     # identifying arguments by name which are paths to be normalised
     pathArgNames = ["cleaner", "dir", "newData", "pipeline", "modelPipe"]
-    normalArgs = normaliseArgs(args=args, pathArgNames=pathArgNames)
+    normalArgs = normaliseArgs(args=args, argNames=pathArgNames)
+    # identifying arguments that are single words that want to be normalised
+    wantedInLowerCase = ["type", "activation", "lossMetric", "optimizer"]
+    normalArgs = normaliseArgs(args=args, argNames=wantedInLowerCase, toMakeLowerCase=True)
 
     # run again if args do not include config files I.E they have no previous state
     if(prevArgs != None):
@@ -208,12 +215,15 @@ def argz(argv=None, description=None, prevArgs=None):
 
 
 
-def normaliseArgs(args, pathArgNames):
+def normaliseArgs(args, argNames, toMakeLowerCase=False):
 
     # normalizing args identified in list
-    for argName in pathArgNames:
+    for argName in argNames:
+        # this normalises the case of text to lower case
+        if(toMakeLowerCase == True):
+            args[argName] = args[argName].casefold()
         # this if statement prevents abspath from interpreting "" as current dir
-        if(args[argName] != ""):
+        elif(args[argName] != ""):
             args[argName] = str(os.path.abspath(args[argName]))
 
     return args

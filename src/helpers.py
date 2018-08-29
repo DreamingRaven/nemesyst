@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-23
+# @Last modified time: 2018-08-28
 # @License: Please see LICENSE file in project root
 
 
@@ -13,6 +13,7 @@ import pandas as pd
 import numpy as np
 from fnmatch import fnmatch
 from src.neuralNetwork import NeuralNetwork
+from src.gan import Gan
 
 
 
@@ -155,14 +156,18 @@ def train(args, database=None, print=print):
 
     cursor = None
     try:
-        nn = NeuralNetwork(db=database,
-                           logger=print,
-                           args=args,
-                           data_pipeline=getPipeline(args["pipeline"], print=print)
-                          )
-        cursor = nn.getCursor()
-        nn.autogen()
-        nn.train()
+        if(args["type"] == "gan"):
+            gan = Gan(args=args, logger=print)
+            gan.debug()
+        else:
+            nn = NeuralNetwork(db=database,
+                            logger=print,
+                            args=args,
+                            data_pipeline=getPipeline(args["pipeline"], print=print)
+                            )
+            cursor = nn.getCursor()
+            nn.autogen()
+            nn.train()
 
     except:
         print(prePend + "could not train dataset:\n" +
@@ -178,14 +183,18 @@ def test(args, database=None, print=print):
 
     cursor = None
     try:
-        nn = NeuralNetwork(db=database,
-                           logger=print,
-                           args=args,
-                           data_pipeline=getPipeline(args["pipeline"], print=print),
-                           model_pipeline=getPipeline(args["modelPipe"], print=print),
-                          )
-        cursor = nn.getCursor()
-        nn.test()
+        if(args["type"] == "gan"):
+            gan = Gan(args=args, logger=print)
+            gan.debug()
+        else:
+            nn = NeuralNetwork(db=database,
+                               logger=print,
+                               args=args,
+                               data_pipeline=getPipeline(args["pipeline"], print=print),
+                               model_pipeline=getPipeline(args["modelPipe"], print=print),
+                              )
+            cursor = nn.getCursor()
+            nn.test()
 
     except:
         print(prePend + "could not test dataset:\n" +
@@ -201,14 +210,18 @@ def predict(args, database=None, print=print):
 
     cursor = None
     try:
-        nn = NeuralNetwork(db=database,
-                           logger=print,
-                           args=args,
-                           data_pipeline=getPipeline(args["pipeline"], print=print),
-                           model_pipeline=getPipeline(args["modelPipe"], print=print),
-                          )
-        cursor = nn.getCursor()
-        nn.predict()
+        if(args["type"] == "gan"):
+            gan = Gan(args=args, logger=print)
+            gan.debug()
+        else:
+            nn = NeuralNetwork(db=database,
+                            logger=print,
+                            args=args,
+                            data_pipeline=getPipeline(args["pipeline"], print=print),
+                            model_pipeline=getPipeline(args["modelPipe"], print=print),
+                            )
+            cursor = nn.getCursor()
+            nn.predict()
 
     except:
         print(prePend + "could not predict on dataset:\n" +
