@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-28
+# @Last modified time: 2018-08-29
 # @License: Please see LICENSE file in project root
 
 
@@ -256,10 +256,13 @@ class NeuralNetwork():
                 dataBatch = self.nextDataset(1)
                 for mongoDoc in dataBatch:
                     numExamples = numExamples + 1
+
                     #TODO this is fine if both are pushed lists
                     data = pd.DataFrame(list(mongoDoc["data"]))
-                    data = np.expand_dims(data.values, axis=0)
-                    # data = data.values
+                    if(self.args["type"] == "rnn"):
+                        data = data.values
+                    else:
+                        data = np.expand_dims(data.values, axis=0)
 
                     #TODO needs generalisation for many to many or one to many
                     target = mongoDoc["target"]
@@ -317,7 +320,11 @@ class NeuralNetwork():
     def testTrainer(self, data, target, id, toTrain=False):
         try:
             #TODO: off by one ... you fool george, sort this out
-            expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
+            if(self.args["type"] == "rnn"):
+                target = np.full((self.args["timeSteps"] + 1, 1), target)
+                expectShape = (self.args["timeSteps"] + 1, self.args["dimensionality"])
+            else:
+                expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
 
             # check if shape meets expectations
             if(data.shape == expectShape):
@@ -357,7 +364,11 @@ class NeuralNetwork():
     def predictor(self, data, id, target=None):
         try:
             #TODO: off by one ... you fool george, sort this out
-            expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
+            if(self.args["type"] == "rnn"):
+                target = np.full((self.args["timeSteps"] + 1, 1), target)
+                expectShape = (self.args["timeSteps"] + 1, self.args["dimensionality"])
+            else:
+                expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
 
             # check if shape meets expectations
             if(data.shape == expectShape):
