@@ -31,17 +31,36 @@ class Gan():
 
 
     def __init__(self, args, logger=print):
-
-        self.args = args
+        m_args = args
         self.log  = logger if logger is not None else print
+
+        try:
+            del m_args["pass"]
+        except:
+            self.log("Could not delete password entry, make sure args exists")
+
+        self.args = m_args
+        self.generator  = None
+        self.discriminator = None
 
 
 
     def debug(self):
         None
+        pprint.pprint(self.args)
         # self.log(self.prePend                                   + "\n"  +
         #          "\tdb obj: " + str(self.db)                    + "\n"  +
         #          "\tdb pipeline: " + str(self.data_pipeline)    + "\n"  +
         #          "\tdb cursor: " + str(self.cursor)             + "\n"  +
         #          "\tlogger: " + str(self.log)                   ,
         #          0)
+
+
+
+    def genGenerator(self):
+        None
+
+
+
+    def genDiscriminator(self):
+        None

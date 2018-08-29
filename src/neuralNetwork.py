@@ -35,7 +35,7 @@ class NeuralNetwork():
         self.db = db
         self.args = args
         self.log = logger
-        self.model = None # highly experimental early assignment
+        self.model = None
         self.cursor = None
         self.history = None
         self.sumError = None
@@ -259,6 +259,7 @@ class NeuralNetwork():
                     #TODO this is fine if both are pushed lists
                     data = pd.DataFrame(list(mongoDoc["data"]))
                     data = np.expand_dims(data.values, axis=0)
+                    # data = data.values
 
                     #TODO needs generalisation for many to many or one to many
                     target = mongoDoc["target"]
@@ -276,7 +277,7 @@ class NeuralNetwork():
                                 str(sys.exc_info()[0]) + " " +
                                 str(sys.exc_info()[1]), 3)
                     elif(toPredict == True):
-                        self.predictor(data=data, id=mongoDoc["_id"])
+                        self.predictor(data=data, id=mongoDoc["_id"], target=target if target is not None else None)
 
             if(toTrain == True):
                 # cursor is now dead so make it None
@@ -323,6 +324,7 @@ class NeuralNetwork():
 
                 if(toTrain == True):
                     # self.model.summary()
+                    self.log(target, 3)
                     self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
                         epochs=self.args["epochs"], verbose=self.args["kerLogMax"],
                         callbacks=None, validation_split=0, validation_data=None,
@@ -330,6 +332,7 @@ class NeuralNetwork():
                         initial_epoch=0, steps_per_epoch=None, validation_steps=None)
                 else:
                     self.numValidExamples = self.numValidExamples + 1
+                    self.log(target, 3)
                     return self.model.evaluate(x=data, y=target,
                         batch_size=self.args["batchSize"],
                         verbose=self.args["kerLogMax"])
@@ -351,16 +354,18 @@ class NeuralNetwork():
 
 
 
-    def predictor(self, data, id):
+    def predictor(self, data, id, target=None):
         try:
             #TODO: off by one ... you fool george, sort this out
             expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
 
             # check if shape meets expectations
             if(data.shape == expectShape):
-                # x = self.model.predict(x=data, batch_size=self.args["batchSize"],
-                    # verbose=self.args["kerLogMax"])
-                x = self.model.predict_on_batch(x=data)
+                if(target != None):
+                    self.log(target, 0)
+                x = self.model.predict(x=data, batch_size=self.args["batchSize"],
+                    verbose=self.args["kerLogMax"])
+                # x = self.model.predict_on_batch(x=data)
                 self.log(str(x))
 
             else:
