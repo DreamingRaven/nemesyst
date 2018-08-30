@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-29
+# @Last modified time: 2018-08-30
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -174,7 +174,7 @@ def argz(argv=None, description=None, prevArgs=None):
         action="store_true",
         help="sets flag to automate updating and for first time installation")
     parser.add_argument("--modelColl",
-        default=str( argDeflt( config, options, "modelColl", str("modelStates")) ),
+        default=str( argDeflt( config, options, "modelColl", str("models")) ),
         help="set the collection to which state will be tracked and model binary kept")
     parser.add_argument("--identifier",
         default=str( argDeflt( config, options, "identifier", str(getpass.getuser())) ),
@@ -194,6 +194,10 @@ def argz(argv=None, description=None, prevArgs=None):
         default=int( argDeflt( config, options, "intLayerDim", int(512)) ),
         type=int,
         help="set the dimensionality between layers")
+    parser.add_argument("--epochs_chunk",
+        default=int( argDeflt( config, options, "epochs_chunk", int(1)) ),
+        type=int,
+        help="set the number of epochs each chunk will iterate, this is different to --epochs since that iterates over all the data instead")
 
 
 

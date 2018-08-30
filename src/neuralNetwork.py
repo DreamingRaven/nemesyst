@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-29
+# @Last modified time: 2018-08-30
 # @License: Please see LICENSE file in project root
 
 
@@ -135,6 +135,7 @@ class NeuralNetwork():
             "\t" + "batchSize:\t"      + str(self.args["batchSize"])       + "\n" +
             "\t" + "batchInShape:\t"   + str(bInShape)                     + "\n" +
             "\t" + "epochs:\t\t"       + str(self.args["epochs"])          + "\n" +
+            "\t" + "epochs_chunk:\t"   + str(self.args["epochs_chunk"])    + "\n" +
             "\t" + "activation:\t"     + str(self.args["activation"])      + "\n",
             0
         )
@@ -146,7 +147,6 @@ class NeuralNetwork():
         model.add(Dense(1))
         self.log(self.prePend + "LSTM created", -1)
         return model
-
 
 
 
@@ -288,8 +288,7 @@ class NeuralNetwork():
                 # since this is training we need training accuracy so need to regen cursor
                 self.getCursor()
                 # call self again but to test now
-                self.modler(toTest=True)
-
+                self.modler(toTest=True, toTrain=False)
             elif(toTest == True):
                 self.sumError = sumError
                 self.numExamples = numExamples
@@ -332,7 +331,7 @@ class NeuralNetwork():
                 if(toTrain == True):
                     # self.model.summary()
                     self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
-                        epochs=self.args["epochs"], verbose=self.args["kerLogMax"],
+                        epochs=self.args["epochs_chunk"], verbose=self.args["kerLogMax"],
                         callbacks=None, validation_split=0, validation_data=None,
                         shuffle=True, class_weight=None, sample_weight=None,
                         initial_epoch=0, steps_per_epoch=None, validation_steps=None)

@@ -137,7 +137,7 @@ This is a current list but **/nemesyst.py --help will always be prefered and thi
 | \-\-coll     | \-C       | "testColl"               | 0      | mongo  | sets collection to operate on |
 | \-\-cleaner  | \-c       | **/examples/cleaner.py   | 0      | import | specifies path to executable cleaner file  |
 | \-\-dir      | \-D       | ~/db                     | 0      | mongo  | specifies path to mongoDb files  |
-| \-\-newData  | \-d       | None                     | 0      | import | specifies path to .csv data folder  |
+| \-\-newData  | \-d       |                          | 0      | import | specifies path to .csv data folder  |
 | \-\-ip       | \-I (eye) | 127.0.0.1                | 0      | mongo  | specifies ip of database  |
 | \-\-toInitDb | \-i       | False                    | 1      | mongo  | flags new user auth to create |
 | \-\-toLogin  | \-l (ell) | False                    | 1      | mongo  | flags to log user into db for them |
@@ -168,12 +168,15 @@ This is a current list but **/nemesyst.py --help will always be prefered and thi
 | \-\-toJustImport|        | False                    | 1      | rrs    | flags using residual temporary files without cleaning to import to db |
 | \-\-pipeline |           | **/config/pipeline.json  | 0      | config | specifies file path to pipeline.json file |
 | \-\-config   |           | **/config/config.ini     | 0      | config | specifies file path to config.ini file |
-| \-\-mongoCursorTimeout   |           | 600     | 0      | mongo | specifies the time in milliseconds to allow a cursor to remain inacive before it is deleted |
+| \-\-mongoCursorTimeout   |                          | 600     | 0      | mongo | specifies the time in milliseconds to allow a cursor to remain inacive before it is deleted |
 | \-\-kerLogMax|           | 0                        | 0      | ann    | specifies the maximum log level of keras log/ print statements |
 | \-\-toUpdate |           | False                    | 1      | rrs    | flag to update / install nemesyst and RavenPythonLib |
 | \-\-modelColl|           | modelStates              | 0      | mongo  | specifies the collection to store model states and history in |
 | \-\-identifier|          | getpass.getuser()        | 0      | mongo  | specifies an identifier so you can differentiate between model sources easily |
 | \-\-tfLogMin |           | 1                        | 0      | tf     | specifies how verbose you want tensorflow to be i.e TF_CPP_MIN_LOG_LEVEL |
+| \-\-toPredict|           | False                    | 1      | rrs    | flag to attempt prediction on data set in --coll |
+| \-\-modelPipe|           | **/config/modelPipe.json | 0      | mongo  | specifies path to mongoDb files  |
+
 
 ### Config Files / Persistent Behavioral Changes
 
@@ -196,18 +199,33 @@ create things such as a universal dataset cleaner, as each data set has its own
 nuances.
 
 ### Cleaning
+
+IMPORTANT: [#3; off by one](https://github.com/DreamingRaven/Nemesyst/issues/3)
+
+The following section can be skipped if the data is already clean, and in the
+format a deep learning sequence model can use. The form the data should take
+when cleaning finished or to be skipped:
+* Each file is a single example. This system is used for sequences so this could be multiple rows.
+* The files are homogeneous
+* The files have an identifying suffix that matches the one defined by --suffix (default this is ".data")
+* The files are in CSV format with headers included in each individual file, except they dont end in .csv unless that is what you define with --suffix
+
+You first should create a cleaner file or use a template that expects the below arguments:
+*
+
 Nemesyst supports arbitray cleaning code execution.* To tell Nemesyst
 which file is you're cleaning file simply use the -c / --cleaner argument
 followed by the file inclusive path to the (executable) cleaner file.
 
 An example using the default cleaner:
 ```
-**/nemesyst.py *yourOtherArguments* --cleaner **/examples/cleaner --newData *1*
+**/nemesyst.py *yourOtherArguments* --cleaner **/examples/cleaner --newData *1* --timeSteps *2*
 ```
 Where:
 * \*\* is the inclusive path to wherever you have Nemesyst/ directory, read
 usage section.
 * \*1\* is the inclusive file path or folder of files which are to be cleaned
+* \*2\* is an argument that is provided to your cleaner file and is the number of time steps to expect per sample, you will need to define this throught your use so I recommend you put this in your config file
 
 Both arguments provided to --cleaner and --newData will be used as arguments to
 you're cleaner file. See \*\*/examples/cleaner.py for a boiler plate template.
