@@ -4,23 +4,19 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-20
+# @Last modified time: 2018-08-29
 # @License: Please see LICENSE file in project root
 
 
+
 import pickle
-import os, sys
+import os, sys, pprint
 import pandas as pd
 import numpy as np
 import datetime
 from bson import objectid, Binary
 from keras.models import Sequential
 from keras.layers import Dense, Activation, LSTM
-
-
-
-# link for getting distinct values in collection for test train splitting
-# http://api.mongodb.com/python/1.4/api/pymongo/collection.html#pymongo.collection.Collection.distinct
 
 
 
@@ -34,21 +30,20 @@ class NeuralNetwork():
 
 
 
-    def __init__(self, db, pipeline, args, logger=print):
+    def __init__(self, db, data_pipeline, args, model_pipeline=None, logger=print):
 
         self.db = db
         self.args = args
         self.log = logger
-        self.model = None # highly experimental early assignment
+        self.model = None
         self.cursor = None
         self.history = None
-        self.pipeline = pipeline
-        self.cursorPosition = None
-        self.log(self.prePend + "NN.init() success", 3)
         self.sumError = None
         self.numExamples = None
+        self.data_pipeline = data_pipeline
+        self.model_pipeline = model_pipeline # can be None
         self.numValidExamples = None
-        # control shutting up tensorflow
+        self.log(self.prePend + "NN.init() success", 3)
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
 
@@ -56,12 +51,9 @@ class NeuralNetwork():
     def getCursor(self, pipeline=None):
 
         if(self.cursor == None) or (pipeline != None):
-            pipeline = pipeline if pipeline is not None else self.pipeline
+            pipeline = pipeline if pipeline is not None else self.data_pipeline
             self.db.connect()
-            # can i just point out how smooth the next line is and the complex
-            # -ity that is going on behind the scenes
             self.cursor = self.db.getData(pipeline=pipeline)
-            self.cursorPosition = 0
             # this is to allow a higher try catch to delete it
             return self.cursor
         else:
@@ -72,33 +64,56 @@ class NeuralNetwork():
     def debug(self):
         self.log(self.prePend       + "\n"  +
                  "\tdb obj: " + str(self.db)  + "\n"  +
-                 "\tdb pipeline: " + str(self.pipeline)  + "\n"  +
+                 "\tdb pipeline: " + str(self.data_pipeline)  + "\n"  +
                  "\tdb cursor: " + str(self.cursor)  + "\n"  +
                  "\tlogger: " + str(self.log),
                  0)
 
 
-    # this just seeks to control where the model is created from,
-    # either retrievef from database or compiled for the first time
-    def autogen(self):
 
-        # check cursor has been created atleast before attempting to use it
+    # automagic model generation
+    def autogen(self):
         if(self.cursor != None):
             self.generateModel()
             self.compile()
 
 
+    #TODO: check this through yet untested
+    def getModel(self):
+        self.make_keras_picklable()
+
+        query={}
+        if(self.model_pipeline != None):
+            query=self.model_pipeline
+
+        self.log(self.prePend + "query is: " + str(query), 0)
+
+        # attempt to get model using cursor
+        model_cursor = self.db.getMostRecent(query=query, collName=self.args["modelColl"])
+
+        if(model_cursor != None):
+            model_metadata = pd.DataFrame(list(model_cursor))
+            model_dict = model_metadata.to_dict('records')
+            del model_dict[0]["model_bin"] # no one wants to see the binary
+            self.log(self.prePend + "Loading model:",0)
+            pprint.pprint(model_dict)
+            model_bin = dict(model_metadata['model_bin'])[0]
+            self.model = pickle.loads(model_bin)
+            self.compile()
+        else:
+            self.log(self.prePend + "could not get model cursor from database: ", 2)
+
+
 
     def generateModel(self):
         if( "lstm" == self.args["type"]):
-            self.lstm()
+            self.model = self.lstm()
         elif("rnn" == self.args["type"]):
-            self.rnn()
+            self.model = self.rnn()
 
 
 
     def compile(self):
-
         if(self.model != None):
             self.model.compile(optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
         else:
@@ -107,7 +122,6 @@ class NeuralNetwork():
 
 
     def lstm(self):
-
         model = Sequential()
         #TODO: off by one error please for the love of god george
         bInShape = (1, self.args["timeSteps"]+1, self.args["dimensionality"])
@@ -127,12 +141,12 @@ class NeuralNetwork():
 
         # gen layers
         for unused in range(self.args["layers"]-1):
-            model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], return_sequences=True, batch_input_shape=bInShape))
-        model.add(LSTM(self.args["dimensionality"], activation=self.args["activation"], batch_input_shape=bInShape))
+            model.add(LSTM(self.args["intLayerDim"], activation=self.args["activation"], return_sequences=True, batch_input_shape=bInShape))
+        model.add(LSTM(self.args["intLayerDim"], activation=self.args["activation"], batch_input_shape=bInShape))
         model.add(Dense(1))
-        self.model = model
-
         self.log(self.prePend + "LSTM created", -1)
+        return model
+
 
 
 
@@ -156,9 +170,9 @@ class NeuralNetwork():
                 input_dim=self.args["dimensionality"],
                 activation=self.args["activation"]))
         model.add(Dense(1)) # this dense 1 is the output layer since this is regression
-        self.model = model # if nothing errored now we can assign model
-
         self.log(self.prePend + "RNN created", -1)
+        return model # if nothing errored now we can assign model
+
 
 
 
@@ -197,17 +211,30 @@ class NeuralNetwork():
         self.saveModel()
 
 
+
     def test(self):
         if(self.model):
             self.log(self.prePend + "model already in memory using it for testing", 3)
         else:
             self.log(self.prePend + "model not already in memory attempting retrieval", 3)
-        self.modler(toTrain=False)
+            self.getModel()
+        self.modler(toTest=True)
+
+
+
+    def predict(self):
+        if(self.model):
+            self.log(self.prePend + "model already in memory using it for testing", 3)
+        else:
+            self.log(self.prePend + "model not already in memory attempting retrieval", 3)
+            self.getModel()
+        self.modler(toPredict=True)
+
 
 
     # the universal interface that allows the code of both test and train to be
     # one single set. "Don't repeat yourself"
-    def modler(self, toTrain=None):
+    def modler(self, toTrain=False, toTest=False, toPredict=False):
         sumError = 0
         numExamples = 0
         self.numValidExamples = 0
@@ -218,8 +245,10 @@ class NeuralNetwork():
 
             if(toTrain == True):
                 self.log("training on " + self.args["coll"] + " ..." , -1)
-            else:
+            elif(toTest == True):
                 self.log("testing on "  + self.args["coll"] + " ..." , -1)
+            elif(toPredict == True):
+                self.log("predicting on "  + self.args["coll"] + " ..." , -1)
 
 
             # keep looping while cursor can give more data
@@ -227,9 +256,13 @@ class NeuralNetwork():
                 dataBatch = self.nextDataset(1)
                 for mongoDoc in dataBatch:
                     numExamples = numExamples + 1
+
                     #TODO this is fine if both are pushed lists
                     data = pd.DataFrame(list(mongoDoc["data"]))
-                    data = np.expand_dims(data.values, axis=0)
+                    if(self.args["type"] == "rnn"):
+                        data = data.values
+                    else:
+                        data = np.expand_dims(data.values, axis=0)
 
                     #TODO needs generalisation for many to many or one to many
                     target = mongoDoc["target"]
@@ -238,7 +271,7 @@ class NeuralNetwork():
                     if(toTrain == True):
                         self.testTrainer(data=data, target=target,
                             id=mongoDoc["_id"], toTrain=True)
-                    else:
+                    elif(toTest == True):
                         try:
                             sumError = sumError + self.testTrainer(data=data,
                                 target=target, id=mongoDoc["_id"], toTrain=False)
@@ -246,6 +279,8 @@ class NeuralNetwork():
                             self.log("NN.testTrainer returned nothing" +
                                 str(sys.exc_info()[0]) + " " +
                                 str(sys.exc_info()[1]), 3)
+                    elif(toPredict == True):
+                        self.predictor(data=data, id=mongoDoc["_id"], target=target if target is not None else None)
 
             if(toTrain == True):
                 # cursor is now dead so make it None
@@ -253,16 +288,21 @@ class NeuralNetwork():
                 # since this is training we need training accuracy so need to regen cursor
                 self.getCursor()
                 # call self again but to test now
-                self.modler(toTrain=False)
-            else:
+                self.modler(toTest=True)
+
+            elif(toTest == True):
                 self.sumError = sumError
                 self.numExamples = numExamples
-            self.modlerStatusMessage()
+                self.modlerStatusMessage()
+
+            elif(toPredict == True):
+                None
         else:
             if(toTrain == True):
                 self.log(self.prePend +
                     "could not train, either model not generated or cursor does not exist"
                     , 2)
+
             else:
                 self.log(self.prePend +
                     "Aborting test model does not exist; unable to continue"
@@ -280,7 +320,11 @@ class NeuralNetwork():
     def testTrainer(self, data, target, id, toTrain=False):
         try:
             #TODO: off by one ... you fool george, sort this out
-            expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
+            if(self.args["type"] == "rnn"):
+                target = np.full((self.args["timeSteps"] + 1, 1), target)
+                expectShape = (self.args["timeSteps"] + 1, self.args["dimensionality"])
+            else:
+                expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
 
             # check if shape meets expectations
             if(data.shape == expectShape):
@@ -290,7 +334,7 @@ class NeuralNetwork():
                     self.model.fit(x=data, y=target, batch_size=self.args["batchSize"],
                         epochs=self.args["epochs"], verbose=self.args["kerLogMax"],
                         callbacks=None, validation_split=0, validation_data=None,
-                        shuffle=False, class_weight=None, sample_weight=None,
+                        shuffle=True, class_weight=None, sample_weight=None,
                         initial_epoch=0, steps_per_epoch=None, validation_steps=None)
                 else:
                     self.numValidExamples = self.numValidExamples + 1
@@ -304,7 +348,7 @@ class NeuralNetwork():
                 return 0
 
         except:
-            if(self.args["toTrain"]):
+            if(self.args["toTrain"]): # falling back to args directly just incase is something on the way fked up
                 self.log(self.prePend + "could not train:\t" + str(id) + "\n" +
                     str(sys.exc_info()[0]) + " " +
                     str(sys.exc_info()[1]), 2)
@@ -315,10 +359,39 @@ class NeuralNetwork():
 
 
 
+    def predictor(self, data, id, target=None):
+        try:
+            #TODO: off by one ... you fool george, sort this out
+            if(self.args["type"] == "rnn"):
+                target = np.full((self.args["timeSteps"] + 1, 1), target)
+                expectShape = (self.args["timeSteps"] + 1, self.args["dimensionality"])
+            else:
+                expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
+
+            # check if shape meets expectations
+            if(data.shape == expectShape):
+                if(target != None):
+                    self.log(target, 0)
+                x = self.model.predict(x=data, batch_size=self.args["batchSize"],
+                    verbose=self.args["kerLogMax"])
+                self.log(str(x))
+
+            else:
+                self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
+                    + str(expectShape), 1)
+                return -1
+
+        except:
+            self.log(self.prePend + "could not predict:\t" + str(id) + "\n" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]), 2)
+
+
+
     def saveModel(self):
         if(self.model != None):
             stateDict = self.args
-            stateDict["pipe"] = str(self.pipeline)
+            stateDict["pipe"] = str(self.data_pipeline)
             del stateDict["pass"]
             stateDict["utc"] = datetime.datetime.utcnow()
             if(self.sumError):
@@ -329,11 +402,11 @@ class NeuralNetwork():
                 stateDict["numValidSamples"] = self.numValidExamples
             if(self.sumError) and (self.numValidExamples):
                 stateDict["meanError"] = self.sumError / self.numValidExamples
+
             # save model
             self.make_keras_picklable()
             model_bytes = pickle.dumps(self.model)
             stateDict['model_bin'] = Binary(model_bytes)
-
             self.db.shoveJson(stateDict, collName=str(self.args["modelColl"]))
 
 

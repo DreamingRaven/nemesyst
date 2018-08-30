@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-08
+# @Last modified time: 2018-08-22
 # @License: Please see LICENSE file in project root
 
 
@@ -61,8 +61,8 @@ def main():
     if(args["toTest"] == True):
         test(args=args, database=mongodb, print=print)
 
-    if(None):
-        predict(args=args, print=print)
+    if(args["toPredict"] == True):
+        predict(args=args, database=mongodb, print=print)
 
     if(args["toStopDb"] == True):
         time.sleep(2) # making sure server has time to start
@@ -82,7 +82,7 @@ fileAndPath = inspect.getframeinfo(inspect.currentframe()).filename
 path = os.path.dirname(os.path.abspath(fileAndPath))
 
 prePend = "[ " + name + " ] "
-description = name + "; " + "RavenRecSyst, a neural network based recommender system."
+description = name + "; " + "Nemesyst, an adversarual neural network based recommender system."
 
 dependancies = ["https://github.com/DreamingRaven/RavenPythonLib"]
 
@@ -126,8 +126,6 @@ if(args["loglevel"] >= 4):
 else:
     try:
         main()
-        # raise ValueError('value x not valid; ...')
-        # raise NotImplementedError('not currentley implemented')
     except ModuleNotFoundError:
         print(prePend + "A dependancy module is missing, try updating using '--toUpdate' flag, else 'git pull'. Finally check python dependancies exist e.g Keras " +
         str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
