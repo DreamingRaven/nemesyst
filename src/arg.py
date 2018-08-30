@@ -174,7 +174,7 @@ def argz(argv=None, description=None, prevArgs=None):
         action="store_true",
         help="sets flag to automate updating and for first time installation")
     parser.add_argument("--modelColl",
-        default=str( argDeflt( config, options, "modelColl", str("modelStates")) ),
+        default=str( argDeflt( config, options, "modelColl", str("models")) ),
         help="set the collection to which state will be tracked and model binary kept")
     parser.add_argument("--identifier",
         default=str( argDeflt( config, options, "identifier", str(getpass.getuser())) ),
