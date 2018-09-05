@@ -1,19 +1,16 @@
-# This is an example PKGBUILD file. Use this as a start to creating your own,
-# and remove these comments. For more information, see 'man PKGBUILD'.
-# NOTE: Please fill out the license field for your package! If it is unknown,
-# then please put 'unknown'.
-
-# The following guidelines are specific to BZR, GIT, HG and SVN packages.
-# Other VCS sources are not natively supported by makepkg yet.
-
-# Maintainer: Your Name <GeorgeRavenCommunity@outlook.com>
-pkgname=nemesyst-git # '-bzr', '-git', '-hg' or '-svn'
+# Maintainer: George Raven <GeorgeRavenCommunity AT outlook dot com>
+pkgname=nemesyst-git
 pkgsrcname="nemesyst"
-pkgver=r295.e80db76
+pkgver=0.9.r294
 pkgrel=1
 pkgdesc="Generalised, sequence-based, deep-learning framework of the gods. Warning may include GANs, does not include nuts."
 arch=('x86_64')
+
+# nemesyst source code url
 url="https://github.com/DreamingRaven/Nemesyst"
+# nemesyst helper lib will be made into its own package later
+urllib="https://github.com/DreamingRaven/RavenPythonLib"
+
 license=('MIT') # MIT is a special case store a copy in /usr/share/pkgname
 groups=("nemesyst-base")
 depends=('mongodb' 'python' 'python-pymongo' 'python-keras' 'python-pandas' 'python-numpy' 'python-h5py')
@@ -28,35 +25,27 @@ source=('nemesyst::git+https://github.com/DreamingRaven/Nemesyst#branch=master')
 noextract=()
 md5sums=('SKIP')
 
-# Please refer to the 'USING VCS SOURCES' section of the PKGBUILD man page for
-# a description of each element in the source array.
-
 pkgver() {
 	cd "$srcdir/${pkgsrcname}"
-
-# Git, tags available
 	printf "%s" "$(git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g')"
-
-# Git, no tags available
-	# printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 prepare() {
 	cd "$srcdir/${pkgsrcname}"
-	#patch -p1 -i "$srcdir/${pkgname}.patch"
+	git checkout master # get off of makepkg branch
+	git clone ${urllib} # add static lib in sub dir TODO make its own package
 }
 
 build() {
 	cd "$srcdir/${pkgsrcname}"
-	python3 nemesyst.py --toUpdate
 }
 
 check() {
 	cd "$srcdir/${pkgsrcname}"
-	#make -k check
+	# check that program can run while self checking and updating if somethings missing
+	python3 nemesyst.py --toUpdate
 }
 
 package() {
 	cd "$srcdir/${pkgsrcname}"
-	#make DESTDIR="$pkgdir/" install
 }
