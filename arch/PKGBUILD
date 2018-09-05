@@ -10,7 +10,7 @@
 pkgname=nemsyst-git # '-bzr', '-git', '-hg' or '-svn'
 pkgver=0.9.r292
 pkgrel=1
-pkgdesc="Generalised, sequence-based, deep learning framework of the gods."
+pkgdesc="Generalised, sequence-based, deep-learning framework of the gods. Warning may include GANs, does not include nuts."
 arch=('x86_64')
 url="https://github.com/DreamingRaven/Nemesyst"
 license=('MIT') # MIT is a special case store a copy in /usr/share/pkgname
