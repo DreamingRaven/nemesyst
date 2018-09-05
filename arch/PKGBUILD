@@ -10,7 +10,7 @@
 pkgname=nemsyst-git # '-bzr', '-git', '-hg' or '-svn'
 pkgver=0.9.r292
 pkgrel=1
-pkgdesc=""
+pkgdesc="Generalised, sequence-based, deep learning framework of the gods."
 arch=('x86_64')
 url="https://github.com/DreamingRaven/Nemesyst"
 license=('MIT') # MIT is a special case store a copy in /usr/share/pkgname
@@ -33,17 +33,12 @@ md5sums=('SKIP')
 pkgver() {
 	cd "$srcdir/${pkgname}"
 
-# The examples below are not absolute and need to be adapted to each repo. The
-# primary goal is to generate version numbers that will increase according to
-# pacman's version comparisons with later commits to the repo. The format
-# VERSION='VER_NUM.rREV_NUM.HASH', or a relevant subset in case VER_NUM or HASH
-# are not available, is recommended.
-
 # Git, tags available
 #	printf "%s" "$(git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g')"
 
 # Git, no tags available
 	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
 
 prepare() {
 	cd "$srcdir/${pkgname}"
