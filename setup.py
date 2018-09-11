@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+
+
+# @Author: George Onoufriou <archer>
+# @Date:   2018-09-05
+# @Filename: setup.py
+# @Last modified by:   archer
+# @Last modified time: 2018-09-11
+# @License: Please see LICENSE file in project root
+
+import subprocess as sp
+from distutils.core import setup
+
+
+
+runArgs = ["git", "describe", "--long"]
+version = sp.run(runArgs, stdout=sp.PIPE).stdout.decode("utf-8")
+
+
+
+setup(
+    name="nemesyst",
+    version=str(version),
+    description="Generalised, sequence-based, deep-learning framework of the gods. Warning may include GANs, does not include nuts.",
+    author="George Onoufriou"
+    url="https://github.com/DreamingRaven/Nemesyst"
+)
