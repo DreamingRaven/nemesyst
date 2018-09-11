@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-30
+# @Last modified time: 2018-09-11
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -191,7 +191,7 @@ def argz(argv=None, description=None, prevArgs=None):
         default=str( argDeflt( config, options, "modelPipe", str(rootPath + "/config/modelPipe.json")) ),
         help="set the path to the json pipeline file")
     parser.add_argument("--intLayerDim",
-        default=int( argDeflt( config, options, "intLayerDim", int(512)) ),
+        default=int( argDeflt( config, options, "intLayerDim", int(200)) ),
         type=int,
         help="set the dimensionality between layers")
     parser.add_argument("--epochs_chunk",
