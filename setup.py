@@ -9,7 +9,7 @@
 # @License: Please see LICENSE file in project root
 
 import subprocess as sp
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, find_namespace_packages
 
 
 # getting version from git as this is vcs
