@@ -21,7 +21,7 @@ replaces=()
 backup=()
 options=()
 install=
-source=('nemesyst::git+https://github.com/DreamingRaven/Nemesyst#branch=master')
+source=('nemesyst::git+https://github.com/DreamingRaven/Nemesyst#branch=AUR')
 noextract=()
 md5sums=('SKIP')
 
