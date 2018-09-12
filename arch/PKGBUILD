@@ -1,7 +1,7 @@
 # Maintainer: George Raven <GeorgeRavenCommunity AT outlook dot com>
 pkgname=nemesyst-git
 pkgsrcname="nemesyst"
-pkgver=0.9.r294
+pkgver=0.9.r293.r8.f7e7c22
 pkgrel=1
 pkgdesc="Generalised, sequence-based, deep-learning framework of the gods. Warning may include GANs, does not include nuts."
 arch=('x86_64')
@@ -13,7 +13,7 @@ urllib="https://github.com/DreamingRaven/RavenPythonLib"
 
 license=('MIT') # MIT is a special case store a copy in /usr/share/pkgname
 groups=("nemesyst-base")
-depends=('mongodb' 'python' 'python-pymongo' 'python-keras' 'python-pandas' 'python-numpy' 'python-h5py')
+depends=('git' 'mongodb' 'python' 'python-pymongo' 'python-keras' 'python-pandas' 'python-numpy' 'python-h5py')
 makedepends=() # 'bzr', 'git', 'mercurial' or 'subversion'
 provides=()
 conflicts=()
@@ -33,7 +33,7 @@ pkgver() {
 prepare() {
 	cd "$srcdir/${pkgsrcname}"
 	git checkout master # get off of makepkg branch
-	git clone ${urllib} # add static lib in sub dir TODO make its own package
+	# git clone ${urllib} # add static lib in sub dir TODO make its own package
 }
 
 build() {
@@ -48,4 +48,6 @@ check() {
 
 package() {
 	cd "$srcdir/${pkgsrcname}"
+	python3 setup.py install --prefix=/usr --root="$pkgdir/" --optimize=1
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
