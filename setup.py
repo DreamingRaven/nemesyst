@@ -28,5 +28,5 @@ setup(
     author="George Onoufriou",
     url="https://github.com/DreamingRaven/Nemesyst",
     packages=find_namespace_packages(),
-    scripts=['nemesyst'],
+    scripts=['nemesyst.py'],
 )
