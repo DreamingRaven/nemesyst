@@ -1,7 +1,7 @@
 # Maintainer: George Raven <GeorgeRavenCommunity AT outlook dot com>
 pkgname=nemesyst-git
 pkgsrcname="nemesyst"
-pkgver=0.9.r293.r18.01c13d0
+pkgver=0.9.r293.r19.c125b60
 pkgrel=1
 pkgdesc="Generalised, sequence-based, deep-learning framework of the gods. Warning may include GANs, does not include nuts."
 arch=('x86_64')

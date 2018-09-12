@@ -27,5 +27,5 @@ setup(
     long_description_content_type="text/markdown",
     author="George Onoufriou",
     url="https://github.com/DreamingRaven/Nemesyst",
-    packages=['nemesyst.py', 'src', ] #find_packages(),
+    packages=find_namespace_packages(),
 )
