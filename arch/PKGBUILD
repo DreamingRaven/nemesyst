@@ -1,7 +1,7 @@
 # Maintainer: George Raven <GeorgeRavenCommunity AT outlook dot com>
 pkgname=nemesyst-git
 pkgsrcname="nemesyst"
-pkgver=0.9.r293.r8.f7e7c22
+pkgver=0.9.r293.r15.92ec6ef
 pkgrel=1
 pkgdesc="Generalised, sequence-based, deep-learning framework of the gods. Warning may include GANs, does not include nuts."
 arch=('x86_64')
@@ -10,10 +10,12 @@ arch=('x86_64')
 url="https://github.com/DreamingRaven/Nemesyst"
 # nemesyst helper lib will be made into its own package later
 urllib="https://github.com/DreamingRaven/RavenPythonLib"
+# set what branch you would like to pull from
+branch="master"
 
 license=('MIT') # MIT is a special case store a copy in /usr/share/pkgname
 groups=("nemesyst-base")
-depends=('git' 'mongodb' 'python' 'python-pymongo' 'python-keras' 'python-pandas' 'python-numpy' 'python-h5py')
+depends=('git' 'python-setuptools' 'mongodb' 'python' 'python-pymongo' 'python-keras' 'python-pandas' 'python-numpy' 'python-h5py')
 makedepends=() # 'bzr', 'git', 'mercurial' or 'subversion'
 provides=()
 conflicts=()
@@ -21,7 +23,7 @@ replaces=()
 backup=()
 options=()
 install=
-source=('nemesyst::git+https://github.com/DreamingRaven/Nemesyst#branch=master')
+source=('nemesyst::git+https://github.com/DreamingRaven/Nemesyst#branch='"${branch}")
 noextract=()
 md5sums=('SKIP')
 
@@ -32,7 +34,7 @@ pkgver() {
 
 prepare() {
 	cd "$srcdir/${pkgsrcname}"
-	git checkout master # get off of makepkg branch
+	git checkout ${branch} # get off of makepkg branch
 	# git clone ${urllib} # add static lib in sub dir TODO make its own package
 }
 
