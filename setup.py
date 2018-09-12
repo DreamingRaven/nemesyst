@@ -23,9 +23,9 @@ setup(
     name="nemesyst",
     version=str(version),
     description="Generalised, sequence-based, deep-learning framework of the gods. Warning may include GANs, does not include nuts.",
-    long_description=readme
-    long_description_content_type="text/markdown"
-    author="George Onoufriou"
-    url="https://github.com/DreamingRaven/Nemesyst"
-    packages=setuptools.find_packages()
+    long_description=readme,
+    long_description_content_type="text/markdown",
+    author="George Onoufriou",
+    url="https://github.com/DreamingRaven/Nemesyst",
+    packages=setuptools.find_packages(),
 )
