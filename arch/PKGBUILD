@@ -13,7 +13,7 @@ urllib="https://github.com/DreamingRaven/RavenPythonLib"
 
 license=('MIT') # MIT is a special case store a copy in /usr/share/pkgname
 groups=("nemesyst-base")
-depends=('mongodb' 'python' 'python-pymongo' 'python-keras' 'python-pandas' 'python-numpy' 'python-h5py')
+depends=('git', 'mongodb' 'python' 'python-pymongo' 'python-keras' 'python-pandas' 'python-numpy' 'python-h5py')
 makedepends=() # 'bzr', 'git', 'mercurial' or 'subversion'
 provides=()
 conflicts=()
@@ -48,4 +48,6 @@ check() {
 
 package() {
 	cd "$srcdir/${pkgsrcname}"
+	python3 setup.py install --prefix=/usr --root="$pkgdir/" --optimize=1
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"	
 }
