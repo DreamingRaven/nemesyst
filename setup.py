@@ -9,7 +9,7 @@
 # @License: Please see LICENSE file in project root
 
 import subprocess as sp
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 # getting version from git as this is vcs
@@ -27,5 +27,5 @@ setup(
     long_description_content_type="text/markdown",
     author="George Onoufriou",
     url="https://github.com/DreamingRaven/Nemesyst",
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
 )
