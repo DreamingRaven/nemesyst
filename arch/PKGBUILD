@@ -8,8 +8,6 @@ arch=('x86_64')
 
 # nemesyst source code url
 url="https://github.com/DreamingRaven/Nemesyst"
-# nemesyst helper lib will be made into its own package later
-urllib="https://github.com/DreamingRaven/RavenPythonLib"
 # set what branch you would like to pull from
 branch="master"
 
@@ -35,7 +33,6 @@ pkgver() {
 prepare() {
 	cd "$srcdir/${pkgsrcname}"
 	git checkout ${branch} # get off of makepkg branch
-	# git clone ${urllib} # add static lib in sub dir TODO make its own package
 }
 
 build() {
