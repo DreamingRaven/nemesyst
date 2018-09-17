@@ -124,7 +124,7 @@ class NeuralNetwork():
     def lstm(self):
         model = Sequential()
         #TODO: off by one error please for the love of god george
-        bInShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
+        bInShape = (1, self.args["timeSteps"], self.args["dimensionality"])
 
         self.log(
             self.prePend                                                   + "\n" +
@@ -320,10 +320,10 @@ class NeuralNetwork():
         try:
             #TODO: off by one ... you fool george, sort this out
             if(self.args["type"] == "rnn"):
-                target = np.full((self.args["timeSteps"] + 1, 1), target)
-                expectShape = (self.args["timeSteps"] + 1, self.args["dimensionality"])
+                target = np.full((self.args["timeSteps"], 1), target)
+                expectShape = (self.args["timeSteps"], self.args["dimensionality"])
             else:
-                expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
+                expectShape = (1, self.args["timeSteps"], self.args["dimensionality"])
 
             # check if shape meets expectations
             if(data.shape == expectShape):
@@ -362,10 +362,10 @@ class NeuralNetwork():
         try:
             #TODO: off by one ... you fool george, sort this out
             if(self.args["type"] == "rnn"):
-                target = np.full((self.args["timeSteps"] + 1, 1), target)
-                expectShape = (self.args["timeSteps"] + 1, self.args["dimensionality"])
+                target = np.full((self.args["timeSteps"], 1), target)
+                expectShape = (self.args["timeSteps"], self.args["dimensionality"])
             else:
-                expectShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
+                expectShape = (1, self.args["timeSteps"], self.args["dimensionality"])
 
             # check if shape meets expectations
             if(data.shape == expectShape):
