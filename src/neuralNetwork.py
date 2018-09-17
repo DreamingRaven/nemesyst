@@ -250,7 +250,6 @@ class NeuralNetwork():
             elif(toPredict == True):
                 self.log("predicting on "  + self.args["coll"] + " ..." , -1)
 
-
             # keep looping while cursor can give more data
             while(self.cursor.alive):
                 dataBatch = self.nextDataset(1)
