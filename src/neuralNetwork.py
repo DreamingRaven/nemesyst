@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-30
+# @Last modified time: 2018-09-17
 # @License: Please see LICENSE file in project root
 
 
@@ -124,7 +124,7 @@ class NeuralNetwork():
     def lstm(self):
         model = Sequential()
         #TODO: off by one error please for the love of god george
-        bInShape = (1, self.args["timeSteps"]+1, self.args["dimensionality"])
+        bInShape = (1, self.args["timeSteps"] + 1, self.args["dimensionality"])
 
         self.log(
             self.prePend                                                   + "\n" +
