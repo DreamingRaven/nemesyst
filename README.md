@@ -200,8 +200,6 @@ nuances.
 
 ### Cleaning
 
-IMPORTANT: [#3; off by one](https://github.com/DreamingRaven/Nemesyst/issues/3)
-
 The following section can be skipped if the data is already clean, and in the
 format a deep learning sequence model can use. The form the data should take
 when cleaning finished or to be skipped:
