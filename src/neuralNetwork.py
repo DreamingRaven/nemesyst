@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-09-17
+# @Last modified time: 2018-09-19
 # @License: Please see LICENSE file in project root
 
 
@@ -369,10 +369,11 @@ class NeuralNetwork():
             # check if shape meets expectations
             if(data.shape == expectShape):
                 if(target != None):
-                    self.log(target, 0)
+                    self.log("targ: " + str(target) + " " + str(id), 3)
+
                 x = self.model.predict(x=data, batch_size=self.args["batchSize"],
                     verbose=self.args["kerLogMax"])
-                self.log(str(x))
+                self.log("pred: " + str(x), 0)
 
             else:
                 self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
