@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-09-11
+# @Last modified time: 2018-09-19
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -198,6 +198,11 @@ def argz(argv=None, description=None, prevArgs=None):
         default=int( argDeflt( config, options, "epochs_chunk", int(1)) ),
         type=int,
         help="set the number of epochs each chunk will iterate, this is different to --epochs since that iterates over all the data instead")
+    parser.add_argument("--toRetrain",
+        default=bool( argDeflt( config, options, "toRetrain", False, isBool=True) ),
+        action="store_true",
+        help="sets flag to continue training a model provided by the model pipeline")
+
 
 
 
