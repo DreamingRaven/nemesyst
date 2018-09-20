@@ -18,7 +18,7 @@ Along the way however I decided to make everything as configurable/ generalisabl
 This recommender system used to predict exclusiveley using [MovieLense 20M](https://grouplens.org/datasets/movielens/20m/),
  and [Netflix (2007)](https://www.kaggle.com/netflix-inc/netflix-prize-data) datasets. Now however it can predict using any data set, given an appropriate cleaning script path to the -c / --cleaner argument.
 
-If you are interested in the masters itself the plan was to explicitly compare recommender system algorithms with newer neural network approaches, although this program can use any supplied algorithm. Find below some specifics...
+If you are interested in the masters itself the plan was to explicitly compare recommender system algorithms with newer neural network approaches, although its worht noting this program can only currentley use sequence models and will in future allow for convolutionals and gans as well as seperate script calls to custom neural networks. Find below some referances:
 
 Quick references
 * [Keystone Paper](https://arxiv.org/pdf/1707.07435.pdf) -
