@@ -73,8 +73,11 @@ git clone https://github.com/DreamingRaven/Nemesyst
 
 Other than those that should be all you need, as dependanices have been kept to as few as needed to make a good extensible result.
 
+#### Arch Installation
 
-\* Note: This system is being developed on linux (Arch Linux) and since the focus is not cross platform there has been no checking for windows support, meaning it may need tinkering if you would like to run it on windows, although I have made every attempt to make this as straight forward as possible, with minimal dependencies and sanitising paths for cross platform use.
+For my fellow archers in x86_64, please follow this beutifull link to your local [AUR](https://aur.archlinux.org/packages/nemesyst-git/) and do the thing.
+
+\* Note: This system is being developed on linux (Arch Linux) and since the focus is not cross platform there has been no checking for windows support, meaning it may need tinkering if you would like to run it on windows, although I have made every attempt to make this as straight forward as possible, with minimal dependencies and sanitising paths for cross platform use. Nemesyst also comes with its own [setup.py](https://github.com/DreamingRaven/Nemesyst/blob/master/setup.py) which will help this cross platform-ness a long a bit.
 
 ---
 
