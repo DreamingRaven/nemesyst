@@ -13,12 +13,12 @@ Generative Adversarial Neural Networks (GANs) with certain other traditional and
 recommender system techniques. This recommender system is evaluated by the common method of rating prediction
 via mean absolute error (MEA).
 
-Along the way however I decided to make everything as configurable/ generalisable as possible. This system has become a framework for the application of machine learning into a wider environment, fascilitated by this configurability; Including config and pipeline files, custom cleaning script calls, and custom machine learning scripts all while the nuanced operations are completed automagically, such as transforming then loading the chosen data into mongoDB, allowing for interesting distributed applications to do with combining mongodb with machine learning. The use of mongodb also allows this program to act clay-like, keeping track of program state to be reloaded, reused, monitored etc, just as clay would keep the shape impressed upon it. It keeps track of each model trained, as a seperate document in the models collection, with the models binary also being saved so it can be directly replayed with simple calls.
+Along the way however I decided to make everything as configurable/ generalisable as possible. This system has become a framework for the application of machine learning into a wider environment, facilitated by this configuration; Including config and pipeline files, custom cleaning script calls, and custom machine learning scripts all while the nuanced operations are completed automagically, such as transforming then loading the chosen data into mongoDB, allowing for interesting distributed applications to do with combining mongodb with machine learning. The use of mongodb also allows this program to act clay-like, keeping track of program state to be reloaded, reused, monitored etc, just as clay would keep the shape impressed upon it. It keeps track of each model trained, as a separate document in the models collection, with the models binary also being saved so it can be directly replayed with simple calls.
 
-This recommender system used to predict exclusiveley using [MovieLense 20M](https://grouplens.org/datasets/movielens/20m/),
- and [Netflix (2007)](https://www.kaggle.com/netflix-inc/netflix-prize-data) datasets. Now however it can predict using any data set, given an appropriate cleaning script path to the -c / --cleaner argument.
+This recommender system used to predict exclusively using [MovieLense 20M](https://grouplens.org/datasets/movielens/20m/),
+ and [Netflix (2007)](https://www.kaggle.com/netflix-inc/netflix-prize-data) data sets. Now however it can predict using any data set, given an appropriate cleaning script path to the -c / --cleaner argument.
 
-If you are interested in the masters itself the plan was to explicitly compare recommender system algorithms with newer neural network approaches, although its worht noting this program can only currentley use sequence models and will in future allow for convolutionals and gans as well as seperate script calls to custom neural networks. Find below some referances:
+If you are interested in the masters itself the plan was to explicitly compare recommender system algorithms with newer neural network approaches, although its worth noting this program can only currently use sequence models and will in future allow for convolutionals and gans as well as separate script calls to custom neural networks. Find below some references:
 
 Quick references
 * [Keystone Paper](https://arxiv.org/pdf/1707.07435.pdf) -
@@ -52,7 +52,7 @@ Quick Definitions (Wiki)
 ## Installation
 
 
-You will first have to install/ verify a few key dependancies.
+You will first have to install/ verify a few key dependencies.
 
 * [MongoDb](https://www.mongodb.com/)
 * Python modules:
@@ -71,11 +71,11 @@ git clone https://github.com/DreamingRaven/Nemesyst
 ./Nemesyst/nemesyst.py --toUpdate
 ````
 
-Other than those that should be all you need, as dependanices have been kept to as few as needed to make a good extensible result.
+Other than those that should be all you need, as dependencies have been kept to as few as needed to make a good extensible result.
 
 #### Arch Installation
 
-For my fellow archers in x86_64, please follow this beutifull link to your local [AUR](https://aur.archlinux.org/packages/nemesyst-git/) and do the thing.
+For my fellow archers in x86_64, please follow this beautiful link to your local [AUR](https://aur.archlinux.org/packages/nemesyst-git/) and do the thing.
 
 \* Note: This system is being developed on linux (Arch Linux) and since the focus is not cross platform there has been no checking for windows support, meaning it may need tinkering if you would like to run it on windows, although I have made every attempt to make this as straight forward as possible, with minimal dependencies and sanitising paths for cross platform use. Nemesyst also comes with its own [setup.py](https://github.com/DreamingRaven/Nemesyst/blob/master/setup.py) which will help this cross platform-ness a long a bit.
 
@@ -112,16 +112,16 @@ where:
 And:
 * --user / -u is an an argument which allows you to then set the username which will be used in any subsequent operations E.G --toInitDb + --user will attempt to add that user to the database.
 * --pass / -p is a similar argument to --user except for the users password.
-* --name / -N sets what the database name is which will effect all operations that referance this name.
-* --toInitDb / -i is a flag with no subsequent argument, these kind of flags allow you to control what this sytem does, in this case initialising the database with a username password and a database name. --toInitDb only needs to be run once for each database you want to set up/ user.
-* --toStartDb / -s is much like --toInitDb except this actually starts the database wheras --toInitDb just sets it up, with username password and allows for it to be authentacatable. Please note however, --toStartDb always starts the database with authentication requirements, to reduce accessability where not needed.
+* --name / -N sets what the database name is which will effect all operations that reference this name.
+* --toInitDb / -i is a flag with no subsequent argument, these kind of flags allow you to control what this system does, in this case initialising the database with a username password and a database name. --toInitDb only needs to be run once for each database you want to set up/ user.
+* --toStartDb / -s is much like --toInitDb except this actually starts the database whereas --toInitDb just sets it up, with username password and allows for it to be authenticatable. Please note however, --toStartDb always starts the database with authentication requirements, to reduce accessibility where not needed.
 
 lastly as above, for debugging purposes there is a logger with log levels:
 * -1 = Always shown + formatting
 *  0 = [INFO] information on current operation
 *  1 = [WARN] shows warnings of current operation
 *  2 = [ERROR] shows all errors of current operation
-*  3 = [DEBUG] main debugging level, displays all availiable debug prints and statements
+*  3 = [DEBUG] main debugging level, displays all available debug prints and statements
 *  4 = [noTry] a special log level, that runs recSyst outside of main try catch for full, verbose information on any errors
 
 To use this logger simply add option -v OR --loglevel with the desired level. Anything less than that level will also be shown, so level 2 will show [ERROR], [WARN], [INFO] and formatting messages, but not [DEBUG] messages.
@@ -133,7 +133,7 @@ E.G to show all possible messages in most verbose state:
 
 ### All the options
 
-This is a current list but **/nemesyst.py --help will always be prefered and this is not going to be as up to date or verbose, just a basic overview. For any in depth queries see the argparse [parser.add_arguments](https://github.com/DreamingRaven/Nemesyst/blob/master/src/arg.py)
+This is a current list but **/nemesyst.py --help will always be preferred and this is not going to be as up to date or verbose, just a basic overview. For any in depth queries see the argparse [parser.add_arguments](https://github.com/DreamingRaven/Nemesyst/blob/master/src/arg.py)
 
 | option       | alternate | default                  | isFlag | class  | description   |
 |:------------:|:---------:|:------------------------:|:------:|:------:|:-------------:|
@@ -171,7 +171,7 @@ This is a current list but **/nemesyst.py --help will always be prefered and thi
 | \-\-toJustImport|        | False                    | 1      | rrs    | flags using residual temporary files without cleaning to import to db |
 | \-\-pipeline |           | **/config/pipeline.json  | 0      | config | specifies file path to pipeline.json file |
 | \-\-config   |           | **/config/config.ini     | 0      | config | specifies file path to config.ini file |
-| \-\-mongoCursorTimeout   |                          | 600     | 0      | mongo | specifies the time in milliseconds to allow a cursor to remain inacive before it is deleted |
+| \-\-mongoCursorTimeout   |                          | 600    | 0      | mongo | specifies the time in milliseconds to allow a cursor to remain inactive before it is deleted |
 | \-\-kerLogMax|           | 0                        | 0      | ann    | specifies the maximum log level of keras log/ print statements |
 | \-\-toUpdate |           | False                    | 1      | rrs    | flag to update / install nemesyst and RavenPythonLib |
 | \-\-modelColl|           | modelStates              | 0      | mongo  | specifies the collection to store model states and history in |
@@ -181,24 +181,24 @@ This is a current list but **/nemesyst.py --help will always be prefered and thi
 | \-\-modelPipe|           | **/config/modelPipe.json | 0      | mongo  | specifies path to mongoDb files  |
 
 
-### Config Files / Persistent Behavioral Changes
+### Config Files / Persistent Behavioural Changes
 
-While Nemesyst supports a lengthy list of command line options: which dictate the flow and operation of the algorithm, it may be desireable to have a peristent set of options which one can use to reduce the need to repeatedley type out consistentley used commands.
+While Nemesyst supports a lengthy list of command line options: which dictate the flow and operation of the algorithm, it may be desirable to have a persistent set of options which one can use to reduce the need to repeatedly type out consistently used commands.
 
-For this Nemesyst supports .ini config files, the default / boilerplate of which can be found in [\*\*/Nemesyst/config/config.ini](https://github.com/DreamingRaven/Nemesyst/blob/master/config/config.ini). This is implemented using [pythons configparser library](https://docs.python.org/3/library/configparser.html) and all keynames are shared with the command line interface although the config file only supports the long format e.g. 'user' instead of --user but not 'u' instead of -u. There is also an order of priority, cli > config > fallbacks; Explicitly, command line options will always take precedence to allow for quick customisation without having to persistentley change any underlying configuration file; Least priority is are the fallbacks which are only used if no cli or config file options exist.
+For this Nemesyst supports .ini config files, the default / boilerplate of which can be found in [\*\*/Nemesyst/config/config.ini](https://github.com/DreamingRaven/Nemesyst/blob/master/config/config.ini). This is implemented using [pythons configparser library](https://docs.python.org/3/library/configparser.html) and all keynames are shared with the command line interface although the config file only supports the long format e.g. 'user' instead of --user but not 'u' instead of -u. There is also an order of priority, cli > config > fallbacks; Explicitly, command line options will always take precedence to allow for quick customisation without having to persistently change any underlying configuration file; Least priority is are the fallbacks which are only used if no cli or config file options exist.
 
-Note however the config file above has sections called [options] and [DEFAULT], please refrain from changing the default section and instead overide the defaults by adding entries inside the options section which is the one specifically called by Nemesyst. This will mean you always have the original default options as a referance point for overiding.
+Note however the config file above has sections called [options] and [DEFAULT], please refrain from changing the default section and instead override the defaults by adding entries inside the options section which is the one specifically called by Nemesyst. This will mean you always have the original default options as a reference point for overriding.
 
 ---
 
 ## Application Specific Customisation
 
-Nemesyst includes customisable modules that should be used to get the
+Nemesyst includes customable modules that should be used to get the
 functionality you need. These modules should be executable and will be called
 by Nemesyst to do data/ application specific operations.
 
 There will be 4 such modules; these were included since there is no way to
-create things such as a universal dataset cleaner, as each data set has its own
+create things such as a universal data set cleaner, as each data set has its own
 nuances.
 
 ### Cleaning
@@ -214,7 +214,7 @@ when cleaning finished or to be skipped:
 You first should create a cleaner file or use a template that expects the below arguments:
 *
 
-Nemesyst supports arbitray cleaning code execution.* To tell Nemesyst
+Nemesyst supports arbitrary cleaning code execution.* To tell Nemesyst
 which file is you're cleaning file simply use the -c / --cleaner argument
 followed by the file inclusive path to the (executable) cleaner file.
 
@@ -242,9 +242,9 @@ manually.
 
 \* please note: this is a potential security concern if this file is edited to
 include malicious code, please make sure that all files in this project have
-minimum write premissions on you're system so that they can not be used as such.
-Pleae also ensure that you do not execute Nemesyst with administrator
-permissions as it is uneccessary and potentially harmfull if these files have
+minimum write permissions on you're system so that they can not be used as such.
+Please also ensure that you do not execute Nemesyst with administrator
+permissions as it is unnecessary and potentially harmful if these files have
 been maliciously tampered as with any code base.
 
 #### Formatting
@@ -252,23 +252,23 @@ been maliciously tampered as with any code base.
 For cleaning operations, please ensure that the data files passed in to
 --newData are in csv or end up in csv after you're cleaning file completes
 
-It is also neccessary that each individual file is a single csv table,
+It is also necessary that each individual file is a single csv table,
 with a header row which is the names you would like to use in the database for
 those columns.
 
 As an example:
 
-| name        | age | legs | has Furr |...| class   |
+| name        | age | legs | has Fur |...| class   |
 |:-----------:|:---:|:----:|:--------:|:-:|:-------:|
 | Jimmy       | 9   | 4    | 1        |...| dog     |
 | Dumbledore  | 115 | 2    | 1        |...| wizard  |
 | Margret     | 152 | 4    | 0        |   | turtle  |
 
-Resulting in database attribute names ["name", "age", "legs", "has Furr", ...,
+Resulting in database attribute names ["name", "age", "legs", "has Fur", ...,
  "class"]
 
 The spaces and casing of the words will be enshrined, which means if they are
-inconsistent between tables they will be completeley different things. Please
+inconsistent between tables they will be completely different things. Please
 ensure there are no special characters specifically any not in this list:
 * alphanumeric
 * hyphen
@@ -279,14 +279,14 @@ As those characters will have to be stripped or they will result in headaches.
 Each file with the extension given by the --suffix option in the directory given by --newData option will become a mongoDB document as is. So please prepare, chunk and clean files in the manner in which you expect them to become documents.
 
 #### Pipelines
-After cleaning data or inserting clean data, it is neccessary to retrieve again the data from
+After cleaning data or inserting clean data, it is necessary to retrieve again the data from
 the database. For this reason Nemesyst supports [aggregate pipelines](https://docs.mongodb.com/manual/core/aggregation-pipeline/), which not only
 allow you to get existing data from the database but allows you to perform complex operations
-on the data prior to getting it from the database in a non permanent manner; aggregate pipelines in this manner allow you to rapidly test small changes on the clean data set without having to reopen csv files or re-clean to calculate things like sums of a column etc, provided post cleaning the data has not been scrubbed of features you required to do tweaks, clearly you cant calculate sum of a column that no longer exists in the clean dataset. Any pipeline present in [pipeline.json](https://github.com/DreamingRaven/Nemesyst/blob/master/config/pipeline.json) will be used to create a cursor which in turn will iterate over your data set. This can of course be overidden, you can specify the pipeline file using the --pipeline option.
+on the data prior to getting it from the database in a non permanent manner; aggregate pipelines in this manner allow you to rapidly test small changes on the clean data set without having to reopen csv files or re-clean to calculate things like sums of a column etc, provided post cleaning the data has not been scrubbed of features you required to do tweaks, clearly you cant calculate sum of a column that no longer exists in the clean data set. Any pipeline present in [pipeline.json](https://github.com/DreamingRaven/Nemesyst/blob/master/config/pipeline.json) will be used to create a cursor which in turn will iterate over your data set. This can of course be overridden, you can specify the pipeline file using the --pipeline option.
 
-Pipelines can be confusing at first, but stick with it, they are incredibly powerfull tools that allow you to change things rapidly, efficientley, and with minimal fuss once you know what you are doing. I know firsthand how offputting they can be but im so glad I stuck with them myself: So muuch powweeerrrr.
+Pipelines can be confusing at first, but stick with it, they are incredibly powerful tools that allow you to change things rapidly, efficiently, and with minimal fuss once you know what you are doing. I know firsthand how off-putting they can be but im so glad I stuck with them myself: So muuch powweeerrrr.
 
-The results of the pipeline are at a minimum an '_id' field, but Nemesyst requires two other fields, a "data" field and a "target" field; The "data" field should contain the exact data you would like to train on for a whole single example; The "target" field should contain a matching .. well target, so preciseley what you would like to backpropogate with. Clearly in the example case of predicting new data there is no "target" to include, but a pipeline which pushed something that doesnt exist into an array or single value will just be left empty anyway, which means you can use the same pipeline for training testing and predicting if you leave the "target" field in the aggregate pipeline, as it will be easily and intuitiveley dealt with.
+The results of the pipeline are at a minimum an '_id' field, but Nemesyst requires two other fields, a "data" field and a "target" field; The "data" field should contain the exact data you would like to train on for a whole single example; The "target" field should contain a matching .. well target, so precisely what you would like to backpropogate with. Clearly in the example case of predicting new data there is no "target" to include, but a pipeline which pushed something that doesn't exist into an array or single value will just be left empty anyway, which means you can use the same pipeline for training testing and predicting if you leave the "target" field in the aggregate pipeline, as it will be easily and intuitively dealt with.
 
 Pipeline:
 ```
@@ -325,13 +325,13 @@ Given a single normal mongoDb document generated by nemesyst.py->importer.py:
 }
 ```
 As you may notice the area in between the [] square brackets is almost exactly
-how a CSV file would be laid out. It may be usefull to think of these embedded
+how a CSV file would be laid out. It may be useful to think of these embedded
 arrays like that, and I have lain them out to suit the analogy. The main difference
 is that instead of column names you have keys like "feature1" and to access a
 specific row you can use their index or whatever identifier you have to
 [$match](https://docs.mongodb.com/manual/reference/operator/aggregation/match/) or
 select them in whatever way you desire. I would however recommend [$push](https://docs.mongodb.com/manual/reference/operator/aggregation/push/) if you would
-like to get a a whole collumn, lets say all of "feature1". A good visualisation can
+like to get a a whole column, lets say all of "feature1". A good visualisation can
 be found on the
 [$push](https://docs.mongodb.com/manual/reference/operator/aggregation/push/)
 documentation page. Also a quick note the dot notation as in '$data.X' means sub key X in data, I.E call a key that is nested within another key. The $ symbol is used to mean variables, so '$data.X' = the value associated with that key e.g 22, 'data.X' = the string "data.X".
@@ -344,15 +344,15 @@ Results in:
 | whatNameToGiveIt| 22   | 66       | 13      |...| 17                  |
 | anotherName   | tomato | apples   | cucumb  |...| pillow              |
 
-Currentley Nemesyst does not support multivariate targets, specifically any "target" with more than one value, this is a future addition.
+Currently Nemesyst does not support multivariate targets, specifically any "target" with more than one value, this is a future addition.
 
 ### Training
-To train the data set you first require a pipeline (see pipelines section). This pipeline is what will create an interatable mongoDb cursor which can retrieve the data you want in the manner you want it retrieved, please see previous section "Pipelines".
+To train the data set you first require a pipeline (see pipelines section). This pipeline is what will create an iterable mongoDb cursor which can retrieve the data you want in the manner you want it retrieved, please see previous section "Pipelines".
 
 The conditions that need to be met to allow for training:
 - RavenPythonLib to have been installed using automatic updater ( --toUpdate )
 - An initialised mongoDb database with username and password ( --toInitDb, --user, --pass )
-- The afformetioned database to be currentley running ( --toStartDb )
+- The aforementioned database to be currently running ( --toStartDb )
 - The desired collection name where the data should be stored or is stored to be known ( --coll )
 - The database having data in the above collection ( --coll --newData, --cleaner | --coll --toJustImport )
 - A working pipeline file in [default location](https://github.com/DreamingRaven/Nemesyst/blob/master/config/pipeline.json) or specified using options ( None | --pipeline )
@@ -369,7 +369,7 @@ If all the above conditions are met at the point of training (they can all be do
 Similar to above it needs all of those training requirements but it also
 requires that a model have been trained and exists in the "states" collection.
 
-If not parameter is given (currentley you cant specify) then it will pull the most
+If not parameter is given (currently you cant specify) then it will pull the most
 recent model. This will test on the data set pointed to by --coll. As such you
 will need to re-run nemesyst.py to swap from training to testing if you want
 to train on one set and test on another.
@@ -380,7 +380,7 @@ to train on one set and test on another.
 
 ### Predicting
 (documentation still being written)
-Prediction also requires the exact same conditions, it currentley still requires the target field provided from pipeline, but you can just use 0 as it is not actually neccessary for prediction.
+Prediction also requires the exact same conditions, it currently still requires the target field provided from pipeline, but you can just use 0 as it is not actually necessary for prediction.
 ````
 **Nemesyst/nemesyst.py --toPredict
 ````
@@ -395,6 +395,6 @@ for user 'georgeraven' creating 'GeorgeRaven' user with 'password' password, in 
 
 Please see help screen for more options there are many more but these are the main ones for localhost usage.
 
-### Asside
+### Aside
 
 For all those fellow Arch(Linux)-ers out there, we are "Arch Nemesysts" :D
