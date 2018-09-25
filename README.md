@@ -13,7 +13,7 @@ Generative Adversarial Neural Networks (GANs) with certain other traditional and
 recommender system techniques. This recommender system is evaluated by the common method of rating prediction
 via mean absolute error (MEA).
 
-Along the way however I decided to make everything as configurable/ generalisable as possible. This system has become a framework for the application of machine learning into a wider environment, facilitated by this configuration; Including config and pipeline files, custom cleaning script calls, and custom machine learning scripts all while the nuanced operations are completed automagically, such as transforming then loading the chosen data into mongoDB, allowing for interesting distributed applications to do with combining mongodb with machine learning. The use of mongodb also allows this program to act clay-like, keeping track of program state to be reloaded, reused, monitored etc, just as clay would keep the shape impressed upon it. It keeps track of each model trained, as a separate document in the models collection, with the models binary also being saved so it can be directly replayed with simple calls.
+Along the way however I decided to make everything as configurable/ generalisable as possible. This system has become a framework for the application of machine learning into a wider environment, facilitated by this configuration; Including config and pipeline files, custom cleaning script calls, and custom machine learning scripts all while the nuanced operations are completed automagically, such as transforming then loading the chosen data into mongoDB, allowing for interesting distributed applications to do with combining MongoDB with machine learning. The use of MongoDB also allows this program to act clay-like, keeping track of program state to be reloaded, reused, monitored etc, just as clay would keep the shape impressed upon it. It keeps track of each model trained, as a separate document in the models collection, with the models binary also being saved so it can be directly replayed with simple calls.
 
 This recommender system used to predict exclusively using [MovieLense 20M](https://grouplens.org/datasets/movielens/20m/),
  and [Netflix (2007)](https://www.kaggle.com/netflix-inc/netflix-prize-data) data sets. Now however it can predict using any data set, given an appropriate cleaning script path to the -c / --cleaner argument.
@@ -54,9 +54,9 @@ Quick Definitions (Wiki)
 
 You will first have to install/ verify a few key dependencies.
 
-* [MongoDb](https://www.mongodb.com/)
+* [MongoDB](https://www.mongodb.com/)
 * Python modules:
-    * [Pymongo](https://api.mongodb.com/python/current/) for MongoDb
+    * [Pymongo](https://api.mongodb.com/python/current/) for MongoDB
     * [TensorFlow | TensorFlow-gpu](https://www.tensorflow.org/install/) for that juicy machine-learning
     * [Keras](https://github.com/keras-team/keras) although tensorflow has recentley bundled its own keras
 - [Bash](https://www.gnu.org/software/bash/) for simple system level operations
@@ -139,20 +139,20 @@ This is a current list but **/nemesyst.py --help will always be preferred and th
 |:------------:|:---------:|:------------------------:|:------:|:------:|:-------------:|
 | \-\-coll     | \-C       | "testColl"               | 0      | mongo  | sets collection to operate on |
 | \-\-cleaner  | \-c       | **/examples/cleaner.py   | 0      | import | specifies path to executable cleaner file  |
-| \-\-dir      | \-D       | ~/db                     | 0      | mongo  | specifies path to mongoDb files  |
+| \-\-dir      | \-D       | ~/db                     | 0      | mongo  | specifies path to MongoDB files  |
 | \-\-newData  | \-d       |                          | 0      | import | specifies path to .csv data folder  |
 | \-\-ip       | \-I (eye) | 127.0.0.1                | 0      | mongo  | specifies ip of database  |
 | \-\-toInitDb | \-i       | False                    | 1      | mongo  | flags new user auth to create |
 | \-\-toLogin  | \-l (ell) | False                    | 1      | mongo  | flags to log user into db for them |
 | \-\-name     | \-N       | "RecSyst"                | 0      | mongo  | specifies the name of the mongoDb DB  |
-| \-\-port     | \-P       | 27017                    | 0      | mongo  | specifies the mongoDb port |
+| \-\-port     | \-P       | 27017                    | 0      | mongo  | specifies the MongoDB port |
 | \-\-pass     | \-p       | iamgroot                 | 0      | auth   | specifies the password for mongoDb auth  |
-| \-\-toStartDb| \-S       | False                    | 1      | mongo  | flags to start mongoDb (with auth) |
+| \-\-toStartDb| \-S       | False                    | 1      | mongo  | flags to start MongoDB (with auth) |
 | \-\-toStopDb | \-s       | False                    | 1      | mongo  | flags to stop db in -D path |
 | \-\-toTrain  | \-T       | False                    | 1      | ann    | flags to train |
 | \-\-toTest   | \-t       | False                    | 1      | ann    | flags to test  |
-| \-\-url      | \-U       |mongodb://localhost:27017/| 0      | mongo  | specifies mongoDb url  |
-| \-\-user     | \-u       | groot                    | 0      | auth   | specifies the mongoDb usernam for auth  |
+| \-\-url      | \-U       |mongodb://localhost:27017/| 0      | mongo  | specifies MongoDB url  |
+| \-\-user     | \-u       | groot                    | 0      | auth   | specifies the MongoDB usernam for auth  |
 | \-\-loglevel | \-v       | 2                        | 0      | debug  | specifies the min loglevel to log  |
 | \-\-batchSize|           | 1                        | 0      | mongo ann | specifies the size of batches to use |
 | \-\-target   |           | target                   | 0      | mongo ann | specifies the name of target feature |
@@ -178,7 +178,7 @@ This is a current list but **/nemesyst.py --help will always be preferred and th
 | \-\-identifier|          | getpass.getuser()        | 0      | mongo  | specifies an identifier so you can differentiate between model sources easily |
 | \-\-tfLogMin |           | 1                        | 0      | tf     | specifies how verbose you want tensorflow to be i.e TF_CPP_MIN_LOG_LEVEL |
 | \-\-toPredict|           | False                    | 1      | rrs    | flag to attempt prediction on data set in --coll |
-| \-\-modelPipe|           | **/config/modelPipe.json | 0      | mongo  | specifies path to mongoDb files  |
+| \-\-modelPipe|           | **/config/modelPipe.json | 0      | mongo  | specifies path to MongoDB files  |
 
 
 ### Config Files / Persistent Behavioural Changes
@@ -235,9 +235,9 @@ Notice --newData is also specified, as the cleaner will not be used if there is
 nothing to clean.
 
 Once cleaning is complete, Nemesyst will use the same files/ folder of files
-provided to --newData and put them into mongoDb for you. You may want to verify
-that this has been done correctly using a tool such as MongoDb compass or
-using the RavenRecSysts -l flag to log you in so you can inspect mongoDb
+provided to --newData and put them into MongoDB for you. You may want to verify
+that this has been done correctly using a tool such as MongoDB compass or
+using the RavenRecSysts -l flag to log you in so you can inspect MongoDB
 manually.
 
 \* please note: this is a potential security concern if this file is edited to
@@ -276,7 +276,7 @@ ensure there are no special characters specifically any not in this list:
 
 As those characters will have to be stripped or they will result in headaches.
 
-Each file with the extension given by the --suffix option in the directory given by --newData option will become a mongoDB document as is. So please prepare, chunk and clean files in the manner in which you expect them to become documents.
+Each file with the extension given by the --suffix option in the directory given by --newData option will become a MongoDB document as is. So please prepare, chunk and clean files in the manner in which you expect them to become documents.
 
 #### Pipelines
 After cleaning data or inserting clean data, it is necessary to retrieve again the data from
@@ -308,7 +308,7 @@ Pipeline:
 You will need to inspect the database to see how your data is structured to
 be able to write your pipeline file.
 
-Given a single normal mongoDb document generated by nemesyst.py->importer.py:
+Given a single normal MongoDB document generated by nemesyst.py->importer.py:
 ```
 {
   {"id": someIdNumber},
@@ -347,11 +347,11 @@ Results in:
 Currently Nemesyst does not support multivariate targets, specifically any "target" with more than one value, this is a future addition.
 
 ### Training
-To train the data set you first require a pipeline (see pipelines section). This pipeline is what will create an iterable mongoDb cursor which can retrieve the data you want in the manner you want it retrieved, please see previous section "Pipelines".
+To train the data set you first require a pipeline (see pipelines section). This pipeline is what will create an iterable MongoDB cursor which can retrieve the data you want in the manner you want it retrieved, please see previous section "Pipelines".
 
 The conditions that need to be met to allow for training:
 - RavenPythonLib to have been installed using automatic updater ( --toUpdate )
-- An initialised mongoDb database with username and password ( --toInitDb, --user, --pass )
+- An initialised MongoDB database with username and password ( --toInitDb, --user, --pass )
 - The aforementioned database to be currently running ( --toStartDb )
 - The desired collection name where the data should be stored or is stored to be known ( --coll )
 - The database having data in the above collection ( --coll --newData, --cleaner | --coll --toJustImport )
