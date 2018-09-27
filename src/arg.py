@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-09-19
+# @Last modified time: 2018-09-27
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -202,6 +202,9 @@ def argz(argv=None, description=None, prevArgs=None):
         default=bool( argDeflt( config, options, "toRetrain", False, isBool=True) ),
         action="store_true",
         help="sets flag to continue training a model provided by the model pipeline")
+    parser.add_argument("--nnScript",
+        default=str( argDeflt( config, options, "nnScript", str(rootPath + "/examples/gan.py")) ),
+        help="set the path to the json pipeline file")
 
 
 
@@ -210,7 +213,7 @@ def argz(argv=None, description=None, prevArgs=None):
     args = vars(parser.parse_args(argv))
 
     # identifying arguments by name which are paths to be normalised
-    pathArgNames = ["cleaner", "dir", "newData", "pipeline", "modelPipe"]
+    pathArgNames = ["cleaner", "dir", "newData", "pipeline", "modelPipe", "nnScript"]
     normalArgs = normaliseArgs(args=args, argNames=pathArgNames)
     # identifying arguments that are single words that want to be normalised
     wantedInLowerCase = ["type", "activation", "lossMetric", "optimizer"]
