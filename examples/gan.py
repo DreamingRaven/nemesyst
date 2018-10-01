@@ -8,14 +8,14 @@
 # @License: Please see LICENSE file in project root
 
 import sys
+
+fileName = "gan.py"
+prePend = "[ " + fileName + " ] "
 # this is calling system wide nemesyst src.arg so if you are working on a branch
 # dont forget this will be the main branch version of args
-from src.arg import argz
-description="Nemesyst template file"
-args = argz(sys.argv[1:], description=description)
-
-print(sys.path)
 
 def main(args, db, log):
-    print(args)
-    print("hi there")
+
+    log( prePend + "\n\tArg dict of length: " + str(len(args)) +
+        "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
+    print("hellow-orld")

@@ -233,6 +233,7 @@ def callCustomScript(args, database=None, print=print):
               " and successfully found module: " + modFile +
               " which will now be called")
         argumentz = copy.deepcopy(args)
+        del argumentz["pass"]
         # import custom module/ script
         customScript = importlib.import_module(modName)
         # get the entry point function like normal function
