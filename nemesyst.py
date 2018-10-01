@@ -4,13 +4,13 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-22
+# @Last modified time: 2018-10-01
 # @License: Please see LICENSE file in project root
 
 
 
 import os, sys, json, inspect, time
-from src.helpers import installer, updater, clean, train, test, predict
+from src.helpers import installer, updater, clean, train, test, predict, callCustomScript
 from src.importer import importData
 from src.arg import argz
 from src.log import Log
@@ -55,14 +55,17 @@ def main():
         importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb,
          chunkSize=args["chunkSize"], print=print)
 
-    if(args["toTrain"] == True):
-        train(args=args, database=mongodb, print=print)
+    if(args["type"] == "custom"):
+        callCustomScript(args=args, database=mongodb, print=print)
+    else:
+        if(args["toTrain"] == True):
+            train(args=args, database=mongodb, print=print)
 
-    if(args["toTest"] == True):
-        test(args=args, database=mongodb, print=print)
+        if(args["toTest"] == True):
+            test(args=args, database=mongodb, print=print)
 
-    if(args["toPredict"] == True):
-        predict(args=args, database=mongodb, print=print)
+        if(args["toPredict"] == True):
+            predict(args=args, database=mongodb, print=print)
 
     if(args["toStopDb"] == True):
         time.sleep(2) # making sure server has time to start
