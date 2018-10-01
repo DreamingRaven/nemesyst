@@ -15,3 +15,7 @@ description="Nemesyst template file"
 args = argz(sys.argv[1:], description=description)
 
 print(sys.path)
+
+def main(args, db, log):
+    print(args)
+    print("hi there")

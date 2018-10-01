@@ -205,6 +205,9 @@ def argz(argv=None, description=None, prevArgs=None):
     parser.add_argument("--customScript",
         default=str( argDeflt( config, options, "customScript", str(rootPath + "/examples/gan.py")) ),
         help="set the path to the users desired custom script which they wish to use for training/testing/predicting using whatever model is present in the script")
+    parser.add_argument("--customScript_entryPoint",
+        default=str( argDeflt( config, options, "customScript_entryPoint", str("main")) ),
+        help="tells nemesyst what function to call with arguments")
 
 
 

@@ -8,7 +8,8 @@
 
 
 import os, sys, subprocess, tempfile, types, json, \
-       argparse, datetime, time, configparser, importlib
+       argparse, datetime, time, configparser, importlib, \
+       copy
 import pandas as pd
 import numpy as np
 from fnmatch import fnmatch
@@ -228,9 +229,17 @@ def callCustomScript(args, database=None, print=print):
         modName = os.path.splitext(modFile)[0]
         # adding location to system path so it can be found
         sys.path.append(modDir)
+        print("system path appended with: " + modDir +
+              " and successfully found module: " + modFile +
+              " which will now be called")
+        argumentz = copy.deepcopy(args)
         # import custom module/ script
         customScript = importlib.import_module(modName)
-        print("system path appended with: " + modDir + " and successfully found module: " + modFile)
+        # get the entry point function like normal function
+        entryPointFunc = getattr(customScript, args["customScript_entryPoint"])
+        entryPointFunc(args=argumentz, db=database, log=print)
+        # customScript.main()
+
     except:
         print(prePend + "issue calling/ using custom script:\n" +
             str(sys.exc_info()[0]) + " " +
