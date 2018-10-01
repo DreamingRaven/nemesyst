@@ -2,13 +2,13 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-08-28
+# @Last modified time: 2018-10-01
 # @License: Please see LICENSE file in project root
 
 
 
 import os, sys, subprocess, tempfile, types, json, \
-       argparse, datetime, time, configparser
+       argparse, datetime, time, configparser, importlib
 import pandas as pd
 import numpy as np
 from fnmatch import fnmatch
@@ -156,19 +156,14 @@ def train(args, database=None, print=print):
 
     cursor = None
     try:
-        if(args["type"] == "gan"):
-            gan = Gan(args=args, logger=print)
-            gan.debug()
-        else:
-            nn = NeuralNetwork(db=database,
-                            logger=print,
-                            args=args,
-                            data_pipeline=getPipeline(args["pipeline"], print=print)
-                            )
-            cursor = nn.getCursor()
-            nn.autogen()
-            nn.train()
-
+        nn = NeuralNetwork(db=database,
+                        logger=print,
+                        args=args,
+                        data_pipeline=getPipeline(args["pipeline"], print=print)
+                        )
+        cursor = nn.getCursor()
+        nn.autogen()
+        nn.train()
     except:
         print(prePend + "could not train dataset:\n" +
             str(sys.exc_info()[0]) + " " +
@@ -183,18 +178,14 @@ def test(args, database=None, print=print):
 
     cursor = None
     try:
-        if(args["type"] == "gan"):
-            gan = Gan(args=args, logger=print)
-            gan.debug()
-        else:
-            nn = NeuralNetwork(db=database,
-                               logger=print,
-                               args=args,
-                               data_pipeline=getPipeline(args["pipeline"], print=print),
-                               model_pipeline=getPipeline(args["modelPipe"], print=print),
-                              )
-            cursor = nn.getCursor()
-            nn.test()
+        nn = NeuralNetwork(db=database,
+                           logger=print,
+                           args=args,
+                           data_pipeline=getPipeline(args["pipeline"], print=print),
+                           model_pipeline=getPipeline(args["modelPipe"], print=print),
+                          )
+        cursor = nn.getCursor()
+        nn.test()
 
     except:
         print(prePend + "could not test dataset:\n" +
@@ -210,18 +201,14 @@ def predict(args, database=None, print=print):
 
     cursor = None
     try:
-        if(args["type"] == "gan"):
-            gan = Gan(args=args, logger=print)
-            gan.debug()
-        else:
-            nn = NeuralNetwork(db=database,
-                            logger=print,
-                            args=args,
-                            data_pipeline=getPipeline(args["pipeline"], print=print),
-                            model_pipeline=getPipeline(args["modelPipe"], print=print),
-                            )
-            cursor = nn.getCursor()
-            nn.predict()
+        nn = NeuralNetwork(db=database,
+                        logger=print,
+                        args=args,
+                        data_pipeline=getPipeline(args["pipeline"], print=print),
+                        model_pipeline=getPipeline(args["modelPipe"], print=print),
+                        )
+        cursor = nn.getCursor()
+        nn.predict()
 
     except:
         print(prePend + "could not predict on dataset:\n" +
@@ -233,9 +220,28 @@ def predict(args, database=None, print=print):
 
 
 
+def callCustomScript(args, database=None, print=print):
+    try:
+        # get dir and file strings
+        modDir, modFile = os.path.split(args["customScript"])
+        # get name from file string is it has an extension for example
+        modName = os.path.splitext(modFile)[0]
+        # adding location to system path so it can be found
+        sys.path.append(modDir)
+        # import custom module/ script
+        customScript = importlib.import_module(modName)
+        print("system path appended with: " + modDir + " and successfully found module: " + modFile)
+    except:
+        print(prePend + "issue calling/ using custom script:\n" +
+            str(sys.exc_info()[0]) + " " +
+            str(sys.exc_info()[1]), 2)
+
+
+
 def getDirPath(path):
     folderPath, file = os.path.split(path)
     return folderPath
+
 
 
 def getFileName(path):
