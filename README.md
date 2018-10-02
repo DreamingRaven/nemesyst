@@ -346,7 +346,7 @@ Results in:
 
 Currently Nemesyst does not support multivariate targets, specifically any "target" with more than one value, this is a future addition.
 
-### Training
+### Simple Training
 To train the data set you first require a pipeline (see pipelines section). This pipeline is what will create an iterable MongoDB cursor which can retrieve the data you want in the manner you want it retrieved, please see previous section "Pipelines".
 
 The conditions that need to be met to allow for training:
@@ -364,7 +364,7 @@ If all the above conditions are met at the point of training (they can all be do
 **/Nemesyst/nemesyst.py --toTrain
 ````
 
-### Testing
+### Simple Testing
 
 Similar to above it needs all of those training requirements but it also
 requires that a model have been trained and exists in the "states" collection.
@@ -378,12 +378,15 @@ to train on one set and test on another.
 **Nemesyst/nemesyst.py --toTest
 ````
 
-### Predicting
+### Simple Predicting
 (documentation still being written)
 Prediction also requires the exact same conditions, it currently still requires the target field provided from pipeline, but you can just use 0 as it is not actually necessary for prediction.
 ````
 **Nemesyst/nemesyst.py --toPredict
 ````
+
+### Custom Training Testing Predicting
+Nemesyst now also supports use of custom external training scripts. Nemesyst provides two new CLI args --customScript and --customScript_entryPoint. The former is a given path to the external script desired to be run, and the latter indicates which function should be called with the arguments args, db, and log, such that nemesyst can provide these necessary bits of information and interfaces for your custom scripts to be able to use.
 
 ---
 
