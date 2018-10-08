@@ -4,13 +4,13 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-10-01
+# @Last modified time: 2018-10-08
 # @License: Please see LICENSE file in project root
 
 
 
 import os, sys, json, inspect, time
-from src.helpers import installer, updater, clean, train, test, predict, callCustomScript
+from src.helpers import installer, updater, clean, train, test, predict, callCustomScript, datetime
 from src.importer import importData
 from src.arg import argz
 from src.log import Log
@@ -70,6 +70,8 @@ def main():
     if(args["toStopDb"] == True):
         time.sleep(2) # making sure server has time to start
         mongodb.stop(print=print)
+
+    datetime.datetime.utcnow()
 
 
 

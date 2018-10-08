@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-10-01
+# @Last modified time: 2018-10-08
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -208,6 +208,12 @@ def argz(argv=None, description=None, prevArgs=None):
     parser.add_argument("--customScript_entryPoint",
         default=str( argDeflt( config, options, "customScript_entryPoint", str("main")) ),
         help="tells nemesyst what function to call with arguments")
+    parser.add_argument("--testColl",
+        default=str( argDeflt( config, options, "testColl", str("")) ),
+        help="sets the database collection which the testing data set should be retrieved from, note this is only needed if you want the output of the model to be stored in the database")
+    parser.add_argument("--modelTestColl",
+        default=str( argDeflt( config, options, "modelTestColl", str("modelTests")) ),
+        help="sets the database collection which will be used to store the test results back")
 
 
 
