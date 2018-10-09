@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-10-08
+# @Last modified time: 2018-10-09
 # @License: Please see LICENSE file in project root
 
 
@@ -49,12 +49,13 @@ class NeuralNetwork():
 
 
 
-    def getCursor(self, pipeline=None):
+    def getCursor(self, pipeline=None, collName=None):
 
         if(self.cursor == None) or (pipeline != None):
             pipeline = pipeline if pipeline is not None else self.data_pipeline
+            collName = collName if collName is not None else self.args["coll"]
             self.db.connect()
-            self.cursor = self.db.getData(pipeline=pipeline)
+            self.cursor = self.db.getData(pipeline=pipeline, collName=collName)
             # this is to allow a higher try catch to delete it
             return self.cursor
         else:
@@ -77,6 +78,7 @@ class NeuralNetwork():
         if(self.cursor != None):
             self.generateModel()
             self.compile()
+
 
 
     #TODO: check this through yet untested
@@ -173,13 +175,6 @@ class NeuralNetwork():
         model.add(Dense(1)) # this dense 1 is the output layer since this is regression
         self.log(self.prePend + "RNN created", -1)
         return model # if nothing errored now we can assign model
-
-
-
-
-    def loadModel(self):
-        None
-        raise NotImplementedError('NN.loadModel() not currentley implemented')
 
 
 
