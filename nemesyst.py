@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-10-08
+# @Last modified time: 2018-10-11
 # @License: Please see LICENSE file in project root
 
 
@@ -85,14 +85,10 @@ def main():
 name = os.path.basename(os.path.abspath(sys.argv[0])) # as in this files name
 fileAndPath = inspect.getframeinfo(inspect.currentframe()).filename
 path = os.path.dirname(os.path.abspath(fileAndPath))
-
 prePend = "[ " + name + " ] "
-description = name + "; " + "Nemesyst, an adversarual neural network based recommender system."
-
+description = name + "; " + "Nemesyst, a generalised deep learning framework for server and database model recommendation systems."
 dependancies = ["https://github.com/DreamingRaven/RavenPythonLib"]
-
 args = argz(sys.argv[1:], description=description)
-args_json = json.loads(json.dumps(args))
 
 # setting fallback logger here pre-update
 log = Log(logLevel=args["loglevel"])
