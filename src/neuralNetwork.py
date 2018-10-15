@@ -4,13 +4,13 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-09-19
+# @Last modified time: 2018-10-09
 # @License: Please see LICENSE file in project root
 
 
 
 import pickle
-import os, sys, pprint
+import os, sys, pprint, copy
 import pandas as pd
 import numpy as np
 import datetime
@@ -44,16 +44,18 @@ class NeuralNetwork():
         self.model_pipeline = model_pipeline # can be None
         self.numValidExamples = None
         self.log(self.prePend + "NN.init() success", 3)
+        self.model_dict = None
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
 
 
-    def getCursor(self, pipeline=None):
+    def getCursor(self, pipeline=None, collName=None):
 
         if(self.cursor == None) or (pipeline != None):
             pipeline = pipeline if pipeline is not None else self.data_pipeline
+            collName = collName if collName is not None else self.args["coll"]
             self.db.connect()
-            self.cursor = self.db.getData(pipeline=pipeline)
+            self.cursor = self.db.getData(pipeline=pipeline, collName=collName)
             # this is to allow a higher try catch to delete it
             return self.cursor
         else:
@@ -78,6 +80,7 @@ class NeuralNetwork():
             self.compile()
 
 
+
     #TODO: check this through yet untested
     def getModel(self):
         self.make_keras_picklable()
@@ -93,10 +96,10 @@ class NeuralNetwork():
 
         if(model_cursor != None):
             model_metadata = pd.DataFrame(list(model_cursor))
-            model_dict = model_metadata.to_dict('records')
-            del model_dict[0]["model_bin"] # no one wants to see the binary
+            self.model_dict = model_metadata.to_dict('records')
+            del self.model_dict[0]["model_bin"] # no one wants to see the binary
             self.log(self.prePend + "Loading model:",0)
-            pprint.pprint(model_dict)
+            pprint.pprint(self.model_dict)
             model_bin = dict(model_metadata['model_bin'])[0]
             self.model = pickle.loads(model_bin)
             self.compile()
@@ -175,13 +178,6 @@ class NeuralNetwork():
 
 
 
-
-    def loadModel(self):
-        None
-        raise NotImplementedError('NN.loadModel() not currentley implemented')
-
-
-
     #TODO: this should be in mongodb class itself
     def nextDataset(self, batchSize=1):
         data = []
@@ -218,7 +214,33 @@ class NeuralNetwork():
         else:
             self.log(self.prePend + "model not already in memory attempting retrieval", 3)
             self.getModel()
-        self.modler(toTest=True)
+        if(self.args["testColl"] != ""):
+
+            args = copy.deepcopy(self.args)
+            cursor = None
+            args["coll"] = args["testColl"]
+            args["testColl"] = ""
+            try:
+                nn = NeuralNetwork(db=self.db,
+                           logger=self.log,
+                           args=args,
+                           data_pipeline=self.data_pipeline,
+                           model_pipeline=self.model_pipeline,
+                          )
+                cursor = nn.getCursor()
+                nn.test()
+
+            except:
+                print(self.prePend + "could not test on test dataset:\n" +
+                    str(sys.exc_info()[0]) + " " +
+                    str(sys.exc_info()[1]), 2)
+            finally:
+                if(cursor != None) and (cursor.alive):
+                    cursor.close()
+        else:
+            self.log(self.prePend + " Recursive neural network call; coll: " + self.args["coll"] + " testColl:" + self.args["testColl"])
+            self.modler(toTest=True)
+            self.saveResult()
 
 
 
@@ -407,6 +429,31 @@ class NeuralNetwork():
             model_bytes = pickle.dumps(self.model)
             stateDict['model_bin'] = Binary(model_bytes)
             self.db.shoveJson(stateDict, collName=str(self.args["modelColl"]))
+
+
+
+    def saveResult(self, coll=None):
+        if(self.model != None):
+            stateDict = self.args
+            stateDict["desc"] = "test"
+            stateDict["pipe"] = str(self.data_pipeline)
+            try:
+                del stateDict["pass"]
+            except:
+                pass
+            stateDict["utc"] = datetime.datetime.utcnow()
+            if(self.sumError):
+                stateDict["sumError"] = self.sumError
+            if(self.numExamples):
+                stateDict["numSamples"] = self.numExamples
+            if(self.numValidExamples):
+                stateDict["numValidSamples"] = self.numValidExamples
+            if(self.sumError) and (self.numValidExamples):
+                stateDict["meanError"] = self.sumError / self.numValidExamples
+            if(self.model_dict != None):
+                stateDict["utc"] = datetime.datetime.utcnow()
+                stateDict["modelId"] = self.model_dict[0]["_id"]
+            self.db.shoveJson(stateDict, collName=str("esperiment"))
 
 
 
