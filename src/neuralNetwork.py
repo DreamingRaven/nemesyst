@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-10-09
+# @Last modified time: 2018-10-17
 # @License: Please see LICENSE file in project root
 
 
@@ -126,7 +126,6 @@ class NeuralNetwork():
 
     def lstm(self):
         model = Sequential()
-        #TODO: off by one error please for the love of god george
         bInShape = (1, self.args["timeSteps"], self.args["dimensionality"])
 
         self.log(
@@ -339,7 +338,6 @@ class NeuralNetwork():
 
     def testTrainer(self, data, target, id, toTrain=False):
         try:
-            #TODO: off by one ... you fool george, sort this out
             if(self.args["type"] == "rnn"):
                 target = np.full((self.args["timeSteps"], 1), target)
                 expectShape = (self.args["timeSteps"], self.args["dimensionality"])
@@ -381,7 +379,6 @@ class NeuralNetwork():
 
     def predictor(self, data, id, target=None):
         try:
-            #TODO: off by one ... you fool george, sort this out
             if(self.args["type"] == "rnn"):
                 target = np.full((self.args["timeSteps"], 1), target)
                 expectShape = (self.args["timeSteps"], self.args["dimensionality"])
@@ -453,7 +450,7 @@ class NeuralNetwork():
             if(self.model_dict != None):
                 stateDict["utc"] = datetime.datetime.utcnow()
                 stateDict["modelId"] = self.model_dict[0]["_id"]
-            self.db.shoveJson(stateDict, collName=str("esperiment"))
+            self.db.shoveJson(stateDict, collName=str(args["modelTestColl"]))
 
 
 
