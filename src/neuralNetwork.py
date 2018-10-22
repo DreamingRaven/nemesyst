@@ -30,12 +30,12 @@ class NeuralNetwork():
 
 
 
-    def __init__(self, db, data_pipeline, args, model_pipeline=None, logger=print):
+    def __init__(self, db, data_pipeline, args, model_pipeline=None, logger=print, model=None):
 
         self.db = db
         self.args = args
         self.log = logger
-        self.model = None
+        self.model = model if model is not None else None
         self.cursor = None
         self.history = None
         self.sumError = None
