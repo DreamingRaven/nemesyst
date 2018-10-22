@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-10-17
+# @Last modified time: 2018-10-22
 # @License: Please see LICENSE file in project root
 
 
@@ -409,6 +409,7 @@ class NeuralNetwork():
     def saveModel(self):
         if(self.model != None):
             stateDict = self.args
+
             stateDict["pipe"] = str(self.data_pipeline)
             del stateDict["pass"]
             stateDict["utc"] = datetime.datetime.utcnow()
@@ -450,7 +451,7 @@ class NeuralNetwork():
             if(self.model_dict != None):
                 stateDict["utc"] = datetime.datetime.utcnow()
                 stateDict["modelId"] = self.model_dict[0]["_id"]
-            self.db.shoveJson(stateDict, collName=str(args["modelTestColl"]))
+            self.db.shoveJson(stateDict, collName=str(self.args["modelTestColl"]))
 
 
 
