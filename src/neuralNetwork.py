@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-10-22
+# @Last modified time: 2018-10-29
 # @License: Please see LICENSE file in project root
 
 
@@ -83,29 +83,33 @@ class NeuralNetwork():
 
     #TODO: check this through yet untested
     def getModel(self):
-        self.make_keras_picklable()
+        if(self.model == None):
+            self.make_keras_picklable()
+            query={}
+            if(self.model_pipeline != None):
+                query=self.model_pipeline
 
-        query={}
-        if(self.model_pipeline != None):
-            query=self.model_pipeline
+            self.log(self.prePend + "query is: " + str(query), 0)
+            # attempt to get model using cursor
+            model_cursor = self.db.getMostRecent(query=query, collName=self.args["modelColl"])
 
-        self.log(self.prePend + "query is: " + str(query), 0)
-
-        # attempt to get model using cursor
-        model_cursor = self.db.getMostRecent(query=query, collName=self.args["modelColl"])
-
-        if(model_cursor != None):
-            model_metadata = pd.DataFrame(list(model_cursor))
-            self.model_dict = model_metadata.to_dict('records')
-            del self.model_dict[0]["model_bin"] # no one wants to see the binary
-            self.log(self.prePend + "Loading model:",0)
-            pprint.pprint(self.model_dict)
-            model_bin = dict(model_metadata['model_bin'])[0]
-            self.model = pickle.loads(model_bin)
-            self.compile()
+            if(model_cursor != None):
+                model_metadata = pd.DataFrame(list(model_cursor))
+                self.model_dict = model_metadata.to_dict('records')
+                if(self.model_dict != []):
+                    del self.model_dict[0]["model_bin"] # no one wants to see the binary
+                    self.log(self.prePend + "Loading model:",0)
+                    pprint.pprint(self.model_dict)
+                    model_bin = dict(model_metadata['model_bin'])[0]
+                    self.model = pickle.loads(model_bin)
+                    self.compile()
+                else:
+                    self.log(self.prePend + "retrieved document is empty/ does not exist likeley bad query: document_metadata="
+                        + str(model_metadata) + "\ndocument_dict=" + str(self.model_dict), 2)
+            else:
+                self.log(self.prePend + "could not get model cursor from database: ", 2)
         else:
-            self.log(self.prePend + "could not get model cursor from database: ", 2)
-
+            self.log(self.prePend + "model already in memory skipping retrieval", 0)
 
 
     def generateModel(self):
@@ -223,6 +227,7 @@ class NeuralNetwork():
                 nn = NeuralNetwork(db=self.db,
                            logger=self.log,
                            args=args,
+                           model=self.model,
                            data_pipeline=self.data_pipeline,
                            model_pipeline=self.model_pipeline,
                           )
@@ -236,7 +241,7 @@ class NeuralNetwork():
             finally:
                 if(cursor != None) and (cursor.alive):
                     cursor.close()
-        else:
+        else:   #TODO seems like this is also called in normal testing but the message suggest recursiveness may want to reword
             self.log(self.prePend + " Recursive neural network call; coll: " + self.args["coll"] + " testColl:" + self.args["testColl"])
             self.modler(toTest=True)
             self.saveResult()
