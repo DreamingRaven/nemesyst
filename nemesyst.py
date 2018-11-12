@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-10-11
+# @Last modified time: 2018-11-12
 # @License: Please see LICENSE file in project root
 
 
@@ -14,6 +14,7 @@ from src.helpers import installer, updater, clean, train, test, predict, callCus
 from src.importer import importData
 from src.arg import argz
 from src.log import Log
+from src.aDict import ADict
 
 
 
@@ -89,6 +90,8 @@ prePend = "[ " + name + " ] "
 description = name + "; " + "Nemesyst, a generalised deep learning framework for server and database model recommendation systems."
 dependancies = ["https://github.com/DreamingRaven/RavenPythonLib"]
 args = argz(sys.argv[1:], description=description)
+# wrap base dict in ADict to make certain issues non-issues
+# args = ADict(args)
 
 # setting fallback logger here pre-update
 log = Log(logLevel=args["loglevel"])
