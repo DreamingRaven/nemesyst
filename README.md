@@ -2,7 +2,7 @@
 
 ###### (formerly: RavenRecSyst)
 
-Please note: The examples in ./examples folder are still being written, in particular the movilense 20 million (ml_20m). This documentation is also in the process of being further updated with more examples and adding to testing and prediction sections. If you have any issues or see anything glaringly wrong please open an issue.
+Please note: The examples in ./examples folder are still being written, in particular the movilense 20 million (ml_20m) and gan.py. This documentation is also in the process of being further updated with more examples and adding to testing and prediction sections. If you have any issues or see anything glaringly wrong please open an issue.
 
 ## Introduction
 
