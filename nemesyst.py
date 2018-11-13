@@ -4,18 +4,20 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2018-11-12
+# @Last modified time: 2018-11-13
 # @License: Please see LICENSE file in project root
 
 
-
-import os, sys, json, inspect, time
+import os
+import sys
+import json
+import inspect
+import time
 from src.helpers import installer, updater, clean, train, test, predict, callCustomScript, datetime
 from src.importer import importData
 from src.arg import argz
 from src.log import Log
 from src.aDict import ADict
-
 
 
 def main():
@@ -24,19 +26,20 @@ def main():
     from RavenPythonLib.mongodb.mongo import Mongo
 
     mongodb = Mongo(isDebug=True, mongoUser=args['user'], mongoPath=args['dir'],
-        mongoPass=args['pass'], mongoIp=args['ip'], mongoDbName=args['name'],
-        mongoCollName=args['coll'], mongoPort=args['port'], mongoUrl=args['url'],
-        mongoCursorTimeout=args['mongoCursorTimeout'])
+                    mongoPass=args['pass'], mongoIp=args['ip'], mongoDbName=args['name'],
+                    mongoCollName=args['coll'], mongoPort=args['port'], mongoUrl=args['url'],
+                    mongoCursorTimeout=args['mongoCursorTimeout'])
 
     if(args["toInitDb"] == True):
-        mongodb.debug(print=print) # passing in print to use logger
-        mongodb.stop(print=print) # stopping just in case it is already running
-        time.sleep(2) # delay to ensure db is closed properly
+        mongodb.debug(print=print)  # passing in print to use logger
+        # stopping just in case it is already running
+        mongodb.stop(print=print)
+        time.sleep(2)  # delay to ensure db is closed properly
         mongodb.start(print=print)
-        time.sleep(2) # similar delay but for startup
+        time.sleep(2)  # similar delay but for startup
         mongodb.addUser(print=print)
-        mongodb.stop(print=print) # stopping database ready for future use
-        time.sleep(2) # delay to ensure db is closed properly
+        mongodb.stop(print=print)  # stopping database ready for future use
+        time.sleep(2)  # delay to ensure db is closed properly
 
     if(args["toStartDb"] == True):
         # start main authenticated mongodb service
@@ -50,11 +53,11 @@ def main():
     # clean + add data if file specified (can be remote)
     if(args["toJustImport"] == True) and (os.path.exists(args["newData"])):
         importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb,
-            chunkSize=args["chunkSize"], print=print)
+                   chunkSize=args["chunkSize"], print=print)
     elif(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
         clean(args=args, print=print)
         importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb,
-         chunkSize=args["chunkSize"], print=print)
+                   chunkSize=args["chunkSize"], print=print)
 
     if(args["type"] == "custom"):
         callCustomScript(args=args, database=mongodb, print=print)
@@ -69,11 +72,10 @@ def main():
             predict(args=args, database=mongodb, print=print)
 
     if(args["toStopDb"] == True):
-        time.sleep(2) # making sure server has time to start
+        time.sleep(2)  # making sure server has time to start
         mongodb.stop(print=print)
 
     datetime.datetime.utcnow()
-
 
 
 # # # # # # # # # #
@@ -81,13 +83,13 @@ def main():
 # # # # # # # # # #
 
 
-
 # declaring usefull global variables
-name = os.path.basename(os.path.abspath(sys.argv[0])) # as in this files name
+name = os.path.basename(os.path.abspath(sys.argv[0]))  # as in this files name
 fileAndPath = inspect.getframeinfo(inspect.currentframe()).filename
 path = os.path.dirname(os.path.abspath(fileAndPath))
 prePend = "[ " + name + " ] "
-description = name + "; " + "Nemesyst, a generalised deep learning framework for server and database model recommendation systems."
+description = name + "; " + \
+    "Nemesyst, a generalised deep learning framework for server and database model recommendation systems."
 dependancies = ["https://github.com/DreamingRaven/RavenPythonLib"]
 args = argz(sys.argv[1:], description=description)
 # wrap base dict in ADict to make certain issues non-issues
@@ -98,7 +100,7 @@ log = Log(logLevel=args["loglevel"])
 print = log.print
 
 # attempting update/ falling back
-try: # TODO: devise a method to make erros in nested try, catch
+try:  # TODO: devise a method to make erros in nested try, catch
     if(args["toUpdate"] == True):
         from RavenPythonLib.updaters.gitUpdate import Gupdater
         nucleon = Gupdater(path=path, urls=dependancies)
@@ -108,7 +110,8 @@ try: # TODO: devise a method to make erros in nested try, catch
     else:
         print(prePend + "Skipping update/ installation since there is no --toUpdate flag given", 0)
 except:
-    print(prePend + "G-updater failed, try setting --toUpdate flag. falling back: " + str(sys.exc_info()[1]), 1)
+    print(prePend + "G-updater failed, try setting --toUpdate flag. falling back: " +
+          str(sys.exc_info()[1]), 1)
     installer(path=path, urls=dependancies)
     updater(path=path, urls=dependancies)
 
@@ -116,13 +119,13 @@ except:
 try:
     from RavenPythonLib.loggers.basicLog import Log
     log = Log(logLevel=args["loglevel"])
-    print = log.print # note no '()' as function address desired not itself
+    print = log.print  # note no '()' as function address desired not itself
     print(prePend + "main logger success", 3)
 except:
     log = Log(logLevel=args["loglevel"])
     print = log.print
     print(prePend + "Main logger could not be loaded, try setting --toUpdate flag. falling back: " +
-        str(sys.exc_info()[1]), 1)
+          str(sys.exc_info()[1]), 1)
 
 # if >level3 (debug) prepare for some verbose shnitzel
 if(args["loglevel"] >= 4):
@@ -132,6 +135,7 @@ else:
         main()
     except ModuleNotFoundError:
         print(prePend + "A dependancy module is missing, try updating using '--toUpdate' flag, else 'git pull'. Finally check python dependancies exist e.g Keras " +
-        str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
+              str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
     except:
-        print(prePend + str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
+        print(prePend + str(sys.exc_info()[0]
+                            ) + " " + str(sys.exc_info()[1]), 2)

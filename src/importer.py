@@ -5,18 +5,17 @@
 # @Date:   2018-06-28
 # @Filename: importer.py
 # @Last modified by:   archer
-# @Last modified time: 2018-06-28
+# @Last modified time: 2018-11-13
 # @License: Please see LICENSE file in project root
 
-import os, sys
+import os
+import sys
 import pandas as pd
 from fnmatch import fnmatch
 from src.helpers import getFileName, getDirPath
 
 
-
 def importData(path, suffix, mongodb, chunkSize=10**6, print=print, collName=None):
-
 
     # ensuring path is cross platform
     path = os.path.abspath(path)
@@ -25,7 +24,7 @@ def importData(path, suffix, mongodb, chunkSize=10**6, print=print, collName=Non
         filePaths = []
         fileDirPath, file = os.path.split(path)
         importData(path=fileDirPath, suffix=suffix, mongodb=mongodb,
-            chunkSize=chunkSize, print=print)
+                   chunkSize=chunkSize, print=print)
 
     elif(os.path.isdir(path)):
         filePaths = []
@@ -41,8 +40,8 @@ def importData(path, suffix, mongodb, chunkSize=10**6, print=print, collName=Non
 
     else:
         filePaths = []
-        raise ValueError(str("Could not find valid files using: " + path + " " +
-            pattern))
+        raise ValueError(str("Could not find valid files using: " + path + " "
+                             + pattern))
 
     mongodb.connect()
 
