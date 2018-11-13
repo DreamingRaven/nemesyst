@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-11-12
+# @Last modified time: 2018-11-13
 # @License: Please see LICENSE file in project root
 
 
@@ -390,8 +390,9 @@ class NeuralNetwork():
                         verbose=self.args["kerLogMax"])
 
             else:
-                self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
-                    + str(expectShape), 1)
+                if(self.args["toReduceSpam"] == True):
+                    self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
+                        + str(expectShape), 3)
                 return 0
 
         except:

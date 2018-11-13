@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-10-08
+# @Last modified time: 2018-11-13
 # @License: Please see LICENSE file in project root
 
 import os, sys, types, json, \
@@ -214,6 +214,10 @@ def argz(argv=None, description=None, prevArgs=None):
     parser.add_argument("--modelTestColl",
         default=str( argDeflt( config, options, "modelTestColl", str("modelTests")) ),
         help="sets the database collection which will be used to store the test results back")
+    parser.add_argument("--toReduceSpam",
+        default=bool( argDeflt( config, options, "toReduceSpam", False, isBool=True) ),
+        action="store_true",
+        help="sets flag to reduce spam in repeated sections")
 
 
 
