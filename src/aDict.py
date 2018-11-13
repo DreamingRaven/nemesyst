@@ -2,62 +2,48 @@
 # @Date:   2018-11-08
 # @Filename: argZ.py
 # @Last modified by:   archer
-# @Last modified time: 2018-11-08
+# @Last modified time: 2018-11-13
 # @License: Please see LICENSE file in project root
 
-import os, sys
-from collections.abc import MutableMapping # abstract base classes (abc)
-
+import os
+import sys
+from collections.abc import MutableMapping  # abstract base classes (abc)
 
 
 # abstract dict = ADict, has all main dict functions + key safe + expandable
 class ADict(MutableMapping):
 
-
-
     def __init__(self, dictz=None):
         self.dict = dictz if dictz is not None else dict()
-
-
 
     def __getitem__(self, key):
         try:
             return self.dict[key]
         except KeyError:
-            pass # what was asked does not exist which is the same as None so will not error
+            pass  # what was asked does not exist which is the same as None so will not error
         except TypeError:
-            print("TypeError: cannot use:", key, "with object:", type(self.dict))
-
-
+            print("TypeError: cannot use:", key,
+                  "with object:", type(self.dict))
 
     def __setitem__(self, key, value):
         self.dict[key] = value
-
-
 
     def __delitem__(self, key):
         try:
             del self.dict[key]
         except KeyError:
-            pass # job is not done but equivelant outcomes so will not error
-
-
+            pass  # job is not done but equivelant outcomes so will not error
 
     def __iter__(self):
         return iter(self.dict)
 
-
-
     def __len__(self):
         return len(self.dict)
-
-
 
     def swapDict(self, newDict):
         oldDict = self.dict
         self.dict = newDict
         return oldDict
-
 
 
 # tests on overloaded functions to check functionality is correct!
