@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-10-29
+# @Last modified time: 2018-11-13
 # @License: Please see LICENSE file in project root
 
 
@@ -30,7 +30,7 @@ class NeuralNetwork():
 
 
 
-    def __init__(self, db, data_pipeline, args, model_pipeline=None, logger=print, model=None):
+    def __init__(self, db, data_pipeline, args, model_pipeline=None, logger=print, model=None, currentEpoch=None):
 
         self.db = db
         self.args = args
@@ -45,6 +45,7 @@ class NeuralNetwork():
         self.numValidExamples = None
         self.log(self.prePend + "NN.init() success", 3)
         self.model_dict = None
+        self.currentEpoch = currentEpoch if currentEpoch is not None else 0
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
 
@@ -75,7 +76,7 @@ class NeuralNetwork():
 
     # automagic model generation
     def autogen(self):
-        if(self.cursor != None):
+        if(self.cursor != None) and (self.model == None):
             self.generateModel()
             self.compile()
 
@@ -206,8 +207,31 @@ class NeuralNetwork():
 
 
     def train(self):
+        # this trains the models but autogen must have been called to generate the neural network
         self.modler(toTrain=True)
         self.saveModel()
+
+        # this is what allows continuous training
+        if(self.args["epochs"] > self.currentEpoch):
+            try:
+                self.log(self.prePend + "Epoch: " + str(self.currentEpoch), 0)
+                nn = NeuralNetwork(db=self.db,
+                                logger=self.log,
+                                args=self.args,
+                                model=self.model,
+                                data_pipeline=self.data_pipeline,
+                                currentEpoch=(self.currentEpoch + 1)
+                                )
+                cursor = nn.getCursor()
+                nn.autogen()
+                nn.train()
+            except:
+                self.log(self.prePend + "could not train dataset: " + str(self.currentEpoch) + "\n" +
+                    str(sys.exc_info()[0]) + " " +
+                    str(sys.exc_info()[1]), 2)
+            finally:
+                if(cursor != None) and (cursor.alive):
+                    cursor.close()
 
 
 
@@ -366,8 +390,9 @@ class NeuralNetwork():
                         verbose=self.args["kerLogMax"])
 
             else:
-                self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
-                    + str(expectShape), 1)
+                if(self.args["toReduceSpam"] == True):
+                    self.log(self.prePend + str(id) + " " + str(data.shape) + " != "
+                        + str(expectShape), 3)
                 return 0
 
         except:
@@ -416,7 +441,10 @@ class NeuralNetwork():
             stateDict = self.args
 
             stateDict["pipe"] = str(self.data_pipeline)
-            del stateDict["pass"]
+            try:
+                del stateDict["pass"]
+            except KeyError:
+                pass
             stateDict["utc"] = datetime.datetime.utcnow()
             if(self.sumError):
                 stateDict["sumError"] = self.sumError
@@ -426,6 +454,7 @@ class NeuralNetwork():
                 stateDict["numValidSamples"] = self.numValidExamples
             if(self.sumError) and (self.numValidExamples):
                 stateDict["meanError"] = self.sumError / self.numValidExamples
+            stateDict["currentEpoch"] = self.currentEpoch
 
             # save model
             self.make_keras_picklable()
@@ -442,7 +471,7 @@ class NeuralNetwork():
             stateDict["pipe"] = str(self.data_pipeline)
             try:
                 del stateDict["pass"]
-            except:
+            except KeyError:
                 pass
             stateDict["utc"] = datetime.datetime.utcnow()
             if(self.sumError):
