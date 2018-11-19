@@ -127,15 +127,15 @@ class NeuralNetwork():
 
         self.log(
             self.prePend + "\n"
-            + "\t" + "type:\t t"         + str(self.args["type"])            + "\n"
-            + "\t" + "layers:\t t"       + str(self.args["layers"])          + "\n"
-            + "\t" + "timesteps: t"      + str(self.args["timeSteps"])       + "\n"
+            + "\t" + "type:\t\t"         + str(self.args["type"])            + "\n"
+            + "\t" + "layers:\t\t"       + str(self.args["layers"])          + "\n"
+            + "\t" + "timesteps:\t"      + str(self.args["timeSteps"])       + "\n"
             + "\t" + "dimensionality:\t" + str(self.args["dimensionality" ])  + "\n"
-            + "\t" + "batchSize: t"      + str(self.args["batchSize"])       + "\n"
-            + "\t" + "batchInShape: t"   + str(bInShape)                     + "\n"
-            + "\t" + "epochs:\t t"       + str(self.args["epochs"])          + "\n"
-            + "\t" + "epochs_chunk: t"   + str(self.args["epochs_chunk"])    + "\n"
-            + "\t" + "activation: t"
+            + "\t" + "batchSize:\t"      + str(self.args["batchSize"])       + "\n"
+            + "\t" + "batchInShape:\t"   + str(bInShape)                     + "\n"
+            + "\t" + "epochs:\t\t"       + str(self.args["epochs"])          + "\n"
+            + "\t" + "epochs_chunk:\t"   + str(self.args["epochs_chunk"])    + "\n"
+            + "\t" + "activation:\t"
             + str(self.args["activation" ])      + "\n",
             0
         )
@@ -199,6 +199,16 @@ class NeuralNetwork():
                 str(sys.exc_info()[1]) , 2)
         return data
 
+    def getNewDatabase(self):
+        from RavenPythonLib.mongodb.mongo import Mongo
+
+    # i dont like doing this but its neccessary for recursive database calls
+        mongodb = Mongo(isDebug=True, mongoUser=self.args['user'], mongoPath=self.args['dir'],
+                        mongoPass="password", mongoIp=self.args['ip'], mongoDbName=self.args['name'],
+                        mongoCollName=self.args['coll'], mongoPort=self.args['port'], mongoUrl=self.args['url'],
+                        mongoCursorTimeout=self.args['mongoCursorTimeout'])
+        return mongodb
+
     def train(self):
         # this trains the models but autogen must have been called to generate the neural network
         self.modler(toTrain=True)
@@ -208,7 +218,7 @@ class NeuralNetwork():
         if(self.args["epochs"] > self.currentEpoch):
             try:
                 self.log(self.prePend + "Epoch: " + str(self.currentEpoch), 0)
-                nn = NeuralNetwork(db=self.db,
+                nn = NeuralNetwork(db=self.getNewDatabase(),
                                    logger=self.log,
                                    args=self.args,
                                    model=self.model,
