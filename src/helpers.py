@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-11-13
+# @Last modified time: 2018-11-20
 # @License: Please see LICENSE file in project root
 
 
@@ -120,8 +120,8 @@ def updater(path="./",
 
 def clean(args, print=print):
 
-    print("cleaning: " + args["newData"] + " using: "
-          + args["cleaner"] + "...", 3)
+    print("cleaning: " + args["newData"] + " using: " +
+          args["cleaner"] + "...", 3)
     try:
         subprocess.call([
             str(args["cleaner"]),
@@ -134,9 +134,9 @@ def clean(args, print=print):
         print("cleaner returned", 3)
 
     except:
-        print(prePend + "could not clean dataset:\n" +
-            str(sys.exc_info()[0]) + " " +
-              str(sys.exc_info()[1]), 2)
+        print(prePend + "could not clean dataset:\n"
+            + str(sys.exc_info()[0]) + " "
+              + str(sys.exc_info()[1]), 2)
 
 
 def getPipeline(pipePath, print=print):
@@ -144,28 +144,32 @@ def getPipeline(pipePath, print=print):
         with open(pipePath) as f:
             return json.load(f)
     except:
-        print(prePend + "could not get pipeline from: " + str(pipePath) + "\n" +
-            str(sys.exc_info()[0]) + " " +
-              str(sys.exc_info()[1]), 2)
+        print(prePend + "could not get pipeline from: " + str(pipePath) + "\n"
+            + str(sys.exc_info()[0]) + " "
+              + str(sys.exc_info()[1]), 2)
 
 
 def train(args, database=None, print=print):
 
     cursor = None
     try:
-        nn = NeuralNetwork(db=database,
-                           logger=print,
-                           args=args,
-                           data_pipeline=getPipeline(
-                               args["pipeline"], print=print)
-                           )
-        cursor = nn.getCursor()
-        nn.autogen()
-        nn.train()
+        model = None
+        for i in range(0, args["epochs"]):
+            print("EPOCH: " + str(i), 0)
+            nn = NeuralNetwork(db=database,
+                               logger=print,
+                               args=args,
+                               model=model,
+                               data_pipeline=getPipeline(
+                                   args["pipeline"], print=print)
+                               )
+            cursor = nn.getCursor()
+            nn.autogen()
+            model = nn.train()
     except:
-        print(prePend + "could not train dataset:\n" +
-            str(sys.exc_info()[0]) + " " +
-              str(sys.exc_info()[1]), 2)
+        print(prePend + "could not train dataset:\n"
+            + str(sys.exc_info()[0]) + " "
+              + str(sys.exc_info()[1]), 2)
     finally:
         if(cursor != None) and (cursor.alive):
             cursor.close()
@@ -187,9 +191,9 @@ def test(args, database=None, print=print):
         nn.test()
 
     except:
-        print(prePend + "could not test dataset:\n" +
-            str(sys.exc_info()[0]) + " " +
-              str(sys.exc_info()[1]), 2)
+        print(prePend + "could not test dataset:\n"
+            + str(sys.exc_info()[0]) + " "
+              + str(sys.exc_info()[1]), 2)
     finally:
         if(cursor != None) and (cursor.alive):
             cursor.close()
@@ -211,9 +215,9 @@ def predict(args, database=None, print=print):
         nn.predict()
 
     except:
-        print(prePend + "could not predict on dataset:\n" +
-            str(sys.exc_info()[0]) + " " +
-              str(sys.exc_info()[1]), 2)
+        print(prePend + "could not predict on dataset:\n"
+            + str(sys.exc_info()[0]) + " "
+              + str(sys.exc_info()[1]), 2)
     finally:
         if(cursor != None) and (cursor.alive):
             cursor.close()
@@ -227,9 +231,9 @@ def callCustomScript(args, database=None, print=print):
         modName = os.path.splitext(modFile)[0]
         # adding location to system path so it can be found
         sys.path.append(modDir)
-        print("system path appended with: " + modDir +
-              " and successfully found module: " + modFile +
-              " which will now be called")
+        print("system path appended with: " + modDir
+              + " and successfully found module: " + modFile
+              + " which will now be called")
         argumentz = copy.deepcopy(args)
         del argumentz["pass"]
         # import custom module/ script
@@ -240,9 +244,9 @@ def callCustomScript(args, database=None, print=print):
         # customScript.main()
 
     except:
-        print(prePend + "issue calling/ using custom script:\n" +
-            str(sys.exc_info()[0]) + " " +
-              str(sys.exc_info()[1]), 2)
+        print(prePend + "issue calling/ using custom script:\n"
+            + str(sys.exc_info()[0]) + " "
+              + str(sys.exc_info()[1]), 2)
 
 
 def getDirPath(path):
