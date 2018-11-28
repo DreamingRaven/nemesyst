@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-11-20
+# @Last modified time: 2018-11-22
 # @License: Please see LICENSE file in project root
 
 
@@ -160,6 +160,7 @@ def train(args, database=None, print=print):
                                logger=print,
                                args=args,
                                model=model,
+                               currentEpoch=i,
                                data_pipeline=getPipeline(
                                    args["pipeline"], print=print)
                                )
