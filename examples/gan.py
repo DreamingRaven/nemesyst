@@ -3,8 +3,8 @@
 # @Author: George Onoufriou <archer>
 # @Date:   2018-09-27
 # @Filename: gan.py
-# @Last modified by:   archer
-# @Last modified time: 2018-10-02
+# @Last modified by:   georgeraven
+# @Last modified time: 2018-12-02
 # @License: Please see LICENSE file in project root
 
 import sys
@@ -22,24 +22,25 @@ def main(args, db, log):
         "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
 
     if(args["toTrain"]):
-        train()
+        train(args=args, db=db, log=log)
 
     if(args["toTest"]):
-        test()
+        test(args=args, db=db, log=log)
 
     if(args["toPredict"]):
-        predict()
+        predict(args=args, db=db, log=log)
 
 
-def train():
+def train(args, db, log):
     None
 
 
 
-def test():
+
+def test(args, db, log):
     None
 
 
 
-def predict():
+def predict(args, db, log):
     None
