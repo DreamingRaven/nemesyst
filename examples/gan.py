@@ -22,7 +22,10 @@ def main(args, db, log):
     log(prePend + "\n\tArg dict of length: " + str(len(args)) +
         "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
 
-    gan = GAN()
+    gan = GAN(args=args, db=db, log=log)
+
+    if(args["isDebug"]):
+        gan.debug()
 
     if(args["toTrain"]):
         gan.train()
@@ -36,7 +39,12 @@ def main(args, db, log):
 
 class GAN():
 
-    def __init__(self):
+    def __init__(self, args, db, log):
+        self.db = db
+        self.log = log
+        self.args = args
+
+    def debug(self):
         None
 
     def train(self):
@@ -52,4 +60,7 @@ class GAN():
     def predict(self):
         # if testing using previously trained model
         # else testing using just-trained model (as in model already in memory)
+        None
+
+    def save(self):
         None
