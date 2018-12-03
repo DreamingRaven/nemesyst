@@ -42,25 +42,35 @@ class Gan():
         self.db = db
         self.log = log
         self.args = args
+        self.model = None
         self.prePend = "[ gan.py -> Gan ]"
 
     def debug(self):
         self.log(self.prePend, 3)
 
     def train(self):
-        # if training new model
-        # else continuing training
-        None
+        # branch depending if model is to continue training or create new model
+        if(self.args["toReTrain"] == True):
+            None
+            # DONT FORGET IF YOU ARE RETRAINING TO CONCATENATE EXISTING STUFF LIKE EPOCHS
+        else:
+            None
+        # loop epochs for training
 
     def test(self):
-        # if testing using previously trained model
-        # else testing using just-trained model (as in model already in memory)
-        None
+        # branch depending if model is already in memory to save request to database
+        if(self.model != None):
+            None
+        else:
+            None
+        # now model should exist now use it to test
 
     def predict(self):
-        # if testing using previously trained model
-        # else testing using just-trained model (as in model already in memory)
-        None
+        # branch depending if model is already in memory to save request to database
+        if(self.model != None):
+            None
+        else:
+            None
 
     def save(self):
         None
