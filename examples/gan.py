@@ -7,6 +7,7 @@
 # @Last modified time: 2018-12-03
 # @License: Please see LICENSE file in project root
 
+import os
 import sys
 from keras.models import Sequential
 from keras.layers import Dense, Activation, LSTM
@@ -19,13 +20,11 @@ prePend = "[ " + fileName + " ] "
 
 def main(args, db, log):
 
-    log(prePend + "\n\tArg dict of length: " + str(len(args)) +
-        "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
+    log(prePend + "\n\tArg dict of length: " + str(len(args))
+        + "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
 
-    gan = GAN(args=args, db=db, log=log)
-
-    if(args["isDebug"]):
-        gan.debug()
+    gan = Gan(args=args, db=db, log=log)
+    gan.debug()
 
     if(args["toTrain"]):
         gan.train()
@@ -37,15 +36,16 @@ def main(args, db, log):
         gan.predict()
 
 
-class GAN():
+class Gan():
 
     def __init__(self, args, db, log):
         self.db = db
         self.log = log
         self.args = args
+        self.prePend = "[ gan.py -> Gan ]"
 
     def debug(self):
-        None
+        self.log(self.prePend, 3)
 
     def train(self):
         # if training new model
