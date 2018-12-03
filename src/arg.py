@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-11-13
+# @Last modified time: 2018-12-03
 # @License: Please see LICENSE file in project root
 
 import os
@@ -269,6 +269,11 @@ def argz(argv=None, description=None, prevArgs=None):
                                               "toReduceSpam", False, isBool=True)),
                         action="store_true",
                         help="sets flag to reduce spam in repeated sections")
+    parser.add_argument("--toReTrain",
+                        default=bool(argDeflt(config, options,
+                                              "toReTrain", False, isBool=True)),
+                        action="store_true",
+                        help="sets flag to instead of generating new model to continue training one from database")
 
     args = vars(parser.parse_args(argv))
 

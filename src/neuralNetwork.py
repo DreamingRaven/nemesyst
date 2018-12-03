@@ -4,7 +4,7 @@
 # @Date:   2018-07-02
 # @Filename: NeuralNetwork.py
 # @Last modified by:   archer
-# @Last modified time: 2018-11-22
+# @Last modified time: 2018-11-28
 # @License: Please see LICENSE file in project root
 
 
@@ -199,16 +199,6 @@ class NeuralNetwork():
                 str(sys.exc_info()[1]) , 2)
         return data
 
-    # def getNewDatabase(self):
-    #     from RavenPythonLib.mongodb.mongo import Mongo
-    #
-    # # i dont like doing this but its neccessary for recursive database calls
-    #     mongodb = Mongo(isDebug=True, mongoUser=self.args['user'], mongoPath=self.args['dir'],
-    #                     mongoPass="password", mongoIp=self.args['ip'], mongoDbName=self.args['name'],
-    #                     mongoCollName=self.args['coll'], mongoPort=self.args['port'], mongoUrl=self.args['url'],
-    #                     mongoCursorTimeout=self.args['mongoCursorTimeout'])
-    #     return mongodb
-
     def train(self):
         # this trains the models but autogen must have been called to generate the neural network
         self.modler(toTrain=True)
@@ -220,28 +210,6 @@ class NeuralNetwork():
                 str(sys.exc_info()[1]), 2)
         finally:
             return self.model
-
-        # # this is what allows continuous training
-        # if(self.args["epochs"] > self.currentEpoch):
-        #     try:
-        #         self.log(self.prePend + "Epoch: " + str(self.currentEpoch), 0)
-        #         nn = NeuralNetwork(db=self.getNewDatabase(),
-        #                            logger=self.log,
-        #                            args=self.args,
-        #                            model=self.model,
-        #                            data_pipeline=self.data_pipeline,
-        #                            currentEpoch=(self.currentEpoch + 1)
-        #                            )
-        #         cursor = nn.getCursor()
-        #         nn.autogen()
-        #         nn.train()
-        #     except:
-        #         self.log(self.prePend + "could not train dataset: " + str(self.currentEpoch) + "\n" +
-        #             str(sys.exc_info()[0]) + " " +
-        #             str(sys.exc_info()[1]), 2)
-        #     finally:
-        #         if(cursor != None) and (cursor.alive):
-        #             cursor.close()
 
     def test(self):
         if(self.model):
