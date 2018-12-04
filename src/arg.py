@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-12-03
+# @Last modified time: 2018-12-04
 # @License: Please see LICENSE file in project root
 
 import os
@@ -279,7 +279,8 @@ def argz(argv=None, description=None, prevArgs=None):
 
     # identifying arguments by name which are paths to be normalised
     pathArgNames = ["cleaner", "dir", "newData",
-                    "pipeline", "modelPipe", "customScript"]
+                    "pipeline", "modelPipe",
+                    "customScript"]
     normalArgs = normaliseArgs(args=args, argNames=pathArgNames)
     # identifying arguments that are single words that want to be normalised
     wantedInLowerCase = ["type", "activation", "lossMetric", "optimizer"]

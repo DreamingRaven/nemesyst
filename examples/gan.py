@@ -3,12 +3,13 @@
 # @Author: George Onoufriou <archer>
 # @Date:   2018-09-27
 # @Filename: gan.py
-# @Last modified by:   georgeraven
+# @Last modified by:   archer
 # @Last modified time: 2018-12-04
 # @License: Please see LICENSE file in project root
 
 import os
 import sys
+import json
 from keras.models import Sequential
 from keras.layers import Dense, Activation, LSTM
 
@@ -41,10 +42,9 @@ class Gan():
     def __init__(self, args, db, log):
         self.db = db
         self.log = log
+        self.epochs = 0
         self.args = args
         self.model = None
-        self.model_pipeline = None
-        self.epochs = 0
         self.prePend = "[ gan.py -> Gan ]"
 
     def debug(self):
@@ -54,7 +54,9 @@ class Gan():
         # branch depending if model is to continue training or create new model
         if(self.args["toReTrain"] == True):
             # DONT FORGET IF YOU ARE RETRAINING TO CONCATENATE EXISTING STUFF LIKE EPOCHS
-            self.getModel()
+            self.modelDict = self.getModel(
+                self.getPipe(self.args["modelPipe"]))
+            self.log(self.model, 0)
             None
         else:
             None
@@ -78,10 +80,22 @@ class Gan():
     def save(self):
         None
 
-    def getModel(self):
+    def getModel(self, model_pipe=None):
         # modify keras witrh get and set funcs to be able to unserialise the data
         self.make_keras_picklable
-        query = self.model_pipeline if self.model_pipeline is not None else {}
+        query = model_pipe if model_pipe is not None else {}
+        return 0
+
+    def getPipe(self, pipePath):
+        with open(pipePath) as f:
+            return json.load(f)
+
+    def compile(self):
+        if(self.model != None):
+            self.model.compile(
+                optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
+        else:
+            print("No model to compile, can not NN.compile()", 1)
 
     def make_keras_picklable(self):
         import tempfile
