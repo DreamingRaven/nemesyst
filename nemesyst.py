@@ -3,8 +3,8 @@
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
-# @Last modified by:   archer
-# @Last modified time: 2018-11-13
+# @Last modified by:   georgeraven
+# @Last modified time: 2018-12-04
 # @License: Please see LICENSE file in project root
 
 
@@ -134,7 +134,9 @@ else:
     try:
         main()
     except ModuleNotFoundError:
-        print(prePend + "A dependancy module is missing, try updating using '--toUpdate' flag, else 'git pull'. Finally check python dependancies exist e.g Keras " +
+        print(prePend + "A dependancy module is missing, try updating using " +
+            "'--toUpdate' flag, else 'git pull'. Finally check python " +
+            "dependancies exist e.g Keras." +
               str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
     except:
         print(prePend + str(sys.exc_info()[0]

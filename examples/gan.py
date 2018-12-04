@@ -3,8 +3,8 @@
 # @Author: George Onoufriou <archer>
 # @Date:   2018-09-27
 # @Filename: gan.py
-# @Last modified by:   archer
-# @Last modified time: 2018-12-03
+# @Last modified by:   georgeraven
+# @Last modified time: 2018-12-04
 # @License: Please see LICENSE file in project root
 
 import os
@@ -43,6 +43,8 @@ class Gan():
         self.log = log
         self.args = args
         self.model = None
+        self.model_pipeline = None
+        self.epochs = 0
         self.prePend = "[ gan.py -> Gan ]"
 
     def debug(self):
@@ -51,8 +53,9 @@ class Gan():
     def train(self):
         # branch depending if model is to continue training or create new model
         if(self.args["toReTrain"] == True):
-            None
             # DONT FORGET IF YOU ARE RETRAINING TO CONCATENATE EXISTING STUFF LIKE EPOCHS
+            self.getModel()
+            None
         else:
             None
         # loop epochs for training
@@ -74,3 +77,32 @@ class Gan():
 
     def save(self):
         None
+
+    def getModel(self):
+        # modify keras witrh get and set funcs to be able to unserialise the data
+        self.make_keras_picklable
+        query = self.model_pipeline if self.model_pipeline is not None else {}
+
+    def make_keras_picklable(self):
+        import tempfile
+        import keras.models
+        import h5py
+
+        def __getstate__(self):
+            model_str = ""
+            with tempfile.NamedTemporaryFile(suffix='.hdf5', delete=True) as fd:
+                keras.models.save_model(self, fd.name, overwrite=True)
+                model_str = fd.read()
+                d = {'model_str': model_str}
+                return d
+
+        def __setstate__(self, state):
+            with tempfile.NamedTemporaryFile(suffix='.hdf5', delete=True) as fd:
+                fd.write(state['model_str'])
+                fd.flush()
+                model = keras.models.load_model(fd.name)
+                self.__dict__ = model.__dict__
+
+        cls = keras.models.Model
+        cls.__getstate__ = __getstate__
+        cls.__setstate__ = __setstate__
