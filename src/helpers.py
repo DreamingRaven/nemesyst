@@ -251,10 +251,6 @@ def callCustomScript(args, database=None, print=print):
             # is already known to not exist
             open(args["customScript"], "r")
 
-    # except ValueError:
-    #     print(prePend + "(ValueError) some value in custom script does not exist:\n" +
-    #         str(sys.exc_info()[0]) + " " +
-    #           str(sys.exc_info()[1]), 2)
     except FileNotFoundError:
         print(prePend + "(FileNotFoundError)\nlikeley --customScript " +
             args["customScript"] + " does not exist:\n" +
