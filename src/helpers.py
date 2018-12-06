@@ -1,8 +1,8 @@
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-05-22
 # @Filename: helpers.py
-# @Last modified by:   georgeraven
-# @Last modified time: 2018-12-04
+# @Last modified by:   archer
+# @Last modified time: 2018-12-06
 # @License: Please see LICENSE file in project root
 
 
@@ -19,7 +19,6 @@ import pandas as pd
 import numpy as np
 from fnmatch import fnmatch
 from src.neuralNetwork import NeuralNetwork
-from src.gan import Gan
 
 
 fileName = "helpers.py"
