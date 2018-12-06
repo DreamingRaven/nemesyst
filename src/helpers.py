@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-11-22
+# @Last modified time: 2018-12-06
 # @License: Please see LICENSE file in project root
 
 
@@ -19,7 +19,6 @@ import pandas as pd
 import numpy as np
 from fnmatch import fnmatch
 from src.neuralNetwork import NeuralNetwork
-from src.gan import Gan
 
 
 fileName = "helpers.py"
@@ -120,8 +119,8 @@ def updater(path="./",
 
 def clean(args, print=print):
 
-    print("cleaning: " + args["newData"] + " using: " +
-          args["cleaner"] + "...", 3)
+    print("cleaning: " + args["newData"] + " using: "
+          + args["cleaner"] + "...", 3)
     try:
         subprocess.call([
             str(args["cleaner"]),
@@ -134,9 +133,9 @@ def clean(args, print=print):
         print("cleaner returned", 3)
 
     except:
-        print(prePend + "could not clean dataset:\n"
-            + str(sys.exc_info()[0]) + " "
-              + str(sys.exc_info()[1]), 2)
+        print(prePend + "could not clean dataset:\n" +
+            str(sys.exc_info()[0]) + " " +
+              str(sys.exc_info()[1]), 2)
 
 
 def getPipeline(pipePath, print=print):
@@ -144,9 +143,9 @@ def getPipeline(pipePath, print=print):
         with open(pipePath) as f:
             return json.load(f)
     except:
-        print(prePend + "could not get pipeline from: " + str(pipePath) + "\n"
-            + str(sys.exc_info()[0]) + " "
-              + str(sys.exc_info()[1]), 2)
+        print(prePend + "could not get pipeline from: " + str(pipePath) + "\n" +
+            str(sys.exc_info()[0]) + " " +
+              str(sys.exc_info()[1]), 2)
 
 
 def train(args, database=None, print=print):
@@ -168,9 +167,9 @@ def train(args, database=None, print=print):
             nn.autogen()
             model = nn.train()
     except:
-        print(prePend + "could not train dataset:\n"
-            + str(sys.exc_info()[0]) + " "
-              + str(sys.exc_info()[1]), 2)
+        print(prePend + "could not train dataset:\n" +
+            str(sys.exc_info()[0]) + " " +
+              str(sys.exc_info()[1]), 2)
     finally:
         if(cursor != None) and (cursor.alive):
             cursor.close()
@@ -192,9 +191,9 @@ def test(args, database=None, print=print):
         nn.test()
 
     except:
-        print(prePend + "could not test dataset:\n"
-            + str(sys.exc_info()[0]) + " "
-              + str(sys.exc_info()[1]), 2)
+        print(prePend + "could not test dataset:\n" +
+            str(sys.exc_info()[0]) + " " +
+              str(sys.exc_info()[1]), 2)
     finally:
         if(cursor != None) and (cursor.alive):
             cursor.close()
@@ -216,9 +215,9 @@ def predict(args, database=None, print=print):
         nn.predict()
 
     except:
-        print(prePend + "could not predict on dataset:\n"
-            + str(sys.exc_info()[0]) + " "
-              + str(sys.exc_info()[1]), 2)
+        print(prePend + "could not predict on dataset:\n" +
+            str(sys.exc_info()[0]) + " " +
+              str(sys.exc_info()[1]), 2)
     finally:
         if(cursor != None) and (cursor.alive):
             cursor.close()
@@ -226,28 +225,41 @@ def predict(args, database=None, print=print):
 
 def callCustomScript(args, database=None, print=print):
     try:
-        # get dir and file strings
-        modDir, modFile = os.path.split(args["customScript"])
-        # get name from file string is it has an extension for example
-        modName = os.path.splitext(modFile)[0]
-        # adding location to system path so it can be found
-        sys.path.append(modDir)
-        print("system path appended with: " + modDir
-              + " and successfully found module: " + modFile
-              + " which will now be called")
-        argumentz = copy.deepcopy(args)
-        del argumentz["pass"]
-        # import custom module/ script
-        customScript = importlib.import_module(modName)
-        # get the entry point function like normal function
-        entryPointFunc = getattr(customScript, args["customScript_entryPoint"])
-        entryPointFunc(args=argumentz, db=database, log=print)
-        # customScript.main()
 
-    except:
-        print(prePend + "issue calling/ using custom script:\n"
-            + str(sys.exc_info()[0]) + " "
-              + str(sys.exc_info()[1]), 2)
+        if(os.path.isfile(args["customScript"])):
+            None
+            # get dir and file strings
+            modDir, modFile = os.path.split(args["customScript"])
+            # get name from file string is it has an extension for example
+            modName = os.path.splitext(modFile)[0]
+            # adding location to system path so it can be found
+            sys.path.append(modDir)
+            print("system path appended with: " + modDir +
+                " and successfully found module: " + modFile +
+                  " which will now be called")
+            argumentz = copy.deepcopy(args)
+            del argumentz["pass"]
+            # import custom module/ script
+            customScript = importlib.import_module(modName)
+            # get the entry point function like normal function
+            entryPointFunc = getattr(
+                customScript, args["customScript_entryPoint"])
+            entryPointFunc(args=argumentz, db=database, log=print)
+
+        else:
+            # generating error properly without having to try opening it as it
+            # is already known to not exist
+            open(args["customScript"], "r")
+
+    # except ValueError:
+    #     print(prePend + "(ValueError) some value in custom script does not exist:\n" +
+    #         str(sys.exc_info()[0]) + " " +
+    #           str(sys.exc_info()[1]), 2)
+    except FileNotFoundError:
+        print(prePend + "(FileNotFoundError)\nlikeley --customScript " +
+            args["customScript"] + " does not exist:\n" +
+            str(sys.exc_info()[0]) + " " +
+              str(sys.exc_info()[1]), 2)
 
 
 def getDirPath(path):
