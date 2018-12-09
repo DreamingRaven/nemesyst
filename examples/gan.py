@@ -26,6 +26,8 @@ prePend = "[ " + fileName + " ] "
 
 def main(args, db, log):
 
+    # deep copy args to maintain them throught the rest of the program
+    args = copy.deepcopy(args)
     log(prePend + "\n\tArg dict of length: " + str(len(args)) +
         "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
     db.connect()
@@ -65,7 +67,8 @@ class Gan():
             self.model_dict = self.getModel(
                 self.getPipe(self.args["modelPipe"]))
         else:
-            None
+            self.args["type"] = gan
+            self.model = self.createModel()
         # loop epochs for training
 
     def test(self, collection=None):
@@ -86,6 +89,9 @@ class Gan():
             None
 
     def save(self):
+        None
+
+    def createModel(self):
         None
 
     def getModel(self, model_pipe=None):
