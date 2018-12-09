@@ -3,18 +3,20 @@
 # @Author: George Onoufriou <archer>
 # @Date:   2018-09-27
 # @Filename: gan.py
-# @Last modified by:   archer
-# @Last modified time: 2018-12-05
+# @Last modified by:   georgeraven
+# @Last modified time: 2018-12-09
 # @License: Please see LICENSE file in project root
 
-import os
-import sys
+import copy
 import json
-import pandas as pd
-import pprint
+import os
 import pickle
+import pprint
+import sys
+
+import pandas as pd
+from keras.layers import LSTM, Activation, Dense
 from keras.models import Sequential
-from keras.layers import Dense, Activation, LSTM
 
 fileName = "gan.py"
 prePend = "[ " + fileName + " ] "
@@ -24,8 +26,10 @@ prePend = "[ " + fileName + " ] "
 
 def main(args, db, log):
 
-    log(prePend + "\n\tArg dict of length: " + str(len(args))
-        + "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
+    # deep copy args to maintain them throught the rest of the program
+    args = copy.deepcopy(args)
+    log(prePend + "\n\tArg dict of length: " + str(len(args)) +
+        "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
     db.connect()
     gan = Gan(args=args, db=db, log=log)
     gan.debug()
@@ -51,6 +55,7 @@ class Gan():
         self.model_dict = None
         self.model_cursor = None
         self.prePend = "[ gan.py -> Gan ] "
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
     def debug(self):
         self.log(self.prePend, 3)
@@ -61,13 +66,14 @@ class Gan():
             # DONT FORGET IF YOU ARE RETRAINING TO CONCATENATE EXISTING STUFF LIKE EPOCHS
             self.model_dict = self.getModel(
                 self.getPipe(self.args["modelPipe"]))
-            self.log(self.model_dict, 0)
-            None
         else:
-            None
+            self.args["type"] = gan
+            self.model = self.createModel()
         # loop epochs for training
 
-    def test(self):
+    def test(self, collection=None):
+        # uses its own collection variable to allow it to be reused if testColl != coll
+        collection = collection if collection is not None else self.args["coll"]
         # branch depending if model is already in memory to save request to database
         if(self.model != None):
             None
@@ -85,6 +91,9 @@ class Gan():
     def save(self):
         None
 
+    def createModel(self):
+        None
+
     def getModel(self, model_pipe=None):
         # modify keras witrh get and set funcs to be able to unserialise the data
         self.make_keras_picklable()
@@ -97,8 +106,13 @@ class Gan():
         self.model_dict = (
             pd.DataFrame(list(self.model_cursor))
         ).to_dict('records')[0]
-        # del self.model_dict["model_bin"]
-        pprint.pprint(self.model_dict)
+        # # del self.model_dict["model_bin"]
+        # # x = list(self.model_dict.keys()) != "model_bin"
+        # x = [x for x in self.model_dict.keys() if x not in ["model_bin"]]
+        # # print(list(self.model_dict.keys()))
+        # print(x)
+        # pprint.pprint(
+        #     self.model_dict[x] for x in x if x in self.model_dict.keys())
         self.model = pickle.loads(self.model_dict["model_bin"])
         self.compile()
         return 0
