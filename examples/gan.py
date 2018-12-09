@@ -53,6 +53,7 @@ class Gan():
         self.model_dict = None
         self.model_cursor = None
         self.prePend = "[ gan.py -> Gan ] "
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
     def debug(self):
         self.log(self.prePend, 3)
@@ -63,8 +64,6 @@ class Gan():
             # DONT FORGET IF YOU ARE RETRAINING TO CONCATENATE EXISTING STUFF LIKE EPOCHS
             self.model_dict = self.getModel(
                 self.getPipe(self.args["modelPipe"]))
-            self.log(self.model_dict, 0)
-            None
         else:
             None
         # loop epochs for training
@@ -101,13 +100,13 @@ class Gan():
         self.model_dict = (
             pd.DataFrame(list(self.model_cursor))
         ).to_dict('records')[0]
-        # del self.model_dict["model_bin"]
-        # x = list(self.model_dict.keys()) != "model_bin"
-        x = [x for x in self.model_dict.keys() if x not in ["model_bin"]]
-        # print(list(self.model_dict.keys()))
-        print(x)
-        pprint.pprint(
-            self.model_dict[x] for x in x if x in self.model_dict.keys())
+        # # del self.model_dict["model_bin"]
+        # # x = list(self.model_dict.keys()) != "model_bin"
+        # x = [x for x in self.model_dict.keys() if x not in ["model_bin"]]
+        # # print(list(self.model_dict.keys()))
+        # print(x)
+        # pprint.pprint(
+        #     self.model_dict[x] for x in x if x in self.model_dict.keys())
         self.model = pickle.loads(self.model_dict["model_bin"])
         self.compile()
         return 0
