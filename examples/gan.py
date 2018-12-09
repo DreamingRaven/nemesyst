@@ -66,6 +66,7 @@ class Gan():
             # DONT FORGET IF YOU ARE RETRAINING TO CONCATENATE EXISTING STUFF LIKE EPOCHS
             self.model_dict = self.getModel(
                 self.getPipe(self.args["modelPipe"]))
+            # model is already overwritten when loading from database so self.model != None now
         else:
             self.args["type"] = gan
             self.model = self.createModel()
@@ -78,7 +79,8 @@ class Gan():
         if(self.model != None):
             None
         else:
-            None
+            self.model_dict = self.getModel(
+                self.getPipe(self.args["modelPipe"]))
         # now model should exist now use it to test
 
     def predict(self):
@@ -91,7 +93,21 @@ class Gan():
     def save(self):
         None
 
+    # function responsible for creating whatever type of model is desired by the
+    # user in this case GANs
     def createModel(self):
+        # https://medium.com/@mattiaspinelli/simple-generative-adversarial-network-gans-with-keras-1fe578e44a87        # creating GAN
+        # https://github.com/LantaoYu/SeqGAN/blob/master/sequence_gan.py
+
+        generator = createGenerator()
+        discriminator = createDiscriminator()
+
+        None
+
+    def createGenerator(self):
+        model = Sequential()
+
+    def createDiscriminator(self):
         None
 
     def getModel(self, model_pipe=None):
@@ -106,16 +122,9 @@ class Gan():
         self.model_dict = (
             pd.DataFrame(list(self.model_cursor))
         ).to_dict('records')[0]
-        # # del self.model_dict["model_bin"]
-        # # x = list(self.model_dict.keys()) != "model_bin"
-        # x = [x for x in self.model_dict.keys() if x not in ["model_bin"]]
-        # # print(list(self.model_dict.keys()))
-        # print(x)
-        # pprint.pprint(
-        #     self.model_dict[x] for x in x if x in self.model_dict.keys())
         self.model = pickle.loads(self.model_dict["model_bin"])
         self.compile()
-        return 0
+        return self.model_dict
 
     def getPipe(self, pipePath):
         with open(pipePath) as f:
