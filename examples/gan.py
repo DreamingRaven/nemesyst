@@ -107,16 +107,20 @@ class Gan():
 
         generator.compile(
             optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
-        # ,  # expand_nested=True
         plot_model(generator, to_file="generator.png")
-        # show_shapes=True, dpi=300)
         discriminator.compile(
             optimizer=self.args["optimizer"], loss=self.args["lossMetric"],
             metrics=[self.args["lossMetric"]])
-        # ,  # expand_nested=True,
         plot_model(generator, to_file="discriminator.png")
-        # show_shapes=True, dpi=300)
-        return 0
+
+        gan = Sequential()
+        gan.add(generator)
+        gan.add(discriminator)
+        gan.summary()
+        gan.compile(loss=self.args["lossMetric"],
+                    optimizer=self.args["optimizer"])
+        plot_model(gan, to_file="GAN.png")
+        return gan
 
     def createGenerator(self):
         model = Sequential()
