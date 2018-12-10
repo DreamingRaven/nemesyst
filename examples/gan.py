@@ -4,7 +4,7 @@
 # @Date:   2018-09-27
 # @Filename: gan.py
 # @Last modified by:   georgeraven
-# @Last modified time: 2018-12-09
+# @Last modified time: 2018-12-10
 # @License: Please see LICENSE file in project root
 
 import copy
@@ -15,8 +15,10 @@ import pprint
 import sys
 
 import pandas as pd
-from keras.layers import LSTM, Activation, Dense
+from keras.layers import (LSTM, Activation, BatchNormalization, Dense,
+                          LeakyReLU, Reshape)
 from keras.models import Sequential
+from keras.utils import plot_model
 
 fileName = "gan.py"
 prePend = "[ " + fileName + " ] "
@@ -28,8 +30,8 @@ def main(args, db, log):
 
     # deep copy args to maintain them throught the rest of the program
     args = copy.deepcopy(args)
-    log(prePend + "\n\tArg dict of length: " + str(len(args)) +
-        "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
+    log(prePend + "\n\tArg dict of length: " + str(len(args))
+        + "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
     db.connect()
     gan = Gan(args=args, db=db, log=log)
     gan.debug()
@@ -62,14 +64,15 @@ class Gan():
 
     def train(self):
         # branch depending if model is to continue training or create new model
-        if(self.args["toReTrain"] == True):
+        if(self.args["toReTrain"] == True) and (1 == 2):
             # DONT FORGET IF YOU ARE RETRAINING TO CONCATENATE EXISTING STUFF LIKE EPOCHS
             self.model_dict = self.getModel(
                 self.getPipe(self.args["modelPipe"]))
             # model is already overwritten when loading from database so self.model != None now
         else:
-            self.args["type"] = gan
+            self.args["type"] = "gan"
             self.model = self.createModel()
+            print(self.model)
         # loop epochs for training
 
     def test(self, collection=None):
@@ -99,10 +102,25 @@ class Gan():
         # https://medium.com/@mattiaspinelli/simple-generative-adversarial-network-gans-with-keras-1fe578e44a87        # creating GAN
         # https://github.com/LantaoYu/SeqGAN/blob/master/sequence_gan.py
 
-        generator = createGenerator()
-        discriminator = createDiscriminator()
+        generator = self.createGenerator()
+        discriminator = self.createDiscriminator()
 
-        None
+        generator.compile(
+            optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
+        plot_model(generator, to_file="generator.png")
+        discriminator.compile(
+            optimizer=self.args["optimizer"], loss=self.args["lossMetric"],
+            metrics=[self.args["lossMetric"]])
+        plot_model(generator, to_file="discriminator.png")
+
+        gan = Sequential()
+        gan.add(generator)
+        gan.add(discriminator)
+        gan.summary()
+        gan.compile(loss=self.args["lossMetric"],
+                    optimizer=self.args["optimizer"])
+        plot_model(gan, to_file="GAN.png")
+        return gan
 
     def createGenerator(self):
         model = Sequential()
@@ -115,11 +133,27 @@ class Gan():
         model.add(Dense(1024))
         model.add(LeakyReLU(alpha=0.2))
         model.add(BatchNormalization(momentum=0.8))
-        model.add(Dense(self.args["timeSteps"] * self.HEIGHT *
-                        self.CHANNELS, activation='tanh'))
+        model.add(Dense(self.args["timeSteps"] *
+                        self.args["dimensionality"], activation='tanh'))
+        model.add(
+            Reshape((self.args["timeSteps"], self.args["dimensionality"])))
+        model.summary()
+        return model
 
     def createDiscriminator(self):
-        None
+        model = Sequential()
+        # model.add(Flatten(input_shape=self.SHAPE))
+        model.add(Dense(self.args["timeSteps"] * self.args["dimensionality"],
+                        input_shape=(self.args["timeSteps"], self.args["dimensionality"])))
+
+        model.add(LeakyReLU(alpha=0.2))
+        model.add(
+            Dense(int((self.args["timeSteps"] * self.args["dimensionality"]) / 2)))
+        model.add(LeakyReLU(alpha=0.2))
+
+        model.add(Dense(1, activation='sigmoid'))
+        model.summary()
+        return model
 
     def getModel(self, model_pipe=None):
         # modify keras witrh get and set funcs to be able to unserialise the data
