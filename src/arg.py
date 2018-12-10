@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-12-04
+# @Last modified time: 2018-12-10
 # @License: Please see LICENSE file in project root
 
 import os
@@ -289,6 +289,9 @@ def argz(argv=None, description=None, prevArgs=None):
 
     # run again if args do not include config files I.E they have no previous state
     if(prevArgs != None):
+        # this just ensures the implication carries over
+        if(normalArgs["toReTrain"] == True):
+            normalArgs["toTrain"] = True
         return normalArgs
     else:
         return argz(argv=argv, description=description, prevArgs=normalArgs)

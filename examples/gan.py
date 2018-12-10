@@ -63,7 +63,7 @@ class Gan():
 
     def train(self):
         # branch depending if model is to continue training or create new model
-        if(self.args["toReTrain"] == True) and (1 == 2):
+        if(self.args["toReTrain"] == True):
             # DONT FORGET IF YOU ARE RETRAINING TO CONCATENATE EXISTING STUFF LIKE EPOCHS
             self.model_dict = self.getModel(
                 self.getPipe(self.args["modelPipe"]))
