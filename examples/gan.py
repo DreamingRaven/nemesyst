@@ -107,14 +107,15 @@ class Gan():
 
         generator.compile(
             optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
-        plot_model(generator, to_file="generator.png", expand_nested=True,
-                   show_shapes=True, dpi=300)
-        print(x)
+        # ,  # expand_nested=True
+        plot_model(generator, to_file="generator.png")
+        # show_shapes=True, dpi=300)
         discriminator.compile(
             optimizer=self.args["optimizer"], loss=self.args["lossMetric"],
-            metrics=self.args["lossMetric"])
-        plot_model(generator, to_file="discriminator.png", expand_nested=True,
-                   show_shapes=True, dpi=300)
+            metrics=[self.args["lossMetric"]])
+        # ,  # expand_nested=True,
+        plot_model(generator, to_file="discriminator.png")
+        # show_shapes=True, dpi=300)
         return 0
 
     def createGenerator(self):
@@ -132,6 +133,7 @@ class Gan():
                         self.args["dimensionality"], activation='tanh'))
         model.add(
             Reshape((self.args["timeSteps"], self.args["dimensionality"])))
+        model.summary()
         return model
 
     def createDiscriminator(self):
@@ -142,7 +144,7 @@ class Gan():
 
         model.add(LeakyReLU(alpha=0.2))
         model.add(
-            Dense((self.args["timeSteps"] * self.args["dimensionality"]) / 2))
+            Dense(int((self.args["timeSteps"] * self.args["dimensionality"]) / 2)))
         model.add(LeakyReLU(alpha=0.2))
 
         model.add(Dense(1, activation='sigmoid'))
