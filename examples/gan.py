@@ -3,7 +3,7 @@
 # @Author: George Onoufriou <archer>
 # @Date:   2018-09-27
 # @Filename: gan.py
-# @Last modified by:   georgeraven
+# @Last modified by:   archer
 # @Last modified time: 2018-12-10
 # @License: Please see LICENSE file in project root
 
@@ -18,7 +18,6 @@ import pandas as pd
 from keras.layers import (LSTM, Activation, BatchNormalization, Dense,
                           LeakyReLU, Reshape)
 from keras.models import Sequential
-from keras.utils import plot_model
 
 fileName = "gan.py"
 prePend = "[ " + fileName + " ] "
@@ -30,8 +29,8 @@ def main(args, db, log):
 
     # deep copy args to maintain them throught the rest of the program
     args = copy.deepcopy(args)
-    log(prePend + "\n\tArg dict of length: " + str(len(args))
-        + "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
+    log(prePend + "\n\tArg dict of length: " + str(len(args)) +
+        "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
     db.connect()
     gan = Gan(args=args, db=db, log=log)
     gan.debug()
@@ -102,24 +101,38 @@ class Gan():
         # https://medium.com/@mattiaspinelli/simple-generative-adversarial-network-gans-with-keras-1fe578e44a87        # creating GAN
         # https://github.com/LantaoYu/SeqGAN/blob/master/sequence_gan.py
 
+        self.log("Generator:", 0)
         generator = self.createGenerator()
+        self.log("Discriminator:", 0)
         discriminator = self.createDiscriminator()
-
         generator.compile(
             optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
-        plot_model(generator, to_file="generator.png")
         discriminator.compile(
             optimizer=self.args["optimizer"], loss=self.args["lossMetric"],
             metrics=[self.args["lossMetric"]])
-        plot_model(generator, to_file="discriminator.png")
 
+        discriminator.trainable = False  # freezing weights
         gan = Sequential()
         gan.add(generator)
         gan.add(discriminator)
+        self.log("GAN:", 0)
         gan.summary()
         gan.compile(loss=self.args["lossMetric"],
                     optimizer=self.args["optimizer"])
-        plot_model(gan, to_file="GAN.png")
+        try:
+            # this is an optional dependancy that is only used for plots
+            from keras.utils import plot_model
+            plot_model(generator, to_file="generator.png")
+            plot_model(generator, to_file="discriminator.png")
+            plot_model(gan, to_file="GAN.png")
+        except ModuleNotFoundError:
+            self.log(
+                "ModuleNotFoundError: could not plot models as likeley 'pydot'" +
+                " module not found please " +
+                " consider installing if you wish to visualise models\n" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]), 1)
+
         return gan
 
     def createGenerator(self):
@@ -133,8 +146,8 @@ class Gan():
         model.add(Dense(1024))
         model.add(LeakyReLU(alpha=0.2))
         model.add(BatchNormalization(momentum=0.8))
-        model.add(Dense(self.args["timeSteps"] *
-                        self.args["dimensionality"], activation='tanh'))
+        model.add(Dense(self.args["timeSteps"]
+                        * self.args["dimensionality"], activation='tanh'))
         model.add(
             Reshape((self.args["timeSteps"], self.args["dimensionality"])))
         model.summary()
