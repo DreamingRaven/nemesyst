@@ -30,8 +30,8 @@ def main(args, db, log):
 
     # deep copy args to maintain them throught the rest of the program
     args = copy.deepcopy(args)
-    log(prePend + "\n\tArg dict of length: " + str(len(args))
-        + "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
+    log(prePend + "\n\tArg dict of length: " + str(len(args)) +
+        "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
     db.connect()
     gan = Gan(args=args, db=db, log=log)
     gan.debug()
@@ -77,7 +77,8 @@ class Gan():
         else:
             self.args["type"] = self.expected["type"]
             self.model_dict = self.createModel()
-            print(self.model_dict)
+        x = json.dumps(self.model_dict, indent=4, sort_keys=True, default=str)
+        self.log(x, 0)
         # loop epochs for training
 
     def test(self, collection=None):
@@ -116,8 +117,8 @@ class Gan():
         discriminator.compile(
             optimizer=self.args["optimizer"], loss=self.args["lossMetric"],
             metrics=[self.args["lossMetric"]])
-
         discriminator.trainable = False  # freezing weights
+
         gan = Sequential()
         gan.add(generator)
         gan.add(discriminator)
@@ -125,6 +126,7 @@ class Gan():
         gan.summary()
         gan.compile(loss=self.args["lossMetric"],
                     optimizer=self.args["optimizer"])
+
         try:
             # this is an optional dependancy that is only used for plots
             from keras.utils import plot_model
@@ -133,18 +135,20 @@ class Gan():
             plot_model(gan, to_file="GAN.png")
         except ModuleNotFoundError:
             self.log(
-                "ModuleNotFoundError: could not plot models as likeley 'pydot'"
-                + " module not found please "
-                + " consider installing if you wish to visualise models\n"
-                + str(sys.exc_info()[0]) + " "
-                + str(sys.exc_info()[1]), 1)
+                "ModuleNotFoundError: could not plot models as likeley 'pydot'" +
+                " module not found please " +
+                " consider installing if you wish to visualise models\n" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]), 1)
+
         model_dict = {
             "utc": datetime.datetime.utcnow(),
+            "loss": None,
             "epochs": 0,
+            "generator": generator,
+            "discriminator": discriminator,
+            "gan": gan,
         }
-        model_dict["generator"] = generator
-        model_dict["discriminator"] = discriminator
-        model_dict["gan"] = gan
         return model_dict
 
     def createGenerator(self):
@@ -158,8 +162,8 @@ class Gan():
         model.add(Dense(1024))
         model.add(LeakyReLU(alpha=0.2))
         model.add(BatchNormalization(momentum=0.8))
-        model.add(Dense(self.args["timeSteps"] *
-                        self.args["dimensionality"], activation='tanh'))
+        model.add(Dense(self.args["timeSteps"]
+                        * self.args["dimensionality"], activation='tanh'))
         model.add(
             Reshape((self.args["timeSteps"], self.args["dimensionality"])))
         model.summary()
@@ -196,9 +200,9 @@ class Gan():
         # self.compile()
         if(model_dict["type"] != self.expected["type"]):
             raise RuntimeWarning(
-                "The model retrieved using query: " + str(model_pipe)
-                + " gives: " + str(model_dict["type"])
-                + ", which != expected: " +  self.expected["type"])
+                "The model retrieved using query: " + str(model_pipe) +
+                " gives: " + str(model_dict["type"]) +
+                ", which != expected: " +  self.expected["type"])
         return model_dict
 
     def getPipe(self, pipePath):
