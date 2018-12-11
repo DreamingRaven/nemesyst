@@ -8,6 +8,7 @@
 # @License: Please see LICENSE file in project root
 
 import copy
+import datetime
 import json
 import os
 import pickle
@@ -29,8 +30,8 @@ def main(args, db, log):
 
     # deep copy args to maintain them throught the rest of the program
     args = copy.deepcopy(args)
-    log(prePend + "\n\tArg dict of length: " + str(len(args)) +
-        "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
+    log(prePend + "\n\tArg dict of length: " + str(len(args))
+        + "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
     db.connect()
     gan = Gan(args=args, db=db, log=log)
     gan.debug()
@@ -55,6 +56,11 @@ class Gan():
         self.model_dict = None
         self.model_cursor = None
         self.prePend = "[ gan.py -> Gan ] "
+        # this is a dictionary that should be referanced every time something
+        # defaults or needs to check what is expected
+        self.expected = {
+            "type": "gan"
+        }
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
     def debug(self):
@@ -64,11 +70,12 @@ class Gan():
         # branch depending if model is to continue training or create new model
         if(self.args["toReTrain"] == True):
             # DONT FORGET IF YOU ARE RETRAINING TO CONCATENATE EXISTING STUFF LIKE EPOCHS
-            self.model_dict = self.getModel(
-                self.getPipe(self.args["modelPipe"]))
+            modelPipe = self.getPipe(self.args["modelPipe"])
+            self.model_dict = self.getModel(modelPipe)
+            # check that the imported model is a gan
             # model is already overwritten when loading from database so self.model != None now
         else:
-            self.args["type"] = "gan"
+            self.args["type"] = self.expected["type"]
             self.model_dict = self.createModel()
             print(self.model_dict)
         # loop epochs for training
@@ -126,12 +133,15 @@ class Gan():
             plot_model(gan, to_file="GAN.png")
         except ModuleNotFoundError:
             self.log(
-                "ModuleNotFoundError: could not plot models as likeley 'pydot'" +
-                " module not found please " +
-                " consider installing if you wish to visualise models\n" +
-                str(sys.exc_info()[0]) + " " +
-                str(sys.exc_info()[1]), 1)
-        model_dict = {}
+                "ModuleNotFoundError: could not plot models as likeley 'pydot'"
+                + " module not found please "
+                + " consider installing if you wish to visualise models\n"
+                + str(sys.exc_info()[0]) + " "
+                + str(sys.exc_info()[1]), 1)
+        model_dict = {
+            "utc": datetime.datetime.utcnow(),
+            "epochs": 0,
+        }
         model_dict["generator"] = generator
         model_dict["discriminator"] = discriminator
         model_dict["gan"] = gan
@@ -148,8 +158,8 @@ class Gan():
         model.add(Dense(1024))
         model.add(LeakyReLU(alpha=0.2))
         model.add(BatchNormalization(momentum=0.8))
-        model.add(Dense(self.args["timeSteps"]
-                        * self.args["dimensionality"], activation='tanh'))
+        model.add(Dense(self.args["timeSteps"] *
+                        self.args["dimensionality"], activation='tanh'))
         model.add(
             Reshape((self.args["timeSteps"], self.args["dimensionality"])))
         model.summary()
@@ -179,24 +189,21 @@ class Gan():
         self.model_cursor = self.db.getMostRecent(
             query=query, collName=self.args["modelColl"])
         # get a dictionary of key:value pairs of this document from query
-        self.model_dict = (
+        model_dict = (
             pd.DataFrame(list(self.model_cursor))
         ).to_dict('records')[0]
         # self.model = pickle.loads(self.model_dict["model_bin"])
         # self.compile()
-        return self.model_dict
+        if(model_dict["type"] != self.expected["type"]):
+            raise RuntimeWarning(
+                "The model retrieved using query: " + str(model_pipe)
+                + " gives: " + str(model_dict["type"])
+                + ", which != expected: " +  self.expected["type"])
+        return model_dict
 
     def getPipe(self, pipePath):
         with open(pipePath) as f:
             return json.load(f)
-
-    # def compile(self):
-    #     print("HELLO THERE")
-    #     if(self.model_dict != None):
-    #         self.model.compile(
-    #             optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
-    #     else:
-    #         print("No model to compile, can not NN.compile()", 1)
 
     def make_keras_picklable(self):
         import tempfile
