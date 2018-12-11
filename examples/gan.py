@@ -3,11 +3,12 @@
 # @Author: George Onoufriou <archer>
 # @Date:   2018-09-27
 # @Filename: gan.py
-# @Last modified by:   archer
-# @Last modified time: 2018-12-10
+# @Last modified by:   georgeraven
+# @Last modified time: 2018-12-11
 # @License: Please see LICENSE file in project root
 
 import copy
+import datetime
 import json
 import os
 import pickle
@@ -52,10 +53,14 @@ class Gan():
         self.log = log
         self.epochs = 0
         self.args = args
-        self.model = None
         self.model_dict = None
         self.model_cursor = None
         self.prePend = "[ gan.py -> Gan ] "
+        # this is a dictionary that should be referanced every time something
+        # defaults or needs to check what is expected
+        self.expected = {
+            "type": "gan"
+        }
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
     def debug(self):
@@ -65,20 +70,22 @@ class Gan():
         # branch depending if model is to continue training or create new model
         if(self.args["toReTrain"] == True):
             # DONT FORGET IF YOU ARE RETRAINING TO CONCATENATE EXISTING STUFF LIKE EPOCHS
-            self.model_dict = self.getModel(
-                self.getPipe(self.args["modelPipe"]))
+            modelPipe = self.getPipe(self.args["modelPipe"])
+            self.model_dict = self.getModel(modelPipe)
+            # check that the imported model is a gan
             # model is already overwritten when loading from database so self.model != None now
         else:
-            self.args["type"] = "gan"
-            self.model = self.createModel()
-            print(self.model)
+            self.args["type"] = self.expected["type"]
+            self.model_dict = self.createModel()
+        x = json.dumps(self.model_dict, indent=4, sort_keys=True, default=str)
+        self.log(x, 0)
         # loop epochs for training
 
     def test(self, collection=None):
         # uses its own collection variable to allow it to be reused if testColl != coll
         collection = collection if collection is not None else self.args["coll"]
         # branch depending if model is already in memory to save request to database
-        if(self.model != None):
+        if(self.model_dict != None):
             None
         else:
             self.model_dict = self.getModel(
@@ -87,7 +94,7 @@ class Gan():
 
     def predict(self):
         # branch depending if model is already in memory to save request to database
-        if(self.model != None):
+        if(self.model_dict != None):
             None
         else:
             None
@@ -110,8 +117,8 @@ class Gan():
         discriminator.compile(
             optimizer=self.args["optimizer"], loss=self.args["lossMetric"],
             metrics=[self.args["lossMetric"]])
-
         discriminator.trainable = False  # freezing weights
+
         gan = Sequential()
         gan.add(generator)
         gan.add(discriminator)
@@ -119,6 +126,7 @@ class Gan():
         gan.summary()
         gan.compile(loss=self.args["lossMetric"],
                     optimizer=self.args["optimizer"])
+
         try:
             # this is an optional dependancy that is only used for plots
             from keras.utils import plot_model
@@ -133,7 +141,15 @@ class Gan():
                 str(sys.exc_info()[0]) + " " +
                 str(sys.exc_info()[1]), 1)
 
-        return gan
+        model_dict = {
+            "utc": datetime.datetime.utcnow(),
+            "loss": None,
+            "epochs": 0,
+            "generator": generator,
+            "discriminator": discriminator,
+            "gan": gan,
+        }
+        return model_dict
 
     def createGenerator(self):
         model = Sequential()
@@ -172,28 +188,26 @@ class Gan():
         # modify keras witrh get and set funcs to be able to unserialise the data
         self.make_keras_picklable()
         query = model_pipe if model_pipe is not None else {}
-        self.log(self.prePend + "query is: " + str(query) + " giving:", 0)
+        self.log(self.prePend + "db query: " + str(query), 0)
         # get model cursor to most recent match with query
         self.model_cursor = self.db.getMostRecent(
             query=query, collName=self.args["modelColl"])
         # get a dictionary of key:value pairs of this document from query
-        self.model_dict = (
+        model_dict = (
             pd.DataFrame(list(self.model_cursor))
         ).to_dict('records')[0]
-        self.model = pickle.loads(self.model_dict["model_bin"])
-        self.compile()
-        return self.model_dict
+        # self.model = pickle.loads(self.model_dict["model_bin"])
+        # self.compile()
+        if(model_dict["type"] != self.expected["type"]):
+            raise RuntimeWarning(
+                "The model retrieved using query: " + str(model_pipe) +
+                " gives: " + str(model_dict["type"]) +
+                ", which != expected: " +  self.expected["type"])
+        return model_dict
 
     def getPipe(self, pipePath):
         with open(pipePath) as f:
             return json.load(f)
-
-    def compile(self):
-        if(self.model != None):
-            self.model.compile(
-                optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
-        else:
-            print("No model to compile, can not NN.compile()", 1)
 
     def make_keras_picklable(self):
         import tempfile
