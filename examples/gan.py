@@ -3,8 +3,8 @@
 # @Author: George Onoufriou <archer>
 # @Date:   2018-09-27
 # @Filename: gan.py
-# @Last modified by:   archer
-# @Last modified time: 2018-12-10
+# @Last modified by:   georgeraven
+# @Last modified time: 2018-12-11
 # @License: Please see LICENSE file in project root
 
 import copy
@@ -52,7 +52,6 @@ class Gan():
         self.log = log
         self.epochs = 0
         self.args = args
-        self.model = None
         self.model_dict = None
         self.model_cursor = None
         self.prePend = "[ gan.py -> Gan ] "
@@ -70,15 +69,15 @@ class Gan():
             # model is already overwritten when loading from database so self.model != None now
         else:
             self.args["type"] = "gan"
-            self.model = self.createModel()
-            print(self.model)
+            self.model_dict = self.createModel()
+            print(self.model_dict)
         # loop epochs for training
 
     def test(self, collection=None):
         # uses its own collection variable to allow it to be reused if testColl != coll
         collection = collection if collection is not None else self.args["coll"]
         # branch depending if model is already in memory to save request to database
-        if(self.model != None):
+        if(self.model_dict != None):
             None
         else:
             self.model_dict = self.getModel(
@@ -87,7 +86,7 @@ class Gan():
 
     def predict(self):
         # branch depending if model is already in memory to save request to database
-        if(self.model != None):
+        if(self.model_dict != None):
             None
         else:
             None
@@ -132,8 +131,11 @@ class Gan():
                 " consider installing if you wish to visualise models\n" +
                 str(sys.exc_info()[0]) + " " +
                 str(sys.exc_info()[1]), 1)
-
-        return gan
+        model_dict = {}
+        model_dict["generator"] = generator
+        model_dict["discriminator"] = discriminator
+        model_dict["gan"] = gan
+        return model_dict
 
     def createGenerator(self):
         model = Sequential()
@@ -172,7 +174,7 @@ class Gan():
         # modify keras witrh get and set funcs to be able to unserialise the data
         self.make_keras_picklable()
         query = model_pipe if model_pipe is not None else {}
-        self.log(self.prePend + "query is: " + str(query) + " giving:", 0)
+        self.log(self.prePend + "db query: " + str(query), 0)
         # get model cursor to most recent match with query
         self.model_cursor = self.db.getMostRecent(
             query=query, collName=self.args["modelColl"])
@@ -180,20 +182,21 @@ class Gan():
         self.model_dict = (
             pd.DataFrame(list(self.model_cursor))
         ).to_dict('records')[0]
-        self.model = pickle.loads(self.model_dict["model_bin"])
-        self.compile()
+        # self.model = pickle.loads(self.model_dict["model_bin"])
+        # self.compile()
         return self.model_dict
 
     def getPipe(self, pipePath):
         with open(pipePath) as f:
             return json.load(f)
 
-    def compile(self):
-        if(self.model != None):
-            self.model.compile(
-                optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
-        else:
-            print("No model to compile, can not NN.compile()", 1)
+    # def compile(self):
+    #     print("HELLO THERE")
+    #     if(self.model_dict != None):
+    #         self.model.compile(
+    #             optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
+    #     else:
+    #         print("No model to compile, can not NN.compile()", 1)
 
     def make_keras_picklable(self):
         import tempfile
