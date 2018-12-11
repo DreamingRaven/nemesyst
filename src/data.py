@@ -10,6 +10,8 @@ import os
 import sys
 from collections.abc import MutableMapping
 
+# https://medium.freecodecamp.org/how-and-why-you-should-use-python-generators-f6fb56650888
+
 
 class Data(MutableMapping):
 
