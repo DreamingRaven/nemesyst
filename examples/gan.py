@@ -19,6 +19,7 @@ import pandas as pd
 from keras.layers import (LSTM, Activation, BatchNormalization, Dense,
                           LeakyReLU, Reshape)
 from keras.models import Sequential
+from src.data import Data
 
 fileName = "gan.py"
 prePend = "[ " + fileName + " ] "
