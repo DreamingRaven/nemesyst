@@ -34,6 +34,9 @@ def main(args, db, log):
     log(prePend + "\n\tArg dict of length: " + str(len(args))
         + "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
     db.connect()
+
+    data = Data(args=args, db=db, log=log)
+
     gan = Gan(args=args, db=db, log=log)
     gan.debug()
 
