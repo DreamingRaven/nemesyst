@@ -116,8 +116,8 @@ class Gan():
             i = 0
             for data in self.data:
                 self.log("epoch: " + str(epoch) + ", batch: " + str(i), 1)
-                i += 1
                 print(type(data), len(data))
+                i += 1
 
     def test(self, collection=None):
         """
@@ -163,7 +163,7 @@ class Gan():
         neccessary.
         """
 
-        # https://medium.com/@mattiaspinelli/simple-generative-adversarial-network-gans-with-keras-1fe578e44a87        # creating GAN
+        # https://medium.com/@mattiaspinelli/simple-generative-adversarial-network-gans-with-keras-1fe578e44a87
         # https://github.com/LantaoYu/SeqGAN/blob/master/sequence_gan.py
 
         self.log("Generator:", 0)
