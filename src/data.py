@@ -1,8 +1,8 @@
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-12-11
 # @Filename: data.py
-# @Last modified by:   georgeraven
-# @Last modified time: 2018-12-11
+# @Last modified by:   archer
+# @Last modified time: 2018-12-12
 # @License: Please see LICENSE in project root.
 # @Copyright: George Onoufriou
 
@@ -19,6 +19,9 @@ class Data(MutableMapping):
         self.args = args
         self.db = db
         self.log = log
+
+    def getBatch():
+        None
 
     def __delitem__(self):
         raise NotImplementedError("Data.__delitem__() is not yet implemented")
