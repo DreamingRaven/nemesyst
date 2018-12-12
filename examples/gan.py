@@ -3,9 +3,13 @@
 # @Author: George Onoufriou <archer>
 # @Date:   2018-09-27
 # @Filename: gan.py
-# @Last modified by:   georgeraven
-# @Last modified time: 2018-12-11
+# @Last modified by:   archer
+# @Last modified time: 2018-12-12
 # @License: Please see LICENSE file in project root
+
+"""
+Module handler for generative adversarial neural networks
+"""
 
 import copy
 import datetime
@@ -28,6 +32,11 @@ prePend = "[ " + fileName + " ] "
 
 
 def main(args, db, log):
+    """
+    Module entry point
+
+    This entry point deals with the proper invocation of Gan().
+    """
 
     # deep copy args to maintain them throught the rest of the program
     args = copy.deepcopy(args)
@@ -36,7 +45,7 @@ def main(args, db, log):
     db.connect()
 
     data = Data(args=args, db=db, log=log)
-
+    help(Gan)
     gan = Gan(args=args, db=db, log=log)
     gan.debug()
 
@@ -51,6 +60,12 @@ def main(args, db, log):
 
 
 class Gan():
+    """
+    Generative adversarial neural network handler
+
+    This class deals with all abstractions that fascilitate training deep
+    neural networks from a MongoDb database object.
+    """
 
     def __init__(self, args, db, log):
         self.db = db
@@ -68,9 +83,18 @@ class Gan():
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
     def debug(self):
+        """
+        Debug func for displaying class state
+        """
         self.log(self.prePend, 3)
 
     def train(self):
+        """
+        Func responsible for training certain neural networks
+
+        This func will either retrieve or create the neural network and then
+        proceed to training it but only after it exists.
+        """
         # branch depending if model is to continue training or create new model
         if(self.args["toReTrain"] == True):
             # DONT FORGET IF YOU ARE RETRAINING TO CONCATENATE EXISTING STUFF LIKE EPOCHS
@@ -91,6 +115,12 @@ class Gan():
             self.log("current EPOCH: (zero indexed): " + str(epoch), 3)
 
     def test(self, collection=None):
+        """
+        Func responsible for testing certain neural networks
+
+        This func will attempt retrieval if neural network is not already in
+        memory, prior to testing, and will comply to user specified metrics.
+        """
         # uses its own collection variable to allow it to be reused if testColl != coll
         collection = collection if collection is not None else self.args["coll"]
         # branch depending if model is already in memory to save request to database
@@ -102,6 +132,9 @@ class Gan():
         # now model should exist now use it to test
 
     def predict(self):
+        """
+        Func responsible for producing predictions for certain neural networks
+        """
         # branch depending if model is already in memory to save request to database
         if(self.model_dict != None):
             None
@@ -109,11 +142,22 @@ class Gan():
             None
 
     def save(self):
+        """
+        Func responsible for saving the resulting models/ states of models
+        """
         None
 
     # function responsible for creating whatever type of model is desired by the
     # user in this case GANs
     def createModel(self):
+        """
+        Func which creates a generative adversarial model in a dict
+
+        Currentley this is hard coded to be of a specific architecture but this
+        can be easily modified and will propogate through should it be
+        neccessary.
+        """
+
         # https://medium.com/@mattiaspinelli/simple-generative-adversarial-network-gans-with-keras-1fe578e44a87        # creating GAN
         # https://github.com/LantaoYu/SeqGAN/blob/master/sequence_gan.py
 
@@ -161,6 +205,10 @@ class Gan():
         return model_dict
 
     def createGenerator(self):
+        """
+        Func responsible for creating the generator of a GAN neural network
+        """
+
         model = Sequential()
         model.add(Dense(256, input_shape=(100,)))
         model.add(LeakyReLU(alpha=0.2))
@@ -179,6 +227,10 @@ class Gan():
         return model
 
     def createDiscriminator(self):
+        """
+        Func responsible for creating the discriminator of a GAN neural network
+        """
+
         model = Sequential()
         # model.add(Flatten(input_shape=self.SHAPE))
         model.add(Dense(self.args["timeSteps"] * self.args["dimensionality"],
@@ -194,6 +246,10 @@ class Gan():
         return model
 
     def getModel(self, model_pipe=None):
+        """
+        Func which retrieved neural network model from a MongoDb document
+        """
+
         # modify keras witrh get and set funcs to be able to unserialise the data
         self.make_keras_picklable()
         query = model_pipe if model_pipe is not None else {}
@@ -215,10 +271,19 @@ class Gan():
         return model_dict
 
     def getPipe(self, pipePath):
+        """
+        Short func to retrieve pipelines from config files
+        """
+
         with open(pipePath) as f:
             return json.load(f)
 
     def make_keras_picklable(self):
+        """
+        Function which fascilitates serialising keras objects to store as json
+
+        This provides keras with __getstate__ and __setstate__ to be picklable.
+        """
         import tempfile
         import keras.models
         import h5py
