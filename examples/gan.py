@@ -23,7 +23,6 @@ import pandas as pd
 from keras.layers import (LSTM, Activation, BatchNormalization, Dense,
                           LeakyReLU, Reshape)
 from keras.models import Sequential
-from src.data import Data
 
 fileName = "gan.py"
 prePend = "[ " + fileName + " ] "
@@ -40,12 +39,10 @@ def main(args, db, log):
 
     # deep copy args to maintain them throught the rest of the program
     args = copy.deepcopy(args)
-    log(prePend + "\n\tArg dict of length: " + str(len(args))
-        + "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
+    log(prePend + "\n\tArg dict of length: " + str(len(args)) +
+        "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
     db.connect()
 
-    data = Data(args=args, db=db, log=log)
-    help(Gan)
     gan = Gan(args=args, db=db, log=log)
     gan.debug()
 
@@ -67,6 +64,9 @@ class Gan():
     neural networks from a MongoDb database object.
     """
 
+    # import protected inside class so that it does not share instances
+    from src.data import Data
+
     def __init__(self, args, db, log):
         self.db = db
         self.log = log
@@ -80,6 +80,7 @@ class Gan():
         self.expected = {
             "type": "gan"
         }
+        self.data = self.Data(args=args, db=db, log=log)
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
     def debug(self):
@@ -112,7 +113,11 @@ class Gan():
         # for loop that cant go backwards that will iterate the difference
         # between the current epoch of the model and the desired amount
         for epoch in range(self.model_dict["epochs"], self.args["epochs"], 1):
-            self.log("current EPOCH: (zero indexed): " + str(epoch), 3)
+            i = 0
+            for data in self.data:
+                self.log("epoch: " + str(epoch) + ", batch: " + str(i), 3)
+                i += 1
+                print(data)
 
     def test(self, collection=None):
         """
@@ -188,11 +193,11 @@ class Gan():
             plot_model(gan, to_file="GAN.png")
         except ModuleNotFoundError:
             self.log(
-                "ModuleNotFoundError: could not plot models as likeley 'pydot'"
-                + " module not found please "
-                + " consider installing if you wish to visualise models\n"
-                + str(sys.exc_info()[0]) + " "
-                + str(sys.exc_info()[1]), 1)
+                "ModuleNotFoundError: could not plot models as likeley 'pydot'" +
+                " module not found please " +
+                " consider installing if you wish to visualise models\n" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]), 1)
 
         model_dict = {
             "utc": datetime.datetime.utcnow(),
@@ -219,8 +224,8 @@ class Gan():
         model.add(Dense(1024))
         model.add(LeakyReLU(alpha=0.2))
         model.add(BatchNormalization(momentum=0.8))
-        model.add(Dense(self.args["timeSteps"] *
-                        self.args["dimensionality"], activation='tanh'))
+        model.add(Dense(self.args["timeSteps"]
+                        * self.args["dimensionality"], activation='tanh'))
         model.add(
             Reshape((self.args["timeSteps"], self.args["dimensionality"])))
         model.summary()
@@ -265,9 +270,9 @@ class Gan():
         # self.compile()
         if(model_dict["type"] != self.expected["type"]):
             raise RuntimeWarning(
-                "The model retrieved using query: " + str(model_pipe)
-                + " gives: " + str(model_dict["type"])
-                + ", which != expected: " +  self.expected["type"])
+                "The model retrieved using query: " + str(model_pipe) +
+                " gives: " + str(model_dict["type"]) +
+                ", which != expected: " +  self.expected["type"])
         return model_dict
 
     def getPipe(self, pipePath):

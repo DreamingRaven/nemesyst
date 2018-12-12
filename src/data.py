@@ -20,8 +20,11 @@ class Data(MutableMapping):
         self.db = db
         self.log = log
 
-    def getBatch():
-        None
+    # def getBatch(self):
+    #     x = 0
+    #     while(x < 10):
+    #         yield x
+    #         x += 1
 
     def __delitem__(self):
         raise NotImplementedError("Data.__delitem__() is not yet implemented")
@@ -30,7 +33,10 @@ class Data(MutableMapping):
         raise NotImplementedError("Data.__getitem__() is not yet implemented")
 
     def __iter__(self):
-        raise NotImplementedError("Data.__iter__() is not yet implemented")
+        x = 0
+        while(x < 10):
+            yield x
+            x += 1
 
     def __len__(self):
         raise NotImplementedError("Data.__len__() is not yet implemented")
