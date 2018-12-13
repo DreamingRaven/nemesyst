@@ -18,7 +18,9 @@ import os
 import pickle
 import pprint
 import sys
+import pprint
 
+import numpy as np
 import pandas as pd
 from keras.layers import (LSTM, Activation, BatchNormalization, Dense,
                           LeakyReLU, Reshape)
@@ -80,7 +82,9 @@ class Gan():
         self.expected = {
             "type": "gan"
         }
-        self.data = self.Data(args=args, db=db, log=log)
+        tempArgs = copy.deepcopy(args)
+        tempArgs["dimensionality"] = tempArgs["dimensionality"] - 1
+        self.data = self.Data(args=tempArgs, db=db, log=log)
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
     def debug(self):
@@ -130,19 +134,25 @@ class Gan():
             i = 0
             for data in self.data:
                 documents = pd.DataFrame(data)
-                # x = pd.DataFrame(documents["data"]).stack().apply(pd.Series)
                 # flattening list
                 flat_l = [item for sublist in documents["data"]
                           for item in sublist]
                 x = pd.DataFrame(flat_l)
-                y = pd.DataFrame(documents["target"])
-                # loss = model.train_on_batch()
-                self.log("epoch: " + str(epoch) + ", batch: " + str(i)
-                         + ", length: " + str(len(data)) + ", type: "
-                         + str(type(data))
-                         # + ", loss: " + str(loss)
+                # while this is the target for other models gan uses its own
+                y = np.repeat(
+                    documents["target"], self.args["timeSteps"])
+                x["tagret"] = pd.Series(y).values
+                realFalse = np.full(
+                    (self.args["batchSize"], self.args["timeSteps"], 1), 1)
+                x = np.reshape(
+                    x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
+                # print(pd.DataFrame.from_records(x))
+                loss = model.train_on_batch(x, realFalse)
+                self.log("epoch: " + str(epoch) + ", batch: " + str(i) +
+                    ", length: " + str(len(data)) + ", type: " +
+                    str(type(data)) +
+                    ", loss: " + str(loss)
                          , 0)
-
                 i += 1
 
     def test(self, collection=None):
