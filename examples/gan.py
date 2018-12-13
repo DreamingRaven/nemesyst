@@ -4,7 +4,7 @@
 # @Date:   2018-09-27
 # @Filename: gan.py
 # @Last modified by:   archer
-# @Last modified time: 2018-12-12
+# @Last modified time: 2018-12-13
 # @License: Please see LICENSE file in project root
 
 """
@@ -93,8 +93,8 @@ class Gan():
         """
         Func responsible for training certain neural networks
 
-        This func will either retrieve or create the neural network and then
-        proceed to training it but only after it exists.
+        This func will handle the neccessary clean up and sorting out of
+        values and call the correct functions to fully train this network.
         """
         # branch depending if model is to continue training or create new model
         if(self.args["toReTrain"] == True):
@@ -110,13 +110,39 @@ class Gan():
         model_json = json.dumps(self.model_dict, indent=4,
                                 sort_keys=True, default=str)
         self.log(model_json, 3)
-        # for loop that cant go backwards that will iterate the difference
+
+        # TRAINING DISCRIMINATOR on its own
+        self.trainer(self.model_dict["discriminator"])
+
+        # TRAINING GENERATOR via full gan + frozen discriminator
+        # self.trainer(self.model_dict["gan"])
+
+    def trainer(self, model):
+        """
+        Responsible for retrieving batches of data and subsequentley training
+
+        This func will be able to handle training a given model with requested
+        data batches.
+        """
+        # for loop that cant step backwards that will iterate the difference
         # between the current epoch of the model and the desired amount
         for epoch in range(self.model_dict["epochs"], self.args["epochs"], 1):
             i = 0
             for data in self.data:
-                self.log("epoch: " + str(epoch) + ", batch: " + str(i), 1)
-                print(type(data), len(data))
+                documents = pd.DataFrame(data)
+                # x = pd.DataFrame(documents["data"]).stack().apply(pd.Series)
+                # flattening list
+                flat_l = [item for sublist in documents["data"]
+                          for item in sublist]
+                x = pd.DataFrame(flat_l)
+                y = pd.DataFrame(documents["target"])
+                # loss = model.train_on_batch()
+                self.log("epoch: " + str(epoch) + ", batch: " + str(i)
+                         + ", length: " + str(len(data)) + ", type: "
+                         + str(type(data))
+                         # + ", loss: " + str(loss)
+                         , 0)
+
                 i += 1
 
     def test(self, collection=None):
