@@ -213,10 +213,11 @@ class Gan():
 
         try:
             # this is an optional dependancy that is only used for plots
-            from keras.utils import plot_model
-            plot_model(generator, to_file="generator.png")
-            plot_model(generator, to_file="discriminator.png")
-            plot_model(gan, to_file="GAN.png")
+            if(self.args["loglevel"] >= 5):
+                from keras.utils import plot_model
+                plot_model(generator, to_file="generator.png")
+                plot_model(generator, to_file="discriminator.png")
+                plot_model(gan, to_file="GAN.png")
         except ModuleNotFoundError:
             self.log(
                 "ModuleNotFoundError: could not plot models as likeley 'pydot'"
