@@ -2,7 +2,7 @@
 # @Date:   2018-12-11
 # @Filename: data.py
 # @Last modified by:   archer
-# @Last modified time: 2018-12-12
+# @Last modified time: 2018-12-13
 # @License: Please see LICENSE in project root.
 # @Copyright: George Onoufriou
 
@@ -54,8 +54,13 @@ class Data(MutableMapping):
         returns the very next batch in mongoDb cursor
         """
         batch = []
-        for unused in range(self.args["batchSize"]):
-            batch.append(cursor.next())
+        while(len(batch) < self.args["batchSize"]):
+            singleExample = cursor.next()
+            # checking shape matches expectations
+            if(len(singleExample["data"]) == self.args["timeSteps"]) and \
+                    (len(singleExample["data"][0]) == self.args["dimensionality"]):
+                # if matches append
+                batch.append(singleExample)
         return batch
 
     def __len__(self):

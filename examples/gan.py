@@ -4,7 +4,7 @@
 # @Date:   2018-09-27
 # @Filename: gan.py
 # @Last modified by:   archer
-# @Last modified time: 2018-12-12
+# @Last modified time: 2018-12-13
 # @License: Please see LICENSE file in project root
 
 """
@@ -18,7 +18,9 @@ import os
 import pickle
 import pprint
 import sys
+import pprint
 
+import numpy as np
 import pandas as pd
 from keras.layers import (LSTM, Activation, BatchNormalization, Dense,
                           LeakyReLU, Reshape)
@@ -80,7 +82,9 @@ class Gan():
         self.expected = {
             "type": "gan"
         }
-        self.data = self.Data(args=args, db=db, log=log)
+        tempArgs = copy.deepcopy(args)
+        tempArgs["dimensionality"] = tempArgs["dimensionality"] - 1
+        self.data = self.Data(args=tempArgs, db=db, log=log)
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
     def debug(self):
@@ -93,8 +97,8 @@ class Gan():
         """
         Func responsible for training certain neural networks
 
-        This func will either retrieve or create the neural network and then
-        proceed to training it but only after it exists.
+        This func will handle the neccessary clean up and sorting out of
+        values and call the correct functions to fully train this network.
         """
         # branch depending if model is to continue training or create new model
         if(self.args["toReTrain"] == True):
@@ -110,14 +114,46 @@ class Gan():
         model_json = json.dumps(self.model_dict, indent=4,
                                 sort_keys=True, default=str)
         self.log(model_json, 3)
-        # for loop that cant go backwards that will iterate the difference
+
+        # TRAINING DISCRIMINATOR on its own
+        self.trainer(self.model_dict["discriminator"])
+
+        # TRAINING GENERATOR via full gan + frozen discriminator
+        # self.trainer(self.model_dict["gan"])
+
+    def trainer(self, model):
+        """
+        Responsible for retrieving batches of data and subsequentley training
+
+        This func will be able to handle training a given model with requested
+        data batches.
+        """
+        # for loop that cant step backwards that will iterate the difference
         # between the current epoch of the model and the desired amount
         for epoch in range(self.model_dict["epochs"], self.args["epochs"], 1):
             i = 0
             for data in self.data:
-                self.log("epoch: " + str(epoch) + ", batch: " + str(i), 1)
+                documents = pd.DataFrame(data)
+                # flattening list
+                flat_l = [item for sublist in documents["data"]
+                          for item in sublist]
+                x = pd.DataFrame(flat_l)
+                # while this is the target for other models gan uses its own
+                y = np.repeat(
+                    documents["target"], self.args["timeSteps"])
+                x["tagret"] = pd.Series(y).values
+                realFalse = np.full(
+                    (self.args["batchSize"], self.args["timeSteps"], 1), 1)
+                x = np.reshape(
+                    x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
+                # print(pd.DataFrame.from_records(x))
+                loss = model.train_on_batch(x, realFalse)
+                self.log("epoch: " + str(epoch) + ", batch: " + str(i) +
+                    ", length: " + str(len(data)) + ", type: " +
+                    str(type(data)) +
+                    ", loss: " + str(loss)
+                         , 0)
                 i += 1
-                print(type(data), len(data))
 
     def test(self, collection=None):
         """
@@ -163,7 +199,7 @@ class Gan():
         neccessary.
         """
 
-        # https://medium.com/@mattiaspinelli/simple-generative-adversarial-network-gans-with-keras-1fe578e44a87        # creating GAN
+        # https://medium.com/@mattiaspinelli/simple-generative-adversarial-network-gans-with-keras-1fe578e44a87
         # https://github.com/LantaoYu/SeqGAN/blob/master/sequence_gan.py
 
         self.log("Generator:", 0)
@@ -187,10 +223,11 @@ class Gan():
 
         try:
             # this is an optional dependancy that is only used for plots
-            from keras.utils import plot_model
-            plot_model(generator, to_file="generator.png")
-            plot_model(generator, to_file="discriminator.png")
-            plot_model(gan, to_file="GAN.png")
+            if(self.args["loglevel"] >= 5):
+                from keras.utils import plot_model
+                plot_model(generator, to_file="generator.png")
+                plot_model(generator, to_file="discriminator.png")
+                plot_model(gan, to_file="GAN.png")
         except ModuleNotFoundError:
             self.log(
                 "ModuleNotFoundError: could not plot models as likeley 'pydot'"
