@@ -126,7 +126,8 @@ class Gan():
         y_mislabeled = np.ones(
             (self.args["batchSize"], self.args["timeSteps"], 1))
         gloss = self.model_dict["gan"].train_on_batch(noise, y_mislabeled)
-        print(gloss)
+        self.log(self.prePend
+                 + "disc loss with generated examples: " + str(gloss), 0)
 
     def trainer(self, model):
         """
@@ -157,10 +158,9 @@ class Gan():
                 # print(pd.DataFrame.from_records(x))
                 loss = model.train_on_batch(x, realFalse)
                 self.log("epoch: " + str(epoch) + ", batch: " + str(i)
-                    + ", length: " + str(len(data)) + ", type: "
-                    + str(type(data))
-                    + ", loss: " + str(loss)
-                    , 0)
+                    + ", batch size: " + str(len(data))
+                         + ", loss: " + str(loss)
+                         , 0)
                 # print(model.get_weights())
                 i += 1
 
