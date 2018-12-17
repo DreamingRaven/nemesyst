@@ -161,6 +161,7 @@ class Gan():
                     + str(type(data))
                     + ", loss: " + str(loss)
                     , 0)
+                # print(model.get_weights())
                 i += 1
 
     def test(self, collection=None):
