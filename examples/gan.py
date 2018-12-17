@@ -40,8 +40,8 @@ def main(args, db, log):
 
     # deep copy args to maintain them throught the rest of the program
     args = copy.deepcopy(args)
-    log(prePend + "\n\tArg dict of length: " + str(len(args))
-        + "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
+    log(prePend + "\n\tArg dict of length: " + str(len(args)) +
+        "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
     db.connect()
 
     gan = Gan(args=args, db=db, log=log)
@@ -124,7 +124,7 @@ class Gan():
         noise = np.random.normal(
             0, 1, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
         y_mislabeled = np.ones(
-            (self.args["batchSize"], 1))
+            (self.args["batchSize"], self.args["timeSteps"], 1))
         gloss = self.model_dict["gan"].train_on_batch(noise, y_mislabeled)
         print(gloss)
 
@@ -156,11 +156,11 @@ class Gan():
                     x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
                 # print(pd.DataFrame.from_records(x))
                 loss = model.train_on_batch(x, realFalse)
-                self.log("epoch: " + str(epoch) + ", batch: " + str(i) +
-                    ", length: " + str(len(data)) + ", type: " +
-                    str(type(data)) +
-                    ", loss: " + str(loss)
-                         , 0)
+                self.log("epoch: " + str(epoch) + ", batch: " + str(i)
+                    + ", length: " + str(len(data)) + ", type: "
+                    + str(type(data))
+                    + ", loss: " + str(loss)
+                    , 0)
                 i += 1
 
     def test(self, collection=None):
@@ -238,11 +238,11 @@ class Gan():
                 plot_model(gan, to_file="GAN.png")
         except ModuleNotFoundError:
             self.log(
-                "ModuleNotFoundError: could not plot models as likeley 'pydot'"
-                + " module not found please "
-                + " consider installing if you wish to visualise models\n"
-                + str(sys.exc_info()[0]) + " "
-                + str(sys.exc_info()[1]), 1)
+                "ModuleNotFoundError: could not plot models as likeley 'pydot'" +
+                " module not found please " +
+                " consider installing if you wish to visualise models\n" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]), 1)
 
         model_dict = {
             "utc": datetime.datetime.utcnow(),
@@ -319,9 +319,9 @@ class Gan():
         # self.compile()
         if(model_dict["type"] != self.expected["type"]):
             raise RuntimeWarning(
-                "The model retrieved using query: " + str(model_pipe)
-                + " gives: " + str(model_dict["type"])
-                + ", which != expected: " +  self.expected["type"])
+                "The model retrieved using query: " + str(model_pipe) +
+                " gives: " + str(model_dict["type"]) +
+                ", which != expected: " +  self.expected["type"])
         return model_dict
 
     def getPipe(self, pipePath):
