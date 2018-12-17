@@ -4,7 +4,7 @@
 # @Date:   2018-09-27
 # @Filename: gan.py
 # @Last modified by:   archer
-# @Last modified time: 2018-12-13
+# @Last modified time: 2018-12-17
 # @License: Please see LICENSE file in project root
 
 """
@@ -18,12 +18,11 @@ import os
 import pickle
 import pprint
 import sys
-import pprint
 
 import numpy as np
 import pandas as pd
 from keras.layers import (LSTM, Activation, BatchNormalization, Dense,
-                          LeakyReLU, Reshape)
+                          LeakyReLU, Reshape, Flatten)
 from keras.models import Sequential
 
 fileName = "gan.py"
@@ -41,8 +40,8 @@ def main(args, db, log):
 
     # deep copy args to maintain them throught the rest of the program
     args = copy.deepcopy(args)
-    log(prePend + "\n\tArg dict of length: " + str(len(args))
-        + "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
+    log(prePend + "\n\tArg dict of length: " + str(len(args)) +
+        "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
     db.connect()
 
     gan = Gan(args=args, db=db, log=log)
@@ -80,7 +79,8 @@ class Gan():
         # this is a dictionary that should be referanced every time something
         # defaults or needs to check what is expected
         self.expected = {
-            "type": "gan"
+            "type": "gan",
+            "shape": (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]),
         }
         tempArgs = copy.deepcopy(args)
         tempArgs["dimensionality"] = tempArgs["dimensionality"] - 1
@@ -121,6 +121,13 @@ class Gan():
         # TRAINING GENERATOR via full gan + frozen discriminator
         # self.trainer(self.model_dict["gan"])
 
+        noise = np.random.normal(
+            0, 1, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
+        y_mislabeled = np.ones(
+            (self.args["batchSize"], self.args["timeSteps"], 1))
+        gloss = self.model_dict["gan"].train_on_batch(noise, y_mislabeled)
+        print(gloss)
+
     def trainer(self, model):
         """
         Responsible for retrieving batches of data and subsequentley training
@@ -132,6 +139,7 @@ class Gan():
         # between the current epoch of the model and the desired amount
         for epoch in range(self.model_dict["epochs"], self.args["epochs"], 1):
             i = 0
+            # loops through database data by returning batches
             for data in self.data:
                 documents = pd.DataFrame(data)
                 # flattening list
@@ -148,11 +156,11 @@ class Gan():
                     x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
                 # print(pd.DataFrame.from_records(x))
                 loss = model.train_on_batch(x, realFalse)
-                self.log("epoch: " + str(epoch) + ", batch: " + str(i) +
-                    ", length: " + str(len(data)) + ", type: " +
-                    str(type(data)) +
-                    ", loss: " + str(loss)
-                         , 0)
+                self.log("epoch: " + str(epoch) + ", batch: " + str(i)
+                    + ", length: " + str(len(data)) + ", type: "
+                    + str(type(data))
+                    + ", loss: " + str(loss)
+                    , 0)
                 i += 1
 
     def test(self, collection=None):
@@ -230,11 +238,11 @@ class Gan():
                 plot_model(gan, to_file="GAN.png")
         except ModuleNotFoundError:
             self.log(
-                "ModuleNotFoundError: could not plot models as likeley 'pydot'"
-                + " module not found please "
-                + " consider installing if you wish to visualise models\n"
-                + str(sys.exc_info()[0]) + " "
-                + str(sys.exc_info()[1]), 1)
+                "ModuleNotFoundError: could not plot models as likeley 'pydot'" +
+                " module not found please " +
+                " consider installing if you wish to visualise models\n" +
+                str(sys.exc_info()[0]) + " " +
+                str(sys.exc_info()[1]), 1)
 
         model_dict = {
             "utc": datetime.datetime.utcnow(),
@@ -252,7 +260,11 @@ class Gan():
         """
 
         model = Sequential()
-        model.add(Dense(256, input_shape=(100,)))
+        model.add(Dense(256,
+                        input_shape=(
+                            int(self.args["timeSteps"]), self.args["dimensionality"])
+                        ))
+        model.add(Flatten())
         model.add(LeakyReLU(alpha=0.2))
         model.add(BatchNormalization(momentum=0.8))
         model.add(Dense(512))
@@ -261,8 +273,8 @@ class Gan():
         model.add(Dense(1024))
         model.add(LeakyReLU(alpha=0.2))
         model.add(BatchNormalization(momentum=0.8))
-        model.add(Dense(self.args["timeSteps"] *
-                        self.args["dimensionality"], activation='tanh'))
+        model.add(
+            Dense(self.args["timeSteps"] * self.args["dimensionality"], activation='tanh'))
         model.add(
             Reshape((self.args["timeSteps"], self.args["dimensionality"])))
         model.summary()
@@ -307,9 +319,9 @@ class Gan():
         # self.compile()
         if(model_dict["type"] != self.expected["type"]):
             raise RuntimeWarning(
-                "The model retrieved using query: " + str(model_pipe)
-                + " gives: " + str(model_dict["type"])
-                + ", which != expected: " +  self.expected["type"])
+                "The model retrieved using query: " + str(model_pipe) +
+                " gives: " + str(model_dict["type"]) +
+                ", which != expected: " +  self.expected["type"])
         return model_dict
 
     def getPipe(self, pipePath):
