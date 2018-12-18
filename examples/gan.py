@@ -3,8 +3,8 @@
 # @Author: George Onoufriou <archer>
 # @Date:   2018-09-27
 # @Filename: gan.py
-# @Last modified by:   archer
-# @Last modified time: 2018-12-17
+# @Last modified by:   georgeraven
+# @Last modified time: 2018-12-18
 # @License: Please see LICENSE file in project root
 
 """
@@ -18,11 +18,12 @@ import os
 import pickle
 import pprint
 import sys
+import time
 
 import numpy as np
 import pandas as pd
-from keras.layers import (LSTM, Activation, BatchNormalization, Dense,
-                          LeakyReLU, Reshape, Flatten)
+from keras.layers import (LSTM, Activation, BatchNormalization, Dense, Flatten,
+                          LeakyReLU, Reshape)
 from keras.models import Sequential
 
 fileName = "gan.py"
@@ -116,6 +117,7 @@ class Gan():
         self.log(model_json, 3)
 
         # TRAINING DISCRIMINATOR on its own
+        start_time = time.perf_counter()
         self.trainer(self.model_dict["discriminator"])
 
         # TRAINING GENERATOR via full gan + frozen discriminator
@@ -128,6 +130,7 @@ class Gan():
         gloss = self.model_dict["gan"].train_on_batch(noise, y_mislabeled)
         self.log(self.prePend
                  + "disc loss with generated examples: " + str(gloss), 0)
+        print("Elapsed time: " + str(time.perf_counter() - start_time))
 
     def trainer(self, model):
         """

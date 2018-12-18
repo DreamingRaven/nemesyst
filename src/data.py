@@ -1,15 +1,15 @@
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-12-11
 # @Filename: data.py
-# @Last modified by:   archer
-# @Last modified time: 2018-12-13
+# @Last modified by:   georgeraven
+# @Last modified time: 2018-12-18
 # @License: Please see LICENSE in project root.
 # @Copyright: George Onoufriou
 
+import copy
+import json
 import os
 import sys
-import json
-import copy
 from collections.abc import MutableMapping
 
 # https://medium.freecodecamp.org/how-and-why-you-should-use-python-generators-f6fb56650888
