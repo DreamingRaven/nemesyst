@@ -13,8 +13,11 @@ branch="master"
 
 license=('MIT') # MIT is a special case store a copy in /usr/share/pkgname
 groups=("nemesyst-base")
-depends=('git' 'python-setuptools' 'mongodb' 'python' 'python-pymongo' 'python-keras' 'python-keras-applications' 'python-keras-preprocessing' 'python-pandas' 'python-numpy' 'python-h5py' 'python-pydot')
+depends=('git' 'python-setuptools' 'mongodb' 'python' 'python-pymongo'
+				 'python-keras' 'python-keras-applications' 'python-keras-preprocessing'
+				 'python-pandas' 'python-numpy' 'python-h5py' 'python-colorama')
 makedepends=() # 'bzr', 'git', 'mercurial' or 'subversion'
+optdepends=('python-pydot: quick architecture graphs')
 provides=()
 conflicts=()
 replaces=()
