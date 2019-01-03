@@ -4,7 +4,7 @@
 # @Date:   2018-09-27
 # @Filename: gan.py
 # @Last modified by:   georgeraven
-# @Last modified time: 2018-12-18
+# @Last modified time: 2019-01-03
 # @License: Please see LICENSE file in project root
 
 """
@@ -30,6 +30,7 @@ fileName = "gan.py"
 prePend = "[ " + fileName + " ] "
 # this is calling system wide nemesyst src.arg so if you are working on a branch
 # dont forget this will be the main branch version of args
+# LATER EDIT: what is? is it? what was I smoking?
 
 
 def main(args, db, log):
@@ -121,8 +122,6 @@ class Gan():
         self.trainer(self.model_dict["discriminator"])
 
         # TRAINING GENERATOR via full gan + frozen discriminator
-        # self.trainer(self.model_dict["gan"])
-
         noise = np.random.normal(
             0, 1, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
         y_mislabeled = np.ones(
@@ -131,6 +130,8 @@ class Gan():
         self.log(self.prePend
                  + "disc loss with generated examples: " + str(gloss), 0)
         print("Elapsed time: " + str(time.perf_counter() - start_time))
+
+        # further training here
 
     def trainer(self, model):
         """
@@ -200,8 +201,6 @@ class Gan():
         """
         None
 
-    # function responsible for creating whatever type of model is desired by the
-    # user in this case GANs
     def createModel(self):
         """
         Func which creates a generative adversarial model in a dict
@@ -211,8 +210,8 @@ class Gan():
         neccessary.
         """
 
+        # genreal example architecture adapted from:
         # https://medium.com/@mattiaspinelli/simple-generative-adversarial-network-gans-with-keras-1fe578e44a87
-        # https://github.com/LantaoYu/SeqGAN/blob/master/sequence_gan.py
 
         self.log("Generator:", 0)
         generator = self.createGenerator()
