@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 # @Author: George Onoufriou <archer>
@@ -47,44 +46,10 @@ def importData(path, suffix, mongodb, chunkSize=10**6, print=print, collName=Non
                     filePath = os.path.join(path, name)
                     filePaths.append(filePath)
 
-    # print(filePaths)
-
-    # for filePath in paths:
-    #     # ensuring path is cross platform
-    #     filePath = os.path.abspath(filePath)
-    #
-    #     if(os.path.isfile(filePath)):
-    #         filePaths = []
-    #         fileDirPath, file = os.path.split(filePath)
-    #         importData(path=[fileDirPath], suffix=suffix, mongodb=mongodb,
-    #                    chunkSize=chunkSize, print=print)
-    #
-    #     elif(os.path.isdir(filePath)):
-    #         filePaths = []
-    #         pattern = "*" + suffix
-    #         print("importing data: " + str(filePath)
-    #               + " " + str(suffix) + " ...", 3)
-    #         # since path points to folder, find all matching files in subdirs
-    #         for path_t, subdirs, files in os.walk(filePath):
-    #             for name in files:
-    #                 # if file name matches a pattern
-    #                 if fnmatch(name, pattern):
-    #                     filePath = os.path.join(path_t, name)
-    #                     filePaths.append(filePath)
-    #
-    #     else:
-    #         filePaths = []
-    #         raise ValueError(str("Could not find valid files using: " + filePath + " "
-    #                              + pattern))
-    #
     mongodb.connect()
 
     for filePath in filePaths:
         mongodb.importCsv(filePath, print=print)
-
-    # for filePath in filePaths:
-    #         for chunk in pd.read_csv(filePath, chunksize=chunkSize):
-    #             mongodb.importCsv(filePath, print=print)
 
         # TODO: current assumption is that each document is already less than
         # 16 MB so then there wont be a need to append to documents but
