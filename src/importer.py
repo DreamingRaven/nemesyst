@@ -39,7 +39,6 @@ def importData(path, suffix, mongodb, chunkSize=10**6, print=print, collName=Non
 
     # for each directory find children files with *.suffix
     pattern = "*" + str(suffix)
-    print("importing: " + str(suffix) + ", files from: " + str(dirs))
 
     for dir in dirs:
         for path, subdirs, files in os.walk(dir):
@@ -81,7 +80,6 @@ def importData(path, suffix, mongodb, chunkSize=10**6, print=print, collName=Non
     mongodb.connect()
 
     for filePath in filePaths:
-        print("imported: " + str(filePath))
         mongodb.importCsv(filePath, print=print)
 
     # for filePath in filePaths:
