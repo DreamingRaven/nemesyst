@@ -3,21 +3,23 @@
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
-# @Last modified by:   georgeraven
-# @Last modified time: 2018-12-04
+# @Last modified by:   archer
+# @Last modified time: 2019-02-28
 # @License: Please see LICENSE file in project root
 
 
+import inspect
+import json
 import os
 import sys
-import json
-import inspect
 import time
-from src.helpers import installer, updater, clean, train, test, predict, callCustomScript, datetime
-from src.importer import importData
-from src.arg import argz
-from src.log import Log
+
 from src.aDict import ADict
+from src.arg import argz
+from src.helpers import (callCustomScript, clean, datetime, installer, predict,
+                         test, train, updater)
+from src.importer import importData
+from src.log import Log
 
 
 def main():
@@ -51,10 +53,10 @@ def main():
         mongodb.login()
 
     # clean + add data if file specified (can be remote)
-    if(args["toJustImport"] == True) and (os.path.exists(args["newData"])):
+    if(args["toJustImport"] == True) and (len(args["newData"]) >= 1):
         importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb,
                    chunkSize=args["chunkSize"], print=print)
-    elif(os.path.isfile(args["cleaner"]) == True) and (os.path.exists(args["newData"])):
+    elif(os.path.isfile(args["cleaner"]) == True) and (len(args["newData"]) >= 1):
         clean(args=args, print=print)
         importData(path=args["newData"], suffix=args["suffix"], mongodb=mongodb,
                    chunkSize=args["chunkSize"], print=print)
@@ -138,6 +140,6 @@ else:
             "'--toUpdate' flag, else 'git pull'. Finally check python " +
             "dependancies exist e.g Keras." +
               str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]), 2)
-    except:
-        print(prePend + str(sys.exc_info()[0]
-                            ) + " " + str(sys.exc_info()[1]), 2)
+    # except:
+    #     print(prePend + str(sys.exc_info()[0]
+    #                         ) + " " + str(sys.exc_info()[1]), 2)

@@ -2,17 +2,17 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2018-12-10
+# @Last modified time: 2019-02-28
 # @License: Please see LICENSE file in project root
 
+import argparse
+import configparser
+import getpass
+import json
 import os
 import sys
 import types
-import json
-import \
-    argparse, configparser, getpass
 from fnmatch import fnmatch
-
 
 fileName = "helpers.py"
 prePend = "[ " + fileName + " ] "
@@ -52,8 +52,8 @@ def argz(argv=None, description=None, prevArgs=None):
                         default=str(argDeflt(config, options,
                                              "dir", str(home + "/db"))),
                         help="directory to store mongodb files/ launch files from")
-    parser.add_argument("-d", "--newData",
-                        default=str(
+    parser.add_argument("-d", "--newData", nargs='+',
+                        default=list(
                             argDeflt(config, options, "newData", str(""))),
                         help="the directory or file of the new data to be added and cleaned, should also specify --cleaner")
     parser.add_argument("-I", "--ip",
@@ -278,9 +278,12 @@ def argz(argv=None, description=None, prevArgs=None):
     args = vars(parser.parse_args(argv))
 
     # identifying arguments by name which are paths to be normalised
-    pathArgNames = ["cleaner", "dir", "newData",
+    pathArgNames = ["cleaner",  # "dir",
+                    "newData",
                     "pipeline", "modelPipe",
                     "customScript"]
+    # making dir path absolute and normalised seperateley as it may not exist
+    args["dir"] = os.path.abspath(args["dir"])
     normalArgs = normaliseArgs(args=args, argNames=pathArgNames)
     # identifying arguments that are single words that want to be normalised
     wantedInLowerCase = ["type", "activation", "lossMetric", "optimizer"]
@@ -306,7 +309,18 @@ def normaliseArgs(args, argNames, toMakeLowerCase=False):
             args[argName] = args[argName].casefold()
         # this if statement prevents abspath from interpreting "" as current dir
         elif(args[argName] != ""):
-            args[argName] = str(os.path.abspath(args[argName]))
+            if(type(args[argName]) == list):
+                for item in args[argName]:
+                    item = str(os.path.abspath(item))
+                    if not (os.path.exists(item)):
+                        raise FileNotFoundError(
+                            str(item) + " not found")  # from error
+            else:
+                args[argName] = str(os.path.abspath(args[argName]))
+                print(args[argName], argName)
+                if not (os.path.exists(args[argName])):
+                    raise FileNotFoundError(
+                        str(args[argName]) + " not found")  # from error
 
     return args
 

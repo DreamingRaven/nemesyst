@@ -2,24 +2,27 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2018-12-06
+# @Last modified time: 2019-02-28
 # @License: Please see LICENSE file in project root
 
 
-import os
-import sys
-import subprocess
-import tempfile
-import types
+import argparse
+import configparser
+import copy
+import datetime
+import importlib
 import json
-import \
-    argparse, datetime, time, configparser, importlib, \
-    copy
-import pandas as pd
-import numpy as np
+import os
+import subprocess
+import sys
+import tempfile
+import time
+import types
 from fnmatch import fnmatch
-from src.neuralNetwork import NeuralNetwork
 
+import numpy as np
+import pandas as pd
+from src.neuralNetwork import NeuralNetwork
 
 fileName = "helpers.py"
 prePend = "[ " + fileName + " ] "
@@ -119,17 +122,17 @@ def updater(path="./",
 
 def clean(args, print=print):
 
-    print("cleaning: " + args["newData"] + " using: "
+    print("cleaning: " + str(args["newData"]) + " using: "
           + args["cleaner"] + "...", 3)
     try:
         subprocess.call([
             str(args["cleaner"]),
-            "-d", str(args["newData"]),
             "-c", str(args["cleaner"]),
             "--suffix", str(args["suffix"]),
             "--chunkSize", str(args["chunkSize"]),
             "--timeSteps", str(args["timeSteps"]),
-        ])
+            "-d", ] + args["newData"]  # concatenating lists incase more than one file
+        )
         print("cleaner returned", 3)
 
     except:
