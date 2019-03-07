@@ -4,7 +4,7 @@
 # @Date:   2018-06-28
 # @Filename: importer.py
 # @Last modified by:   archer
-# @Last modified time: 2019-03-03
+# @Last modified time: 2019-03-05
 # @License: Please see LICENSE file in project root
 
 import os
@@ -49,6 +49,7 @@ def importData(path, suffix, mongodb, chunkSize=10**6, print=print, collName=Non
     mongodb.connect()
 
     for filePath in filePaths:
+        print("importing:" + str(filePath))
         mongodb.importCsv(filePath, print=print)
 
         # TODO: current assumption is that each document is already less than

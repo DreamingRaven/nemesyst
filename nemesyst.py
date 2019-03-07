@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-02-28
+# @Last modified time: 2019-03-03
 # @License: Please see LICENSE file in project root
 
 
@@ -26,6 +26,7 @@ def main():
 
     # imported here as prior to main the program is updated
     from RavenPythonLib.mongodb.mongo import Mongo
+    print(args["dir"])
 
     mongodb = Mongo(isDebug=True, mongoUser=args['user'], mongoPath=args['dir'],
                     mongoPass=args['pass'], mongoIp=args['ip'], mongoDbName=args['name'],
