@@ -40,8 +40,8 @@ def main(args, db, log):
 
     # deep copy args to maintain them throught the rest of the program
     args = copy.deepcopy(args)
-    log(prePend + "\n\tArg dict of length: " + str(len(args)) +
-        "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
+    log(prePend + "\n\tArg dict of length: " + str(len(args))
+        + "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
     db.connect()
     lstm = Lstm(args=args, db=db, log=log)
     lstm.debug()
@@ -146,11 +146,11 @@ class Lstm():
                 loss = model.train_on_batch(x, y)
                 loss_sum = loss_sum + loss
 
-                self.log("epoch: " + str(epoch) + ", batch: " + str(counter_batch)
-                    + ", length: " + str(len(data)) + ", type: "
-                    + str(type(data))
-                    + ", loss: " + str(loss)
-                    , 0)
+                self.log("epoch: " + str(epoch) + ", batch: " + str(counter_batch) +
+                    ", length: " + str(len(data)) + ", type: " +
+                    str(type(data)) +
+                    ", loss: " + str(loss)
+                         , 0)
                 counter_batch += 1
             counter_samples = counter_samples + counter_batch
 
@@ -158,8 +158,8 @@ class Lstm():
             loss_avg = loss_sum / counter_samples
             self.log("loss_avg: " + str(loss_avg))
         else:
-            self.log("there was no data trained, check data exists \ndata: " +
-                     str(self.data.getSample()), 1)
+            self.log("there was no data trained, check data exists \ndata: "
+                     + str(self.data.getSample()), 1)
 
     def createLstm(self):
 
@@ -168,17 +168,17 @@ class Lstm():
                     self.args["dimensionality"] - 1)
 
         self.log(
-            self.prePend + "\n"
-            + "\t" + "type:\t\t"         + str(self.args["type"])            + "\n"
-            + "\t" + "layers:\t\t"       + str(self.args["layers"])          + "\n"
-            + "\t" + "timesteps:\t"      + str(self.args["timeSteps"])       + "\n"
-            + "\t" + "dimensionality:\t" + str(self.args["dimensionality" ])  + "\n"
-            + "\t" + "batchSize:\t"      + str(self.args["batchSize"])       + "\n"
-            + "\t" + "batchInShape:\t"   + str(bInShape)                     + "\n"
-            + "\t" + "epochs:\t\t"       + str(self.args["epochs"])          + "\n"
-            + "\t" + "epochs_chunk:\t"   + str(self.args["epochs_chunk"])    + "\n"
-            + "\t" + "activation:\t"
-            + str(self.args["activation" ])      + "\n",
+            self.prePend + "\n" +
+            "\t" + "type:\t\t"         + str(self.args["type"])            + "\n" +
+            "\t" + "layers:\t\t"       + str(self.args["layers"])          + "\n" +
+            "\t" + "timesteps:\t"      + str(self.args["timeSteps"])       + "\n" +
+            "\t" + "dimensionality:\t" + str(self.args["dimensionality" ])  + "\n" +
+            "\t" + "batchSize:\t"      + str(self.args["batchSize"])       + "\n" +
+            "\t" + "batchInShape:\t"   + str(bInShape)                     + "\n" +
+            "\t" + "epochs:\t\t"       + str(self.args["epochs"])          + "\n" +
+            "\t" + "epochs_chunk:\t"   + str(self.args["epochs_chunk"])    + "\n" +
+            "\t" + "activation:\t" +
+            str(self.args["activation" ])      + "\n",
             0
         )
 
@@ -208,6 +208,20 @@ class Lstm():
             self.model_dict = self.getModel(
                 self.getPipe(self.args["modelPipe"]))
         # now model should exist now use it to test
+        self.tester(self.model_dict["lstm"])
+
+    def tester(self, model):
+        test_doc = self.data.getSample()
+        test_doc = pd.DataFrame(test_doc)
+        print(test_doc)
+        flat_l = [item for sublist in test_doc["data"]
+                  for item in sublist]
+        test_y = np.repeat(test_doc["target"], 1)
+        test_x = pd.DataFrame(flat_l)
+        test_x = np.reshape(
+            test_x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"] - 1))
+        loss = model.evaluate(test_x, test_y)
+        self.log("loss_test: " + str(loss), 0)
 
     def predict(self):
         """
@@ -269,9 +283,9 @@ class Lstm():
         # self.compile()
         if(model_dict["type"] != self.expected["type"]):
             raise RuntimeWarning(
-                "The model retrieved using query: " + str(model_pipe) +
-                " gives: " + str(model_dict["type"]) +
-                ", which != expected: " +  self.expected["type"])
+                "The model retrieved using query: " + str(model_pipe)
+                + " gives: " + str(model_dict["type"])
+                + ", which != expected: " +  self.expected["type"])
         return model_dict
 
     def getPipe(self, pipePath):
