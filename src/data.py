@@ -1,8 +1,8 @@
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-12-11
 # @Filename: data.py
-# @Last modified by:   georgeraven
-# @Last modified time: 2018-12-18
+# @Last modified by:   archer
+# @Last modified time: 2019-03-07
 # @License: Please see LICENSE in project root.
 # @Copyright: George Onoufriou
 
@@ -76,3 +76,17 @@ class Data(MutableMapping):
 
         with open(pipePath) as f:
             return json.load(f)
+
+    def getSample(self):
+        """
+        primarily used to check the data is returned
+        """
+        self.db.connect()
+        cursor = self.db.getData(pipeline=self.getPipe(
+            self.args["pipeline"]), collName=self.args["coll"])
+
+        while(cursor.alive):
+            try:
+                return self.nextBatch(cursor)
+            except StopIteration:
+                return
