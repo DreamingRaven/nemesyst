@@ -3,8 +3,8 @@
 # @Author: George Onoufriou <archer>
 # @Date:   2018-09-27
 # @Filename: gan.py
-# @Last modified by:   georgeraven
-# @Last modified time: 2019-01-03
+# @Last modified by:   archer
+# @Last modified time: 2019-03-12
 # @License: Please see LICENSE file in project root
 
 """
@@ -154,7 +154,7 @@ class Gan():
                 # while this is the target for other models gan uses its own
                 y = np.repeat(
                     documents["target"], self.args["timeSteps"])
-                x["tagret"] = pd.Series(y).values
+                x["target"] = pd.Series(y).values
                 realFalse = np.full(
                     (self.args["batchSize"], self.args["timeSteps"], 1), 1)
                 x = np.reshape(
