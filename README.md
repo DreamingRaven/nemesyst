@@ -4,6 +4,8 @@
 
 Please note: The examples in ./examples folder are still being written, in particular the movilense 20 million (ml_20m) and gan.py. This documentation is also in the process of being further updated with more examples and adding to testing and prediction sections. If you have any issues or see anything glaringly wrong please open an issue.
 
+Please also note: That core Nemesyst/ inbuilt neural networks are being removed and separated from Nemesyst into external files since this helps keep Nemesyst invariant of any neural network framework. This also makes it clearer as example files of RNNs, LSTMs, GANs will be made available with the core Nemesyst packages to exemplify usage. Over this period some functionality will be unavailiable, if you would like to maintain old functionality please download an older release <= [0.9.5](https://github.com/DreamingRaven/Nemesyst/releases/tag/0.9.5). So that this allows us to push for full functionality according to our version 1 specification.
+
 ## Introduction
 
 Experimental generalisable recommender system; Python, bash, and TensorFlow.
