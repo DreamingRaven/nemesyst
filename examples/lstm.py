@@ -4,11 +4,11 @@
 # @Date:   2018-09-27
 # @Filename: lstm.py
 # @Last modified by:   archer
-# @Last modified time: 2019-02-27
+# @Last modified time: 2019-03-07
 # @License: Please see LICENSE file in project root
 
 """
-Module handler for generative adversarial neural networks
+Module handler for LSTM networks
 """
 
 import copy
@@ -43,7 +43,6 @@ def main(args, db, log):
     log(prePend + "\n\tArg dict of length: " + str(len(args))
         + "\n\tDatabase obj: " + str(db) + "\n\tLogger object: " + str(log), 0)
     db.connect()
-
     lstm = Lstm(args=args, db=db, log=log)
     lstm.debug()
 
@@ -59,7 +58,7 @@ def main(args, db, log):
 
 class Lstm():
     """
-    Generative adversarial neural network handler
+    Gate RNN based sequence neural network abstraction
 
     This class deals with all abstractions that fascilitate training deep
     neural networks from a MongoDb database object.
@@ -115,18 +114,7 @@ class Lstm():
                                 sort_keys=True, default=str)
         self.log(model_json, 3)
 
-        # TRAINING DISCRIMINATOR on its own
-        self.trainer(self.model_dict["discriminator"])
-
-        # TRAINING GENERATOR via full lstm + frozen discriminator
-        # self.trainer(self.model_dict["lstm"])
-
-        noise = np.random.normal(
-            0, 1, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
-        y_mislabeled = np.ones(
-            (self.args["batchSize"], self.args["timeSteps"], 1))
-        gloss = self.model_dict["lstm"].train_on_batch(noise, y_mislabeled)
-        print(gloss)
+        self.trainer(self.model_dict["lstm"])
 
     def trainer(self, model):
         """
@@ -135,10 +123,12 @@ class Lstm():
         This func will be able to handle training a given model with requested
         data batches.
         """
+        counter_samples = 0
+        loss_sum = 0
         # for loop that cant step backwards that will iterate the difference
         # between the current epoch of the model and the desired amount
         for epoch in range(self.model_dict["epochs"], self.args["epochs"], 1):
-            i = 0
+            counter_batch = 0
             # loops through database data by returning batches
             for data in self.data:
                 documents = pd.DataFrame(data)
@@ -146,22 +136,61 @@ class Lstm():
                 flat_l = [item for sublist in documents["data"]
                           for item in sublist]
                 x = pd.DataFrame(flat_l)
-                # while this is the target for other models lstm uses its own
+                # duplicating target to be the same length as input
                 y = np.repeat(
-                    documents["target"], self.args["timeSteps"])
-                x["tagret"] = pd.Series(y).values
-                realFalse = np.full(
-                    (self.args["batchSize"], self.args["timeSteps"], 1), 1)
+                    documents["target"], 1)
                 x = np.reshape(
-                    x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
-                # print(pd.DataFrame.from_records(x))
-                loss = model.train_on_batch(x, realFalse)
-                self.log("epoch: " + str(epoch) + ", batch: " + str(i) +
+                    x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"] - 1))
+
+                # TRAINING HERE
+                loss = model.train_on_batch(x, y)
+                loss_sum = loss_sum + loss
+
+                self.log("epoch: " + str(epoch) + ", batch: " + str(counter_batch) +
                     ", length: " + str(len(data)) + ", type: " +
                     str(type(data)) +
                     ", loss: " + str(loss)
                          , 0)
-                i += 1
+                counter_batch += 1
+            counter_samples = counter_samples + counter_batch
+
+        if(loss_sum != 0):
+            loss_avg = loss_sum / counter_samples
+            self.log("loss_avg: " + str(loss_avg))
+        else:
+            self.log("there was no data trained, check data exists \ndata: "
+                     + str(self.data.getSample()), 1)
+
+    def createLstm(self):
+
+        model = Sequential()
+        bInShape = (self.args["batchSize"], self.args["timeSteps"],
+                    self.args["dimensionality"] - 1)
+
+        self.log(
+            self.prePend + "\n" +
+            "\t" + "type:\t\t"         + str(self.args["type"])            + "\n" +
+            "\t" + "layers:\t\t"       + str(self.args["layers"])          + "\n" +
+            "\t" + "timesteps:\t"      + str(self.args["timeSteps"])       + "\n" +
+            "\t" + "dimensionality:\t" + str(self.args["dimensionality" ])  + "\n" +
+            "\t" + "batchSize:\t"      + str(self.args["batchSize"])       + "\n" +
+            "\t" + "batchInShape:\t"   + str(bInShape)                     + "\n" +
+            "\t" + "epochs:\t\t"       + str(self.args["epochs"])          + "\n" +
+            "\t" + "epochs_chunk:\t"   + str(self.args["epochs_chunk"])    + "\n" +
+            "\t" + "activation:\t" +
+            str(self.args["activation" ])      + "\n",
+            0
+        )
+
+        # gen layers
+        for unused in range(self.args["layers"] - 1):
+            model.add(LSTM(self.args["intLayerDim"], activation=self.args["activation"],
+                           return_sequences=True, batch_input_shape=bInShape))
+        model.add(LSTM(
+            self.args["intLayerDim"], activation=self.args["activation"], batch_input_shape=bInShape))
+        model.add(Dense(1, name="main_output"))
+        self.log(self.prePend + "LSTM created", -1)
+        return model
 
     def test(self, collection=None):
         """
@@ -179,6 +208,21 @@ class Lstm():
             self.model_dict = self.getModel(
                 self.getPipe(self.args["modelPipe"]))
         # now model should exist now use it to test
+        self.tester(self.model_dict["lstm"])
+
+    def tester(self, model):
+        test_doc = self.data.getSample()
+        test_doc = pd.DataFrame(test_doc)
+        print(test_doc)
+        flat_l = [item for sublist in test_doc["data"]
+                  for item in sublist]
+        test_y = np.repeat(test_doc["target"], 1)
+        test_x = pd.DataFrame(flat_l)
+        test_x = np.reshape(
+            test_x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"] - 1))
+        loss = model.evaluate(test_x, test_y)
+        self.log("loss_test: " + str(loss), 0)
+
 
     def predict(self):
         """
@@ -200,104 +244,27 @@ class Lstm():
     # user in this case LSTMs
     def createModel(self):
         """
-        Func which creates a generative adversarial model in a dict
 
+        Func which creates an LSTM model in a dict
         Currentley this is hard coded to be of a specific architecture but this
         can be easily modified and will propogate through should it be
         neccessary.
         """
 
-        # https://medium.com/@mattiaspinelli/simple-generative-adversarial-network-lstms-with-keras-1fe578e44a87
-        # https://github.com/LantaoYu/SeqLSTM/blob/master/sequence_lstm.py
+        lstm = self.createLstm()
 
-        self.log("Generator:", 0)
-        generator = self.createGenerator()
-        self.log("Discriminator:", 0)
-        discriminator = self.createDiscriminator()
-        generator.compile(
-            optimizer=self.args["optimizer"], loss=self.args["lossMetric"])
-        discriminator.compile(
-            optimizer=self.args["optimizer"], loss=self.args["lossMetric"],
-            metrics=[self.args["lossMetric"]])
-        discriminator.trainable = False  # freezing weights
-
-        lstm = Sequential()
-        lstm.add(generator)
-        lstm.add(discriminator)
-        self.log("LSTM:", 0)
         lstm.summary()
         lstm.compile(loss=self.args["lossMetric"],
                      optimizer=self.args["optimizer"])
-
-        try:
-            # this is an optional dependancy that is only used for plots
-            if(self.args["loglevel"] >= 5):
-                from keras.utils import plot_model
-                plot_model(generator, to_file="generator.png")
-                plot_model(generator, to_file="discriminator.png")
-                plot_model(lstm, to_file="LSTM.png")
-        except ModuleNotFoundError:
-            self.log(
-                "ModuleNotFoundError: could not plot models as likeley 'pydot'"
-                + " module not found please "
-                + " consider installing if you wish to visualise models\n"
-                + str(sys.exc_info()[0]) + " "
-                + str(sys.exc_info()[1]), 1)
 
         model_dict = {
             "utc": datetime.datetime.utcnow(),
             "loss": None,
             "epochs": 0,
-            "generator": generator,
-            "discriminator": discriminator,
             "lstm": lstm,
         }
         return model_dict
 
-    def createGenerator(self):
-        """
-        Func responsible for creating the generator of a LSTM neural network
-        """
-
-        model = Sequential()
-        model.add(Dense(256,
-                        input_shape=(
-                            int(self.args["timeSteps"]), self.args["dimensionality"])
-                        ))
-        model.add(Flatten())
-        model.add(LeakyReLU(alpha=0.2))
-        model.add(BatchNormalization(momentum=0.8))
-        model.add(Dense(512))
-        model.add(LeakyReLU(alpha=0.2))
-        model.add(BatchNormalization(momentum=0.8))
-        model.add(Dense(1024))
-        model.add(LeakyReLU(alpha=0.2))
-        model.add(BatchNormalization(momentum=0.8))
-        model.add(
-            Dense(self.args["timeSteps"] * self.args["dimensionality"], activation='tanh'))
-        model.add(
-            Reshape((self.args["timeSteps"], self.args["dimensionality"])))
-        model.summary()
-        return model
-
-    def createDiscriminator(self):
-        """
-        Func responsible for creating the discriminator of a LSTM neural network
-        """
-
-        model = Sequential()
-        # model.add(Flatten(input_shape=self.SHAPE))
-        model.add(Dense(self.args["timeSteps"] * self.args["dimensionality"],
-                        input_shape=(self.args["timeSteps"], self.args["dimensionality"])))
-
-        model.add(LeakyReLU(alpha=0.2))
-        model.add(
-            Dense(int((self.args["timeSteps"] * self.args["dimensionality"]) / 2)))
-        model.add(LeakyReLU(alpha=0.2))
-
-        model.add(Dense(1, activation='sigmoid'))
-        model.summary()
-        return model
 
     def getModel(self, model_pipe=None):
         """
