@@ -223,6 +223,7 @@ class Lstm():
         loss = model.evaluate(test_x, test_y)
         self.log("loss_test: " + str(loss), 0)
 
+
     def predict(self):
         """
         Func responsible for producing predictions for certain neural networks
@@ -243,14 +244,15 @@ class Lstm():
     # user in this case LSTMs
     def createModel(self):
         """
-        Func which creates an LSTM model in a dict
 
+        Func which creates an LSTM model in a dict
         Currentley this is hard coded to be of a specific architecture but this
         can be easily modified and will propogate through should it be
         neccessary.
         """
 
         lstm = self.createLstm()
+
         lstm.summary()
         lstm.compile(loss=self.args["lossMetric"],
                      optimizer=self.args["optimizer"])
@@ -262,6 +264,7 @@ class Lstm():
             "lstm": lstm,
         }
         return model_dict
+
 
     def getModel(self, model_pipe=None):
         """
