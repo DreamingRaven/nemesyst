@@ -4,7 +4,7 @@
 # @Date:   2018-09-27
 # @Filename: gan.py
 # @Last modified by:   archer
-# @Last modified time: 2019-03-12
+# @Last modified time: 2019-03-28
 # @License: Please see LICENSE file in project root
 
 """
@@ -102,6 +102,7 @@ class Gan():
         This func will handle the neccessary clean up and sorting out of
         values and call the correct functions to fully train this network.
         """
+
         # branch depending if model is to continue training or create new model
         if(self.args["toReTrain"] == True):
             # DONT FORGET IF YOU ARE RETRAINING TO CONCATENATE EXISTING STUFF LIKE EPOCHS
@@ -127,8 +128,8 @@ class Gan():
         y_mislabeled = np.ones(
             (self.args["batchSize"], self.args["timeSteps"], 1))
         gloss = self.model_dict["gan"].train_on_batch(noise, y_mislabeled)
-        self.log(self.prePend
-                 + "disc loss with generated examples: " + str(gloss), 0)
+        self.log(self.prePend +
+                 "disc loss with generated examples: " + str(gloss), 0)
         print("Elapsed time: " + str(time.perf_counter() - start_time))
 
         # further training here
@@ -183,7 +184,18 @@ class Gan():
         else:
             self.model_dict = self.getModel(
                 self.getPipe(self.args["modelPipe"]))
+
         # now model should exist now use it to test
+
+        # get test data
+        tempArgs = copy.deepcopy(self.args)
+        tempArgs["coll"] = self.args["testColl"]
+        tempArgs["dimensionality"] = tempArgs["dimensionality"] - 1
+        testData = self.Data(args=tempArgs, db=self.db, log=self.log)
+        print(tempArgs)
+        for data in testData:
+            print(data)
+            input("prenter")
 
     def predict(self):
         """
