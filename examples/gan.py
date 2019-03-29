@@ -4,7 +4,7 @@
 # @Date:   2018-09-27
 # @Filename: gan.py
 # @Last modified by:   archer
-# @Last modified time: 2019-03-28
+# @Last modified time: 2019-03-29
 # @License: Please see LICENSE file in project root
 
 """
@@ -190,12 +190,13 @@ class Gan():
         # get test data
         tempArgs = copy.deepcopy(self.args)
         tempArgs["coll"] = self.args["testColl"]
-        tempArgs["dimensionality"] = tempArgs["dimensionality"] - 1
+        # no need for below line as dimensionality has already been adjusted
+        # tempArgs["dimensionality"] = tempArgs["dimensionality"] - 1
         testData = self.Data(args=tempArgs, db=self.db, log=self.log)
         print(tempArgs)
         for data in testData:
-            print(data)
-            input("prenter")
+            # print(data)
+            pass
 
     def predict(self):
         """
