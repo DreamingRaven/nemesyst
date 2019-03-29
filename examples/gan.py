@@ -85,7 +85,7 @@ class Gan():
             "shape": (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]),
         }
         tempArgs = copy.deepcopy(args)
-        tempArgs["dimensionality"] = tempArgs["dimensionality"] - 1
+        tempArgs["dimensionality"] = tempArgs["dimensionality"]
         self.data = self.Data(args=tempArgs, db=db, log=log)
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args["tfLogMin"])
 
@@ -119,22 +119,49 @@ class Gan():
         self.log(model_json, 3)
 
         # TRAINING DISCRIMINATOR on its own
-        start_time = time.perf_counter()
-        self.trainer(self.model_dict["discriminator"])
+        self.start_time = time.perf_counter()
+        self.train_discriminator(self.model_dict["discriminator"])
 
         # TRAINING GENERATOR via full gan + frozen discriminator
-        noise = np.random.normal(
-            0, 1, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
-        y_mislabeled = np.ones(
-            (self.args["batchSize"], self.args["timeSteps"], 1))
-        gloss = self.model_dict["gan"].train_on_batch(noise, y_mislabeled)
-        self.log(self.prePend +
-                 "disc loss with generated examples: " + str(gloss), 0)
-        print("Elapsed time: " + str(time.perf_counter() - start_time))
+        self.train_generator(self.model_dict["gan"])
+        # noise = np.random.normal(
+        #     0, 1, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
+        # y_mislabeled = np.ones(
+        #     (self.args["batchSize"], self.args["timeSteps"], 1))
+        # gloss = self.model_dict["gan"].train_on_batch(noise, y_mislabeled)
+        #
+        # self.log(self.prePend +
+        #          "disc loss with generated examples: " + str(gloss), 0)
+        # print("Elapsed time: " + str(time.perf_counter() - self.start_time))
 
         # further training here
 
-    def trainer(self, model):
+    def train_generator(self, model):
+        tempArgs = copy.deepcopy(self.args)
+        tempArgs["dimensionality"] = tempArgs["dimensionality"]
+        data_set = self.Data(args=tempArgs, db=self.db, log=self.log)
+        for data in data_set:
+            documents = pd.DataFrame(data)
+            # flattening list
+            flat_l = [item for sublist in documents["data"]
+                      for item in sublist]
+            x = pd.DataFrame(flat_l)
+            x = np.reshape(
+                x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
+            seed = np.random.normal(
+                0, 1, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
+
+            print("x", x.shape(), type(x))
+            print("seed", seed.shape(), type(seed))
+            y_mislabeled = np.ones(
+                (self.args["batchSize"], self.args["timeSteps"], 1))
+            gloss = model.train_on_batch(seed, y_mislabeled)
+
+            self.log(self.prePend +
+                     "disc loss with generated examples: " + str(gloss), 0)
+            print("Elapsed time: " + str(time.perf_counter() - self.start_time))
+
+    def train_discriminator(self, model):
         """
         Responsible for retrieving batches of data and subsequentley training
 
