@@ -4,7 +4,7 @@
 # @Date:   2018-09-27
 # @Filename: gan.py
 # @Last modified by:   archer
-# @Last modified time: 2019-04-01T10:23:41+01:00
+# @Last modified time: 2019-04-01T12:48:00+01:00
 # @License: Please see LICENSE file in project root
 
 """
@@ -154,7 +154,9 @@ class Gan():
                     + ", btch sz: " + str(len(data))
                     + ", t: " + str(time.perf_counter() - self.start_time)
                     + ", loss: " + str(gloss)
+                    + ", loss_test: " + str()
                      , 0)
+
             i += 1
 
     def train_discriminator(self, model, epoch):
@@ -193,8 +195,8 @@ class Gan():
             self.log("DSC epk_train: " + str(epoch) + ", btch: " + str(i)
                     + ", btch sz: " + str(len(data))
                     + ", t: " + str(time.perf_counter() - self.start_time)
-                    + ", loss: " + str(loss)
                      , 0)
+            # self.test(data=data)
             i += 1
 
     def test(self, model=None, collection=None, data=None):
