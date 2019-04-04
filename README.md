@@ -8,46 +8,27 @@ Please also note: That core Nemesyst/ inbuilt neural networks are being removed 
 
 ## Introduction
 
-Experimental generalisable recommender system; Python, bash, and TensorFlow.
+Nemesyst is a, configurable hybrid parallelisation, deep learning framework; using Python, Bash, MongoDb.
 
-This experimental recommender system is part of an ongoing masters thesis, which purposely compares the use of
-Generative Adversarial Neural Networks (GANs) with certain other traditional and prevalent machine learning (ML)
-recommender system techniques. This recommender system is evaluated by the common method of rating prediction
-via mean absolute error (MEA).
+Nemesyst is designed to fascilitate larger scale distributed deep learning applications, such as practical application of recommender systems. The use case scenarios in mind were deep learning using a distributed cloud based infastructure, such as one used by Netflix through AWS. Nemesyst is capable of both distribution of data, and distribution of Neural Networks by using MongoDB as the store for collections of data and collections of trained models, such that they can be retrieved and retrained for live application.
 
-Along the way however I decided to make everything as configurable/ generalisable as possible. This system has become a framework for the application of machine learning into a wider environment, facilitated by this configuration; Including config and pipeline files, custom cleaning script calls, and custom machine learning scripts all while the nuanced operations are completed automagically, such as transforming then loading the chosen data into mongoDB, allowing for interesting distributed applications to do with combining MongoDB with machine learning. The use of MongoDB also allows this program to act clay-like, keeping track of program state to be reloaded, reused, monitored etc, just as clay would keep the shape impressed upon it. It keeps track of each model trained, as a separate document in the models collection, with the models binary also being saved so it can be directly replayed with simple calls.
+Nemesyst also outlines a framework with which to construct other deep learning applications, and is an attempt to unify deep learning through use of similar and already used MPIs, in this case MongoDB. It also seeks to unify deep learning architecturaly such that it can be abstracted in four distinct stages:
 
-This recommender system used to predict exclusively using [MovieLense 20M](https://grouplens.org/datasets/movielens/20m/),
- and [Netflix (2007)](https://www.kaggle.com/netflix-inc/netflix-prize-data) data sets. Now however it can predict using any data set, given an appropriate cleaning script path to the -c / --cleaner argument.
-
-If you are interested in the masters itself the plan was to explicitly compare recommender system algorithms with newer neural network approaches, although its worth noting this program can only currently use sequence models and will in future allow for convolutionals and gans as well as separate script calls to custom neural networks. Find below some references:
+Wrangling
+Serving
+Learning
+Distributing
 
 Quick references
+* [distributed deep learning](https://sea.ucar.edu/sites/default/files/DeepLearning_seaconf18.pdf) -
 * [Keystone Paper](https://arxiv.org/pdf/1707.07435.pdf) -
 Deep Learning based Recommender System: A Survey and New Perspectives [sic]
-
-Baseline algorithms (most will be removed as they are just masters specific functions, except RNN):
-* [kNN](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm)
-[(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true);
- K-nearest neighbors; traditional computer science technique -> comparable
-* [SVD](https://en.wikipedia.org/wiki/Singular-value_decomposition);
-[(why)](http://ieeexplore.ieee.org/document/5286031/?reload=true);
-Singular-value decomposition; hidden latent factors through eigen vectors; Derivative -> 3rd place Netflix prize
-* [MF](https://en.wikipedia.org/wiki/Matrix_decomposition)
-[(why)](https://link.springer.com/content/pdf/10.1007%2Fs10115-018-1157-2.pdf);
-Matrix factorisation; prevalent -> comparable
-* [RNN](https://en.wikipedia.org/wiki/Recurrent_neural_network)
-[(why)](https://arxiv.org/abs/1707.07435);
-traditional neural network technique -> comparable
-
-Compared-to algorithms:
-* [LSTM](https://en.wikipedia.org/wiki/Long_short-term_memory); providing a control to directly compare the effect of GANs.
-* [LSTM + GAN](https://arxiv.org/abs/1611.09904)
 
 Quick Definitions (Wiki)
 * [ML](https://en.wikipedia.org/wiki/Machine_learning) - Machine Learning
 * [GAN](https://en.wikipedia.org/wiki/Generative_adversarial_network) - Generative Adversarial Networks
 * [MEA](https://en.wikipedia.org/wiki/Mean_absolute_error) - Mean Absolute Error
+* [MPI](https://en.wikipedia.org/wiki/Message_Passing_Interface) - Message Passing Interface
 
 ---
 
