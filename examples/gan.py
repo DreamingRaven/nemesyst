@@ -4,7 +4,7 @@
 # @Date:   2018-09-27
 # @Filename: gan.py
 # @Last modified by:   archer
-# @Last modified time: 2019-03-29
+# @Last modified time: 2019-04-01T12:48:00+01:00
 # @License: Please see LICENSE file in project root
 
 """
@@ -118,29 +118,21 @@ class Gan():
                                 sort_keys=True, default=str)
         self.log(model_json, 3)
 
-        # TRAINING DISCRIMINATOR on its own
         self.start_time = time.perf_counter()
-        self.train_discriminator(self.model_dict["discriminator"])
+        for epoch in range(self.model_dict["epochs"], self.args["epochs"], 1):
+            # TRAINING DISCRIMINATOR on its own
+            self.train_discriminator(model=self.model_dict["discriminator"], epoch=epoch)
 
-        # TRAINING GENERATOR via full gan + frozen discriminator
-        self.train_generator(self.model_dict["gan"])
-        # noise = np.random.normal(
-        #     0, 1, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
-        # y_mislabeled = np.ones(
-        #     (self.args["batchSize"], self.args["timeSteps"], 1))
-        # gloss = self.model_dict["gan"].train_on_batch(noise, y_mislabeled)
-        #
-        # self.log(self.prePend +
-        #          "disc loss with generated examples: " + str(gloss), 0)
-        # print("Elapsed time: " + str(time.perf_counter() - self.start_time))
+            # TRAINING GENERATOR via full gan + frozen discriminator
+            self.train_generator(self.model_dict["gan"], epoch)
 
-        # further training here
-
-    def train_generator(self, model):
-        tempArgs = copy.deepcopy(self.args)
-        tempArgs["dimensionality"] = tempArgs["dimensionality"]
-        data_set = self.Data(args=tempArgs, db=self.db, log=self.log)
-        for data in data_set:
+    def train_generator(self, model, epoch):
+        pass
+        # tempArgs = copy.deepcopy(self.args)
+        # tempArgs["dimensionality"] = tempArgs["dimensionality"]
+        # data_set = self.Data(args=tempArgs, db=self.db, log=self.log)
+        i = 0
+        for data in self.data:
             documents = pd.DataFrame(data)
             # flattening list
             flat_l = [item for sublist in documents["data"]
@@ -151,17 +143,23 @@ class Gan():
             seed = np.random.normal(
                 0, 1, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
 
-            print("x", x.shape(), type(x))
-            print("seed", seed.shape(), type(seed))
+            # print("x", x.shape(), type(x))
+            # print("seed", seed.shape(), type(seed))
             y_mislabeled = np.ones(
                 (self.args["batchSize"], self.args["timeSteps"], 1))
-            gloss = model.train_on_batch(seed, y_mislabeled)
+            # gloss = model.train_on_batch(seed, y_mislabeled)
+            gloss = model.train_on_batch(x, y_mislabeled)
 
-            self.log(self.prePend +
-                     "disc loss with generated examples: " + str(gloss), 0)
-            print("Elapsed time: " + str(time.perf_counter() - self.start_time))
+            self.log("GEN epk_train: " + str(epoch) + ", btch: " + str(i)
+                    + ", btch sz: " + str(len(data))
+                    + ", t: " + str(time.perf_counter() - self.start_time)
+                    + ", loss: " + str(gloss)
+                    + ", loss_test: " + str()
+                     , 0)
 
-    def train_discriminator(self, model):
+            i += 1
+
+    def train_discriminator(self, model, epoch):
         """
         Responsible for retrieving batches of data and subsequentley training
 
@@ -170,33 +168,38 @@ class Gan():
         """
         # for loop that cant step backwards that will iterate the difference
         # between the current epoch of the model and the desired amount
-        for epoch in range(self.model_dict["epochs"], self.args["epochs"], 1):
-            i = 0
-            # loops through database data by returning batches
-            for data in self.data:
-                documents = pd.DataFrame(data)
-                # flattening list
-                flat_l = [item for sublist in documents["data"]
-                          for item in sublist]
-                x = pd.DataFrame(flat_l)
-                # while this is the target for other models gan uses its own
-                y = np.repeat(
-                    documents["target"], self.args["timeSteps"])
-                x["target"] = pd.Series(y).values
-                realFalse = np.full(
-                    (self.args["batchSize"], self.args["timeSteps"], 1), 1)
-                x = np.reshape(
-                    x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
-                # print(pd.DataFrame.from_records(x))
-                loss = model.train_on_batch(x, realFalse)
-                self.log("epoch: " + str(epoch) + ", batch: " + str(i)
-                    + ", batch size: " + str(len(data))
-                         + ", loss: " + str(loss)
-                         , 0)
-                # print(model.get_weights())
-                i += 1
+        # TODO: make sure we arent falling for any https://medium.com/@utk.is.here/keep-calm-and-train-a-gan-pitfalls-and-tips-on-training-generative-adversarial-networks-edd529764aa9
+        i = 0
+        # loops through database data by returning batches
+        for data in self.data:
+            # here we have to get all the features
+            documents = pd.DataFrame(data)
+            # flattening list
+            flat_l = [item for sublist in documents["data"]
+                      for item in sublist]
+            x = pd.DataFrame(flat_l)
+            # while this is the target for other models gan uses its own
+            y = np.repeat(
+                documents["target"], self.args["timeSteps"])
+            x["target"] = pd.Series(y).values
+            # this is the target for the discriminator as they are all real
+            realFalse = np.full(
+                (self.args["batchSize"], self.args["timeSteps"], 1), 1)
+            # TODO: dimensionality is actually 5 as target is rolled in, this needs to
+            # added to the dimenionality + we need batch size and we need to ad
+            # just the intake of the model to be +1
+            # print(pd.DataFrame.from_records(x))
+            x = np.reshape(
+                x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]+1))
+            loss = model.train_on_batch(x, realFalse)
+            self.log("DSC epk_train: " + str(epoch) + ", btch: " + str(i)
+                    + ", btch sz: " + str(len(data))
+                    + ", t: " + str(time.perf_counter() - self.start_time)
+                     , 0)
+            # self.test(data=data)
+            i += 1
 
-    def test(self, collection=None):
+    def test(self, model=None, collection=None, data=None):
         """
         Func responsible for testing certain neural networks
 
@@ -204,26 +207,48 @@ class Gan():
         memory, prior to testing, and will comply to user specified metrics.
         """
         # uses its own collection variable to allow it to be reused if testColl != coll
-        collection = collection if collection is not None else self.args["coll"]
+        # collection = collection if collection is not None else self.args["coll"]
         # branch depending if model is already in memory to save request to database
-        if(self.model_dict != None):
-            None
-        else:
-            self.model_dict = self.getModel(
-                self.getPipe(self.args["modelPipe"]))
+        if(model == None):
+            if(self.model_dict != None):
+                pass
+            else:
+                self.model_dict = self.getModel(
+                    self.getPipe(self.args["modelPipe"]))
+            model=self.model_dict["generator"]
 
         # now model should exist now use it to test
-
         # get test data
         tempArgs = copy.deepcopy(self.args)
-        tempArgs["coll"] = self.args["testColl"]
+        tempArgs["coll"] = self.args["testColl"] if collection is None else str(collection)
         # no need for below line as dimensionality has already been adjusted
         # tempArgs["dimensionality"] = tempArgs["dimensionality"] - 1
         testData = self.Data(args=tempArgs, db=self.db, log=self.log)
-        print(tempArgs)
-        for data in testData:
-            # print(data)
-            pass
+        loss_sum = 0
+        i = 0
+        for data in testData if data is None else [data]:
+            # here we have to get all the features
+            documents = pd.DataFrame(data)
+            # flattening list
+            flat_l = [item for sublist in documents["data"]
+                      for item in sublist]
+            x = pd.DataFrame(flat_l)
+            y = pd.DataFrame(flat_l)
+            y["target"] = pd.Series(np.repeat(documents["target"], self.args["timeSteps"])).values
+            x = np.reshape(
+                x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
+            y = np.reshape(
+                y.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]+1))
+            loss = model.test_on_batch(x, y)
+            self.log("GAN test on: " + str(tempArgs["coll"])
+                    + ", btch: " + str(i)
+                    + ", btch sz: " + str(len(data))
+                    # + ", t: " + str(time.perf_counter() - self.start_time)
+                    + ", loss: " + str(loss)
+                    )
+            loss_sum = loss_sum + loss
+            i = i + 1
+        self.log("GAN test: " + str(tempArgs["coll"] + ", avg_loss: " + str(loss_sum/i)))
 
     def predict(self):
         """
@@ -317,9 +342,9 @@ class Gan():
         model.add(LeakyReLU(alpha=0.2))
         model.add(BatchNormalization(momentum=0.8))
         model.add(
-            Dense(self.args["timeSteps"] * self.args["dimensionality"], activation='tanh'))
+            Dense(self.args["timeSteps"] * (self.args["dimensionality"]+1), activation='tanh'))
         model.add(
-            Reshape((self.args["timeSteps"], self.args["dimensionality"])))
+            Reshape((self.args["timeSteps"], self.args["dimensionality"]+1)))
         model.summary()
         return model
 
@@ -330,12 +355,12 @@ class Gan():
 
         model = Sequential()
         # model.add(Flatten(input_shape=self.SHAPE))
-        model.add(Dense(self.args["timeSteps"] * self.args["dimensionality"],
-                        input_shape=(self.args["timeSteps"], self.args["dimensionality"])))
+        model.add(Dense(self.args["timeSteps"] * (self.args["dimensionality"]+1),
+                        input_shape=(self.args["timeSteps"], self.args["dimensionality"]+1)))
 
         model.add(LeakyReLU(alpha=0.2))
         model.add(
-            Dense(int((self.args["timeSteps"] * self.args["dimensionality"]) / 2)))
+            Dense(int((self.args["timeSteps"] * (self.args["dimensionality"]+1)) / 2)))
         model.add(LeakyReLU(alpha=0.2))
 
         model.add(Dense(1, activation='sigmoid'))
