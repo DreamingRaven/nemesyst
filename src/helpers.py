@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2019-02-28
+# @Last modified time: 2019-04-06T19:59:25+01:00
 # @License: Please see LICENSE file in project root
 
 
@@ -22,7 +22,7 @@ from fnmatch import fnmatch
 
 import numpy as np
 import pandas as pd
-from src.neuralNetwork import NeuralNetwork
+# from src.neuralNetwork import NeuralNetwork
 
 fileName = "helpers.py"
 prePend = "[ " + fileName + " ] "
@@ -149,81 +149,6 @@ def getPipeline(pipePath, print=print):
         print(prePend + "could not get pipeline from: " + str(pipePath) + "\n" +
             str(sys.exc_info()[0]) + " " +
               str(sys.exc_info()[1]), 2)
-
-
-def train(args, database=None, print=print):
-
-    cursor = None
-    try:
-        model = None
-        for i in range(0, args["epochs"]):
-            print("EPOCH: " + str(i), 0)
-            nn = NeuralNetwork(db=database,
-                               logger=print,
-                               args=args,
-                               model=model,
-                               currentEpoch=i,
-                               data_pipeline=getPipeline(
-                                   args["pipeline"], print=print)
-                               )
-            cursor = nn.getCursor()
-            nn.autogen()
-            model = nn.train()
-    except:
-        print(prePend + "could not train dataset:\n" +
-            str(sys.exc_info()[0]) + " " +
-              str(sys.exc_info()[1]), 2)
-    finally:
-        if(cursor != None) and (cursor.alive):
-            cursor.close()
-
-
-def test(args, database=None, print=print):
-
-    cursor = None
-    try:
-        nn = NeuralNetwork(db=database,
-                           logger=print,
-                           args=args,
-                           data_pipeline=getPipeline(
-                               args["pipeline"], print=print),
-                           model_pipeline=getPipeline(
-                               args["modelPipe"], print=print),
-                           )
-        cursor = nn.getCursor()
-        nn.test()
-
-    except:
-        print(prePend + "could not test dataset:\n" +
-            str(sys.exc_info()[0]) + " " +
-              str(sys.exc_info()[1]), 2)
-    finally:
-        if(cursor != None) and (cursor.alive):
-            cursor.close()
-
-
-def predict(args, database=None, print=print):
-
-    cursor = None
-    try:
-        nn = NeuralNetwork(db=database,
-                           logger=print,
-                           args=args,
-                           data_pipeline=getPipeline(
-                               args["pipeline"], print=print),
-                           model_pipeline=getPipeline(
-                               args["modelPipe"], print=print),
-                           )
-        cursor = nn.getCursor()
-        nn.predict()
-
-    except:
-        print(prePend + "could not predict on dataset:\n" +
-            str(sys.exc_info()[0]) + " " +
-              str(sys.exc_info()[1]), 2)
-    finally:
-        if(cursor != None) and (cursor.alive):
-            cursor.close()
 
 
 def callCustomScript(args, database=None, print=print):
