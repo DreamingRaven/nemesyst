@@ -328,6 +328,8 @@ Results in:
 Currently Nemesyst does not support multivariate targets, specifically any "target" with more than one value, this is a future addition.
 
 ### Simple Training
+\* please note: now that neural network scripts have been removed from core nemesyst in favor of external scripts (see examples LSTM.py or GAN.py) you will now also need to specify the location of your custom script. You may also create your own and call that also, which I will talk more about here soon.
+
 To train the data set you first require a pipeline (see pipelines section). This pipeline is what will create an iterable MongoDB cursor which can retrieve the data you want in the manner you want it retrieved, please see previous section "Pipelines".
 
 The conditions that need to be met to allow for training:
