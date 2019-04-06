@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-03-03
+# @Last modified time: 2019-04-06T19:58:47+01:00
 # @License: Please see LICENSE file in project root
 
 
@@ -16,8 +16,7 @@ import time
 
 from src.aDict import ADict
 from src.arg import argz
-from src.helpers import (callCustomScript, clean, datetime, installer, predict,
-                         test, train, updater)
+from src.helpers import (callCustomScript, clean, datetime, installer, updater)
 from src.importer import importData
 from src.log import Log
 
@@ -64,15 +63,6 @@ def main():
 
     if(args["type"] == "custom"):
         callCustomScript(args=args, database=mongodb, print=print)
-    else:
-        if(args["toTrain"] == True):
-            train(args=args, database=mongodb, print=print)
-
-        if(args["toTest"] == True):
-            test(args=args, database=mongodb, print=print)
-
-        if(args["toPredict"] == True):
-            predict(args=args, database=mongodb, print=print)
 
     if(args["toStopDb"] == True):
         time.sleep(2)  # making sure server has time to start
