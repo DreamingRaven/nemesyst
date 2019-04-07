@@ -379,9 +379,10 @@ Nemesyst now also supports use of custom external training scripts. Nemesyst pro
 
 ## Closing examples
 for user 'georgeraven' creating 'GeorgeRaven' user with 'password' password, in database 'mehDatabaseName', who desires to debug at log level '3' and to launch database:
-````
-/home/georgeraven/Nemesyst/nemesyst.py -u GeorgeRaven -p password -N mehDatabaseName -v 3 -i -S
-````
+
+<pre><code>
+<b><i>/home/georgeraven/Nemesyst/</i></b>nemesyst.py -u <b><i>GeorgeRaven</i></b> -p <b><i>password</i></b> -N <b><i>mehDatabaseName</i></b> -v <b><i>3</i></b> -i -S
+</code></pre>
 
 Please see help screen for more options there are many more but these are the main ones for localhost usage.
 
