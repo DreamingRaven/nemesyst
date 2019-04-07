@@ -78,9 +78,12 @@ This recommender system should flag any issues with arguments automagically. For
 where '~' is expanded by bash to /home/whateverYourUserNameIs
 
 standard usage for a localhost server with authentication (auth non optional forced):
-````
-**/nemesyst.py --user *1* --pass *2* --name *3* --toInitDb --toStartDb
-````
+
+<pre>
+<code>
+**/nemesyst.py --user <b>*1*</b> --pass *2* --name *3* --toInitDb --toStartDb
+</code>
+</pre>
 or
 ````
 **/nemesyst.py -u *1* --p *2* --N *3* -i -S
