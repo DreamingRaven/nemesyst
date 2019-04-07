@@ -81,17 +81,17 @@ standard usage for a localhost server with authentication (auth non optional for
 
 <pre>
 <code>
-**/nemesyst.py --user <b>*1*</b> --pass *2* --name *3* --toInitDb --toStartDb
+**/nemesyst.py --user <b><i>username</i></b> --pass <b><i>password</i></b> --name <b><i>db_name</i></b> --toInitDb --toStartDb
 </code>
 </pre>
 or
-````
-**/nemesyst.py -u *1* --p *2* --N *3* -i -S
-````
+<pre><code>
+**/nemesyst.py -u <b><i>username</i></b> --p <b><i>password</i></b> --N <b><i>db_name</i></b> -i -S
+</code></pre>
 where:
-* \*1\* is used in place of your *user* name if this is a new db then desired username.
-* \*2\* is used in place of the users *pass* word, as above if new then desired password.
-* \*3\* is the *name* of the database to be used or generated
+* <b><i>username</i></b> is used in place of your *user* name if this is a new db then desired username.
+* <b><i>password</i></b> is used in place of the users *pass* word, as above if new then desired password.
+* <b><i>db_name</i></b> is the *name* of the database to be used or generated
 
 And:
 * --user / -u is an an argument which allows you to then set the username which will be used in any subsequent operations E.G --toInitDb + --user will attempt to add that user to the database.
