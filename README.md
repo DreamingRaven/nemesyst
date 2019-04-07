@@ -110,9 +110,9 @@ lastly as above, for debugging purposes there is a logger with log levels:
 
 To use this logger simply add option -v OR --loglevel with the desired level. Anything less than that level will also be shown, so level 2 will show [ERROR], [WARN], [INFO] and formatting messages, but not [DEBUG] messages.
 E.G to show all possible messages in most verbose state:
-````
-**/nemesyst.py -u *1* --p *2* --N *3* --loglevel 9001
-````
+<pre><code>
+**/nemesyst.py -u <b><i>username</i></b> --p <b><i>password</i></b> --N <b><i>db_name</i></b> --loglevel <i>9001</i>
+</code></pre>
 ("over nine thousand!") 9001 will show all log levels < 9001
 
 ### All the options
@@ -203,9 +203,9 @@ which file is you're cleaning file simply use the -c / --cleaner argument
 followed by the file inclusive path to the (executable) cleaner file.
 
 An example using the default cleaner:
-```
-**/nemesyst.py *yourOtherArguments* --cleaner **/examples/cleaner --newData *1* --timeSteps *2*
-```
+<pre><code>
+**/nemesyst.py <b><i>yourOtherArguments</i></b> --cleaner <b><i>**/examples/cleaner</i></b> --newData <b><i>*1*</i></b> --timeSteps <b><i>*2*</i></b>
+</code></pre>
 Where:
 * \*\* is the inclusive path to wherever you have Nemesyst/ directory, read
 usage section.
