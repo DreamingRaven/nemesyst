@@ -12,15 +12,16 @@ Nemesyst is designed to fascilitate larger scale distributed deep learning appli
 
 Nemesyst also outlines a framework with which to construct other deep learning applications, and is an attempt to unify deep learning through use of similar and already used MPIs, in this case MongoDB. It also seeks to unify deep learning architecturaly such that it can be abstracted in four distinct stages:
 
-Wrangling
-Serving
-Learning
-Distributing
+* Wrangling - cleaning data into atomic single examples.
+* Serving - Making availiable both data and sequentialised model binary for training and realtime inference.
+* Learning - distributable deep learning that can be continued from sequentialised models availiable in the database.
+* Distributing - using the database (MongoDB) to distribute trained models to where they are needed.
+
+Nemesyst allows for deep learning to be configurable and sets out interfaces and methods to allow deep learning to function real time in applications and with data of a near infinite size.
 
 Quick references
-* [distributed deep learning](https://sea.ucar.edu/sites/default/files/DeepLearning_seaconf18.pdf) -
-* [Keystone Paper](https://arxiv.org/pdf/1707.07435.pdf) -
-Deep Learning based Recommender System: A Survey and New Perspectives [sic]
+* [distributed deep learning](https://sea.ucar.edu/sites/default/files/DeepLearning_seaconf18.pdf)
+* [deep learning survey](https://arxiv.org/pdf/1707.07435.pdf)
 
 Quick Definitions (Wiki)
 * [ML](https://en.wikipedia.org/wiki/Machine_learning) - Machine Learning
