@@ -204,13 +204,13 @@ followed by the file inclusive path to the (executable) cleaner file.
 
 An example using the default cleaner:
 <pre><code>
-**/nemesyst.py <b><i>yourOtherArguments</i></b> --cleaner <b><i>**/examples/cleaner</i></b> --newData <b><i>*1*</i></b> --timeSteps <b><i>*2*</i></b>
+**/nemesyst.py <b><i>yourOtherArguments</i></b> --cleaner <b><i>**/examples/cleaner</i></b> --newData <b><i>data_path</i></b> --timeSteps <b><i>timesteps_int</i></b>
 </code></pre>
 Where:
 * \*\* is the inclusive path to wherever you have Nemesyst/ directory, read
 usage section.
-* \*1\* is the inclusive file path or folder of files which are to be cleaned
-* \*2\* is an argument that is provided to your cleaner file and is the number of time steps to expect per sample, you will need to define this throught your use so I recommend you put this in your config file
+* <b><i>data_path</i></b> is the inclusive path to the files or folders wanted to be passed to the cleaner
+* <b><i>timesteps_int</i></b> defines how many time steps per example to expect for sequences and sets how many long sequence models such as LSTMs should be.
 
 Both arguments provided to --cleaner and --newData will be used as arguments to
 you're cleaner file. See \*\*/examples/cleaner.py for a boiler plate template.
@@ -346,9 +346,9 @@ The conditions that need to be met to allow for training:
 
 If all the above conditions are met at the point of training (they can all be done in one command and automatically run in the correct order), then you can specify the --toTrain flag.
 
-````
-**/Nemesyst/nemesyst.py --toTrain
-````
+<pre><code>
+**/Nemesyst/nemesyst.py --config <b><i>~/path/to/config.ini</i></b> --toTrain
+</code></pre>
 
 ### Simple Testing
 
@@ -360,16 +360,17 @@ recent model. This will test on the data set pointed to by --coll. As such you
 will need to re-run nemesyst.py to swap from training to testing if you want
 to train on one set and test on another.
 
-````
-**Nemesyst/nemesyst.py --toTest
-````
+<pre><code>
+**Nemesyst/nemesyst.py <b><i>~/path/to/config.ini</i></b> --toTest
+</code></pre>
 
 ### Simple Predicting
 (documentation still being written)
 Prediction also requires the exact same conditions, it currently still requires the target field provided from pipeline, but you can just use 0 as it is not actually necessary for prediction.
-````
-**Nemesyst/nemesyst.py --toPredict
-````
+
+<pre><code>
+**Nemesyst/nemesyst.py <b><i>~/path/to/config.ini</i></b> --toPredict
+</code></pre>
 
 ### Custom Training Testing Predicting
 Nemesyst now also supports use of custom external training scripts. Nemesyst provides two new CLI args --customScript and --customScript_entryPoint. The former is a given path to the external script desired to be run, and the latter indicates which function should be called with the arguments args, db, and log, such that nemesyst can provide these necessary bits of information and interfaces for your custom scripts to be able to use.
