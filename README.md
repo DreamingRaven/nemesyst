@@ -50,7 +50,7 @@ Then simply: *
 git clone https://github.com/DreamingRaven/Nemesyst
 ````
 ````
-./Nemesyst/nemesyst.py --toUpdate
+./nemesyst/nemesyst.py --toUpdate
 ````
 
 Other than those that should be all you need, as dependencies have been kept to as few as needed to make a good extensible result.
@@ -74,7 +74,7 @@ This recommender system should flag any issues with arguments automagically. For
 
 ** is used in place of whatever the path is to the Nemesyst root directory location, since it will vary between systems. e.g the full bash command on my system would be:
 ````
- ~/Nemesyst/nemesyst.py -h
+ ~/nemesyst/nemesyst.py -h
 ````
 where '~' is expanded by bash to /home/whateverYourUserNameIs
 
@@ -348,7 +348,7 @@ The conditions that need to be met to allow for training:
 If all the above conditions are met at the point of training (they can all be done in one command and automatically run in the correct order), then you can specify the --toTrain flag.
 
 <pre><code>
-**/Nemesyst/nemesyst.py --config <b><i>~/path/to/config.ini</i></b> --toTrain
+**/nemesyst/nemesyst.py --config <b><i>~/path/to/config.ini</i></b> --toTrain
 </code></pre>
 
 ### Simple Testing
@@ -362,7 +362,7 @@ will need to re-run nemesyst.py to swap from training to testing if you want
 to train on one set and test on another.
 
 <pre><code>
-**Nemesyst/nemesyst.py <b><i>~/path/to/config.ini</i></b> --toTest
+**nemesyst/nemesyst.py <b><i>~/path/to/config.ini</i></b> --toTest
 </code></pre>
 
 ### Simple Predicting
@@ -370,7 +370,7 @@ to train on one set and test on another.
 Prediction also requires the exact same conditions, it currently still requires the target field provided from pipeline, but you can just use 0 as it is not actually necessary for prediction.
 
 <pre><code>
-**Nemesyst/nemesyst.py <b><i>~/path/to/config.ini</i></b> --toPredict
+**nemesyst/nemesyst.py <b><i>~/path/to/config.ini</i></b> --toPredict
 </code></pre>
 
 ### Custom Training Testing Predicting
@@ -382,7 +382,7 @@ Nemesyst now also supports use of custom external training scripts. Nemesyst pro
 for user 'georgeraven' creating 'GeorgeRaven' user with 'password' password, in database 'mehDatabaseName', who desires to debug at log level '3' and to launch database:
 
 <pre><code>
-<b><i>/home/georgeraven/Nemesyst/</i></b>nemesyst.py -u <b><i>GeorgeRaven</i></b> -p <b><i>password</i></b> -N <b><i>mehDatabaseName</i></b> -v <b><i>3</i></b> -i -S
+<b><i>/home/georgeraven/nemesyst/</i></b>nemesyst.py -u <b><i>GeorgeRaven</i></b> -p <b><i>password</i></b> -N <b><i>mehDatabaseName</i></b> -v <b><i>3</i></b> -i -S
 </code></pre>
 
 Please see help screen for more options there are many more but these are the main ones for localhost usage.
