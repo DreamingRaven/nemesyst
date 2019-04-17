@@ -4,7 +4,7 @@
 # @Date:   2018-09-27
 # @Filename: lstm.py
 # @Last modified by:   archer
-# @Last modified time: 2019-03-07
+# @Last modified time: 2019-04-15T21:41:13+01:00
 # @License: Please see LICENSE file in project root
 
 """
@@ -18,6 +18,8 @@ import os
 import pickle
 import pprint
 import sys
+import matplotlib.pyplot as plt
+import seaborn as sns; sns.set(color_codes=True)
 
 import numpy as np
 import pandas as pd
@@ -221,7 +223,59 @@ class Lstm():
         test_x = np.reshape(
             test_x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"] - 1))
         loss = model.evaluate(test_x, test_y)
+
+        #REMOVE ME ONLY EXAMPLE FOR GRAPHS
+        pred = model.predict(test_x)
+        df = pd.DataFrame(pred, columns=["predictions"])
+        #df["pred"] = pred
+        df["truth"] = test_y
+        print(df)
+        fig, ax = plt.subplots()
+        sns.scatterplot(x=df["truth"], y=df["truth"], color="blue", ax=ax)
+        sns.scatterplot(x=df["predictions"], y=df["truth"], color="orange", ax=ax)
+        
+        ax.set(ylim=(1000, 3000))
+        ax.set(xlim=(1000, 3000))
+        ax.set_title('lstm predictions vs actual data with overlayed regression')
+        print(type(ax))
+        print("one")
+        fig = ax.get_figure()
+        print("two")
+        fig.savefig("/home/archer/docs/img/actual_predicted.png")
+
         self.log("loss_test: " + str(loss), 0)
+        predictions = []
+        truth = []
+        for data in self.data:
+            documents = pd.DataFrame(data)
+            # flattening list
+            flat_l = [item for sublist in documents["data"]
+                          for item in sublist]
+            x = pd.DataFrame(flat_l)
+            # duplicating target to be the same length as input
+            y = np.repeat(
+            documents["target"], 1)
+            x = np.reshape(
+                x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"] - 1))
+            pred = model.predict(x)
+            predictions = predictions + list(pred.flatten())
+            truth = truth + list(y)
+        
+        df = pd.DataFrame(predictions, columns=["predictions"])
+        df["truth"] = truth
+
+        fig, ax = plt.subplots()
+        sns.scatterplot(x=df["truth"], y=df["truth"], color="black", size=1, alpha=0.05, ax=ax)
+        sns.scatterplot(x=df["predictions"], y=df["truth"], color="orange", alpha=0.05, ax=ax)
+        
+        ax.set(ylim=(1000, 3000))
+        ax.set(xlim=(1000, 3000))
+        ax.set_title('lstm predictions vs actual data with overlayed regression')
+        fig = ax.get_figure()
+        fig.savefig("/home/archer/docs/img/actual_predicted3.png")
+        print(len(predictions))
+        df.to_csv("/home/archer/docs/predicted-real.csv")
+
 
 
     def predict(self):

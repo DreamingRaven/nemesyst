@@ -239,7 +239,14 @@ class Gan():
                 x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]))
             y = np.reshape(
                 y.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"]+1))
-            loss = model.test_on_batch(x, y)
+            loss = model.evaluate(x, y)
+
+            # REMOVE ME ONLY FOR EXAMPLE GRAPHS
+            predict = model.predict(x)
+            print(type(predict))
+            df = pd.Panel(rollaxis(a)).to_frame()
+
+
             self.log("GAN test on: " + str(tempArgs["coll"])
                     + ", btch: " + str(i)
                     + ", btch sz: " + str(len(data))
