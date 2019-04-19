@@ -4,7 +4,7 @@
 # @Date:   2018-09-27
 # @Filename: lstm.py
 # @Last modified by:   archer
-# @Last modified time: 2019-04-15T21:41:13+01:00
+# @Last modified time: 2019-04-17T20:12:21+01:00
 # @License: Please see LICENSE file in project root
 
 """
@@ -233,7 +233,7 @@ class Lstm():
         fig, ax = plt.subplots()
         sns.scatterplot(x=df["truth"], y=df["truth"], color="blue", ax=ax)
         sns.scatterplot(x=df["predictions"], y=df["truth"], color="orange", ax=ax)
-        
+
         ax.set(ylim=(1000, 3000))
         ax.set(xlim=(1000, 3000))
         ax.set_title('lstm predictions vs actual data with overlayed regression')
@@ -260,17 +260,19 @@ class Lstm():
             pred = model.predict(x)
             predictions = predictions + list(pred.flatten())
             truth = truth + list(y)
-        
+
         df = pd.DataFrame(predictions, columns=["predictions"])
         df["truth"] = truth
 
         fig, ax = plt.subplots()
-        sns.scatterplot(x=df["truth"], y=df["truth"], color="black", size=1, alpha=0.05, ax=ax)
-        sns.scatterplot(x=df["predictions"], y=df["truth"], color="orange", alpha=0.05, ax=ax)
+        sns.scatterplot(x=df["truth"], y=df["truth"], label="ground truth", color="black", size=1, alpha=0.02, ax=ax)
+        sns.scatterplot(x=df["predictions"], y=df["truth"], label="prediction", color="orange", size=1, alpha=0.02, ax=ax)
         
-        ax.set(ylim=(1000, 3000))
-        ax.set(xlim=(1000, 3000))
+        #ax.ax_joint.plot([0,0], [3000,3000], 'b-', linewidth = 2)
+        ax.set(ylim=(0, 3000))
+        ax.set(xlim=(0, 3000))
         ax.set_title('lstm predictions vs actual data with overlayed regression')
+        ax.legend()
         fig = ax.get_figure()
         fig.savefig("/home/archer/docs/img/actual_predicted3.png")
         print(len(predictions))

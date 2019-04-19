@@ -4,7 +4,7 @@
 # @Date:   2018-09-27
 # @Filename: gan.py
 # @Last modified by:   archer
-# @Last modified time: 2019-04-01T12:48:00+01:00
+# @Last modified time: 2019-04-17T21:42:45+01:00
 # @License: Please see LICENSE file in project root
 
 """
@@ -245,6 +245,7 @@ class Gan():
             predict = model.predict(x)
             print(type(predict))
             df = pd.Panel(rollaxis(a)).to_frame()
+            print(df)
 
 
             self.log("GAN test on: " + str(tempArgs["coll"])
