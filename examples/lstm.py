@@ -211,18 +211,30 @@ class Lstm():
         self.tester(self.model_dict["lstm"])
 
     def tester(self, model):
-        test_doc = self.data.getSample()
-        test_doc = pd.DataFrame(test_doc)
-        print(test_doc)
-        flat_l = [item for sublist in test_doc["data"]
-                  for item in sublist]
-        test_y = np.repeat(test_doc["target"], 1)
-        test_x = pd.DataFrame(flat_l)
-        test_x = np.reshape(
-            test_x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"] - 1))
-        loss = model.evaluate(test_x, test_y)
-        self.log("loss_test: " + str(loss), 0)
+        tempArgs = copy.deepcopy(self.args)
+        tempArgs["coll"] = tempArgs["testColl"]
+        tempArgs["dimensionality"] = tempArgs["dimensionality"] - 1
+        database = self.Data(args=tempArgs, db=self.db, log=self.log)
 
+        batch = 0
+        sum_loss = 0
+        for data in database:
+            documents = pd.DataFrame(data)
+            # flattening list
+            flat_l = [item for sublist in documents["data"]
+                      for item in sublist]
+            x = pd.DataFrame(flat_l)
+            # duplicating target to be the same length as input
+            y = np.repeat(
+                documents["target"], 1)
+            x = np.reshape(
+                x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"] - 1))
+            loss = model.evaluate(x, y)
+            sum_loss = sum_loss + loss
+            self.log("batch: " + str(batch) + " loss_test: " + str(loss), 0)
+            batch = batch + 1
+
+        self.log("avg_loss: " + str(sum_loss / batch))
 
     def predict(self):
         """
@@ -232,7 +244,39 @@ class Lstm():
         if(self.model_dict != None):
             None
         else:
-            None
+            self.model_dict = self.getModel(
+                self.getPipe(self.args["modelPipe"]))
+        # assigning model to variable to aid readability
+        model = self.model_dict["lstm"]
+
+        tempArgs = copy.deepcopy(self.args)
+        tempArgs["coll"] = tempArgs["testColl"]
+        tempArgs["dimensionality"] = tempArgs["dimensionality"] - 1
+        database = self.Data(args=tempArgs, db=self.db, log=self.log)
+
+        batch = 0
+
+        predictions = []
+        truths = []
+        for data in database:
+            documents = pd.DataFrame(data)
+            # flattening list
+            flat_l = [item for sublist in documents["data"]
+                      for item in sublist]
+            x = pd.DataFrame(flat_l)
+            # duplicating target to be the same length as input
+            y = np.repeat(
+                documents["target"], 1)
+            x = np.reshape(
+                x.values, (self.args["batchSize"], self.args["timeSteps"], self.args["dimensionality"] - 1))
+            prediction = model.predict(x)
+            predictions = predictions + list(prediction.flatten())
+            truths = truths + list(y)
+            batch = batch + 1
+        df = pd.DataFrame(predictions, columns=["predictions"])
+        df["truths"] = truths
+        df.to_csv("predictions.csv", index=False)
+        print(df)
 
     def save(self):
         """
