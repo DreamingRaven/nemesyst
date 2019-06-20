@@ -1,0 +1,50 @@
+\documentclass[10pt,journal,compsoc]{IEEEtran}
+\def \pfName {Nemesyst}
+\def \pTitle {\pfName{}: A Hybrid Parallelism Deep~Learning Framework}
+\usepackage{datetime2} % sets datetime style to comp sci
+\usepackage{graphicx}
+\graphicspath{ {./content/images/} }
+\usepackage[table]{xcolor}% http://ctan.org/pkg/xcolor
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+% this section is used for code snippets colouring and format
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\ifCLASSOPTIONcompsoc
+  % IEEE Computer Society needs nocompress option.
+  \usepackage[nocompress]{cite}
+\else
+  % normal IEEE
+  \usepackage{cite}
+\fi
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+ \nocite{*} % placeholder to display all references until they are used
+ \input{./content/titleAbstract.tex}
+ \bibliographystyle{unsrt}
+ \bibliography{./content/bibliography.bib}
+
+\end{document}
