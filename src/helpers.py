@@ -2,7 +2,7 @@
 # @Date:   2018-05-22
 # @Filename: helpers.py
 # @Last modified by:   archer
-# @Last modified time: 2019-04-06T19:59:25+01:00
+# @Last modified time: 2019-04-19T16:27:45+01:00
 # @License: Please see LICENSE file in project root
 
 
@@ -122,7 +122,7 @@ def updater(path="./",
 
 def clean(args, print=print):
 
-    print("cleaning: " + str(args["newData"]) + " using: "
+    print("cleaning using: "
           + args["cleaner"] + "...", 3)
     try:
         subprocess.call([

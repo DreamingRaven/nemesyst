@@ -28,6 +28,7 @@ class Data(MutableMapping):
         self.args = args
         self.db = db
         self.log = log
+        self.warn_count = 0
 
     def __delitem__(self):
         raise NotImplementedError("Data.__delitem__() is not yet implemented")
@@ -61,6 +62,10 @@ class Data(MutableMapping):
                     (len(singleExample["data"][0]) == self.args["dimensionality"]):
                 # if matches append
                 batch.append(singleExample)
+            else:
+                if(self.warn_count < 10):
+                    self.warn_count = self.warn_count + 1
+                    self.log("example len: " + str(len(singleExample["data"])) + ", dim: " + str(len(singleExample["data"][0])) + " != " + str(self.args["timeSteps"]) + ", " + str(self.args["dimensionality"]) )
         return batch
 
     def __len__(self):
