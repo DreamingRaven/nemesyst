@@ -2,7 +2,7 @@
 pkgname=nemesyst-git
 pkgsrcname="nemesyst"
 
-pkgver=0.9.5.r58.7488e79
+pkgver=1.0.0.r9.3be3c7b
 
 pkgrel=1
 pkgdesc="Generalised, sequence-based, deep-learning framework of the gods. Warning may include GANs, does not include nuts."
