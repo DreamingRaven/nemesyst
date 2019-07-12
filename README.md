@@ -2,8 +2,6 @@
 
 ###### (formerly: RavenRecSyst)
 
-Please also note: That core Nemesyst/ inbuilt neural networks are being removed and separated from Nemesyst into external files since this helps keep Nemesyst invariant of any neural network framework. This also makes it clearer as example files of RNNs, LSTMs, GANs will be made available with the core Nemesyst packages to exemplify usage. Over this period some functionality will be unavailiable, if you would like to maintain old functionality please download an older release <= [0.9.5](https://github.com/DreamingRaven/Nemesyst/releases/tag/0.9.5). So that this allows us to push for full functionality according to our version 1 specification.
-
 ## Introduction
 
 Nemesyst is a, configurable hybrid parallelisation, deep learning framework; using Python, Bash, MongoDb.
@@ -34,14 +32,17 @@ Quick Definitions (Wiki)
 ## Installation
 
 
-You will first have to install/ verify a few key dependencies I am still in the process of isolating keras and tensorflow to external files, so appologies for uneccessary dependancy.
+You will first have to install/ verify a few key dependencies for the core functionality of Nemesyst
 
 * [MongoDB](https://www.mongodb.com/)
 * Python modules:
     * [Pymongo](https://api.mongodb.com/python/current/) for MongoDB
-    * [TensorFlow | TensorFlow-gpu](https://www.tensorflow.org/install/) for that juicy machine-learning
-    * [Keras](https://github.com/keras-team/keras) although tensorflow has recentley bundled its own keras
 - [Bash](https://www.gnu.org/software/bash/) for simple system level operations
+
+You may aso want to install your prefered deep learning framework such as:
+* [PyTorch](https://pytorch.org/) for that juicy research deep learning
+* [TensorFlow | TensorFlow-gpu](https://www.tensorflow.org/install/) for that production machine-learning
+* [Keras](https://github.com/keras-team/keras) although tensorflow has recentley bundled its own keras
 
 If any have been left out please create an issue and post any log messages.
 
