@@ -1,10 +1,10 @@
 # Maintainer: George Raven <GeorgeRavenCommunity AT pm dot me>
 pkgname=nemesyst-git
 pkgsrcname="nemesyst"
-pkgver=0.9.5.r58.7488e79
+pkgver=1.0.0.r9.3be3c7b
 pkgrel=1
 pkgdesc="Generalised, sequence-based, deep-learning framework of the gods. Warning may include GANs, does not include nuts."
-arch=('x86_64')
+arch=('x86_64' 'aarch64')
 url="https://github.com/DreamingRaven/nemesyst"
 branch="master"
 license=('MIT') # MIT is a special case store a copy in /usr/share/pkgname
