@@ -5,7 +5,7 @@
 # @Date:   2018-09-05
 # @Filename: setup.py
 # @Last modified by:   archer
-# @Last modified time: 2018-09-12
+# @Last modified time: 2019-07-15
 # @License: Please see LICENSE file in project root
 
 import subprocess as sp
@@ -22,11 +22,12 @@ with open("README.md", "r") as fh:
 setup(
     name="nemesyst",
     version=str(version),
-    description="Generalised, sequence-based, deep-learning framework of the gods. Warning may include GANs, does not include nuts.",
+    description="Generalised, sequence-based, deep-learning framework of the" +
+                "gods. Warning may include GANs, does not include nuts.",
     long_description=readme,
     long_description_content_type="text/markdown",
     author="George Onoufriou",
-    url="https://github.com/DreamingRaven/Nemesyst",
+    url="https://github.com/DreamingRaven/nemesyst",
     packages=find_namespace_packages(),
     scripts=['nemesyst.py'],
 )

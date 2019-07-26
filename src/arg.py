@@ -2,7 +2,7 @@
 # @Date:   2018-07-18
 # @Filename: arg.py
 # @Last modified by:   archer
-# @Last modified time: 2019-02-28
+# @Last modified time: 2019-07-16
 # @License: Please see LICENSE file in project root
 
 import argparse
@@ -291,9 +291,9 @@ def argz(argv=None, description=None, prevArgs=None):
         args=args, argNames=wantedInLowerCase, toMakeLowerCase=True)
 
     # run again if args do not include config files I.E they have no previous state
-    if(prevArgs != None):
+    if(prevArgs is not None):
         # this just ensures the implication carries over
-        if(normalArgs["toReTrain"] == True):
+        if(normalArgs["toReTrain"] is True):
             normalArgs["toTrain"] = True
         return normalArgs
     else:
@@ -320,7 +320,8 @@ def normaliseArgs(args, argNames, toMakeLowerCase=False):
                 print(args[argName], argName)
                 if not (os.path.exists(args[argName])):
                     raise FileNotFoundError(
-                        str(args[argName]) + " not found")  # from error
+                        str(args[argName]) +
+                        " not found for: --" + str(argName))  # from error
 
     return args
 
