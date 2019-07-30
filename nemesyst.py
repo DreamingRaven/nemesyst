@@ -46,7 +46,7 @@ def argument_handler(args, description=None):
     nemesyst.add_argument("-U", "--update",
                           default=bool(False),
                           action="store_true",
-                          help="nemesyst update, and restarta")
+                          help="nemesyst update, and restart")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--login-db",
@@ -74,6 +74,9 @@ def argument_handler(args, description=None):
 
     args = parser.parse_args(args)
     args = vars(args)
+
+    if(args["update"] is True):
+        raise RuntimeError("nemesyst update not yet implemented")
 
     if(args["password"] is True):
         args["password"] = getpass.getpass()

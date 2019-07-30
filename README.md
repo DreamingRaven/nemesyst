@@ -37,11 +37,12 @@ You will first have to install/ verify a few key dependencies for the core funct
 * [MongoDB](https://www.mongodb.com/)
 * Python modules:
     * [Pymongo](https://api.mongodb.com/python/current/) for MongoDB
+    * [Configparser](https://pypi.org/project/configparser/) enable reading config files
 - [Bash](https://www.gnu.org/software/bash/) for simple system level operations
 
 You may aso want to install your prefered deep learning framework such as:
-* [PyTorch](https://pytorch.org/) for that juicy research deep learning
-* [TensorFlow | TensorFlow-gpu](https://www.tensorflow.org/install/) for that production machine-learning
+* [PyTorch | PyTorch-cuda](https://pytorch.org/) for that juicy research deep learning
+* [TensorFlow | TensorFlow-cuda](https://www.tensorflow.org/install/) for that production machine-learning
 * [Keras](https://github.com/keras-team/keras) although tensorflow has recentley bundled its own keras
 
 If any have been left out please create an issue and post any log messages.
