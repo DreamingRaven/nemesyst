@@ -16,6 +16,7 @@ import configargparse
 
 
 def main(args):
+    """Operate on processed args."""
     if(args["db_init"] is True):
         pass
     if(args["db_start"] is True):
@@ -81,9 +82,9 @@ def argument_handler(args, config_files, description):
 
     if(args["update"] is True):
         raise RuntimeError("nemesyst update not yet implemented")
-
-    if(args["db_password"] is True):
-        args["db_password"] = getpass.getpass()
+    else:  # only run this section if there is no need to update
+        if(args["db_password"] is True):
+            args["db_password"] = getpass.getpass()
 
     print(args)
     return args

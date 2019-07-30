@@ -2,6 +2,8 @@
 
 ###### (formerly: RavenRecSyst)
 
+[![Documentation Status](https://readthedocs.org/projects/nemesyst/badge/?version=latest)](https://nemesyst.readthedocs.io/en/latest/?badge=latest)
+
 ## Introduction
 
 Nemesyst is a, configurable hybrid parallelisation, deep learning framework; using Python, Bash, MongoDb.
