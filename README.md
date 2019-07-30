@@ -38,6 +38,7 @@ You will first have to install/ verify a few key dependencies for the core funct
 * Python modules:
     * [Pymongo](https://api.mongodb.com/python/current/) for MongoDB
     * [Configparser](https://pypi.org/project/configparser/) enable reading config files
+    * [ConfigArgParse](https://pypi.org/project/ConfigArgParse/)
 - [Bash](https://www.gnu.org/software/bash/) for simple system level operations
 
 You may aso want to install your prefered deep learning framework such as:
