@@ -17,13 +17,13 @@ import configparser
 
 
 def main(args):
-    if(args["init_db"] is True):
+    if(args["db_init"] is True):
         pass
-    if(args["start_db"] is True):
+    if(args["db_start"] is True):
         pass
-    if(args["login_db"] is True):
+    if(args["db_login"] is True):
         pass
-    if(args["stop_db"] is True):
+    if(args["db_stop"] is True):
         pass
 
 
@@ -38,6 +38,7 @@ def argument_handler(args, description=None):
                                      add_help=False)
     nemesyst = parser.add_argument_group(title="Nemesyst options")
     mongodb = parser.add_argument_group(title="MongoDb options")
+    passlib = parser.add_argument_group(title="Passlib options")
 
     # Nemesyst specific options
     nemesyst.add_argument("-h", "--help",
@@ -48,26 +49,31 @@ def argument_handler(args, description=None):
                           action="store_true",
                           help="nemesyst update, and restart")
 
+    # Passlib specific options
+    passlib.add_argument("-P", "--passlib",
+                         default=None,
+                         help="passlib constructor dict")
+
     # MongoDB specific options
-    mongodb.add_argument("-l", "--login-db",
+    mongodb.add_argument("-l", "--db-login",
                          default=bool(False),
                          action="store_true",
                          help="nemesyst log into mongodb")
-    mongodb.add_argument("-s", "--start-db",
+    mongodb.add_argument("-s", "--db-start",
                          default=bool(False),
                          action="store_true",
                          help="nemesyst launch mongodb")
-    mongodb.add_argument("-S", "--stop-db",
+    mongodb.add_argument("-S", "--db-stop",
                          default=bool(False),
                          action="store_true",
                          help="nemesyst stop mongodb")
-    mongodb.add_argument("-i", "--init-db",
+    mongodb.add_argument("-i", "--db-init",
                          default=bool(False),
                          action="store_true",
                          help="nemesyst initialise mongodb")
-    mongodb.add_argument("-u", "--user",
+    mongodb.add_argument("--db-user",
                          help="set mongodb usernam")
-    mongodb.add_argument("-p", "--password",
+    mongodb.add_argument("--db-password",
                          default=None,
                          action="store_true",
                          help="set mongodb password")
@@ -78,8 +84,8 @@ def argument_handler(args, description=None):
     if(args["update"] is True):
         raise RuntimeError("nemesyst update not yet implemented")
 
-    if(args["password"] is True):
-        args["password"] = getpass.getpass()
+    if(args["db_password"] is True):
+        args["db_password"] = getpass.getpass()
 
     print(args)
     return args
