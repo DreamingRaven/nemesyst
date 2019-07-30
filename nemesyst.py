@@ -26,15 +26,14 @@ def main(args):
         pass
 
 
-def argument_handler(args, description=None):
-    """Parse cli and config arguments into dictionary."""
-    default_description = "Nemesyst; Python hybrid parallelism deep learning"
-    description = description if description is not None else \
-        default_description
+def argument_handler(args, config_files, description):
+    """Parse cli>environment>config>default arguments into dictionary."""
+    cfg_files = config_files
 
     parser = configargparse.ArgumentParser(prog=None,
                                            description=description,
-                                           add_help=False)
+                                           add_help=False,
+                                           default_config_files=cfg_files)
     nemesyst = parser.add_argument_group(title="Nemesyst options")
     mongodb = parser.add_argument_group(title="MongoDb options")
     passlib = parser.add_argument_group(title="Passlib options")
@@ -73,7 +72,7 @@ def argument_handler(args, description=None):
     mongodb.add_argument("--db-user",
                          help="set mongodb usernam")
     mongodb.add_argument("--db-password",
-                         default=None,
+                         default=bool(False),
                          action="store_true",
                          help="set mongodb password")
 
@@ -91,4 +90,17 @@ def argument_handler(args, description=None):
 
 
 if(__name__ == "__main__"):
-    main(argument_handler(args=sys.argv[1:]))
+    # passing the 3 needed args to argument handler and main with minimal
+    # global footprint, so no assignment sorry
+    main(argument_handler(
+        # first arg, the set of cli args
+        args=sys.argv[1:],
+         # second arg, the list of default config locations
+         config_files=[
+            # https://unix.stackexchange.com/a/4047 .d extension
+            "./nemesyst.d/*.conf",
+            "/etc/nemesyst/nemesyst.d/*.conf",
+        ],
+        # the third arg, a description to be used in help
+        description="Nemesyst; Hybrid-parallelisation database deep learning."
+    ))
