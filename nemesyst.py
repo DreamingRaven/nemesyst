@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-07-29
+# @Last modified time: 2019-07-30
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -17,11 +17,18 @@ import configparser
 
 
 def main(args):
-    pass
+    if(args["init_db"] is True):
+        pass
+    if(args["start_db"] is True):
+        pass
+    if(args["login_db"] is True):
+        pass
+    if(args["stop_db"] is True):
+        pass
 
 
 def argument_handler(args, description=None):
-    """Parse cli and config arguments into dictionary"""
+    """Parse cli and config arguments into dictionary."""
     default_description = "Nemesyst; Python hybrid parallelism deep learning"
     description = description if description is not None else \
         default_description
@@ -36,24 +43,24 @@ def argument_handler(args, description=None):
     nemesyst.add_argument("-h", "--help",
                           action="help",
                           help="print help")
-    nemesyst.add_argument("-l", "--login",
-                          default=bool(False),
-                          action="store_true",
-                          help="nemesyst log into mongodb")
-    nemesyst.add_argument("-s", "--start-db",
-                          default=bool(False),
-                          action="store_true",
-                          help="nemesyst launch mongodb")
-    nemesyst.add_argument("-s", "--stop-db",
-                          default=bool(False),
-                          action="store_true",
-                          help="nemesyst stop mongodb")
-    nemesyst.add_argument("-i", "--init-db",
-                          default=bool(False),
-                          action="store_true",
-                          help="nemesyst initialise mongodb")
 
     # MongoDB specific options
+    mongodb.add_argument("-l", "--login-db",
+                         default=bool(False),
+                         action="store_true",
+                         help="nemesyst log into mongodb")
+    mongodb.add_argument("-s", "--start-db",
+                         default=bool(False),
+                         action="store_true",
+                         help="nemesyst launch mongodb")
+    mongodb.add_argument("-s", "--stop-db",
+                         default=bool(False),
+                         action="store_true",
+                         help="nemesyst stop mongodb")
+    mongodb.add_argument("-i", "--init-db",
+                         default=bool(False),
+                         action="store_true",
+                         help="nemesyst initialise mongodb")
     mongodb.add_argument("-u", "--user",
                          help="set mongodb usernam")
     mongodb.add_argument("-p", "--password",
@@ -62,11 +69,12 @@ def argument_handler(args, description=None):
                          help="set mongodb password")
 
     args = parser.parse_args(args)
-    return vars(args)
+    args = vars(args)
+    return args
 
 
 class PasswordPromptAction(argparse.Action):
-    """Argparse custom action for password input"""
+    """Argparse custom action for password input."""
 
     def __init__(self,
                  option_strings,
