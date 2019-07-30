@@ -11,9 +11,8 @@ from __future__ import print_function, absolute_import   # python 2-3 compat
 import sys
 
 # argument handler
-import argparse
 import getpass
-import configparser
+import configargparse
 
 
 def main(args):
@@ -33,9 +32,9 @@ def argument_handler(args, description=None):
     description = description if description is not None else \
         default_description
 
-    parser = argparse.ArgumentParser(prog=None,
-                                     description=description,
-                                     add_help=False)
+    parser = configargparse.ArgumentParser(prog=None,
+                                           description=description,
+                                           add_help=False)
     nemesyst = parser.add_argument_group(title="Nemesyst options")
     mongodb = parser.add_argument_group(title="MongoDb options")
     passlib = parser.add_argument_group(title="Passlib options")
