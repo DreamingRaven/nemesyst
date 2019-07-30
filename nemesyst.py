@@ -43,6 +43,10 @@ def argument_handler(args, description=None):
     nemesyst.add_argument("-h", "--help",
                           action="help",
                           help="print help")
+    nemesyst.add_argument("-U", "--update",
+                          default=bool(False),
+                          action="store_true",
+                          help="nemesyst update, and restarta")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--login-db",
@@ -53,7 +57,7 @@ def argument_handler(args, description=None):
                          default=bool(False),
                          action="store_true",
                          help="nemesyst launch mongodb")
-    mongodb.add_argument("-s", "--stop-db",
+    mongodb.add_argument("-S", "--stop-db",
                          default=bool(False),
                          action="store_true",
                          help="nemesyst stop mongodb")
@@ -64,41 +68,18 @@ def argument_handler(args, description=None):
     mongodb.add_argument("-u", "--user",
                          help="set mongodb usernam")
     mongodb.add_argument("-p", "--password",
-                         type=str,
-                         action=PasswordPromptAction,
+                         default=None,
+                         action="store_true",
                          help="set mongodb password")
 
     args = parser.parse_args(args)
     args = vars(args)
+
+    if(args["password"] is True):
+        args["password"] = getpass.getpass()
+
+    print(args)
     return args
-
-
-class PasswordPromptAction(argparse.Action):
-    """Argparse custom action for password input."""
-
-    def __init__(self,
-                 option_strings,
-                 dest=None,
-                 nargs=0,
-                 default=None,
-                 required=False,
-                 type=None,
-                 metavar=None,
-                 help=None):
-        super(PasswordPromptAction, self).__init__(
-            option_strings=option_strings,
-            dest=dest,
-            nargs=nargs,
-            default=default,
-            required=required,
-            metavar=metavar,
-            type=type,
-            help=help)
-
-    def __call__(self, parser, args, values, option_string=None):
-        """Getpass to get user password secureley."""
-        password = getpass.getpass()
-        setattr(args, self.dest, password)
 
 
 if(__name__ == "__main__"):
