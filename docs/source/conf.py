@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: conf.py
 # @Last modified by:   archer
-# @Last modified time: 2019-07-31
+# @Last modified time: 2019-08-01
 # @License: Please see LICENSE in project root
 
 
@@ -23,6 +23,7 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 import sphinx_rtd_theme
+import subprocess
 
 
 # -- Project information -----------------------------------------------------
@@ -33,7 +34,15 @@ author = 'GeorgeRaven'
 master_doc = 'index'
 
 # The full version, including alpha/beta/rc tags
-release = '2.0.0'
+# git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g
+git_describe = subprocess.Popen(["git", "describe", "--long"],
+                                stdout=subprocess.PIPE)
+version_num = subprocess.check_output(["sed", r"s/\([^-]*-\)g/r\1/;s/-/./g"],
+                                      stdin=git_describe.stdout)
+git_describe.wait()
+version_num = version_num.decode("ascii").strip()
+print(project, "version:", version_num)
+release = version_num
 
 
 # -- General configuration ---------------------------------------------------
