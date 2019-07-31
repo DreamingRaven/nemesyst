@@ -28,7 +28,7 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'Nemesyst'
-copyright = '2019, GeorgeRaven'
+copyright = '2017, George Onoufriou (GeorgeRaven, archer)'
 author = 'GeorgeRaven'
 
 # The full version, including alpha/beta/rc tags
