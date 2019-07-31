@@ -85,7 +85,10 @@ def argument_handler(args, config_files, description, isNewConfig=False):
     processed_args = vars(processed_args)
 
     if(processed_args["update"] is True):
-        raise RuntimeError("nemesyst update not yet implemented")
+        # this will reboot this script
+        new_args = [x for x in sys.argv if x != "-U"]
+        input("restarting nemesyst.")
+        os.execv(__file__, new_args)
     if(processed_args["config"] is not None) and (isNewConfig is False):
         processed_args = argument_handler(args,
                                           [processed_args["config"]] +
