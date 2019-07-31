@@ -12,5 +12,6 @@ Nemesyst
    :numbered:
 
    license
+   justification
    installation
    overview
