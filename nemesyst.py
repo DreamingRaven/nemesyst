@@ -4,10 +4,11 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-07-30
+# @Last modified time: 2019-07-31
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
+import os
 import sys
 
 # argument handler
@@ -16,6 +17,7 @@ import configargparse
 
 
 def main(args):
+    """Operate on processed args."""
     if(args["db_init"] is True):
         pass
     if(args["db_start"] is True):
@@ -26,7 +28,7 @@ def main(args):
         pass
 
 
-def argument_handler(args, config_files, description):
+def argument_handler(args, config_files, description, isNewConfig=False):
     """Parse cli>environment>config>default arguments into dictionary."""
     cfg_files = config_files
 
@@ -46,6 +48,9 @@ def argument_handler(args, config_files, description):
                           default=bool(False),
                           action="store_true",
                           help="nemesyst update, and restart")
+    nemesyst.add_argument("-c", "--config",
+                          default=None,
+                          help="nemesyst config path")
 
     # Passlib specific options
     passlib.add_argument("-P", "--passlib",
@@ -76,17 +81,25 @@ def argument_handler(args, config_files, description):
                          action="store_true",
                          help="set mongodb password")
 
-    args = parser.parse_args(args)
-    args = vars(args)
+    processed_args = parser.parse_args(args)
+    processed_args = vars(processed_args)
 
-    if(args["update"] is True):
-        raise RuntimeError("nemesyst update not yet implemented")
+    if(processed_args["update"] is True):
+        # this will reboot this script
+        new_args = [x for x in sys.argv if x != "-U"]
+        print("updating and restarting nemesyst at:", __file__)
+        os.execv(__file__, new_args)
+    if(processed_args["config"] is not None) and (isNewConfig is False):
+        processed_args = argument_handler(args,
+                                          [processed_args["config"]] +
+                                          config_files,
+                                          description,
+                                          isNewConfig=True)  # prevent loop
+    if(processed_args["db_password"] is True):
+        processed_args["db_password"] = getpass.getpass()
 
-    if(args["db_password"] is True):
-        args["db_password"] = getpass.getpass()
-
-    print(args)
-    return args
+    print(processed_args)
+    return processed_args
 
 
 if(__name__ == "__main__"):
