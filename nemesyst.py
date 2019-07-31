@@ -87,7 +87,7 @@ def argument_handler(args, config_files, description, isNewConfig=False):
     if(processed_args["update"] is True):
         # this will reboot this script
         new_args = [x for x in sys.argv if x != "-U"]
-        input("restarting nemesyst.")
+        print("updating and restarting nemesyst at:", __file__)
         os.execv(__file__, new_args)
     if(processed_args["config"] is not None) and (isNewConfig is False):
         processed_args = argument_handler(args,
