@@ -4,11 +4,13 @@
    contain the root `toctree` directive.
    :caption: Contents:
 
-Welcome to Nemesyst's documentation!
+Nemesyst
 ====================================
 
 .. toctree::
    :maxdepth: 2
+
+   license
 
 
 
