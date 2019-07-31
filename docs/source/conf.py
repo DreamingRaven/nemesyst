@@ -30,6 +30,7 @@ import sphinx_rtd_theme
 project = 'Nemesyst'
 copyright = '2017, George Onoufriou (GeorgeRaven, archer)'
 author = 'GeorgeRaven'
+master_doc = 'index'
 
 # The full version, including alpha/beta/rc tags
 release = '2.0.0'
