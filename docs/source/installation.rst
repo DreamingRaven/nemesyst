@@ -21,8 +21,20 @@ Install `nemesyst-git <https://aur.archlinux.org/packages/nemesyst-git/>`_:sup:`
 Manual
 ******
 
+Generic
++++++++
+
 .. code-block:: bash
 
   git clone https://github.com/DreamingRaven/nemesyst
   cd nemesyst
   python setup.py install
+
+Archlinux
++++++++++
+
+.. code-block:: bash
+
+  git clone https://github.com/DreamingRaven/nemesyst
+  cd nemesyst/.arch/
+  makepkg -si
