@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-07-31
+# @Last modified time: 2019-08-02
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -28,10 +28,8 @@ def main(args):
         pass
 
 
-def argument_handler(args, config_files, description, isNewConfig=False):
+def argument_parser(description, cfg_files):
     """Parse cli>environment>config>default arguments into dictionary."""
-    cfg_files = config_files
-
     parser = configargparse.ArgumentParser(prog=None,
                                            description=description,
                                            add_help=False,
@@ -48,8 +46,13 @@ def argument_handler(args, config_files, description, isNewConfig=False):
                           default=bool(False),
                           action="store_true",
                           help="nemesyst update, and restart")
+    nemesyst.add_argument("--prevent-update",
+                          default=bool(False),
+                          action="store_true",
+                          help="prevent nemesyst from updating")
     nemesyst.add_argument("-c", "--config",
                           default=None,
+                          type=str,
                           help="nemesyst config path")
 
     # Passlib specific options
@@ -81,15 +84,23 @@ def argument_handler(args, config_files, description, isNewConfig=False):
                          action="store_true",
                          help="set mongodb password")
 
+    return parser
+
+
+def argument_handler(args, config_files, description, isNewConfig=False):
+    """Handles the argument parser"""
+    parser = argument_parser(description=description,
+                             cfg_files=config_files)
     processed_args = parser.parse_args(args)
     processed_args = vars(processed_args)
-
-    if(processed_args["update"] is True):
+    if(processed_args["update"] is True) and \
+            (processed_args["prevent_update"] is not True):
         # this will reboot this script
-        new_args = [x for x in sys.argv if x != "-U"]
+        new_args = [x for x in sys.argv if x != "-U"] + ["--prevent-update"]
         print("updating and restarting nemesyst at:", __file__)
         os.execv(__file__, new_args)
     if(processed_args["config"] is not None) and (isNewConfig is False):
+        print([processed_args["config"]] + config_files)
         processed_args = argument_handler(args,
                                           [processed_args["config"]] +
                                           config_files,
@@ -97,7 +108,6 @@ def argument_handler(args, config_files, description, isNewConfig=False):
                                           isNewConfig=True)  # prevent loop
     if(processed_args["db_password"] is True):
         processed_args["db_password"] = getpass.getpass()
-
     print(processed_args)
     return processed_args
 
