@@ -15,3 +15,4 @@ Nemesyst
    justification
    installation
    overview
+   options

@@ -28,8 +28,13 @@ def main(args):
         pass
 
 
-def argument_parser(description, cfg_files):
+def argument_parser(description=None, cfg_files=None):
     """Parse cli>environment>config>default arguments into dictionary."""
+    # description = description if description is not None else \
+    #     "Nemesyst"
+    # cfg_files = cfg_files if cfg_files is not None else \
+    #     ["./nemesyst.d/*.conf",
+    #      "/etc/nemesyst/nemesyst.d/*.conf", ]
     parser = configargparse.ArgumentParser(prog=None,
                                            description=description,
                                            add_help=False,
