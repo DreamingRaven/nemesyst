@@ -1,18 +1,29 @@
+# @Author: archer
+# @Date:   2019-08-02T13:11:00+01:00
+# @Last modified by:   archer
+# @Last modified time: 2019-08-02T13:24:18+01:00
+
+
+
 # Maintainer: George Raven <GeorgeRavenCommunity AT pm dot me>
 pkgname=nemesyst-git
 pkgsrcname="nemesyst"
-pkgver=1.0.0.r59.a2f3e03
+pkgver=1.0.0.r64.411c6c2
 pkgrel=1
 pkgdesc="Generalised, sequence-based, deep-learning framework of the gods. Warning may include GANs, does not include nuts."
 arch=('x86_64' 'aarch64')
 url="https://github.com/DreamingRaven/nemesyst"
-branch="master"
+branch="dev" #TODO change me to master when no longer in dev
 license=('MIT') # MIT is a special case store a copy in /usr/share/pkgname
 groups=("nemesyst-base")
 depends=('git' 'python-setuptools' 'mongodb' 'python' 'python-pymongo'
-				 'python-pandas' 'python-numpy'  'python-colorama')
+				 'python-pandas' 'python-numpy'  'python-colorama' 'python-configargparse')
 makedepends=('git')
-optdepends=('python-pydot: quick architecture graphs' 'python-keras' 'python-keras-applications' 'python-keras-preprocessing' 'python-h5py')
+optdepends=('python-pydot: quick architecture graphs'
+						'python-h5py'
+						'python-sphinx: documentation builder'
+						'python-sphinx_rtd_theme: documentation theme generator'
+						'python-sphinx-argparse: documentation auto generate argument list')
 provides=()
 conflicts=()
 replaces=()
@@ -40,7 +51,7 @@ build() {
 check() {
 	cd "$srcdir/${pkgsrcname}"
 	# check that program can run while self checking and updating if somethings missing
-	python3 nemesyst.py --update
+	python3 ./nemesyst.py --update
 }
 
 package() {
