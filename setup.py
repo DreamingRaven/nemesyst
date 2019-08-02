@@ -8,20 +8,25 @@
 # @Last modified time: 2019-07-15
 # @License: Please see LICENSE file in project root
 
-import subprocess as sp
+import subprocess
 from setuptools import setup, find_packages, find_namespace_packages
 
 
 # getting version from git as this is vcs
-runArgs = ["git", "describe", "--long"]
-version = sp.run(runArgs, stdout=sp.PIPE).stdout.decode("utf-8")
+# git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g
+git_describe = subprocess.Popen(["git", "describe", "--long"],
+                                stdout=subprocess.PIPE)
+version_num = subprocess.check_output(["sed", r"s/\([^-]*-\)g/r\1/;s/-/./g"],
+                                      stdin=git_describe.stdout)
+git_describe.wait()
+version_git = version_num.decode("ascii").strip()
 
 with open("README.md", "r") as fh:
     readme = fh.read()
 
 setup(
     name="nemesyst",
-    version=str(version),
+    version=str(version_git),
     description="Generalised, sequence-based, deep-learning framework of the" +
                 "gods. Warning may include GANs, does not include nuts.",
     long_description=readme,
