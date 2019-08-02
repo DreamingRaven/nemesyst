@@ -5,7 +5,7 @@
 # @Date:   2018-09-05
 # @Filename: setup.py
 # @Last modified by:   archer
-# @Last modified time: 2019-07-15
+# @Last modified time: 2019-08-02T13:43:06+01:00
 # @License: Please see LICENSE file in project root
 
 import subprocess
@@ -35,4 +35,8 @@ setup(
     url="https://github.com/DreamingRaven/nemesyst",
     packages=find_namespace_packages(),
     scripts=['nemesyst.py'],
+    install_requires=[
+        "pymongo",
+        "python-configargparse"
+    ]
 )
