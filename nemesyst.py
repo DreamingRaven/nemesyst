@@ -17,10 +17,9 @@ import configargparse
 
 
 def main(args):
-    """Program post argument entry point."""
+    """Operate on processed args."""
     # mongodb handler
     from nemesyst_core.mongodb_handler import Mongo
-    """Operate on processed args."""
     if(args["db_init"] is True):
         print("db_init")
     if(args["db_start"] is True):
