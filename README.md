@@ -2,6 +2,6 @@
 
 | Branch        | Docs          |
 |:-------------:|:-------------:|
-| master/ latest        | [![Documentation Status](https://readthedocs.org/projects/nemesyst/badge/?version=latest)](https://nemesyst.readthedocs.io/en/dev/?badge=latest) |
-| stable        | [![Documentation Status](https://readthedocs.org/projects/nemesyst/badge/?version=stable)](https://nemesyst.readthedocs.io/en/latest/?badge=stable)     |
-| dev           | [![Documentation Status](https://readthedocs.org/projects/nemesyst/badge/?version=dev)](https://nemesyst.readthedocs.io/en/dev/?badge=dev)     |
+| [master/ latest](https://github.com/DreamingRaven/nemesyst/tree/master)        | [![Documentation Status](https://readthedocs.org/projects/nemesyst/badge/?version=latest)](https://nemesyst.readthedocs.io/en/dev/?badge=latest) |
+| [stable](https://github.com/DreamingRaven/nemesyst/releases)        | [![Documentation Status](https://readthedocs.org/projects/nemesyst/badge/?version=stable)](https://nemesyst.readthedocs.io/en/latest/?badge=stable)     |
+| [dev](https://github.com/DreamingRaven/nemesyst/tree/dev)           | [![Documentation Status](https://readthedocs.org/projects/nemesyst/badge/?version=dev)](https://nemesyst.readthedocs.io/en/dev/?badge=dev)     |
