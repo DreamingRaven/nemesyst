@@ -15,11 +15,11 @@ import sys
 import getpass
 import configargparse
 
-# mongodb handler
-from nemesyst_core.mongodb_handler import Mongo
-
 
 def main(args):
+    """Program post argument entry point."""
+    # mongodb handler
+    from nemesyst_core.mongodb_handler import Mongo
     """Operate on processed args."""
     if(args["db_init"] is True):
         print("db_init")
