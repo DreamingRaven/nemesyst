@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-02
+# @Last modified time: 2019-08-03
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -15,26 +15,27 @@ import sys
 import getpass
 import configargparse
 
+# mongodb handler
+from nemesyst_core.mongodb_handler import Mongo
+
 
 def main(args):
     """Operate on processed args."""
     if(args["db_init"] is True):
-        pass
+        print("db_init")
     if(args["db_start"] is True):
-        pass
+        print("db_start")
     if(args["db_login"] is True):
-        pass
+        print("db_login")
     if(args["db_stop"] is True):
-        pass
+        print("db_stop")
+
+
+main.__annotations__ = {"args": dict, "return": None}
 
 
 def argument_parser(description=None, cfg_files=None):
     """Parse cli>environment>config>default arguments into dictionary."""
-    # description = description if description is not None else \
-    #     "Nemesyst"
-    # cfg_files = cfg_files if cfg_files is not None else \
-    #     ["./nemesyst.d/*.conf",
-    #      "/etc/nemesyst/nemesyst.d/*.conf", ]
     parser = configargparse.ArgumentParser(prog=None,
                                            description=description,
                                            add_help=False,
@@ -57,7 +58,7 @@ def argument_parser(description=None, cfg_files=None):
                           help="prevent nemesyst from updating")
     nemesyst.add_argument("-c", "--config",
                           default=None,
-                          type=str,
+                          type=type_path,
                           help="nemesyst config path")
 
     # Passlib specific options
@@ -83,6 +84,7 @@ def argument_parser(description=None, cfg_files=None):
                          action="store_true",
                          help="nemesyst initialise mongodb")
     mongodb.add_argument("--db-user",
+                         type=str,
                          help="set mongodb usernam")
     mongodb.add_argument("--db-password",
                          default=bool(False),
@@ -92,8 +94,21 @@ def argument_parser(description=None, cfg_files=None):
     return parser
 
 
+argument_parser.__annotations__ = {"description": str,
+                                   "cfg_files": list,
+                                   "return": any}
+
+
+def type_path(string):
+    """Create a path from string."""
+    return os.path.abspath(string)
+
+
+type_path.__annotations__ = {"string": str, "return": str}
+
+
 def argument_handler(args, config_files, description, isNewConfig=False):
-    """Handles the argument parser"""
+    """Handle the argument parser."""
     parser = argument_parser(description=description,
                              cfg_files=config_files)
     processed_args = parser.parse_args(args)
@@ -105,6 +120,7 @@ def argument_handler(args, config_files, description, isNewConfig=False):
         print("updating and restarting nemesyst at:", __file__)
         os.execv(__file__, new_args)
     if(processed_args["config"] is not None) and (isNewConfig is False):
+        # this will reload this handler with a new config file
         print([processed_args["config"]] + config_files)
         processed_args = argument_handler(args,
                                           [processed_args["config"]] +
@@ -116,6 +132,11 @@ def argument_handler(args, config_files, description, isNewConfig=False):
     print(processed_args)
     return processed_args
 
+
+argument_handler.__annotations__ = {"args": list,
+                                    "description": str,
+                                    "cfg_files": list,
+                                    "return": any}
 
 if(__name__ == "__main__"):
     # passing the 3 needed args to argument handler and main with minimal
