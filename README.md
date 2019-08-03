@@ -1,7 +1,5 @@
 # Nemesyst
 
-Please find the relevant documentation and other such links below:
-
 | Branch        | Docs          |
 |:-------------:|:-------------:|
 | master/ latest        | [![Documentation Status](https://readthedocs.org/projects/nemesyst/badge/?version=latest)](https://nemesyst.readthedocs.io/en/dev/?badge=latest) |
