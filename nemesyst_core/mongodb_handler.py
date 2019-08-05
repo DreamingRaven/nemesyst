@@ -220,16 +220,22 @@ class Mongo(object):
     debug.__annotations__ = {"return": None}
 
     def dump(self, db_collection_name, data, db=None):
-        """Import data of specified format into MongoDB.
+        """Import data dictionary into database.
 
-        Takes a collection name and one of either json or dictionary and
-        dump it to the specified collection.
+        :param db_collection_name: Collection name to import into.
+        :param data: Data to import into database.
+        :param db: Database to import data into.
+        :type db_collection_name: string
+        :type data: dictionary
+        :type db: pymongo.database.Database
+        :example: dump(db_collection_name="test",
+                       data={"subdict":{"hello": "world"}})
         """
         db = db if db is not None else self.args["db"]
         db[str(db_collection_name)].insert_one(data)
 
     dump.__annotations__ = {"db_collection_name": str, "data": dict,
-                            "return": None}
+                            "db": database.Database, "return": None}
 
     def _mergeDicts(self, *dicts):
         """Given multiple dictionaries, merge together in order."""
