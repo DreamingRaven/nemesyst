@@ -56,7 +56,7 @@ class Mongo(object):
             "db": None,
             "db_pipeline": None,
         }
-        self.args = self._merge_dicts(defaults, args)
+        self.args = self._mergeDicts(defaults, args)
         # final adjustments to newly defined dictionary
         self.args["db_url"] = "mongodb://{0}:{1}/".format(
             self.args["db_ip"], self.args["db_port"])
@@ -233,14 +233,14 @@ class Mongo(object):
 
     imports.__annotations__ = {"return": None}
 
-    def _merge_dicts(self, *dicts):
+    def _mergeDicts(self, *dicts):
         """Given multiple dictionaries, merge together in order."""
         result = {}
         for dictionary in dicts:
             result.update(dictionary)  # merge each dictionary in order
         return result
 
-    _merge_dicts.__annotations__ = {"dicts": dict, "return": dict}
+    _mergeDicts.__annotations__ = {"dicts": dict, "return": dict}
 
     def getCursor(self, db=None, db_pipeline=None, db_collection=None):
         """Use aggregate pipeline to get a data-cursor from the database.
@@ -249,12 +249,14 @@ class Mongo(object):
         from the database in a manner you control, instead of just getting
         a big dump from the database.
 
-        :param pipeline: Mongodb aggregate pipeline data to transform and
+        :param db_pipeline: Mongodb aggregate pipeline data to transform and
             retrieve the data as you request.
-        :param collection: The collection name which we will pull data from
+        :param db_collection: The collection name which we will pull data from
             using the aggregate pipeline.
+        :param db: Database object to operate pipeline on.
         :type pipeline: list of dicts
         :type collection: str
+        :type db: pymongo.database.Database
         :return: Command cursor to fetch the data with.
         :rtype: pymongo.command_cursor.CommandCursor
         """
