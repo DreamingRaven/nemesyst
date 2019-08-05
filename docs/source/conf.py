@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: conf.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-05T10:56:58+01:00
+# @Last modified time: 2019-08-05T11:08:33+01:00
 # @License: Please see LICENSE in project root
 
 
@@ -26,9 +26,14 @@ import subprocess
 import sys
 import os
 import sphinx_rtd_theme
-source_path = os.path.abspath("../../")
+source_relative_path = "../../../"  # relative to config.py
+source_path = os.path.abspath(source_relative_path)
+# sys.path.insert(0, source_path)
+# print("SOURCE_PATH:", source_path)
+source_path = os.path.join(str(__file__), source_relative_path)
+source_path = os.path.abspath(source_path)
+print("source_path", source_path)
 sys.path.insert(0, source_path)
-print("SOURCE_PATH:", source_path)
 
 
 # -- Project information -----------------------------------------------------
