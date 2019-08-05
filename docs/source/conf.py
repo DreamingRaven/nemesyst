@@ -36,8 +36,8 @@ source_path = os.path.join(str(__file__), source_relative_path)
 source_path = os.path.abspath(source_path)
 print("source_path", source_path)
 sys.path.insert(0, source_path)
-print(sys.path)
-print("sys path dir contents:", os.listdir(sys.path[0]))
+print("sys path:", sys.path)
+print("sys.path[0] dir contents:", os.listdir(sys.path[0]))
 
 
 # -- Project information -----------------------------------------------------

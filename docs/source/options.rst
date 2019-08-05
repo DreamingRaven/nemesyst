@@ -2,6 +2,6 @@ Options
 =======
 
 .. argparse::
-   :filename: nemesyst.py
+   :module: nemesyst
    :func: argument_parser
    :prog: nemesyst.py
