@@ -103,7 +103,7 @@ class Mongo(object):
         """Connect to a specific mongodb database.
 
         This sets the internal db client which is neccessary to connect to
-        and use the associated database. Without it operations such as imports
+        and use the associated database. Without it operations such as dump
         into the database will fail.
 
         :param db_url: Database url (default: "mongodb://localhost:27017/").
@@ -219,19 +219,17 @@ class Mongo(object):
 
     debug.__annotations__ = {"return": None}
 
-    def imports(self, db_collection, json=None, dictionary=None):
+    def dump(self, db_collection, data, db=None):
         """Import data of specified format into MongoDB.
 
         Takes a collection name and one of either json or dictionary and
-        imports it to the specified collection.
+        dump it to the specified collection.
         """
-        if(json is not None):
-            raise NotImplementedError("direct json import is not yet ready")
-            # data = json_util.loads(json)
-        elif (dictionary is not None):
-            self.args["db"][str(db_collection)].insert_one(dictionary)
+        db = db if db is not None else self.args["db"]
+        db[str(db_collection)].insert_one(data)
 
-    imports.__annotations__ = {"return": None}
+    dump.__annotations__ = {"db_collection": str, "data": dict,
+                            "return": None}
 
     def _mergeDicts(self, *dicts):
         """Given multiple dictionaries, merge together in order."""
@@ -371,7 +369,7 @@ def _mongo_unit_test():
     db.connect()
     db.debug()
     # import data into mongodb debug collection
-    db.imports(db_collection="debug", dictionary={
+    db.dump(db_collection="debug", data={
         "string": "99",
         "number": 99,
         "binary": bin(99),
