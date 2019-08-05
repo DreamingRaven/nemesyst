@@ -10,7 +10,7 @@ from __future__ import print_function, absolute_import   # python 2-3 compat
 import os
 import subprocess
 import time
-from pymongo import MongoClient, errors, database, command_cursor, collection
+from pymongo import MongoClient, errors, database, command_cursor
 
 
 class Mongo(object):
@@ -240,7 +240,7 @@ class Mongo(object):
             result.update(dictionary)  # merge each dictionary in order
         return result
 
-    _merge_dicts.__annotations__ = {"dicts": dict, "return": None}
+    _merge_dicts.__annotations__ = {"dicts": dict, "return": dict}
 
     def getCursor(self, db=None, db_pipeline=None, db_collection=None):
         """Use aggregate pipeline to get a data-cursor from the database.
