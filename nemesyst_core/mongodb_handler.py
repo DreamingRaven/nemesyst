@@ -219,16 +219,16 @@ class Mongo(object):
 
     debug.__annotations__ = {"return": None}
 
-    def dump(self, db_collection, data, db=None):
+    def dump(self, db_collection_name, data, db=None):
         """Import data of specified format into MongoDB.
 
         Takes a collection name and one of either json or dictionary and
         dump it to the specified collection.
         """
         db = db if db is not None else self.args["db"]
-        db[str(db_collection)].insert_one(data)
+        db[str(db_collection_name)].insert_one(data)
 
-    dump.__annotations__ = {"db_collection": str, "data": dict,
+    dump.__annotations__ = {"db_collection_name": str, "data": dict,
                             "return": None}
 
     def _mergeDicts(self, *dicts):
@@ -240,7 +240,7 @@ class Mongo(object):
 
     _mergeDicts.__annotations__ = {"dicts": dict, "return": dict}
 
-    def getCursor(self, db=None, db_pipeline=None, db_collection=None):
+    def getCursor(self, db=None, db_pipeline=None, db_collection_name=None):
         """Use aggregate pipeline to get a data-cursor from the database.
 
         This cursor is what mongodb provides to allow you to request the data
@@ -249,8 +249,8 @@ class Mongo(object):
 
         :param db_pipeline: Mongodb aggregate pipeline data to transform and
             retrieve the data as you request.
-        :param db_collection: The collection name which we will pull data from
-            using the aggregate pipeline.
+        :param db_collection_name: The collection name which we will pull data
+            from using the aggregate pipeline.
         :param db: Database object to operate pipeline on.
         :type pipeline: list of dicts
         :type collection: str
@@ -260,16 +260,17 @@ class Mongo(object):
         """
         db_pipeline = db_pipeline if db_pipeline is not None else \
             self.args["db_pipeline"]
-        db_collection = db_collection if db_collection is not None else \
-            self.args["db_collection_name"]
+        db_collection_name = db_collection_name if db_collection_name is not \
+            None else self.args["db_collection_name"]
         db = db if db is not None else self.args["db"]
         # from string to pymongo.collection.Collection
-        db_collection = db[db_collection]
+        db_collection = db[db_collection_name]
         data_cursor = db_collection.aggregate(db_pipeline, allowDiskUse=True)
         self.args["data_cursor"] = data_cursor
         return data_cursor
 
-    getCursor.__annotations__ = {"db_pipeline": list, "db_collection": str,
+    getCursor.__annotations__ = {"db_pipeline": list,
+                                 "db_collection_name": str,
                                  "db": database.Database,
                                  "return": command_cursor.CommandCursor}
 
@@ -369,7 +370,7 @@ def _mongo_unit_test():
     db.connect()
     db.debug()
     # import data into mongodb debug collection
-    db.dump(db_collection="debug", data={
+    db.dump(db_collection_name="debug", data={
         "string": "99",
         "number": 99,
         "binary": bin(99),
@@ -380,7 +381,7 @@ def _mongo_unit_test():
     # log into the database so user can manually check data import
     db.login()
     # attempt to retrieve the data that exists in the collection as a cursor
-    db.getCursor(db_collection="debug", db_pipeline=[{"$match": {}}])
+    db.getCursor(db_collection_name="debug", db_pipeline=[{"$match": {}}])
     # inetate through the data in batches to minimise requests
     for dataBatch in db.getBatches(batchSize=1):
         print(dataBatch)
