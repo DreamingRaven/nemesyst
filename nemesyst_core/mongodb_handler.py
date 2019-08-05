@@ -10,7 +10,7 @@ from __future__ import print_function, absolute_import   # python 2-3 compat
 import os
 import subprocess
 import time
-from pymongo import MongoClient, errors, database
+from pymongo import MongoClient, errors, database, command_cursor, collection
 
 
 class Mongo(object):
@@ -20,8 +20,8 @@ class Mongo(object):
     such that you can adapt it to your requirements, if you should need to do
     something unique, the caveat being it becomes harder to read.
 
-    :param args: dictionary of overides
-    :param logger: function address to print/ log to (default: print)
+    :param args: Dictionary of overides.
+    :param logger: Function address to print/ log to (default: print).
     :type args: dictionary
     :type logger: function address
     :example: Mongo({"db_user": "someUsername",
@@ -106,11 +106,11 @@ class Mongo(object):
         and use the associated database. Without it operations such as imports
         into the database will fail.
 
-        :param db_url: database url (default: "mongodb://localhost:27017/")
-        :param db_user: username to use for authentication to db_name
-        :param db_pass: password for db_user in database db_name
-        :param db_name: the name of the database to connect to
-        :param db_authentication: the authentication method to use on db
+        :param db_url: Database url (default: "mongodb://localhost:27017/").
+        :param db_user: Username to use for authentication to db_name.
+        :param db_pass: Password for db_user in database db_name.
+        :param db_name: The name of the database to connect to.
+        :param db_authentication: The authentication method to use on db.
         :type db_url: string
         :type db_user: string
         :type db_pass: string
@@ -211,12 +211,15 @@ class Mongo(object):
     _addUser.__annotations__ = {"return": None}
 
     def debug(self):
-        """Log function to help track the internal state of the class."""
+        """Log function to help track the internal state of the class.
+
+        Simply logs working state of args dict.
+        """
         self.args["pylog"](self.args)
 
     debug.__annotations__ = {"return": None}
 
-    def imports(self, collection, json=None, dictionary=None):
+    def imports(self, db_collection, json=None, dictionary=None):
         """Import data of specified format into MongoDB.
 
         Takes a collection name and one of either json or dictionary and
@@ -226,7 +229,7 @@ class Mongo(object):
             raise NotImplementedError("direct json import is not yet ready")
             # data = json_util.loads(json)
         elif (dictionary is not None):
-            self.args["db"][str(collection)].insert_one(dictionary)
+            self.args["db"][str(db_collection)].insert_one(dictionary)
 
     imports.__annotations__ = {"return": None}
 
@@ -239,21 +242,36 @@ class Mongo(object):
 
     _merge_dicts.__annotations__ = {"dicts": dict, "return": None}
 
-    def getCursor(self, pipeline=None, collection=None):
-        """Get data from database using provided aggregate pipeline.
+    def getCursor(self, db=None, db_pipeline=None, db_collection=None):
+        """Use aggregate pipeline to get a data-cursor from the database.
 
-        Returns data as dictionary.
+        This cursor is what mongodb provides to allow you to request the data
+        from the database in a manner you control, instead of just getting
+        a big dump from the database.
+
+        :param pipeline: Mongodb aggregate pipeline data to transform and
+            retrieve the data as you request.
+        :param collection: The collection name which we will pull data from
+            using the aggregate pipeline.
+        :type pipeline: list of dicts
+        :type collection: str
+        :return: Command cursor to fetch the data with.
+        :rtype: pymongo.command_cursor.CommandCursor
         """
-        pipeline = pipeline if pipeline is not None else \
+        db_pipeline = db_pipeline if db_pipeline is not None else \
             self.args["db_pipeline"]
-        collection = collection if collection is not None else \
-            self.args["collName"]  # set collection name wanted
-        collection = self.args["db"][collection]  # set collection wanted
-        data_cursor = collection.aggregate(pipeline, allowDiskUse=True)
+        db_collection = db_collection if db_collection is not None else \
+            self.args["db_collection_name"]
+        db = db if db is not None else self.args["db"]
+        # from string to pymongo.collection.Collection
+        db_collection = db[db_collection]
+        data_cursor = db_collection.aggregate(db_pipeline, allowDiskUse=True)
         self.args["data_cursor"] = data_cursor
         return data_cursor
 
-    getCursor.__annotations__ = {"pipeline": str, "return": dict}
+    getCursor.__annotations__ = {"db_pipeline": list, "db_collection": str,
+                                 "db": database.Database,
+                                 "return": command_cursor.CommandCursor}
 
     def getBatches(self, batchSize=None):
         """Yield of batches."""
@@ -310,7 +328,7 @@ class Mongo(object):
         raise NotImplementedError("iter() is not yet implemented")
         self.db.connect()
         cursor = self.db.getData(pipeline=self.getPipe(
-            self.args["pipeline"]), collName=self.args["coll"])
+            self.args["pipeline"]), db_collection_name=self.args["coll"])
 
         while(cursor.alive):
             try:
@@ -351,7 +369,7 @@ def _mongo_unit_test():
     db.connect()
     db.debug()
     # import data into mongodb debug collection
-    db.imports(collection="debug", dictionary={
+    db.imports(db_collection="debug", dictionary={
         "string": "99",
         "number": 99,
         "binary": bin(99),
@@ -362,7 +380,7 @@ def _mongo_unit_test():
     # log into the database so user can manually check data import
     db.login()
     # attempt to retrieve the data that exists in the collection as a cursor
-    db.getCursor(collection="debug", pipeline=[{"$match": {}}])
+    db.getCursor(db_collection="debug", db_pipeline=[{"$match": {}}])
     # inetate through the data in batches to minimise requests
     for dataBatch in db.getBatches(batchSize=1):
         print(dataBatch)
