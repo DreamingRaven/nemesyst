@@ -30,12 +30,14 @@ import sphinx_rtd_theme
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd is True:
     print("READ_THE_DOCS_BUILD")
+# getting path that we want that leads to the project
 source_relative_path = "../../../"  # relative to config.py
 source_path = os.path.join(str(__file__), source_relative_path)
 source_path = os.path.abspath(source_path)
 print("source_path", source_path)
 sys.path.insert(0, source_path)
 print(sys.path)
+print("sys path dir contents:", os.listdir(sys.path[0]))
 
 
 # -- Project information -----------------------------------------------------
