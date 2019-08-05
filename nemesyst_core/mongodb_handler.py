@@ -3,14 +3,14 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mongo_compat.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-03
+# @Last modified time: 2019-08-05
 # @License: Please see LICENSE in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
 import os
 import subprocess
 import time
-from pymongo import MongoClient, errors  # python 2 or python 3 versions
+from pymongo import MongoClient, errors, database
 
 
 class Mongo(object):
@@ -19,6 +19,14 @@ class Mongo(object):
     This wrapper saves its state in an internal overridable dictionary
     such that you can adapt it to your requirements, if you should need to do
     something unique, the caveat being it becomes harder to read.
+
+    :param args: dictionary of overides
+    :param logger: function address to print/ log to (default: print)
+    :type args: dictionary
+    :type logger: function address
+    :example: Mongo({"db_user": "someUsername",
+                     "db_pass": "somePassword"})
+    :example: Mongo()
     """
 
     def __init__(self, args=None, logger=None):
@@ -29,36 +37,31 @@ class Mongo(object):
         args = args if args is not None else dict()
         self.home = os.path.expanduser("~")
         defaults = {
-            "mongoUser": "groot",
-            "mongoPass": "iamgroot",
-            "mongoAuth": "SCRAM-SHA-1",
-            "userRole": "readWrite",
-            "mongoIp": "127.0.0.1",
-            "mongoDbName": "RecSyst",
-            "mongoCollName": "testColl",
-            "mongoPort": "27017",
-            # "mongoUrl": "mongodb://localhost:27017/",
-            "mongoPath": self.home + "/db",
-            "mongoLogPath": self.home + "/db" + "/log",
-            "mongoLogName": "mongoLog",
-            "mongoCursorTimeout": 600000,
-            "mongoBatchSize": 32,
+            "db_user": "groot",
+            "db_pass": "iamgroot",
+            "db_authentication": "SCRAM-SHA-1",
+            "db_user_role": "readWrite",
+            "db_ip": "127.0.0.1",
+            "db_name": "RecSyst",
+            "db_collection_name": "testColl",
+            "db_port": "27017",
+            # "db_url": "mongodb://localhost:27017/", # this is auto generated
+            "db_path": self.home + "/db",
+            "db_log_path": self.home + "/db" + "/log",
+            "db_log_name": "mongoLog",
+            "db_cursor_timeout": 600000,
+            "db_batch_size": 32,
             "pylog": logger if logger is not None else print,
-            "mongoSsl": None,
+            "db_ssl": None,
             "db": None,
-            "mongoPipeline": None,
+            "db_pipeline": None,
         }
         self.args = self._merge_dicts(defaults, args)
         # final adjustments to newly defined dictionary
-        self.args["mongoUrl"] = "mongodb://{0}:{1}/".format(
-            self.args["mongoIp"], self.args["mongoPort"])
+        self.args["db_url"] = "mongodb://{0}:{1}/".format(
+            self.args["db_ip"], self.args["db_port"])
 
-    __init__.__annotations__ = {"args": dict, "return": None}
-
-    def test(self):
-        """This is a docstring."""
-        pass
-    test.__annotations__ = {"return": None}
+    __init__.__annotations__ = {"args": dict, "logger": print, "return": None}
 
     def initDb(self):
         """Initialise the database.
@@ -71,16 +74,16 @@ class Mongo(object):
         # create directories
         subprocess.call([
             "mkdir", "-p",
-            str(self.args["mongoPath"]),
-            str(self.args["mongoLogPath"]),
+            str(self.args["db_path"]),
+            str(self.args["db_log_path"]),
         ])
         cliArgs = [  # non authentication version of db start
             "mongod",
             "--bind_ip",        "127.0.0.1",
             "--port",           "27017",
-            "--dbpath",         str(self.args["mongoPath"]),
-            "--logpath",        str(self.args["mongoLogPath"] +
-                                    self.args["mongoLogName"]),
+            "--dbpath",         str(self.args["db_path"]),
+            "--logpath",        str(self.args["db_log_path"] +
+                                    self.args["db_log_name"]),
             "--quiet"
         ]
         self.args["pylog"]("Launching unauth db on localhost")
@@ -95,29 +98,57 @@ class Mongo(object):
 
     initDb.__annotations__ = {"return": None}
 
-    def connect(self):
-        """Connect to a specific mongodb database defined in args.
+    def connect(self, db_url=None, db_user=None, db_pass=None, db_name=None,
+                db_authentication=None):
+        """Connect to a specific mongodb database.
 
-        Uses mongoUrl, mongoUser, mongoPass, mongoDbName.
+        This sets the internal db client which is neccessary to connect to
+        and use the associated database. Without it operations such as imports
+        into the database will fail.
+
+        :param db_url: database url (default: "mongodb://localhost:27017/")
+        :param db_user: username to use for authentication to db_name
+        :param db_pass: password for db_user in database db_name
+        :param db_name: the name of the database to connect to
+        :param db_authentication: the authentication method to use on db
+        :type db_url: string
+        :type db_user: string
+        :type db_pass: string
+        :type db_name: string
+        :type db_authentication: string
+        :return: database client object
+        :rtype: pymongo.database.Database
         """
-        self.args["client"] = MongoClient(
-            self.args["mongoUrl"],
-            username=str(self.args["mongoUser"]),
-            password=str(self.args["mongoPass"]),
-            authSource=str(self.args["mongoDbName"]),
-            authMechanism=str(self.args["mongoAuth"]))
-        self.args["db"] = self.args["client"][self.args["mongoDbName"]]
+        db_url = db_url if db_url is not None else self.args["db_url"]
+        db_user = db_user if db_user is not None else self.args["db_user"]
+        db_pass = db_pass if db_pass is not None else self.args["db_pass"]
+        db_name = db_name if db_name is not None else self.args["db_name"]
+        db_authentication = db_authentication if db_authentication is not \
+            None else self.args["db_authentication"]
 
-    connect.__annotations__ = {"return": None}
+        client = MongoClient(
+            db_url,
+            username=str(db_user),
+            password=str(db_pass),
+            authSource=str(db_name),
+            authMechanism=str(db_authentication))
+        db = client[db_name]
+        self.args["db"] = db
+        return db
+
+    connect.__annotations__ = {"db_url": str, "db_user": str,
+                               "db_pass": str, "db_name": str,
+                               "db_authentication": str,
+                               "return": database.Database}
 
     def login(self):
         """Log in to database, interupt, and availiable via cli."""
         loginArgs = [
             "mongo",
-            "--port", str(self.args["mongoPort"]),
-            "-u",   str(self.args["mongoUser"]),
-            "-p", str(self.args["mongoPass"]),
-            "--authenticationDatabase", str(self.args["mongoDbName"])
+            "--port", str(self.args["db_port"]),
+            "-u",   str(self.args["db_user"]),
+            "-p", str(self.args["db_pass"]),
+            "--authenticationDatabase", str(self.args["db_name"])
         ]
         subprocess.call(loginArgs)
 
@@ -126,16 +157,16 @@ class Mongo(object):
     def start(self):
         """Launch the database."""
         self.args["pylog"]("Starting mongodb: auth=",
-                           str(self.args["mongoAuth"]))
+                           str(self.args["db_authentication"]))
         cliArgs = [
             "mongod",
-            "--bind_ip",        str(self.args["mongoIp"]),
-            "--port",           str(self.args["mongoPort"]),
-            "--dbpath",         str(self.args["mongoPath"]),
-            "--logpath",        str(self.args["mongoLogPath"] +
-                                    self.args["mongoLogName"]),
+            "--bind_ip",        str(self.args["db_ip"]),
+            "--port",           str(self.args["db_port"]),
+            "--dbpath",         str(self.args["db_path"]),
+            "--logpath",        str(self.args["db_log_path"] +
+                                    self.args["db_log_name"]),
             "--setParameter",   str("cursorTimeoutMillis=" +
-                                    str(self.args["mongoCursorTimeout"])),
+                                    str(self.args["db_cursor_timeout"])),
             "--auth",
             "--quiet"
         ]
@@ -148,7 +179,7 @@ class Mongo(object):
         self.args["pylog"]("Shutting down MongoDB.")
         subprocess.Popen(
             ["mongod",
-             "--dbpath", str(self.args["mongoPath"]),
+             "--dbpath", str(self.args["db_path"]),
              "--shutdown"]
         )
 
@@ -157,25 +188,25 @@ class Mongo(object):
     def _addUser(self):
         """Add a user with given permissions to the authentication database."""
         self.args["pylog"]("Adding  mongodb user:",
-                           str(self.args["mongoUser"]),
-                           ", role:", str(self.args["userRole"]),
-                           ", authdb:", str(self.args["mongoDbName"]))
+                           str(self.args["db_user"]),
+                           ", role:", str(self.args["db_user_role"]),
+                           ", authdb:", str(self.args["db_name"]))
         client = MongoClient("mongodb://localhost:27017/")
-        db = client[self.args["mongoDbName"]]
+        db = client[self.args["db_name"]]
         try:
-            if(self.args["userRole"] == "all"):
+            if(self.args["db_user_role"] == "all"):
                 db.command("createUser",
-                           self.args["mongoUser"],
-                           pwd=self.args["mongoPass"],
+                           self.args["db_user"],
+                           pwd=self.args["db_pass"],
                            roles=["readWrite", "dbAdmin"])
             else:
                 db.command("createUser",
-                           self.args["mongoUser"],
-                           pwd=self.args["mongoPass"],
-                           roles=[self.args["userRole"]])
+                           self.args["db_user"],
+                           pwd=self.args["db_pass"],
+                           roles=[self.args["db_user_role"]])
         except errors.DuplicateKeyError:
-            self.args["pylog"](self.args["mongoUser"] + "@" +
-                               self.args["mongoDbName"],
+            self.args["pylog"](self.args["db_user"] + "@" +
+                               self.args["db_name"],
                                "already exists skipping.")
     _addUser.__annotations__ = {"return": None}
 
@@ -214,7 +245,7 @@ class Mongo(object):
         Returns data as dictionary.
         """
         pipeline = pipeline if pipeline is not None else \
-            self.args["mongoPipeline"]
+            self.args["db_pipeline"]
         collection = collection if collection is not None else \
             self.args["collName"]  # set collection name wanted
         collection = self.args["db"][collection]  # set collection wanted
@@ -227,7 +258,7 @@ class Mongo(object):
     def getBatches(self, batchSize=None):
         """Yield of batches."""
         batchSize = batchSize if batchSize is not None else \
-            self.args["mongoBatchSize"]
+            self.args["db_batch_size"]
         cursor = self.args["data_cursor"]
         # while self.args["data_cursor"]
         if(cursor is not None):
@@ -297,7 +328,7 @@ class Mongo(object):
     __len__.__annotations__ = {"return": int}
 
 
-def test():
+def _mongo_unit_test():
     import datetime
     """Unit test of MongoDB compat."""
     # create Mongo object to use
@@ -339,4 +370,4 @@ def test():
 
 
 if(__name__ == "__main__"):
-    test()
+    _mongo_unit_test()
