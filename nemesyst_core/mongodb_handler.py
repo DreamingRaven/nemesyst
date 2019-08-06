@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mongo_compat.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-06
+# @Last modified time: 2019-08-07
 # @License: Please see LICENSE in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -11,6 +11,7 @@ import os
 import subprocess
 import time
 from pymongo import MongoClient, errors, database, command_cursor
+import gridfs
 
 
 class Mongo(object):
@@ -46,6 +47,7 @@ class Mongo(object):
             "db_collection_name": "testColl",
             "db_port": "27017",
             # "db_url": "mongodb://localhost:27017/", # this is auto generated
+            "db_url": None,
             "db_path": self.home + "/db",
             "db_log_path": self.home + "/db" + "/log",
             "db_log_name": "mongoLog",
@@ -55,6 +57,7 @@ class Mongo(object):
             "db_ssl": None,
             "db": None,
             "db_pipeline": None,
+            "gfs": None,
         }
         self.args = self._mergeDicts(defaults, args)
         # final adjustments to newly defined dictionary
@@ -114,7 +117,7 @@ class Mongo(object):
                               "db_log_name": None, "return": None}
 
     def connect(self, db_url=None, db_user=None, db_pass=None, db_name=None,
-                db_authentication=None):
+                db_authentication=None, db_collection_name=None):
         """Connect to a specific mongodb database.
 
         This sets the internal db client which is neccessary to connect to
@@ -126,11 +129,13 @@ class Mongo(object):
         :param db_pass: Password for db_user in database db_name.
         :param db_name: The name of the database to connect to.
         :param db_authentication: The authentication method to use on db.
+        :param db_collection_name: GridFS collection to use.
         :type db_url: string
         :type db_user: string
         :type db_pass: string
         :type db_name: string
         :type db_authentication: string
+        :type db_collection_name: string
         :return: database client object
         :rtype: pymongo.database.Database
         """
@@ -140,6 +145,8 @@ class Mongo(object):
         db_name = db_name if db_name is not None else self.args["db_name"]
         db_authentication = db_authentication if db_authentication is not \
             None else self.args["db_authentication"]
+        db_collection_name = db_collection_name if db_collection_name is not \
+            None else self.args["db_collection_name"]
 
         client = MongoClient(
             db_url,
@@ -149,11 +156,13 @@ class Mongo(object):
             authMechanism=str(db_authentication))
         db = client[db_name]
         self.args["db"] = db
+        self.args["gfs"] = gridfs.GridFS(db, collection=db_collection_name)
         return db
 
     connect.__annotations__ = {"db_url": str, "db_user": str,
                                "db_pass": str, "db_name": str,
                                "db_authentication": str,
+                               "db_collection_name": str,
                                "return": database.Database}
 
     def login(self, db_port=None, db_user=None, db_pass=None,
@@ -400,14 +409,12 @@ class Mongo(object):
 
     def __setitem__(self, key, value):
         """Set a single arg or state by, (key, value)."""
-        raise NotImplementedError("setitem() is not yet implemented")
         self.args[key] = value
 
     __setitem__.__annotations__ = {"key": str, "value": any, "return": None}
 
     def __getitem__(self, key):
         """Get a single arg or state by, (key, value)."""
-        raise NotImplementedError("getitem() is not yet implemented")
         try:
             return self.args[key]
         except KeyError:
@@ -417,7 +424,6 @@ class Mongo(object):
 
     def __delitem__(self, key):
         """Delete a single arg or state by, (key, value)."""
-        raise NotImplementedError("delitem() is not yet implemented")
         try:
             del self.args[key]
         except KeyError:
@@ -442,7 +448,6 @@ class Mongo(object):
 
     def __len__(self):
         """Return the first order length of the dictionary."""
-        raise NotImplementedError("len() is not yet implemented")
         return len(self.args)
 
     __len__.__annotations__ = {"return": int}
@@ -453,6 +458,11 @@ def _mongo_unit_test():
     """Unit test of MongoDB compat."""
     # create Mongo object to use
     db = Mongo({"test2": 2})
+    # testing magic functions
+    db["test2"] = 3  # set item
+    db["test2"]  # get item
+    len(db)  # len
+    del db["test2"]  # del item
     # output current state of Mongo
     db.debug()
     # stop any active databases already running at the db path location
