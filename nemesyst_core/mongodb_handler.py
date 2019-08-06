@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mongo_compat.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-06
+# @Last modified time: 2019-08-06T16:44:58+01:00
 # @License: Please see LICENSE in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -333,8 +333,8 @@ class Mongo(object):
         :param db_collection_name: The collection name which we will pull data
             from using the aggregate pipeline.
         :param db: Database object to operate pipeline on.
-        :type pipeline: list of dicts
-        :type collection: str
+        :type db_pipeline: list of dicts
+        :type db_collection_name: str
         :type db: pymongo.database.Database
         :return: Command cursor to fetch the data with.
         :rtype: pymongo.command_cursor.CommandCursor
