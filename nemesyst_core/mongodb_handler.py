@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mongo_compat.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-06T16:44:58+01:00
+# @Last modified time: 2019-08-06T16:46:27+01:00
 # @License: Please see LICENSE in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -363,8 +363,8 @@ class Mongo(object):
         :param db_data_cursor: The cursor to use to retrieve data from db.
         :type db_batch_size: integer
         :type db_data_cursor: command_cursor.CommandCursor
-        :yield: returns a list of items requested.
-        :ytype: list of dicts
+        :return: yields a list of items requested.
+        :rtype: list of dicts
         :todo: desperateley needs a rewrite and correction of bug. Last value
             always fails. I want this in a magic function too to make it easy.
         """
