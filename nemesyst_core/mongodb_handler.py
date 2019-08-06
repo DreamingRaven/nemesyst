@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mongo_compat.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-05
+# @Last modified time: 2019-08-06T01:24:55+01:00
 # @License: Please see LICENSE in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -70,6 +70,10 @@ class Mongo(object):
         creating the DB files, and adding an authentication user.
         All of this should be done on a localhost port so that the
         unprotected database is never exposed.
+
+        :param db_path: Desired directory of MongoDB database files.
+        :param db_log_path: Desired directory of MongoDB log files.
+        :param db_log_name: Desired name of log file.
         """
         # create directories
         subprocess.call([
