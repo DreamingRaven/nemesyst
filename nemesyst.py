@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-03
+# @Last modified time: 2019-08-07
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -20,14 +20,15 @@ def main(args):
     """Operate on processed args."""
     # mongodb handler
     from nemesyst_core.mongodb_handler import Mongo
+    db = Mongo(args)  # matching args will override defaults
     if(args["db_init"] is True):
-        print("db_init")
+        db.init()  # creates database files
     if(args["db_start"] is True):
-        print("db_start")
+        db.start()  # launches database
     if(args["db_login"] is True):
-        print("db_login")
+        db.login()  # logs in to database
     if(args["db_stop"] is True):
-        print("db_stop")
+        db.stop()  # stops database
 
 
 main.__annotations__ = {"args": dict, "return": None}
@@ -41,7 +42,6 @@ def argument_parser(description=None, cfg_files=None):
                                            default_config_files=cfg_files)
     nemesyst = parser.add_argument_group(title="Nemesyst options")
     mongodb = parser.add_argument_group(title="MongoDb options")
-    passlib = parser.add_argument_group(title="Passlib options")
 
     # Nemesyst specific options
     nemesyst.add_argument("-h", "--help",
@@ -59,11 +59,6 @@ def argument_parser(description=None, cfg_files=None):
                           default=None,
                           type=type_path,
                           help="nemesyst config path")
-
-    # Passlib specific options
-    passlib.add_argument("-P", "--passlib",
-                         default=None,
-                         help="passlib constructor dict")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--db-login",
