@@ -241,16 +241,24 @@ class Mongo(object):
                              "db_cursor_timeout": None,
                              "return": subprocess.Popen}
 
-    def stop(self):
-        """Stop a running local database."""
+    def stop(self, db_path=None):
+        """Stop a running local database.
+
+        :param db_path: The path to the database to shut down.
+        :type db_path: string
+        :return: Subprocess of database closer.
+        :rtype: subprocess.Popen
+        """
+        db_path = db_path if db_path is not None else self.args["db_path"]
+
         self.args["pylog"]("Shutting down MongoDB.")
-        subprocess.Popen(
+        return subprocess.Popen(
             ["mongod",
-             "--dbpath", str(self.args["db_path"]),
+             "--dbpath", str(db_path),
              "--shutdown"]
         )
 
-    stop.__annotations__ = {"return": None}
+    stop.__annotations__ = {"return": subprocess.Popen}
 
     def _addUser(self):
         """Add a user with given permissions to the authentication database."""
@@ -338,34 +346,51 @@ class Mongo(object):
         db = db if db is not None else self.args["db"]
         # from string to pymongo.collection.Collection
         db_collection = db[db_collection_name]
-        data_cursor = db_collection.aggregate(db_pipeline, allowDiskUse=True)
-        self.args["data_cursor"] = data_cursor
-        return data_cursor
+        db_data_cursor = db_collection.aggregate(db_pipeline,
+                                                 allowDiskUse=True)
+        self.args["db_data_cursor"] = db_data_cursor
+        return db_data_cursor
 
     getCursor.__annotations__ = {"db_pipeline": list,
                                  "db_collection_name": str,
                                  "db": database.Database,
                                  "return": command_cursor.CommandCursor}
 
-    def getBatches(self, batchSize=None):
-        """Yield of batches."""
-        batchSize = batchSize if batchSize is not None else \
+    def getBatches(self, db_batch_size=None, db_data_cursor=None):
+        """Get database cursor data in batches.
+
+        :param db_batch_size: The number of items to return in a single round.
+        :param db_data_cursor: The cursor to use to retrieve data from db.
+        :type db_batch_size: integer
+        :type db_data_cursor: command_cursor.CommandCursor
+        :yield: returns a list of items requested.
+        :ytype: list of dicts
+        """
+        db_batch_size = db_batch_size if db_batch_size is not None else \
             self.args["db_batch_size"]
-        cursor = self.args["data_cursor"]
-        # while self.args["data_cursor"]
+        db_data_cursor = db_data_cursor if db_data_cursor is not None else \
+            self.args["db_data_cursor"]
+
+        cursor = db_data_cursor
+        # while self.args["db_data_cursor"]
         if(cursor is not None):
             while(cursor.alive):
                 try:
-                    yield self.nextBatch(cursor, batchSize)
+                    yield self._nextBatch(cursor, db_batch_size)
                 except StopIteration:
                     return
+        else:
+            self.args["pylog"]("Your cursor is None, please Mongo.connect()")
 
-    getBatches.__annotations__ = {"pipeline": str, "return": dict}
+    getBatches.__annotations__ = {"db_batch_size": int,
+                                  "db_data_cursor":
+                                  command_cursor.CommandCursor,
+                                  "return": list}
 
-    def nextBatch(self, cursor, batchSize):
+    def _nextBatch(self, cursor, db_batch_size):
         """Return the very next batch in mongoDb cursor."""
         batch = []
-        while(len(batch) < batchSize):
+        while(len(batch) < db_batch_size):
             singleExample = cursor.next()
             batch.append(singleExample)
         return batch
@@ -406,7 +431,7 @@ class Mongo(object):
 
         while(cursor.alive):
             try:
-                yield self.nextBatch(cursor)
+                yield self._nextBatch(cursor)
             except StopIteration:
                 return
 
@@ -456,7 +481,7 @@ def _mongo_unit_test():
     # attempt to retrieve the data that exists in the collection as a cursor
     db.getCursor(db_collection_name="debug", db_pipeline=[{"$match": {}}])
     # inetate through the data in batches to minimise requests
-    for dataBatch in db.getBatches(batchSize=1):
+    for dataBatch in db.getBatches(db_batch_size=1):
         print(dataBatch)
     db.stop()
 
