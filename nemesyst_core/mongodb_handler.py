@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mongo_compat.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-06T01:24:55+01:00
+# @Last modified time: 2019-08-06
 # @License: Please see LICENSE in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -60,10 +60,12 @@ class Mongo(object):
         # final adjustments to newly defined dictionary
         self.args["db_url"] = "mongodb://{0}:{1}/".format(
             self.args["db_ip"], self.args["db_port"])
+        self.args["db_path"] = os.path.abspath(self.args["db_path"])
+        self.args["db_log_path"] = os.path.abspath(self.args["db_log_path"])
 
     __init__.__annotations__ = {"args": dict, "logger": print, "return": None}
 
-    def initDb(self):
+    def initDb(self, db_path=None, db_log_path=None, db_log_name=None):
         """Initialise the database.
 
         Includes ensuring db path and db log path exist and generating,
@@ -74,20 +76,28 @@ class Mongo(object):
         :param db_path: Desired directory of MongoDB database files.
         :param db_log_path: Desired directory of MongoDB log files.
         :param db_log_name: Desired name of log file.
+        :type db_path: string
+        :type db_log_path: string
+        :type db_log_name: string
         """
+        db_path = db_path if db_path is not None else self.args["db_path"]
+        db_log_path = db_log_path if db_log_path is not None else \
+            self.args["db_log_path"]
+        db_log_name = db_log_name if db_log_name is not None else \
+            self.args["db_log_name"]
+
         # create directories
         subprocess.call([
             "mkdir", "-p",
-            str(self.args["db_path"]),
-            str(self.args["db_log_path"]),
+            str(db_path),
+            str(db_log_path),
         ])
         cliArgs = [  # non authentication version of db start
             "mongod",
             "--bind_ip",        "127.0.0.1",
             "--port",           "27017",
-            "--dbpath",         str(self.args["db_path"]),
-            "--logpath",        str(self.args["db_log_path"] +
-                                    self.args["db_log_name"]),
+            "--dbpath",         str(db_path),
+            "--logpath",        str(os.path.join(db_log_path, db_log_name)),
             "--quiet"
         ]
         self.args["pylog"]("Launching unauth db on localhost")
@@ -100,7 +110,8 @@ class Mongo(object):
         # close the unauth db
         self.stop()
 
-    initDb.__annotations__ = {"return": None}
+    initDb.__annotations__ = {"db_path": None, "db_log_path": None,
+                              "db_log_name": None, "return": None}
 
     def connect(self, db_url=None, db_user=None, db_pass=None, db_name=None,
                 db_authentication=None):
@@ -145,18 +156,27 @@ class Mongo(object):
                                "db_authentication": str,
                                "return": database.Database}
 
-    def login(self):
-        """Log in to database, interupt, and availiable via cli."""
+    def login(self, db_port=None, db_user=None, db_pass=None, db_name=None):
+        """Log in to database, interupt, and availiable via cli.
+
+        :param db_port: Database port to connect to.
+        :param db_user: Database user to authenticate as.
+        :param db_pass: User password to authenticate with.
+        :param db_name: Database to authenticate to, the authentication db.
+        :todo: Add db_ip to login as it cant possibly login to remote db as is.
+        """
         loginArgs = [
             "mongo",
             "--port", str(self.args["db_port"]),
             "-u",   str(self.args["db_user"]),
             "-p", str(self.args["db_pass"]),
-            "--authenticationDatabase", str(self.args["db_name"])
+            "--authenticationDatabase", str(self.args["db_name"]),
+            self.args["db_ip"]
         ]
         subprocess.call(loginArgs)
 
-    login.__annotations__ = {"return": None}
+    login.__annotations__ = {"db_port": str, "db_user": str,
+                             "db_pass": str, "db_name": str, "return": None}
 
     def start(self):
         """Launch the database."""
