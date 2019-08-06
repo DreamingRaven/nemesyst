@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mongo_compat.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-06T16:46:27+01:00
+# @Last modified time: 2019-08-06
 # @License: Please see LICENSE in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -377,10 +377,7 @@ class Mongo(object):
         # while self.args["db_data_cursor"]
         if(cursor is not None):
             while(cursor.alive):
-                try:
-                    yield self._nextBatch(cursor, db_batch_size)
-                except StopIteration:
-                    return
+                yield self._nextBatch(cursor, db_batch_size)
         else:
             self.args["pylog"]("Your cursor is None, please Mongo.connect()")
 
@@ -392,9 +389,13 @@ class Mongo(object):
     def _nextBatch(self, cursor, db_batch_size):
         """Return the very next batch in mongoDb cursor."""
         batch = []
-        while(len(batch) < db_batch_size):
-            singleExample = cursor.next()
-            batch.append(singleExample)
+        try:
+            while(len(batch) < db_batch_size):
+                # cursor.batch_size(0) # batch size not yet set
+                singleExample = cursor.next()
+                batch.append(singleExample)
+        except StopIteration:
+            pass  # will eventually reach the end
         return batch
 
     def __setitem__(self, key, value):
@@ -483,8 +484,8 @@ def _mongo_unit_test():
     # attempt to retrieve the data that exists in the collection as a cursor
     db.getCursor(db_collection_name="debug", db_pipeline=[{"$match": {}}])
     # inetate through the data in batches to minimise requests
-    for dataBatch in db.getBatches(db_batch_size=1):
-        print(dataBatch)
+    for dataBatch in db.getBatches(db_batch_size=32):
+        print("Returned number of documents:", len(dataBatch))
     db.stop()
 
 
