@@ -68,7 +68,7 @@ class Mongo(object):
 
     __init__.__annotations__ = {"args": dict, "logger": print, "return": None}
 
-    def initDb(self, db_path=None, db_log_path=None, db_log_name=None):
+    def init(self, db_path=None, db_log_path=None, db_log_name=None):
         """Initialise the database.
 
         Includes ensuring db path and db log path exist and generating,
@@ -113,8 +113,8 @@ class Mongo(object):
         # close the unauth db
         self.stop()
 
-    initDb.__annotations__ = {"db_path": None, "db_log_path": None,
-                              "db_log_name": None, "return": None}
+    init.__annotations__ = {"db_path": None, "db_log_path": None,
+                            "db_log_name": None, "return": None}
 
     def connect(self, db_url=None, db_user=None, db_pass=None, db_name=None,
                 db_authentication=None, db_collection_name=None):
@@ -470,7 +470,7 @@ def _mongo_unit_test():
     # hold for 2 seconds to give the db time to start
     time.sleep(2)
     # attempt to initialise the database, as in create the database with users
-    db.initDb()
+    db.init()
     # hold to let the db to launch the now new unauthenticated db
     time.sleep(2)
     # start the authenticated db, you will now need a username password access
