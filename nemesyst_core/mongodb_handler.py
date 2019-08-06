@@ -176,6 +176,7 @@ class Mongo(object):
         db_pass = db_pass if db_pass is not None else self.args["db_pass"]
         db_name = db_name if db_name is not None else self.args["db_name"]
         db_ip = db_ip if db_ip is not None else self.args["db_ip"]
+
         loginArgs = [
             "mongo",
             "--port", str(db_port),
@@ -189,25 +190,56 @@ class Mongo(object):
     login.__annotations__ = {"db_port": str, "db_user": str, "db_pass": str,
                              "db_name": str, "db_ip": str, "return": None}
 
-    def start(self):
-        """Launch the database."""
+    def start(self, db_ip=None, db_port=None, db_path=None, db_log_path=None,
+              db_log_name=None, db_cursor_timeout=None):
+        """Launch an on machine database with authentication.
+
+        :param db_ip: Desired database ip to bind to.
+        :param db_port: Port desired for database.
+        :param db_path: Path to parent dir of database.
+        :param db_log_path: Path to parent dir of log files.
+        :param db_log_name: Desired base name for log files.
+        :param db_cursor_timeout: Set timeout time for unused cursors.
+        :type db_ip: string
+        :type db_port: string
+        :type db_path: string
+        :type db_log_path: string
+        :type db_log_name: string
+        :type db_cursor_timeout: integer
+        :rtype: subprocess.Popen
+        :return: Subprocess of running MongoDB.
+        """
+        db_ip = db_ip if db_ip is not None else self.args["db_ip"]
+        db_port = db_port if db_port is not None else self.args["db_port"]
+        db_path = db_path if db_path is not None else self.args["db_path"]
+        db_log_path = db_log_path if db_log_path is not None else \
+            self.args["db_log_path"]
+        db_log_name = db_log_name if db_log_name is not None else \
+            self.args["db_log_name"]
+        db_cursor_timeout = db_cursor_timeout if db_cursor_timeout is not \
+            None else self.args["db_cursor_timeout"]
+
         self.args["pylog"]("Starting mongodb: auth=",
                            str(self.args["db_authentication"]))
         cliArgs = [
             "mongod",
-            "--bind_ip",        str(self.args["db_ip"]),
-            "--port",           str(self.args["db_port"]),
-            "--dbpath",         str(self.args["db_path"]),
-            "--logpath",        str(self.args["db_log_path"] +
-                                    self.args["db_log_name"]),
+            "--bind_ip",        str(db_ip),
+            "--port",           str(db_port),
+            "--dbpath",         str(db_path),
+            "--logpath",        str(os.path.join(db_log_path, db_log_name)),
             "--setParameter",   str("cursorTimeoutMillis=" +
-                                    str(self.args["db_cursor_timeout"])),
+                                    str(db_cursor_timeout)),
             "--auth",
             "--quiet"
         ]
-        self.args["mongoProcess"] = subprocess.Popen(cliArgs)
+        db_process = subprocess.Popen(cliArgs)
+        self.args["db_process"] = db_process
+        return db_process
 
-    start.__annotations__ = {"return": None}
+    start.__annotations__ = {"db_ip": None, "db_port": None, "db_path": None,
+                             "db_log_path": None, "db_log_name": None,
+                             "db_cursor_timeout": None,
+                             "return": subprocess.Popen}
 
     def stop(self):
         """Stop a running local database."""
