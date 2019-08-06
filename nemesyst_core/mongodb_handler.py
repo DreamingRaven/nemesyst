@@ -156,27 +156,38 @@ class Mongo(object):
                                "db_authentication": str,
                                "return": database.Database}
 
-    def login(self, db_port=None, db_user=None, db_pass=None, db_name=None):
+    def login(self, db_port=None, db_user=None, db_pass=None,
+              db_name=None, db_ip=None):
         """Log in to database, interupt, and availiable via cli.
 
         :param db_port: Database port to connect to.
         :param db_user: Database user to authenticate as.
         :param db_pass: User password to authenticate with.
         :param db_name: Database to authenticate to, the authentication db.
-        :todo: Add db_ip to login as it cant possibly login to remote db as is.
+        :param db_ip: Database ip to connect to.
+        :type db_port: string
+        :type db_user: string
+        :type db_pass: string
+        :type db_name: string
+        :type db_ip: string
         """
+        db_port = db_port if db_port is not None else self.args["db_port"]
+        db_user = db_user if db_user is not None else self.args["db_user"]
+        db_pass = db_pass if db_pass is not None else self.args["db_pass"]
+        db_name = db_name if db_name is not None else self.args["db_name"]
+        db_ip = db_ip if db_ip is not None else self.args["db_ip"]
         loginArgs = [
             "mongo",
-            "--port", str(self.args["db_port"]),
-            "-u",   str(self.args["db_user"]),
-            "-p", str(self.args["db_pass"]),
-            "--authenticationDatabase", str(self.args["db_name"]),
-            self.args["db_ip"]
+            "--port", str(db_port),
+            "-u",   str(db_user),
+            "-p", str(db_pass),
+            "--authenticationDatabase", str(db_name),
+            str(db_ip)
         ]
         subprocess.call(loginArgs)
 
-    login.__annotations__ = {"db_port": str, "db_user": str,
-                             "db_pass": str, "db_name": str, "return": None}
+    login.__annotations__ = {"db_port": str, "db_user": str, "db_pass": str,
+                             "db_name": str, "db_ip": str, "return": None}
 
     def start(self):
         """Launch the database."""
