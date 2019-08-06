@@ -365,6 +365,8 @@ class Mongo(object):
         :type db_data_cursor: command_cursor.CommandCursor
         :yield: returns a list of items requested.
         :ytype: list of dicts
+        :todo: desperateley needs a rewrite and correction of bug. Last value
+            always fails. I want this in a magic function too to make it easy.
         """
         db_batch_size = db_batch_size if db_batch_size is not None else \
             self.args["db_batch_size"]
