@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
+
 # @Author: George Onoufriou <archer>
 # @Date:   2019-07-15
 # @Email:  george raven community at pm dot me
-# @Filename: mongo_compat.py
+# @Filename: mongo_handler.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-07
+# @Last modified time: 2019-08-07T15:48:36+01:00
 # @License: Please see LICENSE in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -25,8 +27,8 @@ class Mongo(object):
     :param logger: Function address to print/ log to (default: print).
     :type args: dictionary
     :type logger: function address
-    :example: Mongo({"db_user": "someUsername",
-                     "db_pass": "somePassword"})
+    :example: Mongo({"db_user_name": "someUsername",
+                     "db_password": "somePassword"})
     :example: Mongo()
     """
 
@@ -38,11 +40,12 @@ class Mongo(object):
         args = args if args is not None else dict()
         self.home = os.path.expanduser("~")
         defaults = {
-            "db_user": "groot",
-            "db_pass": "iamgroot",
+            "db_user_name": "groot",
+            "db_password": "iamgroot",
             "db_authentication": "SCRAM-SHA-1",
             "db_user_role": "readWrite",
             "db_ip": "127.0.0.1",
+            "db_bind_ip": "127.0.0.1",
             "db_name": "RecSyst",
             "db_collection_name": "testColl",
             "db_port": "27017",
@@ -97,8 +100,8 @@ class Mongo(object):
         ])
         cliArgs = [  # non authentication version of db start
             "mongod",
-            "--bind_ip",        "127.0.0.1",
-            "--port",           "27017",
+            "--bind_ip",        "localhost",
+            "--port",           self.args["db_port"],
             "--dbpath",         str(db_path),
             "--logpath",        str(os.path.join(db_log_path, db_log_name)),
             "--quiet"
@@ -116,8 +119,8 @@ class Mongo(object):
     init.__annotations__ = {"db_path": None, "db_log_path": None,
                             "db_log_name": None, "return": None}
 
-    def connect(self, db_url=None, db_user=None, db_pass=None, db_name=None,
-                db_authentication=None, db_collection_name=None):
+    def connect(self, db_url=None, db_user_name=None, db_password=None,
+                db_name=None, db_authentication=None, db_collection_name=None):
         """Connect to a specific mongodb database.
 
         This sets the internal db client which is neccessary to connect to
@@ -125,14 +128,14 @@ class Mongo(object):
         into the database will fail.
 
         :param db_url: Database url (default: "mongodb://localhost:27017/").
-        :param db_user: Username to use for authentication to db_name.
-        :param db_pass: Password for db_user in database db_name.
+        :param db_user_name: Username to use for authentication to db_name.
+        :param db_password: Password for db_user_name in database db_name.
         :param db_name: The name of the database to connect to.
         :param db_authentication: The authentication method to use on db.
         :param db_collection_name: GridFS collection to use.
         :type db_url: string
-        :type db_user: string
-        :type db_pass: string
+        :type db_user_name: string
+        :type db_password: string
         :type db_name: string
         :type db_authentication: string
         :type db_collection_name: string
@@ -140,8 +143,10 @@ class Mongo(object):
         :rtype: pymongo.database.Database
         """
         db_url = db_url if db_url is not None else self.args["db_url"]
-        db_user = db_user if db_user is not None else self.args["db_user"]
-        db_pass = db_pass if db_pass is not None else self.args["db_pass"]
+        db_user_name = db_user_name if db_user_name is not None else \
+            self.args["db_user_name"]
+        db_password = db_password if db_password is not None else \
+            self.args["db_password"]
         db_name = db_name if db_name is not None else self.args["db_name"]
         db_authentication = db_authentication if db_authentication is not \
             None else self.args["db_authentication"]
@@ -150,8 +155,8 @@ class Mongo(object):
 
         client = MongoClient(
             db_url,
-            username=str(db_user),
-            password=str(db_pass),
+            username=str(db_user_name),
+            password=str(db_password),
             authSource=str(db_name),
             authMechanism=str(db_authentication))
         db = client[db_name]
@@ -159,45 +164,48 @@ class Mongo(object):
         self.args["gfs"] = gridfs.GridFS(db, collection=db_collection_name)
         return db
 
-    connect.__annotations__ = {"db_url": str, "db_user": str,
-                               "db_pass": str, "db_name": str,
+    connect.__annotations__ = {"db_url": str, "db_user_name": str,
+                               "db_password": str, "db_name": str,
                                "db_authentication": str,
                                "db_collection_name": str,
                                "return": database.Database}
 
-    def login(self, db_port=None, db_user=None, db_pass=None,
+    def login(self, db_port=None, db_user_name=None, db_password=None,
               db_name=None, db_ip=None):
         """Log in to database, interupt, and availiable via cli.
 
         :param db_port: Database port to connect to.
-        :param db_user: Database user to authenticate as.
-        :param db_pass: User password to authenticate with.
+        :param db_user_name: Database user to authenticate as.
+        :param db_password: User password to authenticate with.
         :param db_name: Database to authenticate to, the authentication db.
         :param db_ip: Database ip to connect to.
         :type db_port: string
-        :type db_user: string
-        :type db_pass: string
+        :type db_user_name: string
+        :type db_password: string
         :type db_name: string
         :type db_ip: string
         """
         db_port = db_port if db_port is not None else self.args["db_port"]
-        db_user = db_user if db_user is not None else self.args["db_user"]
-        db_pass = db_pass if db_pass is not None else self.args["db_pass"]
+        db_user_name = db_user_name if db_user_name is not None else \
+            self.args["db_user_name"]
+        db_password = db_password if db_password is not None else \
+            self.args["db_password"]
         db_name = db_name if db_name is not None else self.args["db_name"]
         db_ip = db_ip if db_ip is not None else self.args["db_ip"]
 
         loginArgs = [
             "mongo",
             "--port", str(db_port),
-            "-u",   str(db_user),
-            "-p", str(db_pass),
+            "-u",   str(db_user_name),
+            "-p", str(db_password),
             "--authenticationDatabase", str(db_name),
             str(db_ip)
         ]
         subprocess.call(loginArgs)
 
-    login.__annotations__ = {"db_port": str, "db_user": str, "db_pass": str,
-                             "db_name": str, "db_ip": str, "return": None}
+    login.__annotations__ = {"db_port": str, "db_user_name": str,
+                             "db_password": str, "db_name": str, "db_ip": str,
+                             "return": None}
 
     def start(self, db_ip=None, db_port=None, db_path=None, db_log_path=None,
               db_log_name=None, db_cursor_timeout=None):
@@ -218,7 +226,7 @@ class Mongo(object):
         :rtype: subprocess.Popen
         :return: Subprocess of running MongoDB.
         """
-        db_ip = db_ip if db_ip is not None else self.args["db_ip"]
+        db_bind_ip = db_ip if db_ip is not None else self.args["db_bind_ip"]
         db_port = db_port if db_port is not None else self.args["db_port"]
         db_path = db_path if db_path is not None else self.args["db_path"]
         db_log_path = db_log_path if db_log_path is not None else \
@@ -232,7 +240,7 @@ class Mongo(object):
                            str(self.args["db_authentication"]))
         cliArgs = [
             "mongod",
-            "--bind_ip",        str(db_ip),
+            "--bind_ip",        str(db_bind_ip),
             "--port",           str(db_port),
             "--dbpath",         str(db_path),
             "--logpath",        str(os.path.join(db_log_path, db_log_name)),
@@ -241,7 +249,9 @@ class Mongo(object):
             "--auth",
             "--quiet"
         ]
+        time.sleep(2)
         db_process = subprocess.Popen(cliArgs)
+        time.sleep(2)
         self.args["db_process"] = db_process
         return db_process
 
@@ -272,24 +282,26 @@ class Mongo(object):
     def _addUser(self):
         """Add a user with given permissions to the authentication database."""
         self.args["pylog"]("Adding  mongodb user:",
-                           str(self.args["db_user"]),
+                           str(self.args["db_user_name"]),
                            ", role:", str(self.args["db_user_role"]),
                            ", authdb:", str(self.args["db_name"]))
-        client = MongoClient("mongodb://localhost:27017/")
+        local_mongourl = "mongodb://{0}:{1}/".format(
+            "localhost", self.args["db_port"])
+        client = MongoClient(local_mongourl)
         db = client[self.args["db_name"]]
         try:
             if(self.args["db_user_role"] == "all"):
                 db.command("createUser",
-                           self.args["db_user"],
-                           pwd=self.args["db_pass"],
+                           self.args["db_user_name"],
+                           pwd=self.args["db_password"],
                            roles=["readWrite", "dbAdmin"])
             else:
                 db.command("createUser",
-                           self.args["db_user"],
-                           pwd=self.args["db_pass"],
+                           self.args["db_user_name"],
+                           pwd=self.args["db_password"],
                            roles=[self.args["db_user_role"]])
         except errors.DuplicateKeyError:
-            self.args["pylog"](self.args["db_user"] + "@" +
+            self.args["pylog"](self.args["db_user_name"] + "@" +
                                self.args["db_name"],
                                "already exists skipping.")
     _addUser.__annotations__ = {"return": None}
@@ -457,7 +469,7 @@ def _mongo_unit_test():
     import datetime
     """Unit test of MongoDB compat."""
     # create Mongo object to use
-    db = Mongo({"test2": 2})
+    db = Mongo({"test2": 2, "db_port": "65535"})
     # testing magic functions
     db["test2"] = 3  # set item
     db["test2"]  # get item

@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-07
+# @Last modified time: 2019-08-07T15:36:54+01:00
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -79,13 +79,30 @@ def argument_parser(description=None, cfg_files=None):
                          default=bool(False),
                          action="store_true",
                          help="nemesyst initialise mongodb")
-    mongodb.add_argument("--db-user",
+    mongodb.add_argument("--db-user-name",
                          type=str,
                          help="set mongodb usernam")
     mongodb.add_argument("--db-password",
                          default=bool(False),
                          action="store_true",
                          help="set mongodb password")
+    mongodb.add_argument("--db-authentication",
+                         default=str("SCRAM-SHA-1"),
+                         type=str,
+                         help="Set the mongodb authentication method.")
+    mongodb.add_argument("--db-user-role",
+                         default=str("readWrite"),
+                         type=str,
+                         help="Set the users permissions in the database.")
+    mongodb.add_argument("--db-ip",
+                         default=str("127.0.0.1"),
+                         type=str,
+                         help="The ip of the database to connect to.")
+    mongodb.add_argument("--db-bind-ip",
+                         default=str("127.0.0.1"),
+                         # default=str("0.0.0.0"),
+                         type=str,
+                         help="The ip the database should be accessible from")
 
     return parser
 
@@ -101,6 +118,7 @@ def type_path(string):
 
 
 def type_file_path_exists(string):
+    """Cross platform file path existance parser."""
     string = os.path.abspath(string)
     if os.path.isfile(string):
         print("File exists:", string)
