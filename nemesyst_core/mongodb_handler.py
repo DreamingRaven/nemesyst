@@ -5,7 +5,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mongo_handler.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-07T15:48:36+01:00
+# @Last modified time: 2019-08-07T16:00:51+01:00
 # @License: Please see LICENSE in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -44,10 +44,10 @@ class Mongo(object):
             "db_password": "iamgroot",
             "db_authentication": "SCRAM-SHA-1",
             "db_user_role": "readWrite",
-            "db_ip": "127.0.0.1",
-            "db_bind_ip": "127.0.0.1",
-            "db_name": "RecSyst",
-            "db_collection_name": "testColl",
+            "db_ip": "localhost",
+            "db_bind_ip": "localhost",
+            "db_name": "nemesyst",
+            "db_collection_name": "test",
             "db_port": "27017",
             # "db_url": "mongodb://localhost:27017/", # this is auto generated
             "db_url": None,
@@ -493,7 +493,7 @@ def _mongo_unit_test():
     db.connect()
     db.debug()
     # import data into mongodb debug collection
-    db.dump(db_collection_name="debug", data={
+    db.dump(db_collection_name="test", data={
         "string": "99",
         "number": 99,
         "binary": bin(99),

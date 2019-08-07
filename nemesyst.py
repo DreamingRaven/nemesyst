@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-07T15:36:54+01:00
+# @Last modified time: 2019-08-07T16:02:34+01:00
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -95,14 +95,25 @@ def argument_parser(description=None, cfg_files=None):
                          type=str,
                          help="Set the users permissions in the database.")
     mongodb.add_argument("--db-ip",
-                         default=str("127.0.0.1"),
+                         default=str("localhost"),
                          type=str,
                          help="The ip of the database to connect to.")
     mongodb.add_argument("--db-bind-ip",
-                         default=str("127.0.0.1"),
-                         # default=str("0.0.0.0"),
+                         default=str("localhost"),
                          type=str,
                          help="The ip the database should be accessible from")
+    mongodb.add_argument("--db-port",
+                         default=str("65535"),
+                         type=str,
+                         help="The port both the unauth and auth db will use.")
+    mongodb.add_argument("--db-name",
+                         default=str("nemesyst"),
+                         type=str,
+                         help="The name of the authenticated database.")
+    mongodb.add_argument("--db-collection-name",
+                         default=str("test"),
+                         type=str,
+                         help="The name of the collection to use in database.")
 
     return parser
 
