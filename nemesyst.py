@@ -8,6 +8,8 @@
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
+# from six import reraise as raise_
+from future.utils import raise_
 import os
 import sys
 
@@ -57,7 +59,7 @@ def argument_parser(description=None, cfg_files=None):
                           help="prevent nemesyst from updating")
     nemesyst.add_argument("-c", "--config",
                           default=None,
-                          type=type_path,
+                          type=type_file_path_exists,
                           help="nemesyst config path")
 
     # MongoDB specific options
@@ -96,6 +98,16 @@ argument_parser.__annotations__ = {"description": str,
 def type_path(string):
     """Create a path from string."""
     return os.path.abspath(string)
+
+
+def type_file_path_exists(string):
+    string = os.path.abspath(string)
+    if os.path.isfile(string):
+        print("File exists:", string)
+        return string
+    else:
+        # raise_(FileNotFoundError, str(string) + " does not exist.")
+        raise_(ValueError, str(string) + " does not exist.")
 
 
 type_path.__annotations__ = {"string": str, "return": str}
