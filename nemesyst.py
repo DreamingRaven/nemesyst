@@ -58,7 +58,7 @@ def argument_parser(description=None, cfg_files=None):
                           action="store_true",
                           help="prevent nemesyst from updating")
     nemesyst.add_argument("-c", "--config",
-                          default=list,
+                          default=list(),
                           nargs='+',
                           type=type_file_path_exists,
                           help="nemesyst config path")
