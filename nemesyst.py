@@ -58,7 +58,8 @@ def argument_parser(description=None, cfg_files=None):
                           action="store_true",
                           help="prevent nemesyst from updating")
     nemesyst.add_argument("-c", "--config",
-                          default=None,
+                          default=list,
+                          nargs='+',
                           type=type_file_path_exists,
                           help="nemesyst config path")
 
@@ -132,7 +133,6 @@ def type_file_path_exists(string):
     """Cross platform file path existance parser."""
     string = os.path.abspath(string)
     if os.path.isfile(string):
-        print("File exists:", string)
         return string
     else:
         # raise_(FileNotFoundError, str(string) + " does not exist.")
@@ -156,15 +156,13 @@ def argument_handler(args, config_files, description, isNewConfig=False):
         os.execv(__file__, new_args)
     if(processed_args["config"] is not None) and (isNewConfig is False):
         # this will reload this handler with a new config file
-        print([processed_args["config"]] + config_files)
         processed_args = argument_handler(args,
-                                          [processed_args["config"]] +
+                                          processed_args["config"] +
                                           config_files,
                                           description,
                                           isNewConfig=True)  # prevent loop
     if(processed_args["db_password"] is True):
         processed_args["db_password"] = getpass.getpass()
-    print(processed_args)
     return processed_args
 
 
