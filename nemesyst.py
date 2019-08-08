@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: RavenRecSyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-08T15:51:44+01:00
+# @Last modified time: 2019-08-08T15:58:17+01:00
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -62,9 +62,6 @@ def argument_parser(description=None, cfg_files=None):
                           nargs='+',
                           type=type_file_path_exists,
                           help="nemesyst config path")
-    nemesyst.add_argument("--_completion",
-                          action="store_true",
-                          help="Experimental completion for fish")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--db-login",
@@ -151,9 +148,6 @@ def argument_handler(args, config_files, description, isNewConfig=False):
                              cfg_files=config_files)
     processed_args = parser.parse_args(args)
     processed_args = vars(processed_args)
-    if(processed_args["_completion"] is True):
-        pass
-        exit()
     if(processed_args["update"] is True) and \
             (processed_args["prevent_update"] is not True):
         # this will reboot this script
