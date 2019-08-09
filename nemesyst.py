@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: nemesyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-09T16:23:19+01:00
+# @Last modified time: 2019-08-09T16:30:15+01:00
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -49,45 +49,45 @@ def argument_parser(description=None, cfg_files=None):
     # Nemesyst specific options
     nemesyst.add_argument("-h", "--help",
                           action="help",
-                          help="print help")
+                          help="Print help.")
     nemesyst.add_argument("-U", "--update",
                           default=bool(False),
                           action="store_true",
-                          help="nemesyst update, and restart")
+                          help="Nemesyst update, and restart.")
     nemesyst.add_argument("--prevent-update",
                           default=bool(False),
                           action="store_true",
-                          help="prevent nemesyst from updating")
+                          help="Prevent nemesyst from updating.")
     nemesyst.add_argument("-c", "--config",
                           default=list(),
                           nargs='+',
                           type=type_file_path_exists,
-                          help="nemesyst config path")
+                          help="Nemesyst config paths, accepts arbitrary num.")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--db-login",
                          default=bool(False),
                          action="store_true",
-                         help="nemesyst log into mongodb")
+                         help="Nemesyst log into mongodb.")
     mongodb.add_argument("-s", "--db-start",
                          default=bool(False),
                          action="store_true",
-                         help="nemesyst launch mongodb")
+                         help="Nemesyst launch mongodb.")
     mongodb.add_argument("-S", "--db-stop",
                          default=bool(False),
                          action="store_true",
-                         help="nemesyst stop mongodb")
+                         help="Nemesyst stop mongodb.")
     mongodb.add_argument("-i", "--db-init",
                          default=bool(False),
                          action="store_true",
-                         help="nemesyst initialise mongodb")
+                         help="Nemesyst initialise mongodb files.")
     mongodb.add_argument("--db-user-name",
                          type=str,
-                         help="set mongodb usernam")
+                         help="Set mongodb username.")
     mongodb.add_argument("--db-password",
                          default=bool(False),
                          action="store_true",
-                         help="set mongodb password")
+                         help="Set mongodb password.")
     mongodb.add_argument("--db-authentication",
                          default=str("SCRAM-SHA-1"),
                          type=str,
@@ -103,7 +103,7 @@ def argument_parser(description=None, cfg_files=None):
     mongodb.add_argument("--db-bind-ip",
                          default=str("localhost"),
                          type=str,
-                         help="The ip the database should be accessible from")
+                         help="The ip the database should be accessible from.")
     mongodb.add_argument("--db-port",
                          default=str("65535"),
                          type=str,
