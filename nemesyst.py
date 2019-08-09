@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: nemesyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-09T16:30:15+01:00
+# @Last modified time: 2019-08-09T16:37:51+01:00
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -62,7 +62,7 @@ def argument_parser(description=None, cfg_files=None):
                           default=list(),
                           nargs='+',
                           type=type_file_path_exists,
-                          help="Nemesyst config paths, accepts arbitrary num.")
+                          help="List of all ini files to be used.")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--db-login",
