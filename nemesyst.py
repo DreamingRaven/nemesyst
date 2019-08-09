@@ -2,9 +2,9 @@
 
 # @Author: George Onoufriou <georgeraven>
 # @Date:   2018-05-16
-# @Filename: RavenRecSyst.py
+# @Filename: nemesyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-08T15:58:17+01:00
+# @Last modified time: 2019-08-09T16:23:19+01:00
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -38,6 +38,7 @@ main.__annotations__ = {"args": dict, "return": None}
 
 def argument_parser(description=None, cfg_files=None):
     """Parse cli>environment>config>default arguments into dictionary."""
+    home = os.path.expanduser("~")
     parser = configargparse.ArgumentParser(prog=None,
                                            description=description,
                                            add_help=False,
@@ -115,6 +116,31 @@ def argument_parser(description=None, cfg_files=None):
                          default=str("test"),
                          type=str,
                          help="The name of the collection to use in database.")
+    mongodb.add_argument("--db-path",
+                         default=os.path.join(home, "/db"),
+                         type=type_path,
+                         help="The parent directory to use for the database.")
+    mongodb.add_argument("--db-log-path",
+                         default=os.path.join(home, "/db/log"),
+                         type=type_path,
+                         help="The parent directory to use for the db log.")
+    mongodb.add_argument("--db-log-name",
+                         default=str("mongo_log"),
+                         type=str,
+                         help="The base name of the log file to maintain.")
+    mongodb.add_argument("--db-cursor-timeout",
+                         default=600000,
+                         type=int,
+                         help="The duration in seconds before an unused " +
+                              "cursor will time out.")
+    mongodb.add_argument("--db-batch-size",
+                         default=32,
+                         type=int,
+                         help="The number of documents to return from the " +
+                              "db at once/ pre round.")
+    mongodb.add_argument("--db-pipeline",
+                         type=str,
+                         help="The file path of the pipeline to use on db.")
 
     return parser
 
