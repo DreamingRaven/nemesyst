@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: nemesyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-13T01:19:59+01:00
+# @Last modified time: 2019-08-13T01:25:53+01:00
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -45,6 +45,7 @@ def argument_parser(description=None, cfg_files=None):
                                            default_config_files=cfg_files)
     nemesyst = parser.add_argument_group(title="Nemesyst options")
     data = parser.add_argument_group(title="Data pre-processing options")
+    deeplearning = parser.add_argument_group(title="Deep learning options")
     mongodb = parser.add_argument_group(title="MongoDb options")
 
     # Nemesyst specific options
@@ -84,6 +85,12 @@ def argument_parser(description=None, cfg_files=None):
                       default=bool(False),
                       action="store_true",
                       help="Import (cleaned?) data to database.")
+
+    # deep learning options
+    deeplearning.add_argument("--dl-batch-size",
+                              default=32,
+                              type=int,
+                              help="Batch size of the data to use.")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--db-login",
