@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: nemesyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-09T16:37:51+01:00
+# @Last modified time: 2019-08-13T01:19:59+01:00
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -44,6 +44,7 @@ def argument_parser(description=None, cfg_files=None):
                                            add_help=False,
                                            default_config_files=cfg_files)
     nemesyst = parser.add_argument_group(title="Nemesyst options")
+    data = parser.add_argument_group(title="Data pre-processing options")
     mongodb = parser.add_argument_group(title="MongoDb options")
 
     # Nemesyst specific options
@@ -63,6 +64,26 @@ def argument_parser(description=None, cfg_files=None):
                           nargs='+',
                           type=type_file_path_exists,
                           help="List of all ini files to be used.")
+
+    # data pre-processing specific options
+    data.add_argument("-d", "--data",
+                      default=list(),
+                      nargs='+',
+                      type=type_file_path_exists,
+                      help="List of data file paths.")
+    data.add_argument("--data-clean",
+                      default=bool(False),
+                      action="store_true",
+                      help="Clean specified data files.")
+    data.add_argument("--data-cleaner",
+                      default=list(),
+                      nargs='+',
+                      type=type_file_path_exists,
+                      help="Path to data cleaner(s).")
+    data.add_argument("--data-import",
+                      default=bool(False),
+                      action="store_true",
+                      help="Import (cleaned?) data to database.")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--db-login",
