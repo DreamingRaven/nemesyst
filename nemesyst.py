@@ -23,10 +23,13 @@ def main(args):
     # mongodb handler
     from nemesyst_core.mongodb_handler import Mongo
     db = Mongo(args)  # matching args will override defaults
+    del args["db_password"]  # deleting password as it is no longer needed
     if(args["db_init"] is True):
         db.init()  # creates database files
     if(args["db_start"] is True):
         db.start()  # launches database
+    if(args["data_clean"] is True):
+        import_cleaners(args)
     if(args["db_login"] is True):
         db.login()  # logs in to database
     if(args["db_stop"] is True):
@@ -226,9 +229,18 @@ argument_handler.__annotations__ = {"args": list,
                                     "return": any}
 
 
-def import_cleaner():
+def import_cleaners(args):
+    """Abstraction function to import cleaner to import a list of cleaners"""
+    for cleaner in args["data_cleaner"]:
+        import_cleaner(cleaner)
+
+
+def import_cleaner(cleaner):
     """Import cleaner(s) and call entry function."""
     pass
+    module_dir, module_file = os.path.split(cleaner)
+    print(module_dir, module_file)
+    sys.path.append(module_dir)
 
 
 def import_learner():
