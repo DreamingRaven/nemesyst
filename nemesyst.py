@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: nemesyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-13T01:25:53+01:00
+# @Last modified time: 2019-08-13T11:42:27+01:00
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -224,6 +224,17 @@ argument_handler.__annotations__ = {"args": list,
                                     "description": str,
                                     "cfg_files": list,
                                     "return": any}
+
+
+def import_cleaner():
+    """Import cleaner(s) and call entry function."""
+    pass
+
+
+def import_learner():
+    """Import learner script and call entry function."""
+    pass
+
 
 if(__name__ == "__main__"):
     # passing the 3 needed args to argument handler and main with minimal
