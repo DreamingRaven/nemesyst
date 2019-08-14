@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: nemesyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-13T11:42:27+01:00
+# @Last modified time: 2019-08-14
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -248,6 +248,14 @@ def import_learner():
     pass
 
 
+def default_config_files():
+    config_files = [
+        "./nemesyst.d/*.conf",
+        "/etc/nemesyst/nemesyst.d/*.conf",
+    ]
+    return config_files
+
+
 if(__name__ == "__main__"):
     # passing the 3 needed args to argument handler and main with minimal
     # global footprint, so no assignment sorry
@@ -255,11 +263,7 @@ if(__name__ == "__main__"):
         # first arg, the set of cli args
         args=sys.argv[1:],
          # second arg, the list of default config locations
-         config_files=[
-            # https://unix.stackexchange.com/a/4047 .d extension
-            "./nemesyst.d/*.conf",
-            "/etc/nemesyst/nemesyst.d/*.conf",
-        ],
-        # the third arg, a description to be used in help
-        description="Nemesyst; Hybrid-parallelisation database deep learning."
-    ))
+         config_files=default_config_files(),
+         # the third arg, a description to be used in help
+         description="Nemesyst; Hybrid-parallelisation database deep learning."
+         ))

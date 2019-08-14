@@ -7,10 +7,22 @@
 # @License: Please see LICENSE in project root
 import nemesyst
 
-nemesyst.main(
-    nemesyst.argument_handler(
-        args=[],
-        config_files=nemesyst.default_config_files(),
-        description="Nemesyst; Unit tests."
+
+def test(args=None, config_files=None, description=None):
+    args = args if args is not None else []
+    config_files = config_files if config_files is not None else \
+        nemesyst.default_config_files()
+    description = description if description is not None else \
+        "Nemesyst; Unit tests."
+
+    nemesyst.main(
+        nemesyst.argument_handler(
+            args=args,
+            config_files=config_files,
+            description=description
+        )
     )
-)
+
+
+# test empty
+test()
