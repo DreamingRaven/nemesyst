@@ -6,6 +6,13 @@
 Nemesyst
 ========
 
+.. image:: logo.svg
+    :height: 100px
+    :width: 100px
+    :alt: Nemesyst Logo
+    :align: right
+    :target: https://github.com/DreamingRaven/nemesyst
+
 .. toctree::
    :maxdepth: 2
    :caption: Table of Contents
