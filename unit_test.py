@@ -14,15 +14,19 @@ def test(args=None, config_files=None, description=None):
         nemesyst.default_config_files()
     description = description if description is not None else \
         "Nemesyst; Unit tests."
-
-    nemesyst.main(
-        nemesyst.argument_handler(
-            args=args,
-            config_files=config_files,
-            description=description
-        )
+    args = nemesyst.argument_handler(
+        args=args,
+        config_files=config_files,
+        description=description
     )
+    args["db_password"] = "iamgroot"
+    nemesyst.main(args)
 
 
 # test empty
 test()
+test_args = [
+    "--db-user-name", "groot",
+    # "--db-password", "iamgroot", # this is overriden manually
+]
+test(args=test_args)
