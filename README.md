@@ -1,6 +1,6 @@
-<img src="docs/source/logo.svg" alt="drawing" width="180"/>
+<img href="https://nemesyst.readthedocs.io" src="docs/source/logo.svg" alt="drawing" width="180"/>
 
-# Nemesyst 
+# Nemesyst
 Practical deep learning.
 
 Please visit our documentation at:
