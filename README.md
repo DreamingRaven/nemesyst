@@ -1,4 +1,4 @@
-<img href="https://nemesyst.readthedocs.io" src="docs/source/logo.svg" alt="drawing" width="180"/>
+<img src="docs/source/logo.svg" alt="drawing" width="180"/>
 
 # Nemesyst
 Practical deep learning.
