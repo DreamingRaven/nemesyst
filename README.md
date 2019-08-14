@@ -1,5 +1,9 @@
-# Nemesyst
 <img src="docs/source/logo.svg" alt="drawing" width="180"/>
+
+# Nemesyst 
+Practical deep learning.
+
+Please visit our documentation at:
 
 | Branch        | Docs          |
 |:-------------:|:-------------:|
