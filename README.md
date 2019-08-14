@@ -1,4 +1,5 @@
 # Nemesyst
+<img src="docs/source/logo.svg" alt="drawing" width="180"/>
 
 | Branch        | Docs          |
 |:-------------:|:-------------:|
