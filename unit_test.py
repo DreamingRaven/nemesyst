@@ -6,6 +6,8 @@
 # @Last modified time: 2019-08-14
 # @License: Please see LICENSE in project root
 import nemesyst
+import shutil  # deleting directories
+import os
 
 
 def test(args=None, config_files=None, description=None):
@@ -23,10 +25,21 @@ def test(args=None, config_files=None, description=None):
     nemesyst.main(args)
 
 
+# set the directory to use for tests
+test_dir = "test_dir"  # testing ability to recover from relative path
 # test empty
 test()
 test_args = [
+    "--db-init",
+    "--db-start",
+    "--db-path", test_dir,
+    "--db-log-path", os.path.join(os.path.abspath(test_dir), "logs"),
     "--db-user-name", "groot",
+    "--db-port", "22229",
+    "--db-stop"
     # "--db-password", "iamgroot", # this is overriden manually
 ]
+print(test_args)
 test(args=test_args)
+# clean up after ourselves
+shutil.rmtree(os.path.abspath(test_dir))
