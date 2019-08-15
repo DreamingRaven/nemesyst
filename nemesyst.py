@@ -232,15 +232,24 @@ argument_handler.__annotations__ = {"args": list,
 def import_cleaners(args):
     """Abstraction function to import cleaner to import a list of cleaners"""
     for cleaner in args["data_cleaner"]:
-        import_cleaner(cleaner)
+        import_script(cleaner, args)
 
 
-def import_cleaner(cleaner):
+def import_script(cleaner, args):
     """Import cleaner(s) and call entry function."""
-    pass
+    import importlib
+    # get dir and file strings
     module_dir, module_file = os.path.split(cleaner)
+    # get name from file string if it has an extension for example
+    module_name = os.path.splitext(module_file)[0]
     print(module_dir, module_file)
     sys.path.append(module_dir)
+    script = importlib.import_module(module_name)
+    # get the address of the function we want to call
+    entryPointFunc = getattr(
+        script, args["customScript_entryPoint"])
+    # call this function with the provided arguments
+    entryPointFunc()
 
 
 def import_learner():
