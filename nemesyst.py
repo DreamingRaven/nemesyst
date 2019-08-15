@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: nemesyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-15
+# @Last modified time: 2019-08-16
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -29,7 +29,8 @@ def main(args):
     if(args["db_start"] is True):
         db.start()  # launches database
     if(args["data_clean"] is True):
-        call_cleaners(args)
+        for cleaner in args["data_cleaner"]:
+            import_script(script=cleaner, args=args)
     if(args["db_login"] is True):
         db.login()  # logs in to database
     if(args["db_stop"] is True):
@@ -233,20 +234,14 @@ argument_handler.__annotations__ = {"args": list,
                                     "return": any}
 
 
-def call_cleaners(args):
-    """Abstraction function to import cleaner to import a list of cleaners"""
-    for cleaner in args["data_cleaner"]:
-        import_script(cleaner, args)
-
-
-def import_script(cleaner, args):
-    """Import cleaner(s) and call entry function."""
+def import_script(script, args):
+    """Import script and call entry function."""
     import importlib
     # get dir and file strings
-    module_dir, module_file = os.path.split(cleaner)
+    module_dir, module_file = os.path.split(script)
     # get name from file string if it has an extension for example
     module_name = os.path.splitext(module_file)[0]
-    print(module_dir, module_file)
+    print("\nLaunching:", module_dir, module_file)
     sys.path.append(module_dir)
     script = importlib.import_module(module_name)
     # get the address of the function we want to call
@@ -254,11 +249,7 @@ def import_script(cleaner, args):
         script, args["data_cleaner_entry_point"])
     # call this function with the provided arguments
     entryPointFunc()
-
-
-def call_learners():
-    """Import learner script and call entry function."""
-    pass
+    print()
 
 
 def default_config_files():

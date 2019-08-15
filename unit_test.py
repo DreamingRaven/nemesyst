@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: unit_test.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-14
+# @Last modified time: 2019-08-16
 # @License: Please see LICENSE in project root
 import nemesyst
 import shutil  # deleting directories
@@ -41,6 +41,7 @@ test_args = [
     "--db-port", "22229",
     "--db-stop",
     "--data-cleaner", "scripts/cleaners/debug_cleaner.py",
+    "scripts/cleaners/debug_cleaner.py", "scripts/cleaners/debug_cleaner.py",
     "--data-clean",
     # "--db-password", "iamgroot", # this is overriden manually
 ]
