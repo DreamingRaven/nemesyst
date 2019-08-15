@@ -29,7 +29,7 @@ def main(args):
     if(args["db_start"] is True):
         db.start()  # launches database
     if(args["data_clean"] is True):
-        import_cleaners(args)
+        call_cleaners(args)
     if(args["db_login"] is True):
         db.login()  # logs in to database
     if(args["db_stop"] is True):
@@ -88,6 +88,10 @@ def argument_parser(description=None, cfg_files=None):
                       default=bool(False),
                       action="store_true",
                       help="Import (cleaned?) data to database.")
+    data.add_argument("--data-cleaner-entry-point",
+                      default=str("main"),
+                      type=str,
+                      help="Specify the entry point of custom scripts to use.")
 
     # deep learning options
     deeplearning.add_argument("--dl-batch-size",
@@ -229,7 +233,7 @@ argument_handler.__annotations__ = {"args": list,
                                     "return": any}
 
 
-def import_cleaners(args):
+def call_cleaners(args):
     """Abstraction function to import cleaner to import a list of cleaners"""
     for cleaner in args["data_cleaner"]:
         import_script(cleaner, args)
@@ -247,12 +251,12 @@ def import_script(cleaner, args):
     script = importlib.import_module(module_name)
     # get the address of the function we want to call
     entryPointFunc = getattr(
-        script, args["customScript_entryPoint"])
+        script, args["data_cleaner_entry_point"])
     # call this function with the provided arguments
     entryPointFunc()
 
 
-def import_learner():
+def call_learners():
     """Import learner script and call entry function."""
     pass
 

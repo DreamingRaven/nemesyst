@@ -29,6 +29,9 @@ def test(args=None, config_files=None, description=None):
 test_dir = "test_dir"  # testing ability to recover from relative path
 # test empty
 test()
+
+# ensure db is closed before attempting
+test(args=["--db-stop", "--db-path", test_dir])
 test_args = [
     "--db-init",
     "--db-start",
@@ -36,7 +39,9 @@ test_args = [
     "--db-log-path", os.path.join(os.path.abspath(test_dir), "logs"),
     "--db-user-name", "groot",
     "--db-port", "22229",
-    "--db-stop"
+    "--db-stop",
+    "--data-cleaner", "scripts/cleaners/debug_cleaner.py",
+    "--data-clean",
     # "--db-password", "iamgroot", # this is overriden manually
 ]
 test(args=test_args)
