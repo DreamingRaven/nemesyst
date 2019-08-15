@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: nemesyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-14
+# @Last modified time: 2019-08-15
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -249,6 +249,11 @@ def import_learner():
 
 
 def default_config_files():
+    """Default config file generator, for cleaner abstraction.
+
+    :return: ordered list of config file expansions
+    :rtype: list
+    """
     config_files = [
         "./nemesyst.d/*.conf",
         "/etc/nemesyst/nemesyst.d/*.conf",
