@@ -39,7 +39,6 @@ test_args = [
     "--db-stop"
     # "--db-password", "iamgroot", # this is overriden manually
 ]
-print(test_args)
 test(args=test_args)
 # clean up after ourselves
 shutil.rmtree(os.path.abspath(test_dir))
