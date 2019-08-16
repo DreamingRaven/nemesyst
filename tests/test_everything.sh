@@ -7,16 +7,17 @@
 # @License: Please see LICENSE in project root
 
 # ensuring we are in this files directory
-cd "${0%/*}"
+script_path="${0%/*}"
+# mkdir -p "${script_path}/../logs"
 
 # testing setup.py and pkgbuild
-cd ../.arch
-makepkg
+cd "${script_path}/../.arch"
+makepkg -f
 
 # testing sphinx
-cd ../docs
+cd "${script_path}/../docs"
 make html
 
 # testing nemesyst itself
-cd ..
+cd "${script_path}/.."
 python3 unit_test.py
