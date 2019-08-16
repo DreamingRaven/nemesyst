@@ -29,13 +29,23 @@ def main(args):
     if(args["db_start"] is True):
         db.start()  # launches database
     if(args["data_clean"] is True):
+        # get the GENerator we want to iterate over
         for cleaner in args["data_cleaner"]:
-            import_script(script=cleaner, args=args, db=db,
-                          entry_point=args["data_cleaner_entry_point"])
+            gen = import_script(script=cleaner, args=args, db=db,
+                                entry_point=args["data_cleaner_entry_point"])
+            db.connect()
+            for data in gen():
+                print(data)
+                db.dump(db_collection_name=args["data_collection"], data=data)
     if(args["dl_learn"] is True):
         for learner in args["dl_learner"]:
-            import_script(script=learner, args=args, db=db,
-                          entry_point=args["dl_learner_entry_point"])
+            # get the GENerator we want to iterate over
+            gen = import_script(script=learner, args=args, db=db,
+                                entry_point=args["dl_learner_entry_point"])
+            db.connect()
+            for data in gen():
+                print(data)
+                db.dump(db_collection_name=args["dl_collection"], data=data)
     if(args["db_login"] is True):
         db.login()  # logs in to database
     if(args["db_stop"] is True):
@@ -98,6 +108,10 @@ def argument_parser(description=None, cfg_files=None):
                       default=str("main"),
                       type=str,
                       help="Specify the entry point of custom scripts to use.")
+    data.add_argument("--data-collection",
+                      default=str("debug_data"),
+                      type=str,
+                      help="Specify data storage collection name.")
 
     # deep learning options
     deeplearning.add_argument("--dl-batch-size",
@@ -118,6 +132,10 @@ def argument_parser(description=None, cfg_files=None):
                               type=str,
                               help="Specify the entry point " +
                                    "of custom scripts to use.")
+    deeplearning.add_argument("--dl-collection",
+                              default=str("debug_models"),
+                              type=str,
+                              help="Specify model storage collection name.")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--db-login",
@@ -269,7 +287,7 @@ def import_script(script, args, db, entry_point):
         script, entry_point)
     # call this function with the provided arguments
     entryPointFunc(args=copy.deepcopy(args), db=db)
-    print()
+    return entryPointFunc
 
 
 def default_config_files():

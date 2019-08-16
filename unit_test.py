@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: unit_test.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-16
+# @Last modified time: 2019-08-16T15:33:56+01:00
 # @License: Please see LICENSE in project root
 import nemesyst
 import shutil  # deleting directories
@@ -46,6 +46,7 @@ test_args = [
     "scripts/learners/debug_learner.py",
     "--data-clean",
     "--dl-learn",
+    # "--db-login"
     # "--db-password", "iamgroot", # this is overriden manually
 ]
 test(args=test_args)

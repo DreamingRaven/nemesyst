@@ -9,4 +9,7 @@
 
 def main(**kwargs):
     print("kwargs:", type(kwargs), kwargs)
-    # yield {}
+    x = 0
+    while x < 10:
+        yield {"x": x}
+        x = x + 1
