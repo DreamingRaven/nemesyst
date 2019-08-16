@@ -130,7 +130,7 @@ def argument_parser(description=None, cfg_files=None):
                       default=["debug_data"],
                       nargs='+',
                       type=str,
-                      help="Specify data storage collection name.")
+                      help="Specify data storage collection name(s).")
 
     # deep learning options
     deeplearning.add_argument("--dl-batch-size",
@@ -156,7 +156,7 @@ def argument_parser(description=None, cfg_files=None):
                               default=["debug_models"],
                               nargs='+',
                               type=str,
-                              help="Specify model storage collection name.")
+                              help="Specify model storage collection name(s).")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--db-login",
