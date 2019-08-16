@@ -5,7 +5,7 @@
 # @Date:   2018-09-05
 # @Filename: setup.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-08T15:19:45+01:00
+# @Last modified time: 2019-08-17
 # @License: Please see LICENSE file in project root
 
 import subprocess
@@ -21,6 +21,9 @@ version_num = subprocess.check_output(["sed", r"s/\([^-]*-\)g/r\1/;s/-/./g"],
 git_describe.wait()
 version_git = version_num.decode("ascii").strip()
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 with open("README.md", "r") as fh:
     readme = fh.read()
 
@@ -34,11 +37,6 @@ setup(
     author="George Onoufriou",
     url="https://github.com/DreamingRaven/nemesyst",
     packages=find_namespace_packages(),
-    # scripts=['nemesyst.py'],
     scripts=['nemesyst'],
-    install_requires=[
-        "pymongo>=3.8.0",
-        "configargparse>=0.14.0"
-        # "python-configargparse>=3.7.4"
-    ]
+    install_requires=requirements
 )
