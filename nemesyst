@@ -17,35 +17,21 @@ import sys
 import getpass
 import configargparse
 
+# mongodb handler
+from nemesyst_core.mongodb_handler import Mongo
+
 
 def main(args):
     """Operate on processed args."""
-    # mongodb handler
-    from nemesyst_core.mongodb_handler import Mongo
     db = Mongo(args)  # matching args will override defaults
-    del args["db_password"]  # deleting password as it is no longer needed
     if(args["db_init"] is True):
         db.init()  # creates database files
     if(args["db_start"] is True):
         db.start()  # launches database
     if(args["data_clean"] is True):
-        # get the GENerator we want to iterate over
-        for cleaner in args["data_cleaner"]:
-            gen = import_script(script=cleaner, args=args, db=db,
-                                entry_point=args["data_cleaner_entry_point"])
-            db.connect()
-            for data in gen:
-                data["args"] = args
-                db.dump(db_collection_name=args["data_collection"], data=data)
+        parallel_clean(args)
     if(args["dl_learn"] is True):
-        for learner in args["dl_learner"]:
-            # get the GENerator we want to iterate over
-            gen = import_script(script=learner, args=args, db=db,
-                                entry_point=args["dl_learner_entry_point"])
-            db.connect()
-            for data in gen:
-                data["args"] = args
-                db.dump(db_collection_name=args["dl_collection"], data=data)
+        parallel_learn(args)
     if(args["db_login"] is True):
         db.login()  # logs in to database
     if(args["db_stop"] is True):
@@ -53,6 +39,33 @@ def main(args):
 
 
 main.__annotations__ = {"args": dict, "return": None}
+
+
+def parallel_clean(args):
+    db = Mongo(args)
+    del args["db_password"]  # deleting password as it is no longer needed
+    for i in range(len(args["data_cleaner"])):
+        gen = import_script(script=args["data_cleaner"][i],
+                            args=args, db=db,
+                            entry_point=args[
+                                "data_cleaner_entry_point"][i])
+        db.connect()
+        for data in gen:
+            data["args"] = args
+            db.dump(db_collection_name=args["data_collection"][i], data=data)
+
+
+def parallel_learn(args):
+    db = Mongo(args)
+    del args["db_password"]  # deleting password as it is no longer needed
+    for i in range(len(args["dl_learner"])):
+
+        gen = import_script(script=args["dl_learner"][i], args=args, db=db,
+                            entry_point=args["dl_learner_entry_point"][i])
+        db.connect()
+        for data in gen:
+            data["args"] = args
+            db.dump(db_collection_name=args["dl_collection"][i], data=data)
 
 
 def argument_parser(description=None, cfg_files=None):
@@ -96,7 +109,7 @@ def argument_parser(description=None, cfg_files=None):
                       action="store_true",
                       help="Clean specified data files.")
     data.add_argument("--data-cleaner",
-                      default=list(),
+                      default=[],
                       nargs='+',
                       type=type_file_path_exists,
                       help="Path to data cleaner(s).")
@@ -105,11 +118,13 @@ def argument_parser(description=None, cfg_files=None):
                       action="store_true",
                       help="Import (cleaned?) data to database.")
     data.add_argument("--data-cleaner-entry-point",
-                      default=str("main"),
+                      default=["main"],
+                      nargs='+',
                       type=str,
                       help="Specify the entry point of custom scripts to use.")
     data.add_argument("--data-collection",
-                      default=str("debug_data"),
+                      default=["debug_data"],
+                      nargs='+',
                       type=str,
                       help="Specify data storage collection name.")
 
@@ -123,17 +138,19 @@ def argument_parser(description=None, cfg_files=None):
                               action="store_true",
                               help="Use learner scripts.")
     deeplearning.add_argument("--dl-learner",
-                              default=list(),
+                              default=[],
                               nargs='+',
                               type=type_file_path_exists,
                               help="Path to learner(s).")
     deeplearning.add_argument("--dl-learner-entry-point",
-                              default=str("main"),
+                              default=["main"],
+                              nargs='+',
                               type=str,
                               help="Specify the entry point " +
                                    "of custom scripts to use.")
     deeplearning.add_argument("--dl-collection",
-                              default=str("debug_models"),
+                              default=["debug_models"],
+                              nargs='+',
                               type=str,
                               help="Specify model storage collection name.")
 
