@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: nemesyst.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-16
+# @Last modified time: 2019-08-17
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -13,6 +13,7 @@ from future.utils import raise_
 import os
 import sys
 import copy
+import importlib
 
 # argument handler
 import getpass
@@ -294,8 +295,6 @@ argument_handler.__annotations__ = {"args": list,
 
 def import_script(script, args, db, entry_point):
     """Import script and call entry function."""
-    import copy
-    import importlib
     # get dir and file strings
     module_dir, module_file = os.path.split(script)
     # get name from file string if it has an extension for example

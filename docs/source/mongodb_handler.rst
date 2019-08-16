@@ -16,5 +16,8 @@ Below follows a in code example unit test for all functionality. You can overide
 
   Mongo uses subprocess.Popen in init, start, and stop, since these threads would otherwise lock up nemesyst, with time.sleep() to wait for the database to startup, and shutdown. Depending on the size of your database it may be necessary to extend the length of time time.sleep() as larger databases will take longer to startup and shutdown.
 
+API
++++
+
 .. autoclass:: mongo.Mongo
   :members:
