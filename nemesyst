@@ -30,11 +30,11 @@ def main(args):
         db.start()  # launches database
     if(args["data_clean"] is True):
         for cleaner in args["data_cleaner"]:
-            import_script(script=cleaner, args=args,
+            import_script(script=cleaner, args=args, db=db,
                           entry_point=args["data_cleaner_entry_point"])
     if(args["dl_learn"] is True):
         for learner in args["dl_learner"]:
-            import_script(script=learner, args=args,
+            import_script(script=learner, args=args, db=db,
                           entry_point=args["dl_learner_entry_point"])
     if(args["db_login"] is True):
         db.login()  # logs in to database
@@ -253,8 +253,9 @@ argument_handler.__annotations__ = {"args": list,
                                     "return": any}
 
 
-def import_script(script, args, entry_point):
+def import_script(script, args, db, entry_point):
     """Import script and call entry function."""
+    import copy
     import importlib
     # get dir and file strings
     module_dir, module_file = os.path.split(script)
@@ -267,7 +268,7 @@ def import_script(script, args, entry_point):
     entryPointFunc = getattr(
         script, entry_point)
     # call this function with the provided arguments
-    entryPointFunc()
+    entryPointFunc(args=copy.deepcopy(args), db=db)
     print()
 
 
