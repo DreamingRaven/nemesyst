@@ -5,7 +5,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mongo_handler.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-07T16:00:51+01:00
+# @Last modified time: 2019-08-16
 # @License: Please see LICENSE in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -271,11 +271,13 @@ class Mongo(object):
         db_path = db_path if db_path is not None else self.args["db_path"]
 
         self.args["pylog"]("Shutting down MongoDB.")
-        return subprocess.Popen(
+        process = subprocess.Popen(
             ["mongod",
              "--dbpath", str(db_path),
              "--shutdown"]
         )
+        time.sleep(0.5)
+        return process
 
     stop.__annotations__ = {"return": subprocess.Popen}
 
