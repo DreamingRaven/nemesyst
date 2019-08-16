@@ -12,6 +12,7 @@ from __future__ import print_function, absolute_import   # python 2-3 compat
 from future.utils import raise_
 import os
 import sys
+import copy
 
 # argument handler
 import getpass
@@ -41,10 +42,12 @@ def main(args):
 main.__annotations__ = {"args": dict, "return": None}
 
 
-def parallel_clean(args):
-    db = Mongo(args)
-    del args["db_password"]  # deleting password as it is no longer needed
-    for i in range(len(args["data_cleaner"])):
+def parallel_clean(args_m):
+    """Run cleaning scripts in parallel."""
+    for i in range(len(args_m["data_cleaner"])):
+        args = copy.deepcopy(args_m)
+        db = Mongo(args)
+        del args["db_password"]  # deleting password as it is no longer needed
         gen = import_script(script=args["data_cleaner"][i],
                             args=args, db=db,
                             entry_point=args[
@@ -55,11 +58,12 @@ def parallel_clean(args):
             db.dump(db_collection_name=args["data_collection"][i], data=data)
 
 
-def parallel_learn(args):
-    db = Mongo(args)
-    del args["db_password"]  # deleting password as it is no longer needed
-    for i in range(len(args["dl_learner"])):
-
+def parallel_learn(args_m):
+    """Run learning scripts in parallel."""
+    for i in range(len(args_m["dl_learner"])):
+        args = copy.deepcopy(args_m)
+        db = Mongo(args)
+        del args["db_password"]  # deleting password as it is no longer needed
         gen = import_script(script=args["dl_learner"][i], args=args, db=db,
                             entry_point=args["dl_learner_entry_point"][i])
         db.connect()

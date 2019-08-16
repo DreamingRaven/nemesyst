@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: unit_test.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-16T15:33:56+01:00
+# @Last modified time: 2019-08-16
 # @License: Please see LICENSE in project root
 import nemesyst
 import shutil  # deleting directories
@@ -42,8 +42,12 @@ test_args = [
     "--db-stop",
     "--data-cleaner", "scripts/cleaners/debug_cleaner.py",
     "scripts/cleaners/debug_cleaner.py", "scripts/cleaners/debug_cleaner.py",
+    "--data-cleaner-entry-point", "main", "main", "main",
+    "--data-collection", "debug_data", "debug_data", "debug_data",
     "--dl-learner", "scripts/learners/debug_learner.py",
     "scripts/learners/debug_learner.py",
+    "--dl-learner-entry-point", "main", "main", "main",
+    "--dl-collection", "debug_models", "debug_models", "debug_models",
     "--data-clean",
     "--dl-learn",
     # "--db-login"
