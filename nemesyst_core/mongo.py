@@ -468,8 +468,8 @@ class Mongo(object):
 
 
 def _mongo_unit_test():
-    import datetime
     """Unit test of MongoDB compat."""
+    import datetime
     # create Mongo object to use
     db = Mongo({"test2": 2, "db_port": "65535"})
     # testing magic functions
@@ -506,10 +506,11 @@ def _mongo_unit_test():
     # log into the database so user can manually check data import
     db.login()
     # attempt to retrieve the data that exists in the collection as a cursor
-    db.getCursor(db_collection_name="debug", db_pipeline=[{"$match": {}}])
-    # inetate through the data in batches to minimise requests
+    db.getCursor(db_collection_name="test", db_pipeline=[{"$match": {}}])
+    # itetate through the data in batches to minimise requests
     for dataBatch in db.getBatches(db_batch_size=32):
         print("Returned number of documents:", len(dataBatch))
+    # finally close out database
     db.stop()
 
 

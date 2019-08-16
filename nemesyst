@@ -19,7 +19,7 @@ import getpass
 import configargparse
 
 # mongodb handler
-from nemesyst_core.mongodb_handler import Mongo
+from nemesyst_core.mongo import Mongo
 
 
 def main(args):
