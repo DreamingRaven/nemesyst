@@ -30,7 +30,12 @@ def main(args):
         db.start()  # launches database
     if(args["data_clean"] is True):
         for cleaner in args["data_cleaner"]:
-            import_script(script=cleaner, args=args)
+            import_script(script=cleaner, args=args,
+                          entry_point=args["data_cleaner_entry_point"])
+    if(args["dl_learn"] is True):
+        for learner in args["dl_learner"]:
+            import_script(script=learner, args=args,
+                          entry_point=args["dl_learner_entry_point"])
     if(args["db_login"] is True):
         db.login()  # logs in to database
     if(args["db_stop"] is True):
@@ -99,6 +104,20 @@ def argument_parser(description=None, cfg_files=None):
                               default=32,
                               type=int,
                               help="Batch size of the data to use.")
+    deeplearning.add_argument("--dl-learn",
+                              default=bool(False),
+                              action="store_true",
+                              help="Use learner scripts.")
+    deeplearning.add_argument("--dl-learner",
+                              default=list(),
+                              nargs='+',
+                              type=type_file_path_exists,
+                              help="Path to learner(s).")
+    deeplearning.add_argument("--dl-learner-entry-point",
+                              default=str("main"),
+                              type=str,
+                              help="Specify the entry point " +
+                                   "of custom scripts to use.")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--db-login",
@@ -234,7 +253,7 @@ argument_handler.__annotations__ = {"args": list,
                                     "return": any}
 
 
-def import_script(script, args):
+def import_script(script, args, entry_point):
     """Import script and call entry function."""
     import importlib
     # get dir and file strings
@@ -246,7 +265,7 @@ def import_script(script, args):
     script = importlib.import_module(module_name)
     # get the address of the function we want to call
     entryPointFunc = getattr(
-        script, args["data_cleaner_entry_point"])
+        script, entry_point)
     # call this function with the provided arguments
     entryPointFunc()
     print()

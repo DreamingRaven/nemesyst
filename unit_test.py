@@ -42,7 +42,10 @@ test_args = [
     "--db-stop",
     "--data-cleaner", "scripts/cleaners/debug_cleaner.py",
     "scripts/cleaners/debug_cleaner.py", "scripts/cleaners/debug_cleaner.py",
+    "--dl-learner", "scripts/learners/debug_learner.py",
+    "scripts/learners/debug_learner.py",
     "--data-clean",
+    "--dl-learn",
     # "--db-password", "iamgroot", # this is overriden manually
 ]
 test(args=test_args)
