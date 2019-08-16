@@ -34,8 +34,8 @@ def main(args):
             gen = import_script(script=cleaner, args=args, db=db,
                                 entry_point=args["data_cleaner_entry_point"])
             db.connect()
-            for data in gen():
-                print(data)
+            for data in gen:
+                data["args"] = args
                 db.dump(db_collection_name=args["data_collection"], data=data)
     if(args["dl_learn"] is True):
         for learner in args["dl_learner"]:
@@ -43,8 +43,8 @@ def main(args):
             gen = import_script(script=learner, args=args, db=db,
                                 entry_point=args["dl_learner_entry_point"])
             db.connect()
-            for data in gen():
-                print(data)
+            for data in gen:
+                data["args"] = args
                 db.dump(db_collection_name=args["dl_collection"], data=data)
     if(args["db_login"] is True):
         db.login()  # logs in to database
@@ -286,8 +286,7 @@ def import_script(script, args, db, entry_point):
     entryPointFunc = getattr(
         script, entry_point)
     # call this function with the provided arguments
-    entryPointFunc(args=copy.deepcopy(args), db=db)
-    return entryPointFunc
+    return entryPointFunc(args=copy.deepcopy(args), db=db)
 
 
 def default_config_files():
