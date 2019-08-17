@@ -31,27 +31,28 @@ noextract=()
 md5sums=('SKIP')
 
 pkgver() {
-	cd "$srcdir/${pkgsrcname}"
+	cd "${srcdir}/${pkgsrcname}"
 	printf "%s" "$(git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g')"
 }
 
 prepare() {
-	cd "$srcdir/${pkgsrcname}"
+	cd "${srcdir}/${pkgsrcname}"
 	git checkout ${branch} # get off of makepkg branch
 }
 
 build() {
-	cd "$srcdir/${pkgsrcname}"
+	cd "${srcdir}/${pkgsrcname}"
 }
 
 check() {
-	cd "$srcdir/${pkgsrcname}"
+	cd "${srcdir}/${pkgsrcname}"
 	# check that program can run while self checking and updating if somethings missing
 	python3 ./nemesyst.py --update
 }
 
 package() {
-	cd "$srcdir/${pkgsrcname}"
+	cd "${srcdir}/${pkgsrcname}"
 	python3 ./setup.py install --prefix=/usr --root="$pkgdir/" --optimize=1
-	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+	install -Dm644 nemesyst.d/nemesyst.conf "${pkgdir}/etc/nemesyst/nemesyst.d/nemesyst.conf"
 }
