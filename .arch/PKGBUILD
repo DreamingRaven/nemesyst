@@ -14,11 +14,9 @@ url="https://github.com/DreamingRaven/nemesyst"
 branch="dev" #TODO change me to master when no longer in dev
 license=('MIT') # MIT is a special case store a copy in /usr/share/pkgname
 groups=("nemesyst-base")
-depends=('git' 'python-setuptools' 'mongodb' 'python' 'python-pymongo'
-				 'python-pandas' 'python-numpy'  'python-colorama' 'python-configargparse')
+depends=('python-setuptools' 'python' 'python-pymongo' 'python-configargparse')
 makedepends=('git')
-optdepends=('python-pydot: quick architecture graphs'
-						'python-h5py'
+optdepends=('mongodb: local database creation'
 						'python-sphinx: documentation builder'
 						'python-sphinx_rtd_theme: documentation theme generator'
 						'python-sphinx-argparse: documentation auto generate argument list')
