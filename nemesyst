@@ -1,0 +1,335 @@
+#!/usr/bin/env python3
+
+# @Author: George Onoufriou <georgeraven>
+# @Date:   2018-05-16
+# @Filename: nemesyst.py
+# @Last modified by:   archer
+# @Last modified time: 2019-08-17
+# @License: Please see LICENSE file in project root
+
+from __future__ import print_function, absolute_import   # python 2-3 compat
+# from six import reraise as raise_
+from future.utils import raise_
+import os
+import sys
+import copy
+import importlib
+
+# argument handler
+import getpass
+import configargparse
+
+# mongodb handler
+from nemesyst_core.mongo import Mongo
+
+
+def main(args):
+    """Operate on processed args."""
+    db = Mongo(args)  # matching args will override defaults
+    if(args["db_init"] is True):
+        db.init()  # creates database files
+    if(args["db_start"] is True):
+        db.start()  # launches database
+    if(args["data_clean"] is True):
+        parallel_clean(args)
+    if(args["dl_learn"] is True):
+        parallel_learn(args)
+    if(args["db_login"] is True):
+        db.login()  # logs in to database
+    if(args["db_stop"] is True):
+        db.stop()  # stops database
+
+
+main.__annotations__ = {"args": dict, "return": None}
+
+
+def parallel_clean(args_m):
+    """Run cleaning scripts in parallel."""
+    for i in range(len(args_m["data_cleaner"])):
+        args = copy.deepcopy(args_m)
+        db = Mongo(args)
+        del args["db_password"]  # deleting password as it is no longer needed
+        gen = import_script(script=args["data_cleaner"][i],
+                            args=args, db=db,
+                            entry_point=args[
+                                "data_cleaner_entry_point"][i])
+        db.connect()
+        for data in gen:
+            data["args"] = args
+            db.dump(db_collection_name=args["data_collection"][i], data=data)
+
+
+def parallel_learn(args_m):
+    """Run learning scripts in parallel."""
+    for i in range(len(args_m["dl_learner"])):
+        args = copy.deepcopy(args_m)
+        db = Mongo(args)
+        del args["db_password"]  # deleting password as it is no longer needed
+        gen = import_script(script=args["dl_learner"][i], args=args, db=db,
+                            entry_point=args["dl_learner_entry_point"][i])
+        db.connect()
+        for data in gen:
+            data["args"] = args
+            db.dump(db_collection_name=args["dl_collection"][i], data=data)
+
+
+def argument_parser(description=None, cfg_files=None):
+    """Parse cli>environment>config>default arguments into dictionary."""
+    home = os.path.expanduser("~")
+    parser = configargparse.ArgumentParser(prog=None,
+                                           description=description,
+                                           add_help=False,
+                                           default_config_files=cfg_files)
+    nemesyst = parser.add_argument_group(title="Nemesyst options")
+    data = parser.add_argument_group(title="Data pre-processing options")
+    deeplearning = parser.add_argument_group(title="Deep learning options")
+    mongodb = parser.add_argument_group(title="MongoDb options")
+
+    # Nemesyst specific options
+    nemesyst.add_argument("-h", "--help",
+                          action="help",
+                          help="Print help.")
+    nemesyst.add_argument("-U", "--update",
+                          default=bool(False),
+                          action="store_true",
+                          help="Nemesyst update, and restart.")
+    nemesyst.add_argument("--prevent-update",
+                          default=bool(False),
+                          action="store_true",
+                          help="Prevent nemesyst from updating.")
+    nemesyst.add_argument("-c", "--config",
+                          default=list(),
+                          nargs='+',
+                          type=type_file_path_exists,
+                          help="List of all ini files to be used.")
+
+    # data pre-processing specific options
+    data.add_argument("-d", "--data",
+                      default=list(),
+                      nargs='+',
+                      type=type_file_path_exists,
+                      help="List of data file paths.")
+    data.add_argument("--data-clean",
+                      default=bool(False),
+                      action="store_true",
+                      help="Clean specified data files.")
+    data.add_argument("--data-cleaner",
+                      default=[],
+                      nargs='+',
+                      type=type_file_path_exists,
+                      help="Path to data cleaner(s).")
+    data.add_argument("--data-import",
+                      default=bool(False),
+                      action="store_true",
+                      help="Import (cleaned?) data to database.")
+    data.add_argument("--data-cleaner-entry-point",
+                      default=["main"],
+                      nargs='+',
+                      type=str,
+                      help="Specify the entry point of custom scripts to use.")
+    data.add_argument("--data-collection",
+                      default=["debug_data"],
+                      nargs='+',
+                      type=str,
+                      help="Specify data storage collection name(s).")
+
+    # deep learning options
+    deeplearning.add_argument("--dl-batch-size",
+                              default=32,
+                              type=int,
+                              help="Batch size of the data to use.")
+    deeplearning.add_argument("--dl-learn",
+                              default=bool(False),
+                              action="store_true",
+                              help="Use learner scripts.")
+    deeplearning.add_argument("--dl-learner",
+                              default=[],
+                              nargs='+',
+                              type=type_file_path_exists,
+                              help="Path to learner(s).")
+    deeplearning.add_argument("--dl-learner-entry-point",
+                              default=["main"],
+                              nargs='+',
+                              type=str,
+                              help="Specify the entry point " +
+                                   "of custom scripts to use.")
+    deeplearning.add_argument("--dl-collection",
+                              default=["debug_models"],
+                              nargs='+',
+                              type=str,
+                              help="Specify model storage collection name(s).")
+
+    # MongoDB specific options
+    mongodb.add_argument("-l", "--db-login",
+                         default=bool(False),
+                         action="store_true",
+                         help="Nemesyst log into mongodb.")
+    mongodb.add_argument("-s", "--db-start",
+                         default=bool(False),
+                         action="store_true",
+                         help="Nemesyst launch mongodb.")
+    mongodb.add_argument("-S", "--db-stop",
+                         default=bool(False),
+                         action="store_true",
+                         help="Nemesyst stop mongodb.")
+    mongodb.add_argument("-i", "--db-init",
+                         default=bool(False),
+                         action="store_true",
+                         help="Nemesyst initialise mongodb files.")
+    mongodb.add_argument("--db-user-name",
+                         type=str,
+                         help="Set mongodb username.")
+    mongodb.add_argument("--db-password",
+                         default=bool(False),
+                         action="store_true",
+                         help="Set mongodb password.")
+    mongodb.add_argument("--db-authentication",
+                         default=str("SCRAM-SHA-1"),
+                         type=str,
+                         help="Set the mongodb authentication method.")
+    mongodb.add_argument("--db-user-role",
+                         default=str("readWrite"),
+                         type=str,
+                         help="Set the users permissions in the database.")
+    mongodb.add_argument("--db-ip",
+                         default=str("localhost"),
+                         type=str,
+                         help="The ip of the database to connect to.")
+    mongodb.add_argument("--db-bind-ip",
+                         default=str("localhost"),
+                         type=str,
+                         help="The ip the database should be accessible from.")
+    mongodb.add_argument("--db-port",
+                         default=str("65535"),
+                         type=str,
+                         help="The port both the unauth and auth db will use.")
+    mongodb.add_argument("--db-name",
+                         default=str("nemesyst"),
+                         type=str,
+                         help="The name of the authenticated database.")
+    mongodb.add_argument("--db-collection-name",
+                         default=str("test"),
+                         type=str,
+                         help="The name of the collection to use in database.")
+    mongodb.add_argument("--db-path",
+                         default=os.path.join(home, "/db"),
+                         type=type_path,
+                         help="The parent directory to use for the database.")
+    mongodb.add_argument("--db-log-path",
+                         default=os.path.join(home, "/db/log"),
+                         type=type_path,
+                         help="The parent directory to use for the db log.")
+    mongodb.add_argument("--db-log-name",
+                         default=str("mongo_log"),
+                         type=str,
+                         help="The base name of the log file to maintain.")
+    mongodb.add_argument("--db-cursor-timeout",
+                         default=600000,
+                         type=int,
+                         help="The duration in seconds before an unused " +
+                              "cursor will time out.")
+    mongodb.add_argument("--db-batch-size",
+                         default=32,
+                         type=int,
+                         help="The number of documents to return from the " +
+                              "db at once/ pre round.")
+    mongodb.add_argument("--db-pipeline",
+                         type=str,
+                         help="The file path of the pipeline to use on db.")
+
+    return parser
+
+
+argument_parser.__annotations__ = {"description": str,
+                                   "cfg_files": list,
+                                   "return": any}
+
+
+def type_path(string):
+    """Create a path from string."""
+    return os.path.abspath(string)
+
+
+def type_file_path_exists(string):
+    """Cross platform file path existance parser."""
+    string = os.path.abspath(string)
+    if os.path.isfile(string):
+        return string
+    else:
+        # raise_(FileNotFoundError, str(string) + " does not exist.")
+        raise_(ValueError, str(string) + " does not exist.")
+
+
+type_path.__annotations__ = {"string": str, "return": str}
+
+
+def argument_handler(args, config_files, description, isNewConfig=False):
+    """Handle the argument parser."""
+    parser = argument_parser(description=description,
+                             cfg_files=config_files)
+    processed_args = parser.parse_args(args)
+    processed_args = vars(processed_args)
+    if(processed_args["update"] is True) and \
+            (processed_args["prevent_update"] is not True):
+        # this will reboot this script
+        new_args = [x for x in sys.argv if x != "-U"] + ["--prevent-update"]
+        print("updating and restarting nemesyst at:", __file__)
+        os.execv(__file__, new_args)
+    if(processed_args["config"] is not None) and (isNewConfig is False):
+        # this will reload this handler with a new config file
+        processed_args = argument_handler(args,
+                                          processed_args["config"] +
+                                          config_files,
+                                          description,
+                                          isNewConfig=True)  # prevent loop
+    if(processed_args["db_password"] is True):
+        processed_args["db_password"] = getpass.getpass()
+    return processed_args
+
+
+argument_handler.__annotations__ = {"args": list,
+                                    "description": str,
+                                    "cfg_files": list,
+                                    "return": any}
+
+
+def import_script(script, args, db, entry_point):
+    """Import script and call entry function."""
+    # get dir and file strings
+    module_dir, module_file = os.path.split(script)
+    # get name from file string if it has an extension for example
+    module_name = os.path.splitext(module_file)[0]
+    print("\nLaunching:", module_dir, module_file)
+    sys.path.append(module_dir)
+    script = importlib.import_module(module_name)
+    # get the address of the function we want to call
+    entryPointFunc = getattr(
+        script, entry_point)
+    # call this function with the provided arguments
+    return entryPointFunc(args=copy.deepcopy(args), db=db)
+
+
+def default_config_files():
+    """Default config file generator, for cleaner abstraction.
+
+    :return: ordered list of config file expansions
+    :rtype: list
+    """
+    config_files = [
+        "./nemesyst.d/*.conf",
+        "/etc/nemesyst/nemesyst.d/*.conf",
+    ]
+    return config_files
+
+
+if(__name__ == "__main__"):
+    # passing the 3 needed args to argument handler and main with minimal
+    # global footprint, so no assignment sorry
+    main(argument_handler(
+        # first arg, the set of cli args
+        args=sys.argv[1:],
+         # second arg, the list of default config locations
+         config_files=default_config_files(),
+         # the third arg, a description to be used in help
+         description="Nemesyst; Hybrid-parallelisation database deep learning."
+         ))
