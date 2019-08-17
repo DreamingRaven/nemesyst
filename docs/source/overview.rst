@@ -1,2 +1,5 @@
 Overview
 ========
+
+.. figure:: nemesyst_example.svg
+    :alt: Nemesyst use-case example diagram.
