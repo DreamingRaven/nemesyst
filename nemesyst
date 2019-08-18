@@ -89,19 +89,23 @@ def argument_parser(description=None, cfg_files=None):
     # Nemesyst specific options
     nemesyst.add_argument("-h", "--help",
                           action="help",
+                          env_var="N_HELP",
                           help="Print help.")
     nemesyst.add_argument("-U", "--update",
                           default=bool(False),
                           action="store_true",
+                          env_var="N_UPDATE",
                           help="Nemesyst update, and restart.")
     nemesyst.add_argument("--prevent-update",
                           default=bool(False),
                           action="store_true",
+                          env_var="N_PREVENT_UPDATE",
                           help="Prevent nemesyst from updating.")
     nemesyst.add_argument("-c", "--config",
                           default=list(),
                           nargs='+',
                           type=type_file_path_exists,
+                          env_var="N_CONFIG",
                           help="List of all ini files to be used.")
 
     # data pre-processing specific options
@@ -109,76 +113,92 @@ def argument_parser(description=None, cfg_files=None):
                       default=list(),
                       nargs='+',
                       type=type_file_path_exists,
+                      env_var="N_DATA",
                       help="List of data file paths.")
     data.add_argument("--data-clean",
                       default=bool(False),
                       action="store_true",
+                      env_var="N_DATA_CLEAN",
                       help="Clean specified data files.")
     data.add_argument("--data-cleaner",
                       default=[],
                       nargs='+',
                       type=type_file_path_exists,
+                      env_var="N_DATA_CLEANER",
                       help="Path to data cleaner(s).")
     data.add_argument("--data-import",
                       default=bool(False),
                       action="store_true",
+                      env_var="N_DATA_IMPORT",
                       help="Import (cleaned?) data to database.")
     data.add_argument("--data-cleaner-entry-point",
                       default=["main"],
                       nargs='+',
                       type=str,
+                      env_var="N_DATA_CLEANER_ENTRY_POINT",
                       help="Specify the entry point of custom scripts to use.")
     data.add_argument("--data-collection",
                       default=["debug_data"],
                       nargs='+',
                       type=str,
+                      env_var="N_DATA_COLLECTION",
                       help="Specify data storage collection name(s).")
 
     # deep learning options
     deeplearning.add_argument("--dl-batch-size",
                               default=32,
                               type=int,
+                              env_var="N_DL_BATCH_SIZE",
                               help="Batch size of the data to use.")
     deeplearning.add_argument("--dl-learn",
                               default=bool(False),
                               action="store_true",
+                              env_var="N_DL_LEARN",
                               help="Use learner scripts.")
     deeplearning.add_argument("--dl-learner",
                               default=[],
                               nargs='+',
                               type=type_file_path_exists,
+                              env_var="N_DL_LEARNER",
                               help="Path to learner(s).")
     deeplearning.add_argument("--dl-learner-entry-point",
                               default=["main"],
                               nargs='+',
                               type=str,
+                              env_var="N_DL_LEARNER_ENTRY_POINT",
                               help="Specify the entry point " +
                                    "of custom scripts to use.")
     deeplearning.add_argument("--dl-collection",
                               default=["debug_models"],
                               nargs='+',
                               type=str,
+                              env_var="N_DL_COLLECTION",
                               help="Specify model storage collection name(s).")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--db-login",
                          default=bool(False),
                          action="store_true",
+                         env_var="N_DB_LOGIN",
                          help="Nemesyst log into mongodb.")
     mongodb.add_argument("-s", "--db-start",
                          default=bool(False),
                          action="store_true",
+                         env_var="N_DB_START",
                          help="Nemesyst launch mongodb.")
     mongodb.add_argument("-S", "--db-stop",
                          default=bool(False),
                          action="store_true",
+                         env_var="N_DB_STOP",
                          help="Nemesyst stop mongodb.")
     mongodb.add_argument("-i", "--db-init",
                          default=bool(False),
                          action="store_true",
+                         env_var="N_DB_INIT",
                          help="Nemesyst initialise mongodb files.")
     mongodb.add_argument("--db-user-name",
                          type=str,
+                         env_var="N_DB_USER_NAME",
                          help="Set mongodb username.")
     mongodb.add_argument("--db-password",
                          default=bool(False),
@@ -188,55 +208,68 @@ def argument_parser(description=None, cfg_files=None):
     mongodb.add_argument("--db-authentication",
                          default=str("SCRAM-SHA-1"),
                          type=str,
+                         env_var="N_DB_AUTHENTICATION",
                          help="Set the mongodb authentication method.")
     mongodb.add_argument("--db-user-role",
                          default=str("readWrite"),
                          type=str,
+                         env_var="N_DB_USER_ROLE",
                          help="Set the users permissions in the database.")
     mongodb.add_argument("--db-ip",
                          default=str("localhost"),
                          type=str,
+                         env_var="N_DB_IP",
                          help="The ip of the database to connect to.")
     mongodb.add_argument("--db-bind-ip",
                          default=str("localhost"),
                          type=str,
+                         env_var="N_DB_BIND_IP",
                          help="The ip the database should be accessible from.")
     mongodb.add_argument("--db-port",
                          default=str("65535"),
                          type=str,
+                         env_var="N_DB_PORT",
                          help="The port both the unauth and auth db will use.")
     mongodb.add_argument("--db-name",
                          default=str("nemesyst"),
                          type=str,
+                         env_var="N_DB_NAME",
                          help="The name of the authenticated database.")
     mongodb.add_argument("--db-collection-name",
                          default=str("test"),
                          type=str,
+                         env_var="N_DB_COLLECTION_NAME",
                          help="The name of the collection to use in database.")
     mongodb.add_argument("--db-path",
                          default=os.path.join(home, "/db"),
                          type=type_path,
+                         env_var="N_DB_PATH",
                          help="The parent directory to use for the database.")
     mongodb.add_argument("--db-log-path",
                          default=os.path.join(home, "/db/log"),
                          type=type_path,
+                         env_var="N_DB_PATH",
                          help="The parent directory to use for the db log.")
     mongodb.add_argument("--db-log-name",
                          default=str("mongo_log"),
                          type=str,
+                         env_var="N_DB_LOG_NAME",
                          help="The base name of the log file to maintain.")
     mongodb.add_argument("--db-cursor-timeout",
                          default=600000,
                          type=int,
+                         env_var="N_DB_CURSOR_TIMEOUT",
                          help="The duration in seconds before an unused " +
                               "cursor will time out.")
     mongodb.add_argument("--db-batch-size",
                          default=32,
                          type=int,
+                         env_var="N_DB_BATCH_SIZE",
                          help="The number of documents to return from the " +
                               "db at once/ pre round.")
     mongodb.add_argument("--db-pipeline",
                          type=str,
+                         env_var="N_DB_PIPELINE",
                          help="The file path of the pipeline to use on db.")
 
     return parser
