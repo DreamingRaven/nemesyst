@@ -35,6 +35,7 @@ Wrangling
     :figclass: align-center
 
     Wrangling is the stage where the data is cleaned into single atomic examples to be imported to the database.
+    See :ref:`section_all-options` for a full list of options.
 
 .. _section_serving:
 
@@ -46,6 +47,7 @@ Serving
     :figclass: align-center
 
     Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
+    See :ref:`section_all-options` for a full list of options.
 
 .. _section_learning:
 
@@ -57,6 +59,7 @@ Learning
     :figclass: align-center
 
     Learning is the stage where the data is used to train new models or to update an existing model already in the database.
+    See :ref:`section_all-options` for a full list of options.
 
 .. _section_infering:
 
@@ -68,18 +71,4 @@ Infering
     :figclass: align-center
 
     Infering is the stage where the model(s) are used to predict on newly provided data.
-
-
-    .. It refers to the section itself, see :ref:`section_infering`.
-    ..
-    .. It refers to the section itself, see :ref:`section_learning`.
-    ..
-    .. It refers to the section itself, see :ref:`section_serving`.
-    ..
-    .. It refers to the section itself, see :ref:`section_wrangling`.
-    ..
-    .. It refers to the section itself, see :ref:`section_nemesyst-abstraction`.
-    ..
-    .. It refers to the section itself, see :ref:`section_nemesyst-literal`.
-    ..
-    .. It refers to the section itself, see :ref:`section_conceptualisation`.
+    See :ref:`section_all-options` for a full list of options.
