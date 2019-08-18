@@ -1,5 +1,9 @@
+.. _section_conceptualisation:
+
 Conceptualisation
 =================
+
+.. _section_nemesyst-literal:
 
 Nemesyst Literal un-abstract stages
 ***********************************
@@ -10,6 +14,8 @@ Nemesyst Literal un-abstract stages
 
     This image is a use case example of Nemesyst applied to a distributed refrigeration fleet over multiple sites, and both online and offline learning capabilities occuring simultaneously.
 
+.. _section_nemesyst-abstraction:
+
 Nemesyst Abstraction of stages
 ******************************
 
@@ -18,6 +24,8 @@ Nemesyst Abstraction of stages
     :figclass: align-center
 
     Deep learning can be said to include 3 stages, data-wrangling, test-training, and infering. Nemesyst adds an extra layer we call serving, which is the stage at which databases are involved as the message passing interface (MPI), and generator, between the layers, machines, and algorithms, along with being the data, and model storage mechanism.
+
+.. _section_wrangling:
 
 Wrangling
 *********
@@ -28,6 +36,8 @@ Wrangling
 
     Wrangling is the stage where the data is cleaned into single atomic examples to be imported to the database.
 
+.. _section_serving:
+
 Serving
 *******
 
@@ -36,6 +46,8 @@ Serving
     :figclass: align-center
 
     Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
+
+.. _section_learning:
 
 Learning
 ********
@@ -46,6 +58,8 @@ Learning
 
     Learning is the stage where the data is used to train new models or to update an existing model already in the database.
 
+.. _section_infering:
+
 Infering
 ********
 
@@ -54,3 +68,18 @@ Infering
     :figclass: align-center
 
     Infering is the stage where the model(s) are used to predict on newly provided data.
+
+
+    .. It refers to the section itself, see :ref:`section_infering`.
+    ..
+    .. It refers to the section itself, see :ref:`section_learning`.
+    ..
+    .. It refers to the section itself, see :ref:`section_serving`.
+    ..
+    .. It refers to the section itself, see :ref:`section_wrangling`.
+    ..
+    .. It refers to the section itself, see :ref:`section_nemesyst-abstraction`.
+    ..
+    .. It refers to the section itself, see :ref:`section_nemesyst-literal`.
+    ..
+    .. It refers to the section itself, see :ref:`section_conceptualisation`.
