@@ -1,0 +1,56 @@
+Conceptualisation
+=================
+
+Nemesyst Literal un-abstract stages
+***********************************
+
+.. figure:: nemesyst_example.svg
+    :alt: Nemesyst use-case example diagram.
+    :figclass: align-center
+
+    This image is a use case example of Nemesyst applied to a distributed refrigeration fleet over multiple sites, and both online and offline learning capabilities occuring simultaneously.
+
+Nemesyst Abstraction of stages
+******************************
+
+.. figure:: nemesyst_stages.svg
+    :alt: Nemesyst stages of data from input to output.
+    :figclass: align-center
+
+    Deep learning can be said to include 3 stages, data-wrangling, test-training, and infering. Nemesyst adds an extra layer we call serving, which is the stage at which databases are involved as the message passing interface (MPI), and generator, between the layers, machines, and algorithms, along with being the data, and model storage mechanism.
+
+Wrangling
+*********
+
+.. figure:: nemesyst_wrangling.svg
+    :alt: Nemesyst wrangling puzzle diagram.
+    :figclass: align-center
+
+    Wrangling is the stage where
+
+Serving
+*******
+
+.. figure:: nemesyst_serving.svg
+    :alt: Nemesyst database serving puzzle diagram.
+    :figclass: align-center
+
+    Serving is the stage where
+
+Learning
+********
+
+.. figure:: nemesyst_learning.svg
+    :alt: Nemesyst learning puzzle diagram.
+    :figclass: align-center
+
+    Learning is the stage where
+
+Infering
+********
+
+.. figure:: nemesyst_infering.svg
+    :alt: Nemesyst inference puzzle diagram.
+    :figclass: align-center
+
+    Infering is the stage where
