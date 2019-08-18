@@ -26,7 +26,7 @@ Wrangling
     :alt: Nemesyst wrangling puzzle diagram.
     :figclass: align-center
 
-    Wrangling is the stage where
+    Wrangling is the stage where the data is cleaned into single atomic examples to be imported to the database.
 
 Serving
 *******
@@ -35,7 +35,7 @@ Serving
     :alt: Nemesyst database serving puzzle diagram.
     :figclass: align-center
 
-    Serving is the stage where
+    Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
 
 Learning
 ********
@@ -44,7 +44,7 @@ Learning
     :alt: Nemesyst learning puzzle diagram.
     :figclass: align-center
 
-    Learning is the stage where
+    Learning is the stage where the data is used to train new models or to update an existing model already in the database.
 
 Infering
 ********
@@ -53,4 +53,4 @@ Infering
     :alt: Nemesyst inference puzzle diagram.
     :figclass: align-center
 
-    Infering is the stage where
+    Infering is the stage where the model(s) are used to predict on newly provided data.
