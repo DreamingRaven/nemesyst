@@ -2,7 +2,7 @@
 .
 .TH "NEMESYST" "1" "Aug 19, 2019" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.0.r14.7b783d8
+nemesyst \- Nemesyst 2.0.0.r15.93a2598
 .
 .nr rst2man-indent-level 0
 .
@@ -35,7 +35,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 Copyright (c) 2017 George Onoufriou (GeorgeRaven, archer, DreamingRaven)
 .sp
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
+of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -44,7 +44,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 .sp
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -516,14 +516,14 @@ something unique, the caveat being it becomes harder to read.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBargs\fP (\fIdictionary\fP) – Dictionary of overides.
+\fBargs\fP (\fIdictionary\fP) \-\- Dictionary of overides.
 .IP \(bu 2
-\fBlogger\fP (\fIfunction address\fP) – Function address to print/ log to (default: print).
+\fBlogger\fP (\fIfunction address\fP) \-\- Function address to print/ log to (default: print).
 .UNINDENT
 .TP
 .B Example
-Mongo({“db_user_name”: “someUsername”,
-“db_password”: “somePassword”})
+Mongo({"db_user_name": "someUsername",
+"db_password": "somePassword"})
 .TP
 .B Example
 Mongo()
@@ -541,17 +541,17 @@ into the database will fail.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_url\fP (\fIstring\fP) – Database url (default: “mongodb://localhost:27017/”).
+\fBdb_url\fP (\fIstring\fP) \-\- Database url (default: "mongodb://localhost:27017/").
 .IP \(bu 2
-\fBdb_user_name\fP (\fIstring\fP) – Username to use for authentication to db_name.
+\fBdb_user_name\fP (\fIstring\fP) \-\- Username to use for authentication to db_name.
 .IP \(bu 2
-\fBdb_password\fP (\fIstring\fP) – Password for db_user_name in database db_name.
+\fBdb_password\fP (\fIstring\fP) \-\- Password for db_user_name in database db_name.
 .IP \(bu 2
-\fBdb_name\fP (\fIstring\fP) – The name of the database to connect to.
+\fBdb_name\fP (\fIstring\fP) \-\- The name of the database to connect to.
 .IP \(bu 2
-\fBdb_authentication\fP (\fIstring\fP) – The authentication method to use on db.
+\fBdb_authentication\fP (\fIstring\fP) \-\- The authentication method to use on db.
 .IP \(bu 2
-\fBdb_collection_name\fP (\fIstring\fP) – GridFS collection to use.
+\fBdb_collection_name\fP (\fIstring\fP) \-\- GridFS collection to use.
 .UNINDENT
 .TP
 .B Returns
@@ -577,16 +577,16 @@ Import data dictionary into database.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_collection_name\fP (\fIstring\fP) – Collection name to import into.
+\fBdb_collection_name\fP (\fIstring\fP) \-\- Collection name to import into.
 .IP \(bu 2
-\fBdata\fP (\fIdictionary\fP) – Data to import into database.
+\fBdata\fP (\fIdictionary\fP) \-\- Data to import into database.
 .IP \(bu 2
-\fBdb\fP (\fIpymongo.database.Database\fP) – Database to import data into.
+\fBdb\fP (\fIpymongo.database.Database\fP) \-\- Database to import data into.
 .UNINDENT
 .TP
 .B Example
-dump(db_collection_name=”test”,
-data={“subdict”:{“hello”: “world”}})
+dump(db_collection_name="test",
+data={"subdict":{"hello": "world"}})
 .UNINDENT
 .UNINDENT
 .INDENT 7.0
@@ -598,9 +598,9 @@ Get database cursor data in batches.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_batch_size\fP (\fIinteger\fP) – The number of items to return in a single round.
+\fBdb_batch_size\fP (\fIinteger\fP) \-\- The number of items to return in a single round.
 .IP \(bu 2
-\fBdb_data_cursor\fP (\fIcommand_cursor.CommandCursor\fP) – The cursor to use to retrieve data from db.
+\fBdb_data_cursor\fP (\fIcommand_cursor.CommandCursor\fP) \-\- The cursor to use to retrieve data from db.
 .UNINDENT
 .TP
 .B Returns
@@ -627,13 +627,13 @@ a big dump from the database.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_pipeline\fP (\fIlist of dicts\fP) – Mongodb aggregate pipeline data to transform and
+\fBdb_pipeline\fP (\fIlist of dicts\fP) \-\- Mongodb aggregate pipeline data to transform and
 retrieve the data as you request.
 .IP \(bu 2
-\fBdb_collection_name\fP (\fIstr\fP) – The collection name which we will pull data
+\fBdb_collection_name\fP (\fIstr\fP) \-\- The collection name which we will pull data
 from using the aggregate pipeline.
 .IP \(bu 2
-\fBdb\fP (\fIpymongo.database.Database\fP) – Database object to operate pipeline on.
+\fBdb\fP (\fIpymongo.database.Database\fP) \-\- Database object to operate pipeline on.
 .UNINDENT
 .TP
 .B Returns
@@ -657,11 +657,11 @@ unprotected database is never exposed.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_path\fP (\fIstring\fP) – Desired directory of MongoDB database files.
+\fBdb_path\fP (\fIstring\fP) \-\- Desired directory of MongoDB database files.
 .IP \(bu 2
-\fBdb_log_path\fP (\fIstring\fP) – Desired directory of MongoDB log files.
+\fBdb_log_path\fP (\fIstring\fP) \-\- Desired directory of MongoDB log files.
 .IP \(bu 2
-\fBdb_log_name\fP (\fIstring\fP) – Desired name of log file.
+\fBdb_log_name\fP (\fIstring\fP) \-\- Desired name of log file.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -674,15 +674,15 @@ Log in to database, interupt, and availiable via cli.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_port\fP (\fIstring\fP) – Database port to connect to.
+\fBdb_port\fP (\fIstring\fP) \-\- Database port to connect to.
 .IP \(bu 2
-\fBdb_user_name\fP (\fIstring\fP) – Database user to authenticate as.
+\fBdb_user_name\fP (\fIstring\fP) \-\- Database user to authenticate as.
 .IP \(bu 2
-\fBdb_password\fP (\fIstring\fP) – User password to authenticate with.
+\fBdb_password\fP (\fIstring\fP) \-\- User password to authenticate with.
 .IP \(bu 2
-\fBdb_name\fP (\fIstring\fP) – Database to authenticate to, the authentication db.
+\fBdb_name\fP (\fIstring\fP) \-\- Database to authenticate to, the authentication db.
 .IP \(bu 2
-\fBdb_ip\fP (\fIstring\fP) – Database ip to connect to.
+\fBdb_ip\fP (\fIstring\fP) \-\- Database ip to connect to.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -695,17 +695,17 @@ Launch an on machine database with authentication.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_ip\fP (\fIstring\fP) – Desired database ip to bind to.
+\fBdb_ip\fP (\fIstring\fP) \-\- Desired database ip to bind to.
 .IP \(bu 2
-\fBdb_port\fP (\fIstring\fP) – Port desired for database.
+\fBdb_port\fP (\fIstring\fP) \-\- Port desired for database.
 .IP \(bu 2
-\fBdb_path\fP (\fIstring\fP) – Path to parent dir of database.
+\fBdb_path\fP (\fIstring\fP) \-\- Path to parent dir of database.
 .IP \(bu 2
-\fBdb_log_path\fP (\fIstring\fP) – Path to parent dir of log files.
+\fBdb_log_path\fP (\fIstring\fP) \-\- Path to parent dir of log files.
 .IP \(bu 2
-\fBdb_log_name\fP (\fIstring\fP) – Desired base name for log files.
+\fBdb_log_name\fP (\fIstring\fP) \-\- Desired base name for log files.
 .IP \(bu 2
-\fBdb_cursor_timeout\fP (\fIinteger\fP) – Set timeout time for unused cursors.
+\fBdb_cursor_timeout\fP (\fIinteger\fP) \-\- Set timeout time for unused cursors.
 .UNINDENT
 .TP
 .B Return type
@@ -722,7 +722,7 @@ Stop a running local database.
 .INDENT 7.0
 .TP
 .B Parameters
-\fBdb_path\fP (\fIstring\fP) – The path to the database to shut down.
+\fBdb_path\fP (\fIstring\fP) \-\- The path to the database to shut down.
 .TP
 .B Returns
 Subprocess of database closer.
