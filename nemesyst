@@ -146,7 +146,8 @@ def argument_parser(description=None, cfg_files=None):
 
     # deep learning options
     deeplearning.add_argument("--dl-batch-size",
-                              default=32,
+                              default=[32],
+                              nargs='+',
                               type=int,
                               env_var="N_DL_BATCH_SIZE",
                               help="Batch size of the data to use.")
@@ -168,12 +169,49 @@ def argument_parser(description=None, cfg_files=None):
                               env_var="N_DL_LEARNER_ENTRY_POINT",
                               help="Specify the entry point " +
                                    "of custom scripts to use.")
-    deeplearning.add_argument("--dl-collection",
+    deeplearning.add_argument("--dl-data-collection",
                               default=["debug_models"],
                               nargs='+',
                               type=str,
-                              env_var="N_DL_COLLECTION",
-                              help="Specify model storage collection name(s).")
+                              env_var="N_DL_DATA_COLLECTION",
+                              help="Specify data collection name(s).")
+    deeplearning.add_argument("--dl-data-pipeline",
+                              default=["debug_models"],
+                              nargs='+',
+                              type=str,
+                              env_var="N_DL_DATA_PIPELINE",
+                              help="Specify pipeline(s) for data retrieval.")
+    deeplearning.add_argument("--dl-train",
+                              default=bool(False),
+                              action="store_true",
+                              env_var="N_DL_TRAIN",
+                              help="Train neural network.")
+    deeplearning.add_argument("--dl-test",
+                              default=bool(False),
+                              action="store_true",
+                              env_var="N_DL_TEST",
+                              help="Test neural network against a data set.")
+    deeplearning.add_argument("--dl-input-model-collection",
+                              default=["debug_models"],
+                              nargs='+',
+                              type=str,
+                              env_var="N_DL_INPUT_MODEL_COLLECTION",
+                              help="Specify model storage collection to " +
+                                   "retrain from.")
+    deeplearning.add_argument("--dl-input-model-pipeline",
+                              default=["debug_models"],
+                              nargs='+',
+                              type=str,
+                              env_var="N_DL_INPUT_MODEL_PIPELINE",
+                              help="Specify model storage collection to " +
+                                   "retrain from.")
+    deeplearning.add_argument("--dl-output-model-collection",
+                              default=["debug_models"],
+                              nargs='+',
+                              type=str,
+                              env_var="N_DL_OUTPUT_MODEL_COLLECTION",
+                              help="Specify model storage collection to " +
+                                   "post trained neural networks to.")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--db-login",
