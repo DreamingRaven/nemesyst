@@ -1,0 +1,740 @@
+.\" Man page generated from reStructuredText.
+.
+.TH "NEMESYST" "1" "Aug 19, 2019" "" "Nemesyst"
+.SH NAME
+nemesyst \- Nemesyst 2.0.0.r15.93a2598
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+\fI\%Nemesyst Logo\fP.SH MIT LICENSE
+.sp
+Copyright (c) 2017 George Onoufriou (GeorgeRaven, archer, DreamingRaven)
+.sp
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+.sp
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+.sp
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+.SH WHY USE NEMESYST
+.sp
+Nemesyst is a highly configurable hybrid parallelisation deep learning framework, for distributed deep learning, that uses other backend framework(s) of your choice (Pytorch, TensorFlow, etc.) for training.
+.INDENT 0.0
+.INDENT 2.5
+[image: Nemesyst use-case example diagram.]
+[image]
+This image is a use case example of Nemesyst applied to a distributed refrigeration fleet over multiple sites, and both online and offline learning capabilities occuring simultaneously..UNINDENT
+.UNINDENT
+.sp
+Nemesyst uses MongoDB as its core message passing interface (MPI). This means MongoDB is used to store, distribute, retrieve, and transform the data; store, distribute, and retrieve the trained models. In future we also hope to use it to transfer more specific processing instructions to individual learners. This way we use the already advanced functionality of MongoDB to handle complex and non\-trivial problems such as tracing models back to the specific data trained with, the results and arguments present at the point of training, and being able to reload pre\-trained models for further use, and, or training. This also means the same data can be transformed differentley for different learners from the same source dynamically at the point of need.
+.SH INSTALLATION
+.SS Automated
+.SS Generic
+.sp
+In future you will be able to:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+pip install nemesyst
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Archlinux
+.sp
+Install \fI\%nemesyst\-git\fP\s-2\uAUR\d\s0\&.
+.SS Manual
+.SS Generic
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+git clone https://github.com/DreamingRaven/nemesyst
+cd nemesyst
+python setup.py install
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Archlinux
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+git clone https://github.com/DreamingRaven/nemesyst
+cd nemesyst/.arch/
+makepkg \-si
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Files only/ development
+.sp
+Nemesyst minimally requires \fBnemesyst/requirements.txt\fP:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+ConfigArgParse>=0.14.0
+pymongo>=3.8.0
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+All methods below will automatically install the requirements, however if you would rather just use the files as is without installation you will need to ensure these are installed.
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
+To build the Nemesyst documentation and full testing requires \fBnemesyst/docs/requirements.txt\fP:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sphinx>=2.1.2
+sphinx\-argparse>=0.2.5
+sphinx\-rtd\-theme>=0.4.3
+ConfigArgParse>=0.14.0
+pymongo>=3.8.0
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SH OVERVIEW
+.SS Nemesyst literal un\-abstract stages
+.INDENT 0.0
+.INDENT 2.5
+[image: Nemesyst use-case example diagram.]
+[image]
+This image is a use case example of Nemesyst applied to a distributed refrigeration fleet over multiple sites, and both online and offline learning capabilities occuring simultaneously..UNINDENT
+.UNINDENT
+.SS Nemesyst Abstraction of stages
+.INDENT 0.0
+.INDENT 2.5
+[image: Nemesyst stages of data from input to output.]
+[image]
+Deep learning can be said to include 3 stages, data\-wrangling, test\-training, and infering. Nemesyst adds an extra layer we call serving, which is the stage at which databases are involved as the message passing interface (MPI), and generator, between the layers, machines, and algorithms, along with being the data, and model storage mechanism..UNINDENT
+.UNINDENT
+.SS Wrangling
+.INDENT 0.0
+.INDENT 2.5
+[image: Nemesyst wrangling puzzle diagram.]
+[image]
+Wrangling is the stage where the data is cleaned into single atomic examples to be imported to the database.
+See section_all\-options for a full list of options..UNINDENT
+.UNINDENT
+.SS Serving
+.INDENT 0.0
+.INDENT 2.5
+[image: Nemesyst database serving puzzle diagram.]
+[image]
+Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
+See section_all\-options for a full list of options..UNINDENT
+.UNINDENT
+.SS Learning
+.INDENT 0.0
+.INDENT 2.5
+[image: Nemesyst learning puzzle diagram.]
+[image]
+Learning is the stage where the data is used to train new models or to update an existing model already in the database.
+See section_all\-options for a full list of options..UNINDENT
+.UNINDENT
+.SS Infering
+.INDENT 0.0
+.INDENT 2.5
+[image: Nemesyst inference puzzle diagram.]
+[image]
+Infering is the stage where the model(s) are used to predict on newly provided data.
+See section_all\-options for a full list of options..UNINDENT
+.UNINDENT
+.SH OPTIONS
+.sp
+Nemesyst uses \fI\%ConfigArgParse\fP for argument handling.
+This means you may pass in arguments as (in order of highest priority first):
+.INDENT 0.0
+.IP \(bu 2
+CLI arguments
+.IP \(bu 2
+Environment variables
+.IP \(bu 2
+ini format .conf config files
+.IP \(bu 2
+Hardcoded defaults
+.UNINDENT
+.sp
+In code Nemesyst will look for config files in the following default locations, in order of priority and with expansion (highest first):
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+def default_config_files():
+    """Default config file generator, for cleaner abstraction.
+
+    :return: ordered list of config file expansions
+    :rtype: list
+    """
+    config_files = [
+        "./nemesyst.d/*.conf",
+        "/etc/nemesyst/nemesyst.d/*.conf",
+    ]
+    return config_files
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Using the \-\-config argument you may specify more config files, which will be perpended to the default ones in the order supplied. Please note however config file locations are only followed once to avoid infinite loops where two configs point to each other, making Nemesyst read one then the other infinitely.
+.SS All Options by Category
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
+                [\-d DATA [DATA ...]] [\-\-data\-clean]
+                [\-\-data\-cleaner DATA_CLEANER [DATA_CLEANER ...]]
+                [\-\-data\-import]
+                [\-\-data\-cleaner\-entry\-point DATA_CLEANER_ENTRY_POINT [DATA_CLEANER_ENTRY_POINT ...]]
+                [\-\-data\-collection DATA_COLLECTION [DATA_COLLECTION ...]]
+                [\-\-dl\-batch\-size DL_BATCH_SIZE] [\-\-dl\-learn]
+                [\-\-dl\-learner DL_LEARNER [DL_LEARNER ...]]
+                [\-\-dl\-learner\-entry\-point DL_LEARNER_ENTRY_POINT [DL_LEARNER_ENTRY_POINT ...]]
+                [\-\-dl\-collection DL_COLLECTION [DL_COLLECTION ...]] [\-l] [\-s]
+                [\-S] [\-i] [\-\-db\-user\-name DB_USER_NAME] [\-\-db\-password]
+                [\-\-db\-authentication DB_AUTHENTICATION]
+                [\-\-db\-user\-role DB_USER_ROLE] [\-\-db\-ip DB_IP]
+                [\-\-db\-bind\-ip DB_BIND_IP] [\-\-db\-port DB_PORT]
+                [\-\-db\-name DB_NAME] [\-\-db\-collection\-name DB_COLLECTION_NAME]
+                [\-\-db\-path DB_PATH] [\-\-db\-log\-path DB_LOG_PATH]
+                [\-\-db\-log\-name DB_LOG_NAME]
+                [\-\-db\-cursor\-timeout DB_CURSOR_TIMEOUT]
+                [\-\-db\-batch\-size DB_BATCH_SIZE] [\-\-db\-pipeline DB_PIPELINE]
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Nemesyst options
+.INDENT 0.0
+.TP
+.B\-U, \-\-update
+Nemesyst update, and restart.
+.sp
+Default: False
+.TP
+.B\-\-prevent\-update
+Prevent nemesyst from updating.
+.sp
+Default: False
+.TP
+.B\-c, \-\-config
+List of all ini files to be used.
+.sp
+Default: []
+.UNINDENT
+.SS Data pre\-processing options
+.INDENT 0.0
+.TP
+.B\-d, \-\-data
+List of data file paths.
+.sp
+Default: []
+.TP
+.B\-\-data\-clean
+Clean specified data files.
+.sp
+Default: False
+.TP
+.B\-\-data\-cleaner
+Path to data cleaner(s).
+.sp
+Default: []
+.TP
+.B\-\-data\-import
+Import (cleaned?) data to database.
+.sp
+Default: False
+.TP
+.B\-\-data\-cleaner\-entry\-point
+Specify the entry point of custom scripts to use.
+.sp
+Default: [\(aqmain\(aq]
+.TP
+.B\-\-data\-collection
+Specify data storage collection name(s).
+.sp
+Default: [\(aqdebug_data\(aq]
+.UNINDENT
+.SS Deep learning options
+.INDENT 0.0
+.TP
+.B\-\-dl\-batch\-size
+Batch size of the data to use.
+.sp
+Default: 32
+.TP
+.B\-\-dl\-learn
+Use learner scripts.
+.sp
+Default: False
+.TP
+.B\-\-dl\-learner
+Path to learner(s).
+.sp
+Default: []
+.TP
+.B\-\-dl\-learner\-entry\-point
+Specify the entry point of custom scripts to use.
+.sp
+Default: [\(aqmain\(aq]
+.TP
+.B\-\-dl\-collection
+Specify model storage collection name(s).
+.sp
+Default: [\(aqdebug_models\(aq]
+.UNINDENT
+.SS MongoDb options
+.INDENT 0.0
+.TP
+.B\-l, \-\-db\-login
+Nemesyst log into mongodb.
+.sp
+Default: False
+.TP
+.B\-s, \-\-db\-start
+Nemesyst launch mongodb.
+.sp
+Default: False
+.TP
+.B\-S, \-\-db\-stop
+Nemesyst stop mongodb.
+.sp
+Default: False
+.TP
+.B\-i, \-\-db\-init
+Nemesyst initialise mongodb files.
+.sp
+Default: False
+.TP
+.B\-\-db\-user\-name
+Set mongodb username.
+.TP
+.B\-\-db\-password
+Set mongodb password.
+.sp
+Default: False
+.TP
+.B\-\-db\-authentication
+Set the mongodb authentication method.
+.sp
+Default: "SCRAM\-SHA\-1"
+.TP
+.B\-\-db\-user\-role
+Set the users permissions in the database.
+.sp
+Default: "readWrite"
+.TP
+.B\-\-db\-ip
+The ip of the database to connect to.
+.sp
+Default: "localhost"
+.TP
+.B\-\-db\-bind\-ip
+The ip the database should be accessible from.
+.sp
+Default: "localhost"
+.TP
+.B\-\-db\-port
+The port both the unauth and auth db will use.
+.sp
+Default: "65535"
+.TP
+.B\-\-db\-name
+The name of the authenticated database.
+.sp
+Default: "nemesyst"
+.TP
+.B\-\-db\-collection\-name
+The name of the collection to use in database.
+.sp
+Default: "test"
+.TP
+.B\-\-db\-path
+The parent directory to use for the database.
+.sp
+Default: /db
+.TP
+.B\-\-db\-log\-path
+The parent directory to use for the db log.
+.sp
+Default: /db/log
+.TP
+.B\-\-db\-log\-name
+The base name of the log file to maintain.
+.sp
+Default: "mongo_log"
+.TP
+.B\-\-db\-cursor\-timeout
+The duration in seconds before an unused cursor will time out.
+.sp
+Default: 600000
+.TP
+.B\-\-db\-batch\-size
+The number of documents to return from the db at once/ pre round.
+.sp
+Default: 32
+.TP
+.B\-\-db\-pipeline
+The file path of the pipeline to use on db.
+.UNINDENT
+.SH MONGO
+.sp
+Nemesyst MongoDB abstraction/ Handler.
+This handler helps abstract some pymongo functionality to make it easier for us to use a MongoDB database for our deep learning purposes.
+.SS Example usage
+.sp
+Below follows a in code example unit test for all functionality. You can overide the options using a dictionary to the constructor or as keyword arguments to the functions that use them:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+def _mongo_unit_test():
+    """Unit test of MongoDB compat."""
+    import datetime
+    # create Mongo object to use
+    db = Mongo({"test2": 2, "db_port": "65535"})
+    # testing magic functions
+    db["test2"] = 3  # set item
+    db["test2"]  # get item
+    len(db)  # len
+    del db["test2"]  # del item
+    # output current state of Mongo
+    db.debug()
+    # stop any active databases already running at the db path location
+    db.stop()
+    # hold for 2 seconds to give the db time to start
+    time.sleep(2)
+    # attempt to initialise the database, as in create the database with users
+    db.init()
+    # hold to let the db to launch the now new unauthenticated db
+    time.sleep(2)
+    # start the authenticated db, you will now need a username password access
+    db.start()
+    # warm up time for new authentication db
+    time.sleep(2)
+    # create a connection to the database so we can do database operations
+    db.connect()
+    db.debug()
+    # import data into mongodb debug collection
+    db.dump(db_collection_name="test", data={
+        "string": "99",
+        "number": 99,
+        "binary": bin(99),
+        "subdict": {"hello": "world"},
+        "subarray": [{"hello": "worlds"}, {"hi": "jim"}],
+        "timedate": datetime.datetime.utcnow(),
+    })
+    # log into the database so user can manually check data import
+    db.login()
+    # attempt to retrieve the data that exists in the collection as a cursor
+    db.getCursor(db_collection_name="test", db_pipeline=[{"$match": {}}])
+    # itetate through the data in batches to minimise requests
+    for dataBatch in db.getBatches(db_batch_size=32):
+        print("Returned number of documents:", len(dataBatch))
+    # finally close out database
+    db.stop()
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+\fBWARNING:\fP
+.INDENT 0.0
+.INDENT 3.5
+Mongo uses subprocess.Popen in init, start, and stop, since these threads would otherwise lock up nemesyst, with time.sleep() to wait for the database to startup, and shutdown. Depending on the size of your database it may be necessary to extend the length of time time.sleep() as larger databases will take longer to startup and shutdown.
+.UNINDENT
+.UNINDENT
+.SS API
+.INDENT 0.0
+.TP
+.B class mongo.Mongo(args: dict = None, logger: print = None)
+Python2/3 compatible MongoDb utility wrapper.
+.sp
+This wrapper saves its state in an internal overridable dictionary
+such that you can adapt it to your requirements, if you should need to do
+something unique, the caveat being it becomes harder to read.
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fBargs\fP (\fIdictionary\fP) \-\- Dictionary of overides.
+.IP \(bu 2
+\fBlogger\fP (\fIfunction address\fP) \-\- Function address to print/ log to (default: print).
+.UNINDENT
+.TP
+.B Example
+Mongo({"db_user_name": "someUsername",
+"db_password": "somePassword"})
+.TP
+.B Example
+Mongo()
+.UNINDENT
+.INDENT 7.0
+.TP
+.B connect(db_url: str = None, db_user_name: str = None, db_password: str = None, db_name: str = None, db_authentication: str = None, db_collection_name: str = None) -> pymongo.database.Database
+Connect to a specific mongodb database.
+.sp
+This sets the internal db client which is neccessary to connect to
+and use the associated database. Without it operations such as dump
+into the database will fail.
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fBdb_url\fP (\fIstring\fP) \-\- Database url (default: "mongodb://localhost:27017/").
+.IP \(bu 2
+\fBdb_user_name\fP (\fIstring\fP) \-\- Username to use for authentication to db_name.
+.IP \(bu 2
+\fBdb_password\fP (\fIstring\fP) \-\- Password for db_user_name in database db_name.
+.IP \(bu 2
+\fBdb_name\fP (\fIstring\fP) \-\- The name of the database to connect to.
+.IP \(bu 2
+\fBdb_authentication\fP (\fIstring\fP) \-\- The authentication method to use on db.
+.IP \(bu 2
+\fBdb_collection_name\fP (\fIstring\fP) \-\- GridFS collection to use.
+.UNINDENT
+.TP
+.B Returns
+database client object
+.TP
+.B Return type
+pymongo.database.Database
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B debug() -> None
+Log function to help track the internal state of the class.
+.sp
+Simply logs working state of args dict.
+.UNINDENT
+.INDENT 7.0
+.TP
+.B dump(db_collection_name: str, data: dict, db: pymongo.database.Database = None) -> None
+Import data dictionary into database.
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fBdb_collection_name\fP (\fIstring\fP) \-\- Collection name to import into.
+.IP \(bu 2
+\fBdata\fP (\fIdictionary\fP) \-\- Data to import into database.
+.IP \(bu 2
+\fBdb\fP (\fIpymongo.database.Database\fP) \-\- Database to import data into.
+.UNINDENT
+.TP
+.B Example
+dump(db_collection_name="test",
+data={"subdict":{"hello": "world"}})
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B getBatches(db_batch_size: int = None, db_data_cursor: pymongo.command_cursor.CommandCursor = None) -> list
+Get database cursor data in batches.
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fBdb_batch_size\fP (\fIinteger\fP) \-\- The number of items to return in a single round.
+.IP \(bu 2
+\fBdb_data_cursor\fP (\fIcommand_cursor.CommandCursor\fP) \-\- The cursor to use to retrieve data from db.
+.UNINDENT
+.TP
+.B Returns
+yields a list of items requested.
+.TP
+.B Return type
+list of dicts
+.TP
+.B Todo
+desperateley needs a rewrite and correction of bug. Last value
+always fails. I want this in a magic function too to make it easy.
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B getCursor(db: pymongo.database.Database = None, db_pipeline: list = None, db_collection_name: str = None) -> pymongo.command_cursor.CommandCursor
+Use aggregate pipeline to get a data\-cursor from the database.
+.sp
+This cursor is what mongodb provides to allow you to request the data
+from the database in a manner you control, instead of just getting
+a big dump from the database.
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fBdb_pipeline\fP (\fIlist of dicts\fP) \-\- Mongodb aggregate pipeline data to transform and
+retrieve the data as you request.
+.IP \(bu 2
+\fBdb_collection_name\fP (\fIstr\fP) \-\- The collection name which we will pull data
+from using the aggregate pipeline.
+.IP \(bu 2
+\fBdb\fP (\fIpymongo.database.Database\fP) \-\- Database object to operate pipeline on.
+.UNINDENT
+.TP
+.B Returns
+Command cursor to fetch the data with.
+.TP
+.B Return type
+pymongo.command_cursor.CommandCursor
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B init(db_path: None = None, db_log_path: None = None, db_log_name: None = None) -> None
+Initialise the database.
+.sp
+Includes ensuring db path and db log path exist and generating,
+creating the DB files, and adding an authentication user.
+All of this should be done on a localhost port so that the
+unprotected database is never exposed.
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fBdb_path\fP (\fIstring\fP) \-\- Desired directory of MongoDB database files.
+.IP \(bu 2
+\fBdb_log_path\fP (\fIstring\fP) \-\- Desired directory of MongoDB log files.
+.IP \(bu 2
+\fBdb_log_name\fP (\fIstring\fP) \-\- Desired name of log file.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B login(db_port: str = None, db_user_name: str = None, db_password: str = None, db_name: str = None, db_ip: str = None) -> None
+Log in to database, interupt, and availiable via cli.
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fBdb_port\fP (\fIstring\fP) \-\- Database port to connect to.
+.IP \(bu 2
+\fBdb_user_name\fP (\fIstring\fP) \-\- Database user to authenticate as.
+.IP \(bu 2
+\fBdb_password\fP (\fIstring\fP) \-\- User password to authenticate with.
+.IP \(bu 2
+\fBdb_name\fP (\fIstring\fP) \-\- Database to authenticate to, the authentication db.
+.IP \(bu 2
+\fBdb_ip\fP (\fIstring\fP) \-\- Database ip to connect to.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B start(db_ip: None = None, db_port: None = None, db_path: None = None, db_log_path: None = None, db_log_name: None = None, db_cursor_timeout: None = None) -> subprocess.Popen
+Launch an on machine database with authentication.
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fBdb_ip\fP (\fIstring\fP) \-\- Desired database ip to bind to.
+.IP \(bu 2
+\fBdb_port\fP (\fIstring\fP) \-\- Port desired for database.
+.IP \(bu 2
+\fBdb_path\fP (\fIstring\fP) \-\- Path to parent dir of database.
+.IP \(bu 2
+\fBdb_log_path\fP (\fIstring\fP) \-\- Path to parent dir of log files.
+.IP \(bu 2
+\fBdb_log_name\fP (\fIstring\fP) \-\- Desired base name for log files.
+.IP \(bu 2
+\fBdb_cursor_timeout\fP (\fIinteger\fP) \-\- Set timeout time for unused cursors.
+.UNINDENT
+.TP
+.B Return type
+subprocess.Popen
+.TP
+.B Returns
+Subprocess of running MongoDB.
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B stop(db_path=None) -> subprocess.Popen
+Stop a running local database.
+.INDENT 7.0
+.TP
+.B Parameters
+\fBdb_path\fP (\fIstring\fP) \-\- The path to the database to shut down.
+.TP
+.B Returns
+Subprocess of database closer.
+.TP
+.B Return type
+subprocess.Popen
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SH AUTHOR
+GeorgeRaven
+.SH COPYRIGHT
+2017, George Onoufriou (GeorgeRaven, archer, DreamingRaven)
+.\" Generated by docutils manpage writer.
+.
