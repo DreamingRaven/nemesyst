@@ -170,13 +170,13 @@ def argument_parser(description=None, cfg_files=None):
                               help="Specify the entry point " +
                                    "of custom scripts to use.")
     deeplearning.add_argument("--dl-data-collection",
-                              default=["debug_models"],
+                              default=["debug_data"],
                               nargs='+',
                               type=str,
                               env_var="N_DL_DATA_COLLECTION",
                               help="Specify data collection name(s).")
     deeplearning.add_argument("--dl-data-pipeline",
-                              default=["debug_models"],
+                              default=[{}],
                               nargs='+',
                               type=str,
                               env_var="N_DL_DATA_PIPELINE",
@@ -199,7 +199,7 @@ def argument_parser(description=None, cfg_files=None):
                               help="Specify model storage collection to " +
                                    "retrain from.")
     deeplearning.add_argument("--dl-input-model-pipeline",
-                              default=["debug_models"],
+                              default=[{}],
                               nargs='+',
                               type=str,
                               env_var="N_DL_INPUT_MODEL_PIPELINE",
