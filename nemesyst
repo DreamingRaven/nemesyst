@@ -14,6 +14,7 @@ import os
 import sys
 import copy
 import importlib
+import json
 import multiprocessing
 
 # argument handler
@@ -331,6 +332,12 @@ def type_file_path_exists(string):
     else:
         # raise_(FileNotFoundError, str(string) + " does not exist.")
         raise_(ValueError, str(string) + " does not exist.")
+
+
+def type_pipeline_file_path(string):
+    fp = type_file_path_exists(string)
+    with open(fp) as f:
+        return json.load(f)
 
 
 type_path.__annotations__ = {"string": str, "return": str}
