@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "NEMESYST" "1" "Aug 19, 2019" "" "Nemesyst"
+.TH "NEMESYST" "1" "Aug 20, 2019" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.0.r15.93a2598
+nemesyst \- Nemesyst 2.0.0.r24.c50beb7
 .
 .nr rst2man-indent-level 0
 .
@@ -35,7 +35,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 Copyright (c) 2017 George Onoufriou (GeorgeRaven, archer, DreamingRaven)
 .sp
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the “Software”), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -44,7 +44,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 .sp
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -63,16 +63,24 @@ This image is a use case example of Nemesyst applied to a distributed refrigerat
 .sp
 Nemesyst uses MongoDB as its core message passing interface (MPI). This means MongoDB is used to store, distribute, retrieve, and transform the data; store, distribute, and retrieve the trained models. In future we also hope to use it to transfer more specific processing instructions to individual learners. This way we use the already advanced functionality of MongoDB to handle complex and non\-trivial problems such as tracing models back to the specific data trained with, the results and arguments present at the point of training, and being able to reload pre\-trained models for further use, and, or training. This also means the same data can be transformed differentley for different learners from the same source dynamically at the point of need.
 .SH INSTALLATION
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
+Certain distributions link \fBpython\fP to \fBpython2\fP and others link it to \fBpython3\fP\&.
+For disambiguation python, pip, and virtualenv shall mean their python v3 versions here, i.e. \fBpython3\fP, \fBpip3\fP, \fBvirtualenv3\fP\&.
+.UNINDENT
+.UNINDENT
 .SS Automated
 .SS Generic
 .sp
-In future you will be able to:
+For now you can use pip via:
 .INDENT 0.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
-pip install nemesyst
+pip install git+https://github.com/DreamingRaven/nemesyst.git#branch=master
 .ft P
 .fi
 .UNINDENT
@@ -107,6 +115,55 @@ makepkg \-si
 .fi
 .UNINDENT
 .UNINDENT
+.SS Virtual env
+.sp
+To create the \fI\%python\-virtualenv\fP:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+vituralenv venv
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To then use the newly created virtual environment:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+source venv/bin/activate.fish
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To install Nemesyst and all its dependancies into a virtual environment while it is being used (activated):
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+pip install git+https://github.com/DreamingRaven/nemesyst.git#branch=master
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To exit the virtual environment:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+deactivate
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
 .SS Files only/ development
 .sp
 Nemesyst minimally requires \fBnemesyst/requirements.txt\fP:
@@ -117,13 +174,14 @@ Nemesyst minimally requires \fBnemesyst/requirements.txt\fP:
 .ft C
 ConfigArgParse>=0.14.0
 pymongo>=3.8.0
+future>=0.17.1
 
 .ft P
 .fi
 .UNINDENT
 .UNINDENT
 .sp
-All methods below will automatically install the requirements, however if you would rather just use the files as is without installation you will need to ensure these are installed.
+All other methods will automatically install the requirements, however if you would rather just use the files as is without installation you will need to ensure these are installed.
 .sp
 \fBNOTE:\fP
 .INDENT 0.0
@@ -139,12 +197,28 @@ sphinx\-argparse>=0.2.5
 sphinx\-rtd\-theme>=0.4.3
 ConfigArgParse>=0.14.0
 pymongo>=3.8.0
+future>=0.17.1
+
 .ft P
 .fi
 .UNINDENT
 .UNINDENT
 .UNINDENT
 .UNINDENT
+.sp
+Then just simply:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+git clone https://github.com/DreamingRaven/nemesyst
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+We also have a two testers one \fBunit_test.py\fP for the nemesyst code only, then we also have \fBtests/test_everything.sh\fP which will test building the documentation, PKGBUILD, nemesyst, etc
 .SH OVERVIEW
 .SS Nemesyst literal un\-abstract stages
 .INDENT 0.0
@@ -230,7 +304,7 @@ def default_config_files():
 .UNINDENT
 .UNINDENT
 .sp
-Using the \-\-config argument you may specify more config files, which will be perpended to the default ones in the order supplied. Please note however config file locations are only followed once to avoid infinite loops where two configs point to each other, making Nemesyst read one then the other infinitely.
+Using the –config argument you may specify more config files, which will be perpended to the default ones in the order supplied. Please note however config file locations are only followed once to avoid infinite loops where two configs point to each other, making Nemesyst read one then the other infinitely.
 .SS All Options by Category
 .INDENT 0.0
 .INDENT 3.5
@@ -240,15 +314,19 @@ Using the \-\-config argument you may specify more config files, which will be p
 usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
                 [\-d DATA [DATA ...]] [\-\-data\-clean]
                 [\-\-data\-cleaner DATA_CLEANER [DATA_CLEANER ...]]
-                [\-\-data\-import]
                 [\-\-data\-cleaner\-entry\-point DATA_CLEANER_ENTRY_POINT [DATA_CLEANER_ENTRY_POINT ...]]
                 [\-\-data\-collection DATA_COLLECTION [DATA_COLLECTION ...]]
-                [\-\-dl\-batch\-size DL_BATCH_SIZE] [\-\-dl\-learn]
-                [\-\-dl\-learner DL_LEARNER [DL_LEARNER ...]]
+                [\-\-dl\-batch\-size DL_BATCH_SIZE [DL_BATCH_SIZE ...]]
+                [\-\-dl\-learn] [\-\-dl\-learner DL_LEARNER [DL_LEARNER ...]]
                 [\-\-dl\-learner\-entry\-point DL_LEARNER_ENTRY_POINT [DL_LEARNER_ENTRY_POINT ...]]
-                [\-\-dl\-collection DL_COLLECTION [DL_COLLECTION ...]] [\-l] [\-s]
-                [\-S] [\-i] [\-\-db\-user\-name DB_USER_NAME] [\-\-db\-password]
-                [\-\-db\-authentication DB_AUTHENTICATION]
+                [\-\-dl\-data\-collection DL_DATA_COLLECTION [DL_DATA_COLLECTION ...]]
+                [\-\-dl\-data\-pipeline DL_DATA_PIPELINE [DL_DATA_PIPELINE ...]]
+                [\-\-dl\-train] [\-\-dl\-test]
+                [\-\-dl\-input\-model\-collection DL_INPUT_MODEL_COLLECTION [DL_INPUT_MODEL_COLLECTION ...]]
+                [\-\-dl\-input\-model\-pipeline DL_INPUT_MODEL_PIPELINE [DL_INPUT_MODEL_PIPELINE ...]]
+                [\-\-dl\-output\-model\-collection DL_OUTPUT_MODEL_COLLECTION [DL_OUTPUT_MODEL_COLLECTION ...]]
+                [\-l] [\-s] [\-S] [\-i] [\-\-db\-user\-name DB_USER_NAME]
+                [\-\-db\-password] [\-\-db\-authentication DB_AUTHENTICATION]
                 [\-\-db\-user\-role DB_USER_ROLE] [\-\-db\-ip DB_IP]
                 [\-\-db\-bind\-ip DB_BIND_IP] [\-\-db\-port DB_PORT]
                 [\-\-db\-name DB_NAME] [\-\-db\-collection\-name DB_COLLECTION_NAME]
@@ -296,20 +374,15 @@ Path to data cleaner(s).
 .sp
 Default: []
 .TP
-.B\-\-data\-import
-Import (cleaned?) data to database.
-.sp
-Default: False
-.TP
 .B\-\-data\-cleaner\-entry\-point
 Specify the entry point of custom scripts to use.
 .sp
-Default: [\(aqmain\(aq]
+Default: [‘main’]
 .TP
 .B\-\-data\-collection
 Specify data storage collection name(s).
 .sp
-Default: [\(aqdebug_data\(aq]
+Default: [‘debug_data’]
 .UNINDENT
 .SS Deep learning options
 .INDENT 0.0
@@ -317,7 +390,7 @@ Default: [\(aqdebug_data\(aq]
 .B\-\-dl\-batch\-size
 Batch size of the data to use.
 .sp
-Default: 32
+Default: [32]
 .TP
 .B\-\-dl\-learn
 Use learner scripts.
@@ -332,12 +405,42 @@ Default: []
 .B\-\-dl\-learner\-entry\-point
 Specify the entry point of custom scripts to use.
 .sp
-Default: [\(aqmain\(aq]
+Default: [‘main’]
 .TP
-.B\-\-dl\-collection
-Specify model storage collection name(s).
+.B\-\-dl\-data\-collection
+Specify data collection name(s).
 .sp
-Default: [\(aqdebug_models\(aq]
+Default: [‘debug_data’]
+.TP
+.B\-\-dl\-data\-pipeline
+Specify pipeline(s) for data retrieval.
+.sp
+Default: [{}]
+.TP
+.B\-\-dl\-train
+Train neural network.
+.sp
+Default: False
+.TP
+.B\-\-dl\-test
+Test neural network against a data set.
+.sp
+Default: False
+.TP
+.B\-\-dl\-input\-model\-collection
+Specify model storage collection to retrain from.
+.sp
+Default: [‘debug_models’]
+.TP
+.B\-\-dl\-input\-model\-pipeline
+Specify model storage collection to retrain from.
+.sp
+Default: [{}]
+.TP
+.B\-\-dl\-output\-model\-collection
+Specify model storage collection to post trained neural networks to.
+.sp
+Default: [‘debug_models’]
 .UNINDENT
 .SS MongoDb options
 .INDENT 0.0
@@ -373,52 +476,52 @@ Default: False
 .B\-\-db\-authentication
 Set the mongodb authentication method.
 .sp
-Default: "SCRAM\-SHA\-1"
+Default: “SCRAM\-SHA\-1”
 .TP
 .B\-\-db\-user\-role
 Set the users permissions in the database.
 .sp
-Default: "readWrite"
+Default: “readWrite”
 .TP
 .B\-\-db\-ip
 The ip of the database to connect to.
 .sp
-Default: "localhost"
+Default: “localhost”
 .TP
 .B\-\-db\-bind\-ip
 The ip the database should be accessible from.
 .sp
-Default: "localhost"
+Default: “localhost”
 .TP
 .B\-\-db\-port
 The port both the unauth and auth db will use.
 .sp
-Default: "65535"
+Default: “65535”
 .TP
 .B\-\-db\-name
 The name of the authenticated database.
 .sp
-Default: "nemesyst"
+Default: “nemesyst”
 .TP
 .B\-\-db\-collection\-name
 The name of the collection to use in database.
 .sp
-Default: "test"
+Default: “test”
 .TP
 .B\-\-db\-path
 The parent directory to use for the database.
 .sp
-Default: /db
+Default: /home/archer/db
 .TP
 .B\-\-db\-log\-path
 The parent directory to use for the db log.
 .sp
-Default: /db/log
+Default: /home/archer/db/log
 .TP
 .B\-\-db\-log\-name
 The base name of the log file to maintain.
 .sp
-Default: "mongo_log"
+Default: “mongo_log”
 .TP
 .B\-\-db\-cursor\-timeout
 The duration in seconds before an unused cursor will time out.
@@ -516,14 +619,14 @@ something unique, the caveat being it becomes harder to read.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBargs\fP (\fIdictionary\fP) \-\- Dictionary of overides.
+\fBargs\fP (\fIdictionary\fP) – Dictionary of overides.
 .IP \(bu 2
-\fBlogger\fP (\fIfunction address\fP) \-\- Function address to print/ log to (default: print).
+\fBlogger\fP (\fIfunction address\fP) – Function address to print/ log to (default: print).
 .UNINDENT
 .TP
 .B Example
-Mongo({"db_user_name": "someUsername",
-"db_password": "somePassword"})
+Mongo({“db_user_name”: “someUsername”,
+“db_password”: “somePassword”})
 .TP
 .B Example
 Mongo()
@@ -541,17 +644,17 @@ into the database will fail.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_url\fP (\fIstring\fP) \-\- Database url (default: "mongodb://localhost:27017/").
+\fBdb_url\fP (\fIstring\fP) – Database url (default: “mongodb://localhost:27017/”).
 .IP \(bu 2
-\fBdb_user_name\fP (\fIstring\fP) \-\- Username to use for authentication to db_name.
+\fBdb_user_name\fP (\fIstring\fP) – Username to use for authentication to db_name.
 .IP \(bu 2
-\fBdb_password\fP (\fIstring\fP) \-\- Password for db_user_name in database db_name.
+\fBdb_password\fP (\fIstring\fP) – Password for db_user_name in database db_name.
 .IP \(bu 2
-\fBdb_name\fP (\fIstring\fP) \-\- The name of the database to connect to.
+\fBdb_name\fP (\fIstring\fP) – The name of the database to connect to.
 .IP \(bu 2
-\fBdb_authentication\fP (\fIstring\fP) \-\- The authentication method to use on db.
+\fBdb_authentication\fP (\fIstring\fP) – The authentication method to use on db.
 .IP \(bu 2
-\fBdb_collection_name\fP (\fIstring\fP) \-\- GridFS collection to use.
+\fBdb_collection_name\fP (\fIstring\fP) – GridFS collection to use.
 .UNINDENT
 .TP
 .B Returns
@@ -577,16 +680,16 @@ Import data dictionary into database.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_collection_name\fP (\fIstring\fP) \-\- Collection name to import into.
+\fBdb_collection_name\fP (\fIstring\fP) – Collection name to import into.
 .IP \(bu 2
-\fBdata\fP (\fIdictionary\fP) \-\- Data to import into database.
+\fBdata\fP (\fIdictionary\fP) – Data to import into database.
 .IP \(bu 2
-\fBdb\fP (\fIpymongo.database.Database\fP) \-\- Database to import data into.
+\fBdb\fP (\fIpymongo.database.Database\fP) – Database to import data into.
 .UNINDENT
 .TP
 .B Example
-dump(db_collection_name="test",
-data={"subdict":{"hello": "world"}})
+dump(db_collection_name=”test”,
+data={“subdict”:{“hello”: “world”}})
 .UNINDENT
 .UNINDENT
 .INDENT 7.0
@@ -598,9 +701,9 @@ Get database cursor data in batches.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_batch_size\fP (\fIinteger\fP) \-\- The number of items to return in a single round.
+\fBdb_batch_size\fP (\fIinteger\fP) – The number of items to return in a single round.
 .IP \(bu 2
-\fBdb_data_cursor\fP (\fIcommand_cursor.CommandCursor\fP) \-\- The cursor to use to retrieve data from db.
+\fBdb_data_cursor\fP (\fIcommand_cursor.CommandCursor\fP) – The cursor to use to retrieve data from db.
 .UNINDENT
 .TP
 .B Returns
@@ -627,13 +730,13 @@ a big dump from the database.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_pipeline\fP (\fIlist of dicts\fP) \-\- Mongodb aggregate pipeline data to transform and
+\fBdb_pipeline\fP (\fIlist of dicts\fP) – Mongodb aggregate pipeline data to transform and
 retrieve the data as you request.
 .IP \(bu 2
-\fBdb_collection_name\fP (\fIstr\fP) \-\- The collection name which we will pull data
+\fBdb_collection_name\fP (\fIstr\fP) – The collection name which we will pull data
 from using the aggregate pipeline.
 .IP \(bu 2
-\fBdb\fP (\fIpymongo.database.Database\fP) \-\- Database object to operate pipeline on.
+\fBdb\fP (\fIpymongo.database.Database\fP) – Database object to operate pipeline on.
 .UNINDENT
 .TP
 .B Returns
@@ -657,11 +760,11 @@ unprotected database is never exposed.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_path\fP (\fIstring\fP) \-\- Desired directory of MongoDB database files.
+\fBdb_path\fP (\fIstring\fP) – Desired directory of MongoDB database files.
 .IP \(bu 2
-\fBdb_log_path\fP (\fIstring\fP) \-\- Desired directory of MongoDB log files.
+\fBdb_log_path\fP (\fIstring\fP) – Desired directory of MongoDB log files.
 .IP \(bu 2
-\fBdb_log_name\fP (\fIstring\fP) \-\- Desired name of log file.
+\fBdb_log_name\fP (\fIstring\fP) – Desired name of log file.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -674,15 +777,15 @@ Log in to database, interupt, and availiable via cli.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_port\fP (\fIstring\fP) \-\- Database port to connect to.
+\fBdb_port\fP (\fIstring\fP) – Database port to connect to.
 .IP \(bu 2
-\fBdb_user_name\fP (\fIstring\fP) \-\- Database user to authenticate as.
+\fBdb_user_name\fP (\fIstring\fP) – Database user to authenticate as.
 .IP \(bu 2
-\fBdb_password\fP (\fIstring\fP) \-\- User password to authenticate with.
+\fBdb_password\fP (\fIstring\fP) – User password to authenticate with.
 .IP \(bu 2
-\fBdb_name\fP (\fIstring\fP) \-\- Database to authenticate to, the authentication db.
+\fBdb_name\fP (\fIstring\fP) – Database to authenticate to, the authentication db.
 .IP \(bu 2
-\fBdb_ip\fP (\fIstring\fP) \-\- Database ip to connect to.
+\fBdb_ip\fP (\fIstring\fP) – Database ip to connect to.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -695,17 +798,17 @@ Launch an on machine database with authentication.
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_ip\fP (\fIstring\fP) \-\- Desired database ip to bind to.
+\fBdb_ip\fP (\fIstring\fP) – Desired database ip to bind to.
 .IP \(bu 2
-\fBdb_port\fP (\fIstring\fP) \-\- Port desired for database.
+\fBdb_port\fP (\fIstring\fP) – Port desired for database.
 .IP \(bu 2
-\fBdb_path\fP (\fIstring\fP) \-\- Path to parent dir of database.
+\fBdb_path\fP (\fIstring\fP) – Path to parent dir of database.
 .IP \(bu 2
-\fBdb_log_path\fP (\fIstring\fP) \-\- Path to parent dir of log files.
+\fBdb_log_path\fP (\fIstring\fP) – Path to parent dir of log files.
 .IP \(bu 2
-\fBdb_log_name\fP (\fIstring\fP) \-\- Desired base name for log files.
+\fBdb_log_name\fP (\fIstring\fP) – Desired base name for log files.
 .IP \(bu 2
-\fBdb_cursor_timeout\fP (\fIinteger\fP) \-\- Set timeout time for unused cursors.
+\fBdb_cursor_timeout\fP (\fIinteger\fP) – Set timeout time for unused cursors.
 .UNINDENT
 .TP
 .B Return type
@@ -722,7 +825,7 @@ Stop a running local database.
 .INDENT 7.0
 .TP
 .B Parameters
-\fBdb_path\fP (\fIstring\fP) \-\- The path to the database to shut down.
+\fBdb_path\fP (\fIstring\fP) – The path to the database to shut down.
 .TP
 .B Returns
 Subprocess of database closer.
