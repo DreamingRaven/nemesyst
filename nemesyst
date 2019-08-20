@@ -126,11 +126,6 @@ def argument_parser(description=None, cfg_files=None):
                       type=type_file_path_exists,
                       env_var="N_DATA_CLEANER",
                       help="Path to data cleaner(s).")
-    data.add_argument("--data-import",
-                      default=bool(False),
-                      action="store_true",
-                      env_var="N_DATA_IMPORT",
-                      help="Import (cleaned?) data to database.")
     data.add_argument("--data-cleaner-entry-point",
                       default=["main"],
                       nargs='+',
