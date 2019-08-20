@@ -23,6 +23,7 @@ sphinx_dir_path="${script_path}/../docs"
 echo "cd ${sphinx_dir_path}"
 cd "${sphinx_dir_path}"
 make html
+make man # and update our man pages while we are at it
 
 # testing nemesyst itself
 nemesyst_dir_path="${script_path}/../"
