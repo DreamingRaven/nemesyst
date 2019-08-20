@@ -58,6 +58,12 @@ To then use the newly created virtual environment:
 
 .. code-block:: bash
 
+    source venv/bin/activate
+
+OR if you are using a terminal like fish:
+
+.. code-block:: bash
+
     source venv/bin/activate.fish
 
 To install Nemesyst and all its dependancies into a virtual environment while it is being used (activated):
