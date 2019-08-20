@@ -305,7 +305,12 @@ class Mongo(object):
         except errors.DuplicateKeyError:
             self.args["pylog"](self.args["db_user_name"] + "@" +
                                self.args["db_name"],
-                               "already exists skipping.")
+                               "already exists skipping (DuplicateKeyError).")
+        except errors.OperationFailure:
+            self.args["pylog"](self.args["db_user_name"] + "@" +
+                               self.args["db_name"],
+                               "already exists skipping (OperationFailure).")
+
     _addUser.__annotations__ = {"return": None}
 
     def debug(self):

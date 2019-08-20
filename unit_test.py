@@ -47,7 +47,10 @@ test_args = [
     "--dl-learner", "scripts/learners/debug_learner.py",
     "scripts/learners/debug_learner.py",
     "--dl-learner-entry-point", "main", "main", "main",
-    "--dl-collection", "debug_models", "debug_models", "debug_models",
+    "--dl-data-collection", "debug_data", "debug_data", "debug_data",
+    "--dl-input-model-collection", "debug_models", "debug_models",
+    "--dl-output-model-collection", "debug_models", "debug_models",
+    "debug_models",
     "--data-clean",
     "--dl-learn",
     # "--db-login"

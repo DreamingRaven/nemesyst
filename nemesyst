@@ -57,7 +57,6 @@ def parallel_clean(args_m):
                                 "data_cleaner_entry_point"][i])
         db.connect()
         for data in gen:
-            data["args"] = args
             db.dump(db_collection_name=args["data_collection"][i], data=data)
 
 
@@ -71,8 +70,8 @@ def parallel_learn(args_m):
                             entry_point=args["dl_learner_entry_point"][i])
         db.connect()
         for data in gen:
-            data["args"] = args
-            db.dump(db_collection_name=args["dl_collection"][i], data=data)
+            db.dump(db_collection_name=args["dl_output_model_collection"][i],
+                    data=data)
 
 
 def argument_parser(description=None, cfg_files=None):
