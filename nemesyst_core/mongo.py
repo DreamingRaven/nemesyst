@@ -14,6 +14,7 @@ import subprocess
 import time
 from pymongo import MongoClient, errors, database, command_cursor
 import gridfs
+import re
 
 
 class Mongo(object):
@@ -285,6 +286,8 @@ class Mongo(object):
         """Add a user with given permissions to the authentication database."""
         self.args["pylog"]("Adding  mongodb user:",
                            str(self.args["db_user_name"]),
+                           ", pass:",
+                           str(type(self.args["db_password"])),
                            ", role:", str(self.args["db_user_role"]),
                            ", authdb:", str(self.args["db_name"]))
         local_mongourl = "mongodb://{0}:{1}/".format(
@@ -302,14 +305,26 @@ class Mongo(object):
                            self.args["db_user_name"],
                            pwd=self.args["db_password"],
                            roles=[self.args["db_user_role"]])
-        except errors.DuplicateKeyError:
+        except errors.DuplicateKeyError:  # it used to be a duplicate key error
             self.args["pylog"](self.args["db_user_name"] + "@" +
                                self.args["db_name"],
                                "already exists skipping (DuplicateKeyError).")
-        except errors.OperationFailure:
-            self.args["pylog"](self.args["db_user_name"] + "@" +
-                               self.args["db_name"],
-                               "already exists skipping (OperationFailure).")
+        except errors.OperationFailure as e:
+            # in a new version of pymongo if a user exists already it is now
+            # no longer a duplicate key error, so we have to split a genuine
+            # operation failure vs an already existing user which is fine.
+            # pacman -Q python-pymongo = 3.9.0-1 so this version breaks it
+            self.args["pylog"]("can not add user:",
+                               str(self.args["db_user_name"]) + "@" +
+                               str(self.args["db_name"]),
+                               "ensure correct " +
+                               "--db-user-name, and " +
+                               "--db-password are being used.")
+            split_e = re.split('\W+', str(e))
+            if(split_e[-2] == "already") and (split_e[-1] == "exists"):
+                self.args["pylog"]("user already exists, skipping.")
+            else:
+                raise
 
     _addUser.__annotations__ = {"return": None}
 

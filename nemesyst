@@ -274,12 +274,12 @@ def argument_parser(description=None, cfg_files=None):
                          env_var="N_DB_COLLECTION_NAME",
                          help="The name of the collection to use in database.")
     mongodb.add_argument("--db-path",
-                         default=os.path.join(home, "/db"),
+                         default=os.path.join(home, "db"),
                          type=type_path,
                          env_var="N_DB_PATH",
                          help="The parent directory to use for the database.")
     mongodb.add_argument("--db-log-path",
-                         default=os.path.join(home, "/db/log"),
+                         default=os.path.join(home, "db/log"),
                          type=type_path,
                          env_var="N_DB_PATH",
                          help="The parent directory to use for the db log.")
@@ -358,6 +358,7 @@ def argument_handler(args, config_files, description, isNewConfig=False):
                                           isNewConfig=True)  # prevent loop
     if(processed_args["db_password"] is True):
         processed_args["db_password"] = getpass.getpass()
+    print(processed_args)
     return processed_args
 
 
