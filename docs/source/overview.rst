@@ -25,6 +25,18 @@ Nemesyst Abstraction of stages
 
     Deep learning can be said to include 3 stages, data-wrangling, test-training, and infering. Nemesyst adds an extra layer we call serving, which is the stage at which databases are involved as the message passing interface (MPI), and generator, between the layers, machines, and algorithms, along with being the data, and model storage mechanism.
 
+.. _section_nemesyst-parallelisation:
+
+Nemesyst Parallelisation
+************************
+
+.. figure:: nemesyst_rounds.svg
+    :alt: Nemesyst round depiction diagram, showing the order and values of rounds.
+    :figclass: align-center
+
+    Local parallelisation of your scripts occur using pythons process pools from multiprocessing. This diagram shows how the rounds of processing are abstracted and the order of them. Rounds do not continue between stages, I.E if there is a spare process but not enough scripts from that stage (e.g cleaning) it will not fill this with a script process from the next stage (e.g learning).
+    See :ref:`section_all-options` for a full list of options.
+
 .. _section_wrangling:
 
 Wrangling
