@@ -15,7 +15,7 @@ import sys
 import copy
 import importlib
 import json
-import multiprocessing
+import multiprocessing as mp
 
 # argument handler
 import getpass
@@ -47,17 +47,24 @@ main.__annotations__ = {"args": dict, "return": None}
 
 def parallel_clean(args_m):
     """Run cleaning scripts in parallel."""
-    for i in range(len(args_m["data_cleaner"])):
-        args = copy.deepcopy(args_m)
-        db = Mongo(args)
-        del args["db_password"]  # deleting password as it is no longer needed
-        gen = import_script(script=args["data_cleaner"][i],
-                            args=args, db=db,
-                            entry_point=args[
-                                "data_cleaner_entry_point"][i])
-        db.connect()
-        for data in gen:
-            db.dump(db_collection_name=args["data_collection"][i], data=data)
+    # creating process pool
+    pool = mp.Pool(processes=args_m["process_pool"])
+    # calling each process pool
+    [pool.apply(cleaner, args=(args_m, x)) for x in range(len("data_cleaner"))]
+
+
+def cleaner(args_m, i):
+    """Atomic cleaner execution."""
+    args = copy.deepcopy(args_m)
+    db = Mongo(args)
+    del args["db_password"]  # deleting password as it is no longer needed
+    gen = import_script(script=args["data_cleaner"][i],
+                        args=args, db=db,
+                        entry_point=args[
+                            "data_cleaner_entry_point"][i])
+    db.connect()
+    for data in gen:
+        db.dump(db_collection_name=args["data_collection"][i], data=data)
 
 
 def parallel_learn(args_m):
