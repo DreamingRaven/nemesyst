@@ -59,6 +59,7 @@ def cleaner(args_m, i):
     args = copy.deepcopy(args_m)
     db = Mongo(args)
     del args["db_password"]  # deleting password as it is no longer needed
+    args["process"] = i
     gen = import_script(script=args["data_cleaner"][i],
                         args=args, db=db,
                         entry_point=args[
@@ -70,16 +71,24 @@ def cleaner(args_m, i):
 
 def parallel_learn(args_m):
     """Run learning scripts in parallel."""
-    for i in range(len(args_m["dl_learner"])):
-        args = copy.deepcopy(args_m)
-        db = Mongo(args)
-        del args["db_password"]  # deleting password as it is no longer needed
-        gen = import_script(script=args["dl_learner"][i], args=args, db=db,
-                            entry_point=args["dl_learner_entry_point"][i])
-        db.connect()
-        for data in gen:
-            db.dump(db_collection_name=args["dl_output_model_collection"][i],
-                    data=data)
+    # creating process pool
+    pool = mp.Pool(processes=args_m["process_pool"])
+    # calling each process pool
+    [pool.apply(learner, args=(args_m, x)) for x in
+        range(len(args_m["dl_learner"]))]
+
+
+def learner(args_m, i):
+    """Atomic learner execution."""
+    args = copy.deepcopy(args_m)
+    db = Mongo(args)
+    args["process"] = i
+    gen = import_script(script=args["dl_learner"][i], args=args, db=db,
+                        entry_point=args["dl_learner_entry_point"][i])
+    db.connect()
+    for data in gen:
+        db.dump(db_collection_name=args["dl_output_model_collection"][i],
+                data=data)
 
 
 def argument_parser(description=None, cfg_files=None):
@@ -371,7 +380,6 @@ def argument_handler(args, config_files, description, isNewConfig=False):
                                           isNewConfig=True)  # prevent loop
     if(processed_args["db_password"] is True):
         processed_args["db_password"] = getpass.getpass()
-    print(processed_args)
     return processed_args
 
 
