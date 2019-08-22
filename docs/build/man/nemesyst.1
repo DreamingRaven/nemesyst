@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "NEMESYST" "1" "Aug 20, 2019" "" "Nemesyst"
+.TH "NEMESYST" "1" "Aug 22, 2019" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.0.r24.c50beb7
+nemesyst \- Nemesyst 2.0.1.r6.f9f92c3
 .
 .nr rst2man-indent-level 0
 .
@@ -130,6 +130,18 @@ vituralenv venv
 .UNINDENT
 .sp
 To then use the newly created virtual environment:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+source venv/bin/activate
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+OR if you are using a terminal like fish:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -312,7 +324,8 @@ Using the –config argument you may specify more config files, which will be pe
 .nf
 .ft C
 usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
-                [\-d DATA [DATA ...]] [\-\-data\-clean]
+                [\-\-process\-pool PROCESS_POOL] [\-d DATA [DATA ...]]
+                [\-\-data\-clean]
                 [\-\-data\-cleaner DATA_CLEANER [DATA_CLEANER ...]]
                 [\-\-data\-cleaner\-entry\-point DATA_CLEANER_ENTRY_POINT [DATA_CLEANER_ENTRY_POINT ...]]
                 [\-\-data\-collection DATA_COLLECTION [DATA_COLLECTION ...]]
@@ -355,6 +368,11 @@ Default: False
 List of all ini files to be used.
 .sp
 Default: []
+.TP
+.B\-\-process\-pool
+The maximum number of processes to allocate.
+.sp
+Default: 1
 .UNINDENT
 .SS Data pre\-processing options
 .INDENT 0.0
