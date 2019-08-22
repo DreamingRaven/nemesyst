@@ -50,7 +50,8 @@ def parallel_clean(args_m):
     # creating process pool
     pool = mp.Pool(processes=args_m["process_pool"])
     # calling each process pool
-    [pool.apply(cleaner, args=(args_m, x)) for x in range(len("data_cleaner"))]
+    [pool.apply(cleaner, args=(args_m, x)) for x in
+        range(len(args_m["data_cleaner"]))]
 
 
 def cleaner(args_m, i):
