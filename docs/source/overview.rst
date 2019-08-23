@@ -34,7 +34,7 @@ Nemesyst has abstracted, grouped, and formalised what we believe are the core st
 Nemesyst Parallelisation
 ************************
 
-As of: `2.0.2 eead916 <https://github.com/DreamingRaven/nemesyst/commit/f9f92c38c900a0f0bb87e9133aa5b9bb48d60b41>`_
+As of: `2.0.1.r6.f9f92c3 <https://github.com/DreamingRaven/nemesyst/commit/f9f92c38c900a0f0bb87e9133aa5b9bb48d60b41>`_
 
 .. figure:: nemesyst_rounds.svg
     :alt: Nemesyst round depiction diagram, showing the order and values of rounds.
