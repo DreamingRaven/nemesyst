@@ -86,6 +86,8 @@ Learning
 Infering
 ********
 
+As of: `2.0.2.r7.1cf3eab <https://github.com/DreamingRaven/nemesyst/commit/1cf3eab0dd6196c9065f43e9b231a50687f67065>`_
+
 .. figure:: nemesyst_infering.svg
     :alt: Nemesyst inference puzzle diagram.
     :figclass: align-center
