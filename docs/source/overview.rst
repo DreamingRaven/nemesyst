@@ -1,10 +1,17 @@
 .. |files-only| replace:: :ref:`section_files-only`
 .. |all-options| replace:: :ref:`section_all-options`
+.. |automated| replace:: :ref:`section_automated`
 
 .. _section_overview:
 
 Overview
 ========
+
+.. note::
+
+    Throught this overview and in certain other sections the examples provided are for |files-only| installations, however this is only to make it easier to use the inbuilt examples/ sample files rather than having to force the user to define his/ her own cleaning, learning, infering scripts, for the sake of simplicity.
+
+    If you are not using the |files-only| installation you will have to point nemesyst to cleaners, learners, predictors etc that you want to use. Although even if you are using |files-only|, eventually once you have better understood and tested Nemesyst then you should likeley move to creating your own ones that you require, and using a normal installation of Nemesyst such as one of the |automated| examples.
 
 .. _section_nemesyst-literal:
 
@@ -60,7 +67,7 @@ See |all-options| for a full list of options.
 
     Wrangling is the stage where the data is cleaned into single atomic examples to be imported to the database.
 
-:|files-only| example:
+:|files-only| example\::
 
   .. literalinclude:: ../../tests/cleaning.sh
 
@@ -77,7 +84,7 @@ See |all-options| for a full list of options.
 
     Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
 
-:|files-only| example:
+:|files-only| example\::
 
   .. literalinclude:: ../../tests/serving.sh
 
@@ -94,7 +101,7 @@ See |all-options| for a full list of options.
 
     Learning is the stage where the data is used to train new models or to update an existing model already in the database.
 
-:|files-only| example:
+:|files-only| example\::
 
   .. literalinclude:: ../../tests/learning.sh
 
@@ -114,6 +121,6 @@ See |all-options| for a full list of options.
     Infering is the stage where the model(s) are used to predict on newly provided data.
 
 
-:|files-only| example:
+:|files-only| example\::
 
   .. literalinclude:: ../../tests/learning.sh

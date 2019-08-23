@@ -2,7 +2,7 @@
 .
 .TH "NEMESYST" "1" "Aug 23, 2019" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.2.r13.f3b075c
+nemesyst \- Nemesyst 2.0.2.r14.d9edc42
 .
 .nr rst2man-indent-level 0
 .
@@ -232,6 +232,15 @@ git clone https://github.com/DreamingRaven/nemesyst
 .sp
 We also have a two testers one \fBunit_test.py\fP for the nemesyst code only, then we also have \fBtests/test_everything.sh\fP which will test building the documentation, PKGBUILD, nemesyst, etc
 .SH OVERVIEW
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
+Throught this overview and in certain other sections the examples provided are for section_files\-only installations, however this is only to make it easier to use the inbuilt examples/ sample files rather than having to force the user to define his/ her own cleaning, learning, infering scripts, for the sake of simplicity.
+.sp
+If you are not using the section_files\-only installation you will have to point nemesyst to cleaners, learners, predictors etc that you want to use. Although even if you are using section_files\-only, eventually once you have better understood and tested Nemesyst then you should likeley move to creating your own ones that you require, and using a normal installation of Nemesyst such as one of the section_automated examples.
+.UNINDENT
+.UNINDENT
 .SS Nemesyst literal un\-abstract stages
 .INDENT 0.0
 .INDENT 2.5
@@ -272,7 +281,7 @@ Wrangling is the stage where the data is cleaned into single atomic examples to 
 .UNINDENT
 .INDENT 0.0
 .TP
-.B section_files\-only example
+.B section_files\-only example:
 .INDENT 7.0
 .INDENT 3.5
 .sp
@@ -296,7 +305,7 @@ Serving is the stage where the data and eventually trained models will be stored
 .UNINDENT
 .INDENT 0.0
 .TP
-.B section_files\-only example
+.B section_files\-only example:
 .INDENT 7.0
 .INDENT 3.5
 .sp
@@ -320,7 +329,7 @@ Learning is the stage where the data is used to train new models or to update an
 .UNINDENT
 .INDENT 0.0
 .TP
-.B section_files\-only example
+.B section_files\-only example:
 .INDENT 7.0
 .INDENT 3.5
 .sp
@@ -346,7 +355,7 @@ Infering is the stage where the model(s) are used to predict on newly provided d
 .UNINDENT
 .INDENT 0.0
 .TP
-.B section_files\-only example
+.B section_files\-only example:
 .INDENT 7.0
 .INDENT 3.5
 .sp

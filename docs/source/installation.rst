@@ -6,6 +6,7 @@ Installation
     Certain distributions link ``python`` to ``python2`` and others link it to ``python3``.
     For disambiguation python, pip, and virtualenv shall mean their python v3 versions here, i.e. ``python3``, ``pip3``, ``virtualenv3``.
 
+.. _section_automated:
 
 Automated
 *********
