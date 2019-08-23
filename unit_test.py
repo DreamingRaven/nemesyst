@@ -50,9 +50,13 @@ test_args = [
     "--dl-data-collection", "debug_data", "debug_data", "debug_data",
     "--dl-input-model-collection", "debug_models", "debug_models",
     "--dl-output-model-collection", "debug_models", "debug_models",
+    "--i-predictor", "scripts/predictors/debug_predictor.py",
+    "--i-predictor-entry-point", "main",
+    "--i-output-prediction-collection", "debug_predictions",
     "debug_models",
     "--data-clean",
     "--dl-learn",
+    "--i-predict"
     # "--db-login"
     # "--db-password", "iamgroot", # this is overriden manually
 ]

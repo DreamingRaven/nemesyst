@@ -36,6 +36,8 @@ def main(args):
         parallel_clean(args)
     if(args["dl_learn"] is True):
         parallel_learn(args)
+    if(args["i_predict"] is True):
+        parallel_predict(args)
     if(args["db_login"] is True):
         db.login()  # logs in to database
     if(args["db_stop"] is True):
@@ -91,6 +93,28 @@ def learner(args_m, i):
                 data=data)
 
 
+def parallel_predict(args_m):
+    """Run predictor scripts in parallel."""
+    # creating process pool
+    pool = mp.Pool(processes=args_m["process_pool"])
+    # calling each process pool
+    [pool.apply(predictor, args=(args_m, x)) for x in
+        range(len(args_m["i_predictor"]))]
+
+
+def predictor(args_m, i):
+    """Atomic predictor execution."""
+    args = copy.deepcopy(args_m)
+    db = Mongo(args)
+    args["process"] = i
+    gen = import_script(script=args["i_predictor"][i], args=args, db=db,
+                        entry_point=args["i_predictor_entry_point"][i])
+    db.connect()
+    for data in gen:
+        db.dump(db_collection_name=args["i_output_prediction_collection"][i],
+                data=data)
+
+
 def argument_parser(description=None, cfg_files=None):
     """Parse cli>environment>config>default arguments into dictionary."""
     home = os.path.expanduser("~")
@@ -101,6 +125,7 @@ def argument_parser(description=None, cfg_files=None):
     nemesyst = parser.add_argument_group(title="Nemesyst options")
     data = parser.add_argument_group(title="Data pre-processing options")
     deeplearning = parser.add_argument_group(title="Deep learning options")
+    infering = parser.add_argument_group(title="Infering options")
     mongodb = parser.add_argument_group(title="MongoDb options")
 
     # Nemesyst specific options
@@ -229,6 +254,33 @@ def argument_parser(description=None, cfg_files=None):
                               env_var="N_DL_OUTPUT_MODEL_COLLECTION",
                               help="Specify model storage collection to " +
                                    "post trained neural networks to.")
+
+    # Inference specific options
+    infering.add_argument("--i-predictor",
+                          default=[],
+                          nargs='+',
+                          type=type_file_path_exists,
+                          env_var="N_I_PREDICTOR",
+                          help="Path to predictor(s).")
+    infering.add_argument("--i-predictor-entry-point",
+                          default=["main"],
+                          nargs='+',
+                          type=str,
+                          env_var="N_I_PREDICTOR_ENTRY_POINT",
+                          help="Specify the entry point " +
+                          "of predictor custom scripts to use.")
+    infering.add_argument("--i-output-prediction-collection",
+                          default=["debug_predictions"],
+                          nargs='+',
+                          type=str,
+                          env_var="N_I_OUTPUT_PREDICTOR_COLLECTION",
+                          help="Specify prediction storage collection to " +
+                          "post trained neural network predictions to.")
+    infering.add_argument("--i-predict",
+                          default=bool(False),
+                          action="store_true",
+                          env_var="N_I_PREDICT",
+                          help="Use predictor/ inferer scripts.")
 
     # MongoDB specific options
     mongodb.add_argument("-l", "--db-login",
