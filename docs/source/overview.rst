@@ -87,7 +87,9 @@ See |all-options| for a full list of options.
 
     Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
 
-Nemesyst uses |mongodb| databases through |pymongo| as a data store, and distribution mechanism. The database(s) are some of the most important aspects of the chain of processes, as nothing can operate without a properly functioning database. As such we have attempted to simplify operations on both the user scripts side and our side by abstracting the slightly raw pymongo interface into a much friendlier class of operations called |mongo|. A |mongo| object is automatically passed into every one of your desired scripts entry points, so that you can also easily operate on the database if you so choose although asside from our data generator we handle the majority of use cases before it reaches your scripts.
+Nemesyst uses |mongodb| databases through |pymongo| as a data store, and distribution mechanism. The database(s) are some of the most important aspects of the chain of processes, as nothing can operate without a properly functioning database. As such we have attempted to simplify operations on both the user scripts side and our side by abstracting the slightly raw pymongo interface into a much friendlier class of operations called |mongo|.
+
+A |mongo| object is automatically passed into every one of your desired scripts entry points, so that you can also easily operate on the database if you so choose although asside from our data generator we handle the majority of use cases before it reaches your scripts.
 
 :|files-only| example\::
 
