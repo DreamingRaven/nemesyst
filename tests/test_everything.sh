@@ -32,14 +32,14 @@ cd "${nemesyst_dir_path}."
 python3 unit_test.py
 
 # testing documentation examples
-documentation_dir_path="${script_path}"
+documentation_dir_path="${script_path}/.."
 echo "cd ${documentation_dir_path}"
 cd ${documentation_dir_path}
-echo "cleaning.sh"
-bash cleaning.sh
-echo "serving.sh"
-bash serving.sh
-echo "learning.sh"
-bash learning.sh
-echo "predicting.sh"
-bash predicting.sh
+echo "tests/cleaning.sh"
+bash tests/cleaning.sh
+echo "tests/serving.sh"
+bash tests/serving.sh
+echo "tests/learning.sh"
+bash tests/learning.sh
+echo "tests/predicting.sh"
+bash tests/predicting.sh
