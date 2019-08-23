@@ -15,6 +15,7 @@ import sys
 import copy
 import importlib
 import json
+import time
 import multiprocessing as mp
 
 # argument handler
@@ -30,6 +31,7 @@ def main(args):
     db = Mongo(args)  # matching args will override defaults
     if(args["db_init"] is True):
         db.init()  # creates database files
+        time.sleep(2)
     if(args["db_start"] is True):
         db.start()  # launches database
     if(args["data_clean"] is True):
