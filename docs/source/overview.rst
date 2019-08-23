@@ -34,14 +34,16 @@ Nemesyst has abstracted, grouped, and formalised what we believe are the core st
 Nemesyst Parallelisation
 ************************
 
+As of: `2.0.2 eead916 <https://github.com/DreamingRaven/nemesyst/commit/f9f92c38c900a0f0bb87e9133aa5b9bb48d60b41>`_
+
 .. figure:: nemesyst_rounds.svg
     :alt: Nemesyst round depiction diagram, showing the order and values of rounds.
     :figclass: align-center
 
-    Local parallelisation of your scripts occur using pythons process pools from multiprocessing. This diagram shows how the rounds of processing are abstracted and the order of them. Rounds do not continue between stages, I.E if there is a spare process but not enough scripts from that stage (e.g cleaning) it will not fill this with a script process from the next stage (e.g learning).
+    Nemesyst parallelises each script, up the the maximum number of processes in the process pool.
     See :ref:`section_all-options` for a full list of options.
 
-Nemesyst parallelises each script, up the the maximum number of processes in the process pool.
+Local parallelisation of your scripts occur using pythons process pools from multiprocessing. This diagram shows how the rounds of processing are abstracted and the order of them. Rounds do not continue between stages, I.E if there is a spare process but not enough scripts from that stage (e.g cleaning) it will not fill this with a script process from the next stage (e.g learning). This is to prevent the scenario where a learning script may depend on the output of a previous cleaning script.
 
 .. _section_wrangling:
 
