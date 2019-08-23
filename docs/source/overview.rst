@@ -25,9 +25,9 @@ Nemesyst Abstraction of stages
     :alt: Nemesyst stages of data from input to output.
     :figclass: align-center
 
-    Deep learning can be said to include 3 stages, data-wrangling, test-training, and infering. Nemesyst adds an extra layer we call serving, which is the stage at which databases are involved as the message passing interface (MPI), and generator, between the layers, machines, and algorithms, along with being the data, and model storage mechanism.
+    Nemesyst has abstracted, grouped, and formalised what we believe are the core stages of applying deep learning at all scales.
 
-Nemesyst has abstracted, grouped, and formalised what we believe are the core stages of applying deep learning at all scales.
+Deep learning can be said to include 3 stages, data-wrangling, test-training, and infering. Nemesyst adds an extra layer we call serving, which is the stage at which databases are involved as the message passing interface (MPI), and generator, between the layers, machines, and algorithms, along with being the data, and model storage mechanism.
 
 .. _section_nemesyst-parallelisation:
 
