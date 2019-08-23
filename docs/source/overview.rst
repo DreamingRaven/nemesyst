@@ -1,4 +1,5 @@
 .. |files-only| replace:: :ref:`section_files-only`
+.. |all-options| replace:: :ref:`section_all-options`
 
 .. _section_overview:
 
@@ -43,21 +44,21 @@ As of: `2.0.1.r6.f9f92c3 <https://github.com/DreamingRaven/nemesyst/commit/f9f92
     :figclass: align-center
 
     Nemesyst parallelises each script, up the the maximum number of processes in the process pool.
-    See :ref:`section_all-options` for a full list of options.
 
 Local parallelisation of your scripts occur using pythons process pools from multiprocessing. This diagram shows how the rounds of processing are abstracted and the order of them. Rounds do not continue between stages, I.E if there is a spare process but not enough scripts from that stage (e.g cleaning) it will not fill this with a script process from the next stage (e.g learning). This is to prevent the scenario where a learning script may depend on the output of a previous cleaning script.
 
 .. _section_wrangling:
 
-Wrangling
-*********
+Wrangling / cleaning
+********************
+
+See |all-options| for a full list of options.
 
 .. figure:: nemesyst_wrangling.svg
     :alt: Nemesyst wrangling puzzle diagram.
     :figclass: align-center
 
     Wrangling is the stage where the data is cleaned into single atomic examples to be imported to the database.
-    See :ref:`section_all-options` for a full list of options.
 
 :|files-only| example:
 
@@ -68,12 +69,13 @@ Wrangling
 Serving
 *******
 
+See |all-options| for a full list of options.
+
 .. figure:: nemesyst_serving.svg
     :alt: Nemesyst database serving puzzle diagram.
     :figclass: align-center
 
     Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
-    See :ref:`section_all-options` for a full list of options.
 
 :|files-only| example:
 
@@ -84,12 +86,13 @@ Serving
 Learning
 ********
 
+See |all-options| for a full list of options.
+
 .. figure:: nemesyst_learning.svg
     :alt: Nemesyst learning puzzle diagram.
     :figclass: align-center
 
     Learning is the stage where the data is used to train new models or to update an existing model already in the database.
-    See :ref:`section_all-options` for a full list of options.
 
 :|files-only| example:
 
@@ -97,17 +100,18 @@ Learning
 
 .. _section_infering:
 
-Infering
-********
+Infering / predicting
+*********************
 
 As of: `2.0.2.r7.1cf3eab <https://github.com/DreamingRaven/nemesyst/commit/1cf3eab0dd6196c9065f43e9b231a50687f67065>`_
+
+See |all-options| for a full list of options.
 
 .. figure:: nemesyst_infering.svg
     :alt: Nemesyst inference puzzle diagram.
     :figclass: align-center
 
     Infering is the stage where the model(s) are used to predict on newly provided data.
-    See :ref:`section_all-options` for a full list of options.
 
 
 :|files-only| example:
