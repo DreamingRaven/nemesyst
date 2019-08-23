@@ -6,6 +6,7 @@ Installation
     Certain distributions link ``python`` to ``python2`` and others link it to ``python3``.
     For disambiguation python, pip, and virtualenv shall mean their python v3 versions here, i.e. ``python3``, ``pip3``, ``virtualenv3``.
 
+.. _section_automated:
 
 Automated
 *********
@@ -45,6 +46,8 @@ Archlinux
   cd nemesyst/.arch/
   makepkg -si
 
+.. _section_virtual-env:
+
 Virtual env
 ***********
 
@@ -77,6 +80,8 @@ To exit the virtual environment:
 .. code-block:: bash
 
       deactivate
+
+.. _section_files-only:
 
 Files only/ development
 ***********************

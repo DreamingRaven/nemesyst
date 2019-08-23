@@ -1,7 +1,20 @@
+.. |files-only| replace:: :ref:`section_files-only`
+.. |all-options| replace:: :ref:`section_all-options`
+.. |automated| replace:: :ref:`section_automated`
+.. |mongo| replace:: :ref:`section_mongo`
+.. |mongodb| replace:: MongoDB
+.. |pymongo| replace:: PyMongo
+
 .. _section_overview:
 
 Overview
 ========
+
+.. note::
+
+    Throught this overview and in certain other sections the examples provided are for |files-only| installations, however this is only to make it easier to use the inbuilt examples/ sample files rather than having to force the user to define his/ her own cleaning, learning, infering scripts, for the sake of simplicity.
+
+    If you are not using the |files-only| installation you will have to point nemesyst to cleaners, learners, predictors etc that you want to use. Although even if you are using |files-only|, eventually once you have better understood and tested Nemesyst then you should likeley move to creating your own ones that you require, and using a normal installation of Nemesyst such as one of the |automated| examples.
 
 .. _section_nemesyst-literal:
 
@@ -41,54 +54,79 @@ As of: `2.0.1.r6.f9f92c3 <https://github.com/DreamingRaven/nemesyst/commit/f9f92
     :figclass: align-center
 
     Nemesyst parallelises each script, up the the maximum number of processes in the process pool.
-    See :ref:`section_all-options` for a full list of options.
 
 Local parallelisation of your scripts occur using pythons process pools from multiprocessing. This diagram shows how the rounds of processing are abstracted and the order of them. Rounds do not continue between stages, I.E if there is a spare process but not enough scripts from that stage (e.g cleaning) it will not fill this with a script process from the next stage (e.g learning). This is to prevent the scenario where a learning script may depend on the output of a previous cleaning script.
 
 .. _section_wrangling:
 
-Wrangling
-*********
+Wrangling / cleaning
+********************
+
+See |all-options| for a full list of options.
 
 .. figure:: nemesyst_wrangling.svg
     :alt: Nemesyst wrangling puzzle diagram.
     :figclass: align-center
 
     Wrangling is the stage where the data is cleaned into single atomic examples to be imported to the database.
-    See :ref:`section_all-options` for a full list of options.
+
+:|files-only| example\::
+
+  .. literalinclude:: ../../tests/cleaning.sh
 
 .. _section_serving:
 
 Serving
 *******
 
+See |all-options| for a full list of options.
+
 .. figure:: nemesyst_serving.svg
     :alt: Nemesyst database serving puzzle diagram.
     :figclass: align-center
 
     Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
-    See :ref:`section_all-options` for a full list of options.
+
+Nemesyst uses |mongodb| databases through |pymongo| as a data store, and distribution mechanism. The database(s) are some of the most important aspects of the chain of processes, as nothing can operate without a properly functioning database. As such we have attempted to simplify operations on both the user scripts side and our side by abstracting the slightly raw pymongo interface into a much friendlier class of operations called |mongo|.
+
+A |mongo| object is automatically passed into every one of your desired scripts entry points, so that you can also easily operate on the database if you so choose although asside from our data generator we handle the majority of use cases before it reaches your scripts.
+
+:|files-only| example\::
+
+  .. literalinclude:: ../../tests/serving.sh
 
 .. _section_learning:
 
 Learning
 ********
 
+See |all-options| for a full list of options.
+
 .. figure:: nemesyst_learning.svg
     :alt: Nemesyst learning puzzle diagram.
     :figclass: align-center
 
     Learning is the stage where the data is used to train new models or to update an existing model already in the database.
-    See :ref:`section_all-options` for a full list of options.
+
+:|files-only| example\::
+
+  .. literalinclude:: ../../tests/learning.sh
 
 .. _section_infering:
 
-Infering
-********
+Infering / predicting
+*********************
+
+As of: `2.0.2.r7.1cf3eab <https://github.com/DreamingRaven/nemesyst/commit/1cf3eab0dd6196c9065f43e9b231a50687f67065>`_
+
+See |all-options| for a full list of options.
 
 .. figure:: nemesyst_infering.svg
     :alt: Nemesyst inference puzzle diagram.
     :figclass: align-center
 
     Infering is the stage where the model(s) are used to predict on newly provided data.
-    See :ref:`section_all-options` for a full list of options.
+
+:|files-only| example\::
+
+  .. literalinclude:: ../../tests/learning.sh
