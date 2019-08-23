@@ -223,16 +223,6 @@ def argument_parser(description=None, cfg_files=None):
                               type=str,
                               env_var="N_DL_DATA_PIPELINE",
                               help="Specify pipeline(s) for data retrieval.")
-    deeplearning.add_argument("--dl-train",
-                              default=bool(False),
-                              action="store_true",
-                              env_var="N_DL_TRAIN",
-                              help="Train neural network.")
-    deeplearning.add_argument("--dl-test",
-                              default=bool(False),
-                              action="store_true",
-                              env_var="N_DL_TEST",
-                              help="Test neural network against a data set.")
     deeplearning.add_argument("--dl-input-model-collection",
                               default=["debug_models"],
                               nargs='+',

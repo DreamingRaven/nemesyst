@@ -2,7 +2,7 @@
 .
 .TH "NEMESYST" "1" "Aug 23, 2019" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.2.r9.c85b99b
+nemesyst \- Nemesyst 2.0.2.r13.f3b075c
 .
 .nr rst2man-indent-level 0
 .
@@ -257,28 +257,28 @@ As of: \fI\%2.0.1.r6.f9f92c3\fP
 .INDENT 2.5
 [image: Nemesyst round depiction diagram, showing the order and values of rounds.]
 [image]
-Nemesyst parallelises each script, up the the maximum number of processes in the process pool.
-See section_all\-options for a full list of options..UNINDENT
+Nemesyst parallelises each script, up the the maximum number of processes in the process pool..UNINDENT
 .UNINDENT
 .sp
 Local parallelisation of your scripts occur using pythons process pools from multiprocessing. This diagram shows how the rounds of processing are abstracted and the order of them. Rounds do not continue between stages, I.E if there is a spare process but not enough scripts from that stage (e.g cleaning) it will not fill this with a script process from the next stage (e.g learning). This is to prevent the scenario where a learning script may depend on the output of a previous cleaning script.
-.SS Wrangling
+.SS Wrangling / cleaning
+.sp
+See section_all\-options for a full list of options.
 .INDENT 0.0
 .INDENT 2.5
 [image: Nemesyst wrangling puzzle diagram.]
 [image]
-Wrangling is the stage where the data is cleaned into single atomic examples to be imported to the database.
-See section_all\-options for a full list of options..UNINDENT
+Wrangling is the stage where the data is cleaned into single atomic examples to be imported to the database..UNINDENT
 .UNINDENT
 .INDENT 0.0
 .TP
-.B example
+.B section_files\-only example
 .INDENT 7.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
-\&../nemesyst \-\-help
+nemesyst
 
 .ft P
 .fi
@@ -286,21 +286,23 @@ See section_all\-options for a full list of options..UNINDENT
 .UNINDENT
 .UNINDENT
 .SS Serving
+.sp
+See section_all\-options for a full list of options.
 .INDENT 0.0
 .INDENT 2.5
 [image: Nemesyst database serving puzzle diagram.]
 [image]
-Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
-See section_all\-options for a full list of options..UNINDENT
+Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines..UNINDENT
 .UNINDENT
 .INDENT 0.0
 .TP
-.B example
+.B section_files\-only example
 .INDENT 7.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
+nemesyst
 
 .ft P
 .fi
@@ -308,45 +310,49 @@ See section_all\-options for a full list of options..UNINDENT
 .UNINDENT
 .UNINDENT
 .SS Learning
+.sp
+See section_all\-options for a full list of options.
 .INDENT 0.0
 .INDENT 2.5
 [image: Nemesyst learning puzzle diagram.]
 [image]
-Learning is the stage where the data is used to train new models or to update an existing model already in the database.
-See section_all\-options for a full list of options..UNINDENT
+Learning is the stage where the data is used to train new models or to update an existing model already in the database..UNINDENT
 .UNINDENT
 .INDENT 0.0
 .TP
-.B example
+.B section_files\-only example
 .INDENT 7.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
+nemesyst
 
 .ft P
 .fi
 .UNINDENT
 .UNINDENT
 .UNINDENT
-.SS Infering
+.SS Infering / predicting
 .sp
 As of: \fI\%2.0.2.r7.1cf3eab\fP
+.sp
+See section_all\-options for a full list of options.
 .INDENT 0.0
 .INDENT 2.5
 [image: Nemesyst inference puzzle diagram.]
 [image]
-Infering is the stage where the model(s) are used to predict on newly provided data.
-See section_all\-options for a full list of options..UNINDENT
+Infering is the stage where the model(s) are used to predict on newly provided data..UNINDENT
 .UNINDENT
 .INDENT 0.0
 .TP
-.B example
+.B section_files\-only example
 .INDENT 7.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
+nemesyst
 
 .ft P
 .fi
@@ -409,7 +415,6 @@ usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
                 [\-\-dl\-learner\-entry\-point DL_LEARNER_ENTRY_POINT [DL_LEARNER_ENTRY_POINT ...]]
                 [\-\-dl\-data\-collection DL_DATA_COLLECTION [DL_DATA_COLLECTION ...]]
                 [\-\-dl\-data\-pipeline DL_DATA_PIPELINE [DL_DATA_PIPELINE ...]]
-                [\-\-dl\-train] [\-\-dl\-test]
                 [\-\-dl\-input\-model\-collection DL_INPUT_MODEL_COLLECTION [DL_INPUT_MODEL_COLLECTION ...]]
                 [\-\-dl\-input\-model\-pipeline DL_INPUT_MODEL_PIPELINE [DL_INPUT_MODEL_PIPELINE ...]]
                 [\-\-dl\-output\-model\-collection DL_OUTPUT_MODEL_COLLECTION [DL_OUTPUT_MODEL_COLLECTION ...]]
@@ -513,16 +518,6 @@ Default: [‘debug_data’]
 Specify pipeline(s) for data retrieval.
 .sp
 Default: [{}]
-.TP
-.B\-\-dl\-train
-Train neural network.
-.sp
-Default: False
-.TP
-.B\-\-dl\-test
-Test neural network against a data set.
-.sp
-Default: False
 .TP
 .B\-\-dl\-input\-model\-collection
 Specify model storage collection to retrain from.
