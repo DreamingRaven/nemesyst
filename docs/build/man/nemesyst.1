@@ -2,7 +2,7 @@
 .
 .TH "NEMESYST" "1" "Aug 23, 2019" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.2.r6.c19f865
+nemesyst \- Nemesyst 2.0.2.r9.c85b99b
 .
 .nr rst2man-indent-level 0
 .
@@ -270,6 +270,21 @@ Local parallelisation of your scripts occur using pythons process pools from mul
 Wrangling is the stage where the data is cleaned into single atomic examples to be imported to the database.
 See section_all\-options for a full list of options..UNINDENT
 .UNINDENT
+.INDENT 0.0
+.TP
+.B example
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+\&../nemesyst \-\-help
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .SS Serving
 .INDENT 0.0
 .INDENT 2.5
@@ -277,6 +292,20 @@ See section_all\-options for a full list of options..UNINDENT
 [image]
 Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
 See section_all\-options for a full list of options..UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B example
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
 .UNINDENT
 .SS Learning
 .INDENT 0.0
@@ -286,13 +315,43 @@ See section_all\-options for a full list of options..UNINDENT
 Learning is the stage where the data is used to train new models or to update an existing model already in the database.
 See section_all\-options for a full list of options..UNINDENT
 .UNINDENT
+.INDENT 0.0
+.TP
+.B example
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .SS Infering
+.sp
+As of: \fI\%2.0.2.r7.1cf3eab\fP
 .INDENT 0.0
 .INDENT 2.5
 [image: Nemesyst inference puzzle diagram.]
 [image]
 Infering is the stage where the model(s) are used to predict on newly provided data.
 See section_all\-options for a full list of options..UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B example
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
 .UNINDENT
 .SH OPTIONS
 .sp
