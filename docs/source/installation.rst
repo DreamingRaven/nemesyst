@@ -45,6 +45,8 @@ Archlinux
   cd nemesyst/.arch/
   makepkg -si
 
+.. _section_virtual-env:
+
 Virtual env
 ***********
 
@@ -77,6 +79,8 @@ To exit the virtual environment:
 .. code-block:: bash
 
       deactivate
+
+.. _section_files-only:
 
 Files only/ development
 ***********************
