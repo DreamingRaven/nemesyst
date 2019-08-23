@@ -57,6 +57,10 @@ Wrangling
     Wrangling is the stage where the data is cleaned into single atomic examples to be imported to the database.
     See :ref:`section_all-options` for a full list of options.
 
+:example:
+
+  .. literalinclude:: ../../tests/cleaning.sh
+
 .. _section_serving:
 
 Serving
@@ -69,6 +73,10 @@ Serving
     Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
     See :ref:`section_all-options` for a full list of options.
 
+:example:
+
+  .. literalinclude:: ../../tests/serving.sh
+
 .. _section_learning:
 
 Learning
@@ -80,6 +88,10 @@ Learning
 
     Learning is the stage where the data is used to train new models or to update an existing model already in the database.
     See :ref:`section_all-options` for a full list of options.
+
+:example:
+
+  .. literalinclude:: ../../tests/learning.sh
 
 .. _section_infering:
 
@@ -94,3 +106,7 @@ As of: `2.0.2.r7.1cf3eab <https://github.com/DreamingRaven/nemesyst/commit/1cf3e
 
     Infering is the stage where the model(s) are used to predict on newly provided data.
     See :ref:`section_all-options` for a full list of options.
+
+:example:
+
+  .. literalinclude:: ../../tests/learning.sh
