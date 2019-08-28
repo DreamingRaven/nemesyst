@@ -46,7 +46,7 @@ class Mongo(object):
             "db_authentication": "SCRAM-SHA-1",
             "db_user_role": "readWrite",
             "db_ip": "localhost",
-            "db_bind_ip": "localhost",
+            "db_bind_ip": ["localhost"],
             "db_name": "nemesyst",
             "db_collection_name": "test",
             "db_port": "27017",
@@ -107,7 +107,7 @@ class Mongo(object):
             "--logpath",        str(os.path.join(db_log_path, db_log_name)),
             "--quiet"
         ]
-        self.args["pylog"]("Launching unauth db on localhost")
+        self.args["pylog"]("Launching unauth db on localhost", cliArgs)
         # launch unauth db
         subprocess.Popen(cliArgs)
         # wait for db to come up
@@ -212,13 +212,13 @@ class Mongo(object):
               db_log_name=None, db_cursor_timeout=None):
         """Launch an on machine database with authentication.
 
-        :param db_ip: Desired database ip to bind to.
+        :param db_ip: List of IPs to accept connectiongs from.
         :param db_port: Port desired for database.
         :param db_path: Path to parent dir of database.
         :param db_log_path: Path to parent dir of log files.
         :param db_log_name: Desired base name for log files.
         :param db_cursor_timeout: Set timeout time for unused cursors.
-        :type db_ip: string
+        :type db_ip: list
         :type db_port: string
         :type db_path: string
         :type db_log_path: string
@@ -241,7 +241,7 @@ class Mongo(object):
                            str(self.args["db_authentication"]))
         cliArgs = [
             "mongod",
-            "--bind_ip",        str(db_bind_ip),
+            "--bind_ip",        ','.join(map(str, db_bind_ip)),
             "--port",           str(db_port),
             "--dbpath",         str(db_path),
             "--logpath",        str(os.path.join(db_log_path, db_log_name)),
@@ -256,9 +256,10 @@ class Mongo(object):
         self.args["db_process"] = db_process
         return db_process
 
-    start.__annotations__ = {"db_ip": None, "db_port": None, "db_path": None,
-                             "db_log_path": None, "db_log_name": None,
-                             "db_cursor_timeout": None,
+    start.__annotations__ = {"db_ip": str, "db_bind_ip": list,
+                             "db_port": str, "db_path": str,
+                             "db_log_path": str, "db_log_name": str,
+                             "db_cursor_timeout": int,
                              "return": subprocess.Popen}
 
     def stop(self, db_path=None):
@@ -284,14 +285,22 @@ class Mongo(object):
 
     def _addUser(self):
         """Add a user with given permissions to the authentication database."""
-        self.args["pylog"]("Adding  mongodb user:",
-                           str(self.args["db_user_name"]),
-                           ", pass:",
-                           str(type(self.args["db_password"])),
-                           ", role:", str(self.args["db_user_role"]),
-                           ", authdb:", str(self.args["db_name"]))
         local_mongourl = "mongodb://{0}:{1}/".format(
             "localhost", self.args["db_port"])
+        # self.args["pylog"]("Adding  mongodb user:",
+        #                    str(self.args["db_user_name"]),
+        #                    ", pass:",
+        #                    str(type(self.args["db_password"])),
+        #                    ", role:", str(self.args["db_user_role"]),
+        #                    ", authdb:", str(self.args["db_name"]))
+        debug_status = {
+            "mongodb-user:": self.args["db_user_name"],
+            "user-password": type(self.args["db_password"]),
+            "role": self.args["db_user_role"],
+            "authdb": self.args["db_name"],
+            "mongo-url": local_mongourl
+        }
+        self.args["pylog"]("Adding user:", debug_status)
         client = MongoClient(local_mongourl)
         db = client[self.args["db_name"]]
         try:

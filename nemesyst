@@ -320,7 +320,8 @@ def argument_parser(description=None, cfg_files=None):
                          env_var="N_DB_IP",
                          help="The ip of the database to connect to.")
     mongodb.add_argument("--db-bind-ip",
-                         default=str("localhost"),
+                         default=["localhost"],
+                         nargs='+',
                          type=str,
                          env_var="N_DB_BIND_IP",
                          help="The ip the database should be accessible from.")
