@@ -15,6 +15,7 @@ import sys
 import copy
 import importlib
 import json
+import time
 import multiprocessing as mp
 
 # argument handler
@@ -30,6 +31,7 @@ def main(args):
     db = Mongo(args)  # matching args will override defaults
     if(args["db_init"] is True):
         db.init()  # creates database files
+        time.sleep(2)
     if(args["db_start"] is True):
         db.start()  # launches database
     if(args["data_clean"] is True):
@@ -318,7 +320,8 @@ def argument_parser(description=None, cfg_files=None):
                          env_var="N_DB_IP",
                          help="The ip of the database to connect to.")
     mongodb.add_argument("--db-bind-ip",
-                         default=str("localhost"),
+                         default=["localhost"],
+                         nargs='+',
                          type=str,
                          env_var="N_DB_BIND_IP",
                          help="The ip the database should be accessible from.")

@@ -1,7 +1,7 @@
-<img src="docs/source/logo.svg" alt="Nemesyst Logo." width="180"/>
+<div><img style="float:right" src="docs/source/logo.svg" alt="Nemesyst Logo." width="180"/>
 
-# Nemesyst
-Practical deep learning.
+<h1 stle="float:left">Nemesyst</h1>
+Practical deep learning.</div>
 
 Please visit our documentation at:
 
