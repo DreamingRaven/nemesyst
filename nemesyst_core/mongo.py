@@ -43,12 +43,14 @@ class Mongo(object):
         defaults = {
             "db_user_name": "groot",
             "db_password": "iamgroot",
+            "db_intervention": False,
             "db_authentication": "SCRAM-SHA-1",
             "db_user_role": "readWrite",
             "db_ip": "localhost",
             "db_bind_ip": ["localhost"],
             "db_name": "nemesyst",
             "db_collection_name": "test",
+            "db_replica_set_name": None,
             "db_port": "27017",
             # "db_url": "mongodb://localhost:27017/", # this is auto generated
             "db_url": None,
@@ -114,6 +116,10 @@ class Mongo(object):
         time.sleep(2)
         # connect to db in local scope
         self._addUser()
+        # manual intervention if desired
+        if(self.args["db_intervention"]):
+            # INITIATING MANUAL SUPERPOWERS
+            self.login(db_ip="localhost")
         # close the unauth db
         self.stop()
 
@@ -209,7 +215,7 @@ class Mongo(object):
                              "return": None}
 
     def start(self, db_ip=None, db_port=None, db_path=None, db_log_path=None,
-              db_log_name=None, db_cursor_timeout=None):
+              db_log_name=None, db_cursor_timeout=None, db_replica_set_name=None):
         """Launch an on machine database with authentication.
 
         :param db_ip: List of IPs to accept connectiongs from.
@@ -236,6 +242,8 @@ class Mongo(object):
             self.args["db_log_name"]
         db_cursor_timeout = db_cursor_timeout if db_cursor_timeout is not \
             None else self.args["db_cursor_timeout"]
+        db_replica_set_name = db_replica_set_name if db_replica_set_name is \
+            not None else self.args["db_replica_set_name"]
 
         self.args["pylog"]("Starting mongodb: auth=",
                            str(self.args["db_authentication"]))
@@ -250,6 +258,12 @@ class Mongo(object):
             "--auth",
             "--quiet"
         ]
+
+        if(db_replica_set_name is not None):
+            cliArgs += [
+                "--replSet", str(db_replica_set_name)
+            ]
+
         time.sleep(2)
         db_process = subprocess.Popen(cliArgs)
         time.sleep(2)
@@ -260,6 +274,7 @@ class Mongo(object):
                              "db_port": str, "db_path": str,
                              "db_log_path": str, "db_log_name": str,
                              "db_cursor_timeout": int,
+                             "db_replica_set_name"
                              "return": subprocess.Popen}
 
     def stop(self, db_path=None):
