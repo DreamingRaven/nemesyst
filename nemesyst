@@ -350,6 +350,11 @@ def argument_parser(description=None, cfg_files=None):
                          type=str,
                          env_var="N_DB_COLLECTION_NAME",
                          help="The name of the collection to use in database.")
+    mongodb.add_argument("--db-config-path",
+                         default=None,
+                         type=type_path,
+                         env_var="N_DB_CONFIG_PATH",
+                         help="The path to the mongodb configuration file.")
     mongodb.add_argument("--db-path",
                          default=os.path.join(home, "db"),
                          type=type_path,

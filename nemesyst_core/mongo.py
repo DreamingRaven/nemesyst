@@ -43,6 +43,7 @@ class Mongo(object):
         defaults = {
             "db_user_name": "groot",
             "db_password": "iamgroot",
+            "db_config_path": None,
             "db_intervention": False,
             "db_authentication": "SCRAM-SHA-1",
             "db_user_role": "readWrite",
@@ -74,7 +75,8 @@ class Mongo(object):
 
     __init__.__annotations__ = {"args": dict, "logger": print, "return": None}
 
-    def init(self, db_path=None, db_log_path=None, db_log_name=None):
+    def init(self, db_path=None, db_log_path=None, db_log_name=None,
+             db_config_path=None):
         """Initialise the database.
 
         Includes ensuring db path and db log path exist and generating,
@@ -85,7 +87,9 @@ class Mongo(object):
         :param db_path: Desired directory of MongoDB database files.
         :param db_log_path: Desired directory of MongoDB log files.
         :param db_log_name: Desired name of log file.
+        :param db_config_path: Config file to pass to MongoDB.
         :type db_path: string
+        :type db_config_path: string
         :type db_log_path: string
         :type db_log_name: string
         """
@@ -94,6 +98,8 @@ class Mongo(object):
             self.args["db_log_path"]
         db_log_name = db_log_name if db_log_name is not None else \
             self.args["db_log_name"]
+        db_config_path = db_config_path if db_config_path is not None else \
+            self.args["db_config_path"]
 
         # create directories
         subprocess.call([
@@ -109,6 +115,13 @@ class Mongo(object):
             "--logpath",        str(os.path.join(db_log_path, db_log_name)),
             "--quiet"
         ]
+
+        if(db_config_path is not None):
+            pass
+            cliArgs += [
+                "--config", str(db_config_path)
+            ]
+
         self.args["pylog"]("Launching unauth db on localhost", cliArgs)
         # launch unauth db
         subprocess.Popen(cliArgs)
@@ -123,8 +136,9 @@ class Mongo(object):
         # close the unauth db
         self.stop()
 
-    init.__annotations__ = {"db_path": None, "db_log_path": None,
-                            "db_log_name": None, "return": None}
+    init.__annotations__ = {"db_path": str, "db_log_path": str,
+                            "db_log_name": str, "db_config_path": str,
+                            "return": None}
 
     def connect(self, db_url=None, db_user_name=None, db_password=None,
                 db_name=None, db_authentication=None, db_collection_name=None):
@@ -215,7 +229,8 @@ class Mongo(object):
                              "return": None}
 
     def start(self, db_ip=None, db_port=None, db_path=None, db_log_path=None,
-              db_log_name=None, db_cursor_timeout=None, db_replica_set_name=None):
+              db_log_name=None, db_cursor_timeout=None, db_config_path=None,
+              db_replica_set_name=None):
         """Launch an on machine database with authentication.
 
         :param db_ip: List of IPs to accept connectiongs from.
@@ -224,12 +239,14 @@ class Mongo(object):
         :param db_log_path: Path to parent dir of log files.
         :param db_log_name: Desired base name for log files.
         :param db_cursor_timeout: Set timeout time for unused cursors.
+        :param db_path: Config file path to pass to MongoDB.
         :type db_ip: list
         :type db_port: string
         :type db_path: string
         :type db_log_path: string
         :type db_log_name: string
         :type db_cursor_timeout: integer
+        :type db_config_path: string
         :rtype: subprocess.Popen
         :return: Subprocess of running MongoDB.
         """
@@ -263,7 +280,11 @@ class Mongo(object):
             cliArgs += [
                 "--replSet", str(db_replica_set_name)
             ]
-
+        if(db_config_path is not None):
+            pass
+            cliArgs += [
+                "--config", str(db_config_path)
+            ]
         time.sleep(2)
         db_process = subprocess.Popen(cliArgs)
         time.sleep(2)
@@ -274,7 +295,8 @@ class Mongo(object):
                              "db_port": str, "db_path": str,
                              "db_log_path": str, "db_log_name": str,
                              "db_cursor_timeout": int,
-                             "db_replica_set_name"
+                             "db_replica_set_name": str,
+                             "db_config_path": str,
                              "return": subprocess.Popen}
 
     def stop(self, db_path=None):
