@@ -304,11 +304,21 @@ def argument_parser(description=None, cfg_files=None):
                          action="store_true",
                          env_var="N_DB_PASSWORD",
                          help="Set mongodb password.")
+    mongodb.add_argument("--db-intervention",
+                         default=bool(False),
+                         action="store_true",
+                         env_var="N_DB_INTERVENTION",
+                         help="Manual intervention during database setup.")
     mongodb.add_argument("--db-authentication",
                          default=str("SCRAM-SHA-1"),
                          type=str,
                          env_var="N_DB_AUTHENTICATION",
                          help="Set the mongodb authentication method.")
+    mongodb.add_argument("--db-replica-set-name",
+                         default=None,
+                         type=str,
+                         env_var="N_DB_REPLICA_SET_NAME",
+                         help="Set the name for the replica set to use.")
     mongodb.add_argument("--db-user-role",
                          default=str("readWrite"),
                          type=str,
