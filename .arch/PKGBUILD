@@ -6,7 +6,7 @@
 # Maintainer: George Raven <GeorgeRavenCommunity AT pm dot me>
 pkgname=nemesyst-git
 _pkgsrcname="nemesyst"
-pkgver=2.0.0.r19.4a06c3f
+pkgver=2.0.2.r27.dc930b9
 pkgrel=1
 pkgdesc="Practical, distributed, hybrid-parallelism, deep learning framework."
 arch=('x86_64' 'aarch64')

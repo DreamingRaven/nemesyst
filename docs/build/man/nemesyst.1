@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "NEMESYST" "1" "Aug 23, 2019" "" "Nemesyst"
+.TH "NEMESYST" "1" "Sep 05, 2019" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.2.r18.062d45d
+nemesyst \- Nemesyst 2.0.3.r0.0dac392
 .
 .nr rst2man-indent-level 0
 .
@@ -438,9 +438,10 @@ usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
                 [\-\-i\-output\-prediction\-collection I_OUTPUT_PREDICTION_COLLECTION [I_OUTPUT_PREDICTION_COLLECTION ...]]
                 [\-\-i\-predict] [\-l] [\-s] [\-S] [\-i]
                 [\-\-db\-user\-name DB_USER_NAME] [\-\-db\-password]
-                [\-\-db\-authentication DB_AUTHENTICATION]
+                [\-\-db\-intervention] [\-\-db\-authentication DB_AUTHENTICATION]
+                [\-\-db\-replica\-set\-name DB_REPLICA_SET_NAME]
                 [\-\-db\-user\-role DB_USER_ROLE] [\-\-db\-ip DB_IP]
-                [\-\-db\-bind\-ip DB_BIND_IP] [\-\-db\-port DB_PORT]
+                [\-\-db\-bind\-ip DB_BIND_IP [DB_BIND_IP ...]] [\-\-db\-port DB_PORT]
                 [\-\-db\-name DB_NAME] [\-\-db\-collection\-name DB_COLLECTION_NAME]
                 [\-\-db\-path DB_PATH] [\-\-db\-log\-path DB_LOG_PATH]
                 [\-\-db\-log\-name DB_LOG_NAME]
@@ -603,10 +604,18 @@ Set mongodb password.
 .sp
 Default: False
 .TP
+.B\-\-db\-intervention
+Manual intervention during database setup.
+.sp
+Default: False
+.TP
 .B\-\-db\-authentication
 Set the mongodb authentication method.
 .sp
 Default: “SCRAM\-SHA\-1”
+.TP
+.B\-\-db\-replica\-set\-name
+Set the name for the replica set to use.
 .TP
 .B\-\-db\-user\-role
 Set the users permissions in the database.
@@ -621,7 +630,7 @@ Default: “localhost”
 .B\-\-db\-bind\-ip
 The ip the database should be accessible from.
 .sp
-Default: “localhost”
+Default: [‘localhost’]
 .TP
 .B\-\-db\-port
 The port both the unauth and auth db will use.
@@ -921,14 +930,14 @@ Log in to database, interupt, and availiable via cli.
 .UNINDENT
 .INDENT 7.0
 .TP
-.B start(db_ip: None = None, db_port: None = None, db_path: None = None, db_log_path: None = None, db_log_name: None = None, db_cursor_timeout: None = None) -> subprocess.Popen
+.B start(db_ip: str = None, db_port: str = None, db_path: str = None, db_log_path: str = None, db_log_name: str = None, db_cursor_timeout: int = None, db_replica_set_name=None)
 Launch an on machine database with authentication.
 .INDENT 7.0
 .TP
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_ip\fP (\fIstring\fP) – Desired database ip to bind to.
+\fBdb_ip\fP (\fIlist\fP) – List of IPs to accept connectiongs from.
 .IP \(bu 2
 \fBdb_port\fP (\fIstring\fP) – Port desired for database.
 .IP \(bu 2
