@@ -141,7 +141,8 @@ class Mongo(object):
                             "return": None}
 
     def connect(self, db_url=None, db_user_name=None, db_password=None,
-                db_name=None, db_authentication=None, db_collection_name=None):
+                db_name=None, db_authentication=None, db_collection_name=None,
+                db_replica_set_name=None):
         """Connect to a specific mongodb database.
 
         This sets the internal db client which is neccessary to connect to
@@ -154,6 +155,7 @@ class Mongo(object):
         :param db_name: The name of the database to connect to.
         :param db_authentication: The authentication method to use on db.
         :param db_collection_name: GridFS collection to use.
+        :param db_replica_set_name: Name of the replica set to connect to.
         :type db_url: string
         :type db_user_name: string
         :type db_password: string
@@ -173,13 +175,16 @@ class Mongo(object):
             None else self.args["db_authentication"]
         db_collection_name = db_collection_name if db_collection_name is not \
             None else self.args["db_collection_name"]
+        db_replica_set_name = db_replica_set_name if db_replica_set_name is \
+            not None else self.args["db_replica_set_name"]
 
         client = MongoClient(
             db_url,
             username=str(db_user_name),
             password=str(db_password),
             authSource=str(db_name),
-            authMechanism=str(db_authentication))
+            authMechanism=str(db_authentication),
+            replicaset=db_replica_set_name)
         db = client[db_name]
         self.args["db"] = db
         self.args["gfs"] = gridfs.GridFS(db, collection=db_collection_name)
@@ -189,6 +194,7 @@ class Mongo(object):
                                "db_password": str, "db_name": str,
                                "db_authentication": str,
                                "db_collection_name": str,
+                               "db_replica_set_name": str,
                                "return": database.Database}
 
     def login(self, db_port=None, db_user_name=None, db_password=None,
