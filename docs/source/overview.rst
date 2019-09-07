@@ -12,7 +12,7 @@ Overview
 
 .. note::
 
-    Throught this overview and in certain other sections the examples provided are for |files-only| installations, however this is only to make it easier to use the inbuilt examples/ sample files rather than having to force the user to define his/ her own cleaning, learning, infering scripts, for the sake of simplicity.
+    Throughout this overview and in certain other sections the examples provided are for |files-only| installations, however this is only to make it easier to use the inbuilt examples/ sample files rather than having to force the user to define his/ her own cleaning, learning, infering scripts, for the sake of simplicity.
 
     If you are not using the |files-only| installation you will have to point nemesyst to cleaners, learners, predictors etc that you want to use. Although even if you are using |files-only|, eventually once you have better understood and tested Nemesyst then you should likeley move to creating your own ones that you require, and using a normal installation of Nemesyst such as one of the |automated| examples.
 
