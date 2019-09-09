@@ -56,6 +56,13 @@ To connect to a slightly more complicated scenario with authentication, TLS, and
 
       mongo HOSTNAME:PORT -u USERNAME --authenticationDatabase DATABASENAME --tls --tlsCAFile PATHTOCAFILE --tlsCertificateKeyFile PATHTOCERTKEYFILE
 
+From basic database to replica sets
++++++++++++++++++++++++++++++++++++
+
+:todo:
+
+  Include instructions for turning a database into several replica sets.
+
 Troubleshooting
 ---------------
 
