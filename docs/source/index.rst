@@ -22,5 +22,6 @@ Nemesyst
    justification
    installation
    overview
+   mongodb
    options
    mongodb_handler
