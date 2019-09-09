@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "NEMESYST" "1" "Sep 05, 2019" "" "Nemesyst"
+.TH "NEMESYST" "1" "Sep 09, 2019" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.3.r0.0dac392
+nemesyst \- Nemesyst 2.0.3.r4.390c156
 .
 .nr rst2man-indent-level 0
 .
@@ -236,7 +236,7 @@ We also have a two testers one \fBunit_test.py\fP for the nemesyst code only, th
 \fBNOTE:\fP
 .INDENT 0.0
 .INDENT 3.5
-Throught this overview and in certain other sections the examples provided are for section_files\-only installations, however this is only to make it easier to use the inbuilt examples/ sample files rather than having to force the user to define his/ her own cleaning, learning, infering scripts, for the sake of simplicity.
+Throughout this overview and in certain other sections the examples provided are for section_files\-only installations, however this is only to make it easier to use the inbuilt examples/ sample files rather than having to force the user to define his/ her own cleaning, learning, infering scripts, for the sake of simplicity.
 .sp
 If you are not using the section_files\-only installation you will have to point nemesyst to cleaners, learners, predictors etc that you want to use. Although even if you are using section_files\-only, eventually once you have better understood and tested Nemesyst then you should likeley move to creating your own ones that you require, and using a normal installation of Nemesyst such as one of the section_automated examples.
 .UNINDENT
@@ -443,8 +443,8 @@ usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
                 [\-\-db\-user\-role DB_USER_ROLE] [\-\-db\-ip DB_IP]
                 [\-\-db\-bind\-ip DB_BIND_IP [DB_BIND_IP ...]] [\-\-db\-port DB_PORT]
                 [\-\-db\-name DB_NAME] [\-\-db\-collection\-name DB_COLLECTION_NAME]
-                [\-\-db\-path DB_PATH] [\-\-db\-log\-path DB_LOG_PATH]
-                [\-\-db\-log\-name DB_LOG_NAME]
+                [\-\-db\-config\-path DB_CONFIG_PATH] [\-\-db\-path DB_PATH]
+                [\-\-db\-log\-path DB_LOG_PATH] [\-\-db\-log\-name DB_LOG_NAME]
                 [\-\-db\-cursor\-timeout DB_CURSOR_TIMEOUT]
                 [\-\-db\-batch\-size DB_BATCH_SIZE] [\-\-db\-pipeline DB_PIPELINE]
 .ft P
@@ -647,6 +647,9 @@ The name of the collection to use in database.
 .sp
 Default: “test”
 .TP
+.B\-\-db\-config\-path
+The path to the mongodb configuration file.
+.TP
 .B\-\-db\-path
 The parent directory to use for the database.
 .sp
@@ -772,7 +775,7 @@ Mongo()
 .UNINDENT
 .INDENT 7.0
 .TP
-.B connect(db_url: str = None, db_user_name: str = None, db_password: str = None, db_name: str = None, db_authentication: str = None, db_collection_name: str = None) -> pymongo.database.Database
+.B connect(db_url: str = None, db_user_name: str = None, db_password: str = None, db_name: str = None, db_authentication: str = None, db_collection_name: str = None, db_replica_set_name: str = None) -> pymongo.database.Database
 Connect to a specific mongodb database.
 .sp
 This sets the internal db client which is neccessary to connect to
@@ -794,6 +797,8 @@ into the database will fail.
 \fBdb_authentication\fP (\fIstring\fP) – The authentication method to use on db.
 .IP \(bu 2
 \fBdb_collection_name\fP (\fIstring\fP) – GridFS collection to use.
+.IP \(bu 2
+\fBdb_replica_set_name\fP – Name of the replica set to connect to.
 .UNINDENT
 .TP
 .B Returns
@@ -887,7 +892,7 @@ pymongo.command_cursor.CommandCursor
 .UNINDENT
 .INDENT 7.0
 .TP
-.B init(db_path: None = None, db_log_path: None = None, db_log_name: None = None) -> None
+.B init(db_path: str = None, db_log_path: str = None, db_log_name: str = None, db_config_path: str = None) -> None
 Initialise the database.
 .sp
 Includes ensuring db path and db log path exist and generating,
@@ -904,6 +909,8 @@ unprotected database is never exposed.
 \fBdb_log_path\fP (\fIstring\fP) – Desired directory of MongoDB log files.
 .IP \(bu 2
 \fBdb_log_name\fP (\fIstring\fP) – Desired name of log file.
+.IP \(bu 2
+\fBdb_config_path\fP (\fIstring\fP) – Config file to pass to MongoDB.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -930,7 +937,7 @@ Log in to database, interupt, and availiable via cli.
 .UNINDENT
 .INDENT 7.0
 .TP
-.B start(db_ip: str = None, db_port: str = None, db_path: str = None, db_log_path: str = None, db_log_name: str = None, db_cursor_timeout: int = None, db_replica_set_name=None)
+.B start(db_ip: str = None, db_port: str = None, db_path: str = None, db_log_path: str = None, db_log_name: str = None, db_cursor_timeout: int = None, db_config_path: str = None, db_replica_set_name: str = None) -> subprocess.Popen
 Launch an on machine database with authentication.
 .INDENT 7.0
 .TP
@@ -948,6 +955,8 @@ Launch an on machine database with authentication.
 \fBdb_log_name\fP (\fIstring\fP) – Desired base name for log files.
 .IP \(bu 2
 \fBdb_cursor_timeout\fP (\fIinteger\fP) – Set timeout time for unused cursors.
+.IP \(bu 2
+\fBdb_path\fP – Config file path to pass to MongoDB.
 .UNINDENT
 .TP
 .B Return type

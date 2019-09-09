@@ -61,7 +61,6 @@ class Mongo(object):
             "db_cursor_timeout": 600000,
             "db_batch_size": 32,
             "pylog": logger if logger is not None else print,
-            "db_ssl": None,
             "db": None,
             "db_pipeline": None,
             "gfs": None,
