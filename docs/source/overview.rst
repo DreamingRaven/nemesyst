@@ -91,7 +91,7 @@ Nemesyst uses |mongodb| databases through |pymongo| as a data store, and distrib
 
 A |mongo| object is automatically passed into every one of your desired scripts entry points, so that you can also easily operate on the database if you so choose although asside from our data generator we handle the majority of use cases before it reaches your scripts.
 
-:|files-only| example\::
+:|automated| example\::
 
   .. literalinclude:: ../../tests/serving.sh
 
