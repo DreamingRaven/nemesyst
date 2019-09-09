@@ -5,7 +5,7 @@
 .. |mongodb| replace:: MongoDB
 .. |pymongo| replace:: PyMongo
 
-.. _section_overview:
+.. _page_overview:
 
 Overview
 ========
