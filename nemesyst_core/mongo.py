@@ -115,7 +115,7 @@ class Mongo(object):
             str(db_path),
             str(db_log_path),
         ])
-        cliArgs = [  # non authentication version of db start
+        cli_args = [  # non authentication version of db start
             "mongod",
             "--bind_ip",        "localhost",
             "--port",           self.args["db_port"],
@@ -126,13 +126,13 @@ class Mongo(object):
 
         if(db_config_path is not None):
             pass
-            cliArgs += [
+            cli_args += [
                 "--config", str(db_config_path)
             ]
 
-        self.args["pylog"]("Launching unauth db on localhost", cliArgs)
+        self.args["pylog"]("Launching unauth db on localhost", cli_args)
         # launch unauth db
-        subprocess.Popen(cliArgs)
+        subprocess.Popen(cli_args)
         # wait for db to come up
         time.sleep(2)
         # connect to db in local scope
@@ -241,32 +241,32 @@ class Mongo(object):
         db_collection_name = db_collection_name if db_collection_name is not \
             None else self.args["db_collection_name"]
 
-        clientArgs = {}
-        clientArgs["host"] = ["{0}:{1}".format(str(db_ip), str(db_port))]
+        client_args = {}
+        client_args["host"] = ["{0}:{1}".format(str(db_ip), str(db_port))]
 
         # authentication
-        clientArgs["authMechanism"] = db_authentication
-        clientArgs["username"] = db_user_name
-        clientArgs["password"] = db_password
-        clientArgs["authSource"] = db_name
+        client_args["authMechanism"] = db_authentication
+        client_args["username"] = db_user_name
+        client_args["password"] = db_password
+        client_args["authSource"] = db_name
 
         # replica set
-        clientArgs["replicaset"] = db_replica_set_name
-        clientArgs["readPreference"] = db_replica_read_preference
-        clientArgs["maxStalenessSeconds"] = db_replica_max_staleness
+        client_args["replicaset"] = db_replica_set_name
+        client_args["readPreference"] = db_replica_read_preference
+        client_args["maxStalenessSeconds"] = db_replica_max_staleness
 
         # tls
-        clientArgs["tls"] = db_tls  # False
-        clientArgs["tlsCAFile"] = db_tls_ca_file  # None
-        clientArgs["tlsCertificateKeyFile"] = db_tls_certificate_key_file
-        clientArgs["tlsCertificateKeyFilePassword"] =  \
+        client_args["tls"] = db_tls  # False
+        client_args["tlsCAFile"] = db_tls_ca_file  # None
+        client_args["tlsCertificateKeyFile"] = db_tls_certificate_key_file
+        client_args["tlsCertificateKeyFilePassword"] =  \
             db_tls_certificate_key_file_password  # None
         # TODO add these in next if user has them seperate
-        # clientArgs["ssl_certfile"] = None
-        # clientArgs["ssl_keyfile"] = None
-        clientArgs["tlsCRLFile"] = db_tls_crl_file  # None
+        # client_args["ssl_certfile"] = None
+        # client_args["ssl_keyfile"] = None
+        client_args["tlsCRLFile"] = db_tls_crl_file  # None
 
-        client = MongoClient(**clientArgs)
+        client = MongoClient(**client_args)
 
         db = client[db_name]
         self.args["db"] = db
@@ -363,7 +363,7 @@ class Mongo(object):
 
         self.args["pylog"]("Starting mongodb: auth=",
                            str(self.args["db_authentication"]))
-        cliArgs = [
+        cli_args = [
             "mongod",
             "--bind_ip",        ','.join(map(str, db_bind_ip)),
             "--port",           str(db_port),
@@ -376,16 +376,16 @@ class Mongo(object):
         ]
 
         if(db_replica_set_name is not None):
-            cliArgs += [
+            cli_args += [
                 "--replSet", str(db_replica_set_name)
             ]
         if(db_config_path is not None):
             pass
-            cliArgs += [
+            cli_args += [
                 "--config", str(db_config_path)
             ]
         time.sleep(2)
-        db_process = subprocess.Popen(cliArgs)
+        db_process = subprocess.Popen(cli_args)
         time.sleep(2)
         self.args["db_process"] = db_process
         return db_process
