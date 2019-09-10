@@ -64,6 +64,15 @@ class Mongo(object):
             "db": None,
             "db_pipeline": None,
             "gfs": None,
+            # TODO: OVERIDE THESE
+            "db_replica_read_preference": "primary",
+            "db_replica_max_staleness": -1,
+            "db_tls": False,
+            "db_tls_ca_file": None,
+            "db_tls_certificate_key_file": None,
+            "db_tls_certificate_key_file_password": None,
+            "db_tls_crl_file": None,
+
         }
         self.args = self._mergeDicts(defaults, args)
         # final adjustments to newly defined dictionary
@@ -139,61 +148,146 @@ class Mongo(object):
                             "db_log_name": str, "db_config_path": str,
                             "return": None}
 
-    def connect(self, db_url=None, db_user_name=None, db_password=None,
-                db_name=None, db_authentication=None, db_collection_name=None,
-                db_replica_set_name=None):
+    def connect(self, db_ip=None, db_port=None, db_authentication=None,
+                db_user_name=None, db_password=None, db_name=None,
+                db_replica_set_name=None, db_replica_read_preference=None,
+                db_replica_max_staleness=None, db_tls=None,
+                db_tls_ca_file=None, db_tls_certificate_key_file=None,
+                db_tls_certificate_key_file_password=None,
+                db_tls_crl_file=None,
+                db_collection_name=None):
         """Connect to a specific mongodb database.
 
         This sets the internal db client which is neccessary to connect to
         and use the associated database. Without it operations such as dump
-        into the database will fail.
+        into the database will fail. This is replica set capable.
 
-        :param db_url: Database url (default: "mongodb://localhost:27017/").
+        :param db_ip: Database hostname or ip to connect to.
+        :param db_port: Database port to connect to.
+        :param db_authentication: The authentication method to use on db.
         :param db_user_name: Username to use for authentication to db_name.
         :param db_password: Password for db_user_name in database db_name.
         :param db_name: The name of the database to connect to.
-        :param db_authentication: The authentication method to use on db.
-        :param db_collection_name: GridFS collection to use.
         :param db_replica_set_name: Name of the replica set to connect to.
-        :type db_url: string
+        :param db_replica_read_preference: What rep type to prefer reads from.
+        :param db_replica_max_staleness: Max seconds behind is replica allowed.
+        :param db_tls: use TLS for db connection.
+        :param db_tls_certificate_key_file: Certificate and key file for tls.
+        :param db_tls_certificate_key_file_password: Cert and key file pass.
+        :param db_tls_crl_file: Certificate revocation list file path.
+        :param db_collection_name: GridFS collection to use.
+        :type db_ip: string
+        :type db_port: string
+        :type db_authentication: string
         :type db_user_name: string
         :type db_password: string
         :type db_name: string
-        :type db_authentication: string
+        :type db_replica_set_name: string
+        :type db_replica_read_preference: string
+        :type db_replica_max_staleness: string
+        :type db_tls: bool
+        :type db_tls_certificate_key_file: string
+        :type db_tls_certificate_key_file_password: string
+        :type db_tls_crl_file: string
         :type db_collection_name: string
         :return: database client object
         :rtype: pymongo.database.Database
         """
-        db_url = db_url if db_url is not None else self.args["db_url"]
-        db_user_name = db_user_name if db_user_name is not None else \
-            self.args["db_user_name"]
-        db_password = db_password if db_password is not None else \
-            self.args["db_password"]
-        db_name = db_name if db_name is not None else self.args["db_name"]
+
+        # ip
+        db_ip = db_ip if db_ip is not None else self.args["db_ip"]
+        # port
+        db_port = db_port if db_port is not None else self.args["db_port"]
+        # authentication mechanism name
         db_authentication = db_authentication if db_authentication is not \
             None else self.args["db_authentication"]
-        db_collection_name = db_collection_name if db_collection_name is not \
-            None else self.args["db_collection_name"]
+        # username
+        db_user_name = db_user_name if db_user_name is not None else \
+            self.args["db_user_name"]
+        # password
+        db_password = db_password if db_password is not None else \
+            self.args["db_password"]
+        # database name
+        db_name = db_name if db_name is not None else self.args["db_name"]
+        # replica set name
         db_replica_set_name = db_replica_set_name if db_replica_set_name is \
             not None else self.args["db_replica_set_name"]
+        # replica read preference
+        db_replica_read_preference = db_replica_read_preference if \
+            db_replica_read_preference is not None else \
+            self.args["db_replica_read_preference"]
+        # replica staleness
+        db_replica_max_staleness = db_replica_max_staleness if \
+            db_replica_max_staleness is not None else \
+            self.args["db_replica_max_staleness"]
+        # to use tls?
+        db_tls = db_tls if db_tls is not None else self.args["db_tls"]
+        # certificate authoritys certificate file
+        db_tls_ca_file if db_tls_ca_file is not None else \
+            self.args["db_tls_ca_file"]
+        # client certificate & key file
+        db_tls_certificate_key_file = db_tls_certificate_key_file if \
+            db_tls_certificate_key_file is not None else \
+            self.args["db_tls_certificate_key_file"]
+        # client certificate and key file password
+        db_tls_certificate_key_file_password = \
+            db_tls_certificate_key_file_password if \
+            db_tls_certificate_key_file_password is not None else \
+            self.args["db_tls_certificate_key_file_password"]
+        # tls revocation certificates file
+        db_tls_crl_file = db_tls_crl_file if db_tls_crl_file is not None else \
+            self.args["db_tls_crl_file"]
+        # collection name
+        db_collection_name = db_collection_name if db_collection_name is not \
+            None else self.args["db_collection_name"]
 
-        client = MongoClient(
-            db_url,
-            username=str(db_user_name),
-            password=str(db_password),
-            authSource=str(db_name),
-            authMechanism=str(db_authentication),
-            replicaset=db_replica_set_name)
+        clientArgs = {}
+        clientArgs["host"] = ["{0}:{1}".format(str(db_ip), str(db_port))]
+
+        # authentication
+        clientArgs["authMechanism"] = db_authentication
+        clientArgs["username"] = db_user_name
+        clientArgs["password"] = db_password
+        clientArgs["authSource"] = db_name
+
+        # replica set
+        clientArgs["replicaset"] = db_replica_set_name
+        clientArgs["readPreference"] = db_replica_read_preference
+        clientArgs["maxStalenessSeconds"] = db_replica_max_staleness
+
+        # tls
+        clientArgs["tls"] = db_tls  # False
+        clientArgs["tlsCAFile"] = db_tls_ca_file  # None
+        clientArgs["tlsCertificateKeyFile"] = db_tls_certificate_key_file
+        clientArgs["tlsCertificateKeyFilePassword"] =  \
+            db_tls_certificate_key_file_password  # None
+        # TODO add these in next if user has them seperate
+        # clientArgs["ssl_certfile"] = None
+        # clientArgs["ssl_keyfile"] = None
+        clientArgs["tlsCRLFile"] = db_tls_crl_file  # None
+
+        client = MongoClient(**clientArgs)
+
         db = client[db_name]
         self.args["db"] = db
         self.args["gfs"] = gridfs.GridFS(db, collection=db_collection_name)
         return db
 
-    connect.__annotations__ = {"db_url": str, "db_user_name": str,
-                               "db_password": str, "db_name": str,
+    connect.__annotations__ = {"db_ip": str,
+                               "db_port": str,
                                "db_authentication": str,
-                               "db_collection_name": str,
+                               "db_user_name": str,
+                               "db_password": str,
+                               "db_name": str,
                                "db_replica_set_name": str,
+                               "db_collection_name": str,
+                               "db_replica_read_preference": str,
+                               "db_replica_max_staleness": str,
+                               "db_tls": bool,
+                               "db_tls_ca_file": str,
+                               "db_tls_certificate_key_file": str,
+                               "db_tls_certificate_key_file_password": str,
+                               "db_tls_crl_file": str,
                                "return": database.Database}
 
     def login(self, db_port=None, db_user_name=None, db_password=None,
