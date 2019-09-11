@@ -270,7 +270,8 @@ class Mongo(object):
 
         db = client[db_name]
         self.args["db"] = db
-        self.args["gfs"] = gridfs.GridFS(db, collection=db_collection_name)
+        # self.args["gfs"] = gridfs.GridFS(db, collection=db_collection_name)
+        print(db)
         return db
 
     connect.__annotations__ = {"db_ip": str,
