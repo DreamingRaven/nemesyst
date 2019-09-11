@@ -296,7 +296,7 @@ def argument_parser(description=None, cfg_files=None):
     # MongoDB TLS options
     mongodb_tls.add_argument("--db-tls",
                              default=False,
-                             type=bool,
+                             action="store_true",
                              env_var="N_DB_TLS",
                              help="Set connection to mongodb use TLS.")
     mongodb_tls.add_argument("--db-tls-ca-file",
