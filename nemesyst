@@ -69,7 +69,9 @@ def cleaner(args_m, i):
                         entry_point=args[
                             "data_cleaner_entry_point"][i])
     db.connect()
+    print("AFTER CONNECT")
     for data in gen:
+        print("DATA", data)
         db.dump(db_collection_name=args["data_collection"][i], data=data)
 
 
