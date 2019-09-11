@@ -22,5 +22,7 @@ Nemesyst
    justification
    installation
    overview
+   serving
    options
    mongodb_handler
+   troubleshooting

@@ -43,6 +43,7 @@ class Mongo(object):
         defaults = {
             "db_user_name": "groot",
             "db_password": "iamgroot",
+            "db_config_path": None,
             "db_intervention": False,
             "db_authentication": "SCRAM-SHA-1",
             "db_user_role": "readWrite",
@@ -60,10 +61,18 @@ class Mongo(object):
             "db_cursor_timeout": 600000,
             "db_batch_size": 32,
             "pylog": logger if logger is not None else print,
-            "db_ssl": None,
             "db": None,
             "db_pipeline": None,
             "gfs": None,
+            # TODO: OVERIDE THESE
+            "db_replica_read_preference": "primary",
+            "db_replica_max_staleness": -1,
+            "db_tls": False,
+            "db_tls_ca_file": None,
+            "db_tls_certificate_key_file": None,
+            "db_tls_certificate_key_file_password": None,
+            "db_tls_crl_file": None,
+
         }
         self.args = self._mergeDicts(defaults, args)
         # final adjustments to newly defined dictionary
@@ -74,7 +83,8 @@ class Mongo(object):
 
     __init__.__annotations__ = {"args": dict, "logger": print, "return": None}
 
-    def init(self, db_path=None, db_log_path=None, db_log_name=None):
+    def init(self, db_path=None, db_log_path=None, db_log_name=None,
+             db_config_path=None):
         """Initialise the database.
 
         Includes ensuring db path and db log path exist and generating,
@@ -85,7 +95,9 @@ class Mongo(object):
         :param db_path: Desired directory of MongoDB database files.
         :param db_log_path: Desired directory of MongoDB log files.
         :param db_log_name: Desired name of log file.
+        :param db_config_path: Config file to pass to MongoDB.
         :type db_path: string
+        :type db_config_path: string
         :type db_log_path: string
         :type db_log_name: string
         """
@@ -94,6 +106,8 @@ class Mongo(object):
             self.args["db_log_path"]
         db_log_name = db_log_name if db_log_name is not None else \
             self.args["db_log_name"]
+        db_config_path = db_config_path if db_config_path is not None else \
+            self.args["db_config_path"]
 
         # create directories
         subprocess.call([
@@ -101,7 +115,7 @@ class Mongo(object):
             str(db_path),
             str(db_log_path),
         ])
-        cliArgs = [  # non authentication version of db start
+        cli_args = [  # non authentication version of db start
             "mongod",
             "--bind_ip",        "localhost",
             "--port",           self.args["db_port"],
@@ -109,9 +123,16 @@ class Mongo(object):
             "--logpath",        str(os.path.join(db_log_path, db_log_name)),
             "--quiet"
         ]
-        self.args["pylog"]("Launching unauth db on localhost", cliArgs)
+
+        if(db_config_path is not None):
+            pass
+            cli_args += [
+                "--config", str(db_config_path)
+            ]
+
+        self.args["pylog"]("Launching unauth db on localhost", cli_args)
         # launch unauth db
-        subprocess.Popen(cliArgs)
+        subprocess.Popen(cli_args)
         # wait for db to come up
         time.sleep(2)
         # connect to db in local scope
@@ -123,58 +144,150 @@ class Mongo(object):
         # close the unauth db
         self.stop()
 
-    init.__annotations__ = {"db_path": None, "db_log_path": None,
-                            "db_log_name": None, "return": None}
+    init.__annotations__ = {"db_path": str, "db_log_path": str,
+                            "db_log_name": str, "db_config_path": str,
+                            "return": None}
 
-    def connect(self, db_url=None, db_user_name=None, db_password=None,
-                db_name=None, db_authentication=None, db_collection_name=None):
+    def connect(self, db_ip=None, db_port=None, db_authentication=None,
+                db_user_name=None, db_password=None, db_name=None,
+                db_replica_set_name=None, db_replica_read_preference=None,
+                db_replica_max_staleness=None, db_tls=None,
+                db_tls_ca_file=None, db_tls_certificate_key_file=None,
+                db_tls_certificate_key_file_password=None,
+                db_tls_crl_file=None,
+                db_collection_name=None):
         """Connect to a specific mongodb database.
 
         This sets the internal db client which is neccessary to connect to
         and use the associated database. Without it operations such as dump
-        into the database will fail.
+        into the database will fail. This is replica set capable.
 
-        :param db_url: Database url (default: "mongodb://localhost:27017/").
+        :param db_ip: Database hostname or ip to connect to.
+        :param db_port: Database port to connect to.
+        :param db_authentication: The authentication method to use on db.
         :param db_user_name: Username to use for authentication to db_name.
         :param db_password: Password for db_user_name in database db_name.
         :param db_name: The name of the database to connect to.
-        :param db_authentication: The authentication method to use on db.
+        :param db_replica_set_name: Name of the replica set to connect to.
+        :param db_replica_read_preference: What rep type to prefer reads from.
+        :param db_replica_max_staleness: Max seconds behind is replica allowed.
+        :param db_tls: use TLS for db connection.
+        :param db_tls_certificate_key_file: Certificate and key file for tls.
+        :param db_tls_certificate_key_file_password: Cert and key file pass.
+        :param db_tls_crl_file: Certificate revocation list file path.
         :param db_collection_name: GridFS collection to use.
-        :type db_url: string
+        :type db_ip: string
+        :type db_port: string
+        :type db_authentication: string
         :type db_user_name: string
         :type db_password: string
         :type db_name: string
-        :type db_authentication: string
+        :type db_replica_set_name: string
+        :type db_replica_read_preference: string
+        :type db_replica_max_staleness: string
+        :type db_tls: bool
+        :type db_tls_certificate_key_file: string
+        :type db_tls_certificate_key_file_password: string
+        :type db_tls_crl_file: string
         :type db_collection_name: string
         :return: database client object
         :rtype: pymongo.database.Database
         """
-        db_url = db_url if db_url is not None else self.args["db_url"]
-        db_user_name = db_user_name if db_user_name is not None else \
-            self.args["db_user_name"]
-        db_password = db_password if db_password is not None else \
-            self.args["db_password"]
-        db_name = db_name if db_name is not None else self.args["db_name"]
+
+        # ip
+        db_ip = db_ip if db_ip is not None else self.args["db_ip"]
+        # port
+        db_port = db_port if db_port is not None else self.args["db_port"]
+        # authentication mechanism name
         db_authentication = db_authentication if db_authentication is not \
             None else self.args["db_authentication"]
+        # username
+        db_user_name = db_user_name if db_user_name is not None else \
+            self.args["db_user_name"]
+        # password
+        db_password = db_password if db_password is not None else \
+            self.args["db_password"]
+        # database name
+        db_name = db_name if db_name is not None else self.args["db_name"]
+        # replica set name
+        db_replica_set_name = db_replica_set_name if db_replica_set_name is \
+            not None else self.args["db_replica_set_name"]
+        # replica read preference
+        db_replica_read_preference = db_replica_read_preference if \
+            db_replica_read_preference is not None else \
+            self.args["db_replica_read_preference"]
+        # replica staleness
+        db_replica_max_staleness = db_replica_max_staleness if \
+            db_replica_max_staleness is not None else \
+            self.args["db_replica_max_staleness"]
+        # to use tls?
+        db_tls = db_tls if db_tls is not None else self.args["db_tls"]
+        # certificate authoritys certificate file
+        db_tls_ca_file if db_tls_ca_file is not None else \
+            self.args["db_tls_ca_file"]
+        # client certificate & key file
+        db_tls_certificate_key_file = db_tls_certificate_key_file if \
+            db_tls_certificate_key_file is not None else \
+            self.args["db_tls_certificate_key_file"]
+        # client certificate and key file password
+        db_tls_certificate_key_file_password = \
+            db_tls_certificate_key_file_password if \
+            db_tls_certificate_key_file_password is not None else \
+            self.args["db_tls_certificate_key_file_password"]
+        # tls revocation certificates file
+        db_tls_crl_file = db_tls_crl_file if db_tls_crl_file is not None else \
+            self.args["db_tls_crl_file"]
+        # collection name
         db_collection_name = db_collection_name if db_collection_name is not \
             None else self.args["db_collection_name"]
 
-        client = MongoClient(
-            db_url,
-            username=str(db_user_name),
-            password=str(db_password),
-            authSource=str(db_name),
-            authMechanism=str(db_authentication))
+        client_args = {}
+        client_args["host"] = ["{0}:{1}".format(str(db_ip), str(db_port))]
+
+        # authentication
+        client_args["authMechanism"] = db_authentication
+        client_args["username"] = db_user_name
+        client_args["password"] = db_password
+        client_args["authSource"] = db_name
+
+        # replica set
+        client_args["replicaset"] = db_replica_set_name
+        client_args["readPreference"] = db_replica_read_preference
+        client_args["maxStalenessSeconds"] = db_replica_max_staleness
+
+        # tls
+        client_args["tls"] = db_tls  # False
+        client_args["tlsCAFile"] = db_tls_ca_file  # None
+        client_args["tlsCertificateKeyFile"] = db_tls_certificate_key_file
+        client_args["tlsCertificateKeyFilePassword"] =  \
+            db_tls_certificate_key_file_password  # None
+        # TODO add these in next if user has them seperate
+        # client_args["ssl_certfile"] = None
+        # client_args["ssl_keyfile"] = None
+        client_args["tlsCRLFile"] = db_tls_crl_file  # None
+
+        client = MongoClient(**client_args)
+
         db = client[db_name]
         self.args["db"] = db
         self.args["gfs"] = gridfs.GridFS(db, collection=db_collection_name)
         return db
 
-    connect.__annotations__ = {"db_url": str, "db_user_name": str,
-                               "db_password": str, "db_name": str,
+    connect.__annotations__ = {"db_ip": str,
+                               "db_port": str,
                                "db_authentication": str,
+                               "db_user_name": str,
+                               "db_password": str,
+                               "db_name": str,
+                               "db_replica_set_name": str,
                                "db_collection_name": str,
+                               "db_replica_read_preference": str,
+                               "db_replica_max_staleness": str,
+                               "db_tls": bool,
+                               "db_tls_ca_file": str,
+                               "db_tls_certificate_key_file": str,
+                               "db_tls_certificate_key_file_password": str,
+                               "db_tls_crl_file": str,
                                "return": database.Database}
 
     def login(self, db_port=None, db_user_name=None, db_password=None,
@@ -215,7 +328,8 @@ class Mongo(object):
                              "return": None}
 
     def start(self, db_ip=None, db_port=None, db_path=None, db_log_path=None,
-              db_log_name=None, db_cursor_timeout=None, db_replica_set_name=None):
+              db_log_name=None, db_cursor_timeout=None, db_config_path=None,
+              db_replica_set_name=None):
         """Launch an on machine database with authentication.
 
         :param db_ip: List of IPs to accept connectiongs from.
@@ -224,12 +338,14 @@ class Mongo(object):
         :param db_log_path: Path to parent dir of log files.
         :param db_log_name: Desired base name for log files.
         :param db_cursor_timeout: Set timeout time for unused cursors.
+        :param db_path: Config file path to pass to MongoDB.
         :type db_ip: list
         :type db_port: string
         :type db_path: string
         :type db_log_path: string
         :type db_log_name: string
         :type db_cursor_timeout: integer
+        :type db_config_path: string
         :rtype: subprocess.Popen
         :return: Subprocess of running MongoDB.
         """
@@ -247,7 +363,7 @@ class Mongo(object):
 
         self.args["pylog"]("Starting mongodb: auth=",
                            str(self.args["db_authentication"]))
-        cliArgs = [
+        cli_args = [
             "mongod",
             "--bind_ip",        ','.join(map(str, db_bind_ip)),
             "--port",           str(db_port),
@@ -260,12 +376,16 @@ class Mongo(object):
         ]
 
         if(db_replica_set_name is not None):
-            cliArgs += [
+            cli_args += [
                 "--replSet", str(db_replica_set_name)
             ]
-
+        if(db_config_path is not None):
+            pass
+            cli_args += [
+                "--config", str(db_config_path)
+            ]
         time.sleep(2)
-        db_process = subprocess.Popen(cliArgs)
+        db_process = subprocess.Popen(cli_args)
         time.sleep(2)
         self.args["db_process"] = db_process
         return db_process
@@ -274,7 +394,8 @@ class Mongo(object):
                              "db_port": str, "db_path": str,
                              "db_log_path": str, "db_log_name": str,
                              "db_cursor_timeout": int,
-                             "db_replica_set_name"
+                             "db_replica_set_name": str,
+                             "db_config_path": str,
                              "return": subprocess.Popen}
 
     def stop(self, db_path=None):

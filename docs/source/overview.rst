@@ -5,14 +5,14 @@
 .. |mongodb| replace:: MongoDB
 .. |pymongo| replace:: PyMongo
 
-.. _section_overview:
+.. _page_overview:
 
 Overview
 ========
 
 .. note::
 
-    Throught this overview and in certain other sections the examples provided are for |files-only| installations, however this is only to make it easier to use the inbuilt examples/ sample files rather than having to force the user to define his/ her own cleaning, learning, infering scripts, for the sake of simplicity.
+    Throughout this overview and in certain other sections the examples provided are for |files-only| installations, however this is only to make it easier to use the inbuilt examples/ sample files rather than having to force the user to define his/ her own cleaning, learning, infering scripts, for the sake of simplicity.
 
     If you are not using the |files-only| installation you will have to point nemesyst to cleaners, learners, predictors etc that you want to use. Although even if you are using |files-only|, eventually once you have better understood and tested Nemesyst then you should likeley move to creating your own ones that you require, and using a normal installation of Nemesyst such as one of the |automated| examples.
 
@@ -91,7 +91,7 @@ Nemesyst uses |mongodb| databases through |pymongo| as a data store, and distrib
 
 A |mongo| object is automatically passed into every one of your desired scripts entry points, so that you can also easily operate on the database if you so choose although asside from our data generator we handle the majority of use cases before it reaches your scripts.
 
-:|files-only| example\::
+:|automated| example\::
 
   .. literalinclude:: ../../tests/serving.sh
 

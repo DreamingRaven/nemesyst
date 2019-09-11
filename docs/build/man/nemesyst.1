@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "NEMESYST" "1" "Aug 23, 2019" "" "Nemesyst"
+.TH "NEMESYST" "1" "Sep 11, 2019" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.2.r18.062d45d
+nemesyst \- Nemesyst 2.0.3.r14.9c70b2e
 .
 .nr rst2man-indent-level 0
 .
@@ -236,7 +236,7 @@ We also have a two testers one \fBunit_test.py\fP for the nemesyst code only, th
 \fBNOTE:\fP
 .INDENT 0.0
 .INDENT 3.5
-Throught this overview and in certain other sections the examples provided are for section_files\-only installations, however this is only to make it easier to use the inbuilt examples/ sample files rather than having to force the user to define his/ her own cleaning, learning, infering scripts, for the sake of simplicity.
+Throughout this overview and in certain other sections the examples provided are for section_files\-only installations, however this is only to make it easier to use the inbuilt examples/ sample files rather than having to force the user to define his/ her own cleaning, learning, infering scripts, for the sake of simplicity.
 .sp
 If you are not using the section_files\-only installation you will have to point nemesyst to cleaners, learners, predictors etc that you want to use. Although even if you are using section_files\-only, eventually once you have better understood and tested Nemesyst then you should likeley move to creating your own ones that you require, and using a normal installation of Nemesyst such as one of the section_automated examples.
 .UNINDENT
@@ -309,12 +309,13 @@ Nemesyst uses MongoDB databases through PyMongo as a data store, and distributio
 A section_mongo object is automatically passed into every one of your desired scripts entry points, so that you can also easily operate on the database if you so choose although asside from our data generator we handle the majority of use cases before it reaches your scripts.
 .INDENT 0.0
 .TP
-.B section_files\-only example:
+.B section_automated example:
 .INDENT 7.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
+# creating basic non\-config, non\-replica, localhost, mongodb instance
 nemesyst \-\-db\-init \-\-db\-start \-\-db\-login \-\-db\-stop \e
          \-\-db\-user\-name USERNAME \-\-db\-password \e
          \-\-db\-path DBPATH \-\-db\-log\-path DBPATH/LOGDIR
@@ -374,6 +375,88 @@ nemesyst
 .UNINDENT
 .UNINDENT
 .UNINDENT
+.SH SERVING
+.sp
+Nemesyst uses MongoDB as its primary message passing interface. This page will more elaborate on using Nemesyst with different database setups, debugging, common issues, and any nitty\-gritty details that may be necessary to discuss.
+.sp
+\fBWARNING:\fP
+.INDENT 0.0
+.INDENT 3.5
+While Nemesyst does support using mongodb.yaml files for complex db setup, care should be taken that Nemesyst is not overriding the values you were expecting in the config files. Things such as the DBs path are almost always overridden along with the port to use by default even if the user has not provided that argument. In future we intend to make it such that hard coded defaults when not overridden by the user, first attempt to look in the mongodb.yaml file before falling back to hard\-coded values.
+.UNINDENT
+.UNINDENT
+.SS Creating a basic database
+.sp
+disambiguation: we define a basic database as a standalone MongoDB instance with one universal administrator and one read/write user with password authentication.
+.sp
+While it is possible it is highly discouraged to use Nemesyst to create the users you require as this is quite complicated to manage and may lead to more problems than its worth compared to simply using something such as:
+.INDENT 0.0
+.TP
+.B todo
+Include example for basic database creation
+.UNINDENT
+.SS Connecting to a running database
+.sp
+To be able to fine tune, create users, update etc it will be necessary to connect to MongoDB in one form or another. Nemesyst can help you log in or you can do it manually.
+.INDENT 0.0
+.INDENT 3.5
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
+If there is no \fI\%userAdmin or userAdminAnyDatabase\fP then unless expressly configured there will be a localhost exception which will allow you to log in and create this user. If this user exists the localhost exception will close. Please ensure you configure this user as they can grant any role or rights to anyone and would be a major security concern along with making it very difficult to admin your database.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Nemesyst
+.INDENT 0.0
+.TP
+.B todo
+Include instructions for logging into mongodb from Nemesyst.
+.UNINDENT
+.SS Mongo
+.sp
+To connect to an non\-sharded database with autnentication but no TLS/SSL:
+.INDENT 0.0
+.TP
+.B Bash shell example:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+mongo HOSTNAME:PORT \-u USERNAME \-\-authenticationDatabase DATABASENAME
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+To connect to a slightly more complicated scenario with authentication, TLS, and sharding enabled:
+.INDENT 0.0
+.TP
+.B Bash shell example:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+mongo HOSTNAME:PORT \-u USERNAME \-\-authenticationDatabase DATABASENAME \-\-tls \-\-tlsCAFile PATHTOCAFILE \-\-tlsCertificateKeyFile PATHTOCERTKEYFILE
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS From basic database to replica sets
+.INDENT 0.0
+.TP
+.B todo
+Include instructions for turning a database into several replica sets.
+.UNINDENT
+.SS Troubleshooting
+.sp
+Please see section_ts_mongodb
 .SH OPTIONS
 .sp
 Nemesyst uses \fI\%ConfigArgParse\fP for argument handling.
@@ -436,14 +519,20 @@ usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
                 [\-\-i\-predictor I_PREDICTOR [I_PREDICTOR ...]]
                 [\-\-i\-predictor\-entry\-point I_PREDICTOR_ENTRY_POINT [I_PREDICTOR_ENTRY_POINT ...]]
                 [\-\-i\-output\-prediction\-collection I_OUTPUT_PREDICTION_COLLECTION [I_OUTPUT_PREDICTION_COLLECTION ...]]
-                [\-\-i\-predict] [\-l] [\-s] [\-S] [\-i]
+                [\-\-i\-predict] [\-\-db\-replica\-set\-name DB_REPLICA_SET_NAME]
+                [\-\-db\-replica\-read\-preference DB_REPLICA_READ_PREFERENCE]
+                [\-\-db\-replica\-max\-staleness DB_REPLICA_MAX_STALENESS]
+                [\-\-db\-tls DB_TLS] [\-\-db\-tls\-ca\-file DB_TLS_CA_FILE]
+                [\-\-db\-tls\-certificate\-key\-file DB_TLS_CERTIFICATE_KEY_FILE]
+                [\-\-db\-tls\-certificate\-key\-file\-password DB_TLS_CERTIFICATE_KEY_FILE_PASSWORD]
+                [\-\-db\-tls\-crl\-file DB_TLS_CRL_FILE] [\-l] [\-s] [\-S] [\-i]
                 [\-\-db\-user\-name DB_USER_NAME] [\-\-db\-password]
-                [\-\-db\-authentication DB_AUTHENTICATION]
+                [\-\-db\-intervention] [\-\-db\-authentication DB_AUTHENTICATION]
                 [\-\-db\-user\-role DB_USER_ROLE] [\-\-db\-ip DB_IP]
-                [\-\-db\-bind\-ip DB_BIND_IP] [\-\-db\-port DB_PORT]
+                [\-\-db\-bind\-ip DB_BIND_IP [DB_BIND_IP ...]] [\-\-db\-port DB_PORT]
                 [\-\-db\-name DB_NAME] [\-\-db\-collection\-name DB_COLLECTION_NAME]
-                [\-\-db\-path DB_PATH] [\-\-db\-log\-path DB_LOG_PATH]
-                [\-\-db\-log\-name DB_LOG_NAME]
+                [\-\-db\-config\-path DB_CONFIG_PATH] [\-\-db\-path DB_PATH]
+                [\-\-db\-log\-path DB_LOG_PATH] [\-\-db\-log\-name DB_LOG_NAME]
                 [\-\-db\-cursor\-timeout DB_CURSOR_TIMEOUT]
                 [\-\-db\-batch\-size DB_BATCH_SIZE] [\-\-db\-pipeline DB_PIPELINE]
 .ft P
@@ -572,6 +661,42 @@ Use predictor/ inferer scripts.
 .sp
 Default: False
 .UNINDENT
+.SS MongoDb replica options
+.INDENT 0.0
+.TP
+.B\-\-db\-replica\-set\-name
+Set the name for the replica set to use.
+.TP
+.B\-\-db\-replica\-read\-preference
+Set the read preference of mongo client.
+.sp
+Default: “primary”
+.TP
+.B\-\-db\-replica\-max\-staleness
+Max seconds replica can be out of sync.
+.sp
+Default: \-1
+.UNINDENT
+.SS MongoDb TLS options
+.INDENT 0.0
+.TP
+.B\-\-db\-tls
+Set connection to mongodb use TLS.
+.sp
+Default: False
+.TP
+.B\-\-db\-tls\-ca\-file
+Certificat\-authority certificate path.
+.TP
+.B\-\-db\-tls\-certificate\-key\-file
+Clients certificate and key pem path.
+.TP
+.B\-\-db\-tls\-certificate\-key\-file\-password
+Set pass if certkey file needs password.
+.TP
+.B\-\-db\-tls\-crl\-file
+Path to certificate revocation list file.
+.UNINDENT
 .SS MongoDb options
 .INDENT 0.0
 .TP
@@ -603,6 +728,11 @@ Set mongodb password.
 .sp
 Default: False
 .TP
+.B\-\-db\-intervention
+Manual intervention during database setup.
+.sp
+Default: False
+.TP
 .B\-\-db\-authentication
 Set the mongodb authentication method.
 .sp
@@ -621,7 +751,7 @@ Default: “localhost”
 .B\-\-db\-bind\-ip
 The ip the database should be accessible from.
 .sp
-Default: “localhost”
+Default: [‘localhost’]
 .TP
 .B\-\-db\-port
 The port both the unauth and auth db will use.
@@ -637,6 +767,9 @@ Default: “nemesyst”
 The name of the collection to use in database.
 .sp
 Default: “test”
+.TP
+.B\-\-db\-config\-path
+The path to the mongodb configuration file.
 .TP
 .B\-\-db\-path
 The parent directory to use for the database.
@@ -763,18 +896,22 @@ Mongo()
 .UNINDENT
 .INDENT 7.0
 .TP
-.B connect(db_url: str = None, db_user_name: str = None, db_password: str = None, db_name: str = None, db_authentication: str = None, db_collection_name: str = None) -> pymongo.database.Database
+.B connect(db_ip: str = None, db_port: str = None, db_authentication: str = None, db_user_name: str = None, db_password: str = None, db_name: str = None, db_replica_set_name: str = None, db_replica_read_preference: str = None, db_replica_max_staleness: str = None, db_tls: bool = None, db_tls_ca_file: str = None, db_tls_certificate_key_file: str = None, db_tls_certificate_key_file_password: str = None, db_tls_crl_file: str = None, db_collection_name: str = None) -> pymongo.database.Database
 Connect to a specific mongodb database.
 .sp
 This sets the internal db client which is neccessary to connect to
 and use the associated database. Without it operations such as dump
-into the database will fail.
+into the database will fail. This is replica set capable.
 .INDENT 7.0
 .TP
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_url\fP (\fIstring\fP) – Database url (default: “mongodb://localhost:27017/”).
+\fBdb_ip\fP (\fIstring\fP) – Database hostname or ip to connect to.
+.IP \(bu 2
+\fBdb_port\fP (\fIstring\fP) – Database port to connect to.
+.IP \(bu 2
+\fBdb_authentication\fP (\fIstring\fP) – The authentication method to use on db.
 .IP \(bu 2
 \fBdb_user_name\fP (\fIstring\fP) – Username to use for authentication to db_name.
 .IP \(bu 2
@@ -782,7 +919,19 @@ into the database will fail.
 .IP \(bu 2
 \fBdb_name\fP (\fIstring\fP) – The name of the database to connect to.
 .IP \(bu 2
-\fBdb_authentication\fP (\fIstring\fP) – The authentication method to use on db.
+\fBdb_replica_set_name\fP (\fIstring\fP) – Name of the replica set to connect to.
+.IP \(bu 2
+\fBdb_replica_read_preference\fP (\fIstring\fP) – What rep type to prefer reads from.
+.IP \(bu 2
+\fBdb_replica_max_staleness\fP (\fIstring\fP) – Max seconds behind is replica allowed.
+.IP \(bu 2
+\fBdb_tls\fP (\fIbool\fP) – use TLS for db connection.
+.IP \(bu 2
+\fBdb_tls_certificate_key_file\fP (\fIstring\fP) – Certificate and key file for tls.
+.IP \(bu 2
+\fBdb_tls_certificate_key_file_password\fP (\fIstring\fP) – Cert and key file pass.
+.IP \(bu 2
+\fBdb_tls_crl_file\fP (\fIstring\fP) – Certificate revocation list file path.
 .IP \(bu 2
 \fBdb_collection_name\fP (\fIstring\fP) – GridFS collection to use.
 .UNINDENT
@@ -878,7 +1027,7 @@ pymongo.command_cursor.CommandCursor
 .UNINDENT
 .INDENT 7.0
 .TP
-.B init(db_path: None = None, db_log_path: None = None, db_log_name: None = None) -> None
+.B init(db_path: str = None, db_log_path: str = None, db_log_name: str = None, db_config_path: str = None) -> None
 Initialise the database.
 .sp
 Includes ensuring db path and db log path exist and generating,
@@ -895,6 +1044,8 @@ unprotected database is never exposed.
 \fBdb_log_path\fP (\fIstring\fP) – Desired directory of MongoDB log files.
 .IP \(bu 2
 \fBdb_log_name\fP (\fIstring\fP) – Desired name of log file.
+.IP \(bu 2
+\fBdb_config_path\fP (\fIstring\fP) – Config file to pass to MongoDB.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -921,14 +1072,14 @@ Log in to database, interupt, and availiable via cli.
 .UNINDENT
 .INDENT 7.0
 .TP
-.B start(db_ip: None = None, db_port: None = None, db_path: None = None, db_log_path: None = None, db_log_name: None = None, db_cursor_timeout: None = None) -> subprocess.Popen
+.B start(db_ip: str = None, db_port: str = None, db_path: str = None, db_log_path: str = None, db_log_name: str = None, db_cursor_timeout: int = None, db_config_path: str = None, db_replica_set_name: str = None) -> subprocess.Popen
 Launch an on machine database with authentication.
 .INDENT 7.0
 .TP
 .B Parameters
 .INDENT 7.0
 .IP \(bu 2
-\fBdb_ip\fP (\fIstring\fP) – Desired database ip to bind to.
+\fBdb_ip\fP (\fIlist\fP) – List of IPs to accept connectiongs from.
 .IP \(bu 2
 \fBdb_port\fP (\fIstring\fP) – Port desired for database.
 .IP \(bu 2
@@ -939,6 +1090,8 @@ Launch an on machine database with authentication.
 \fBdb_log_name\fP (\fIstring\fP) – Desired base name for log files.
 .IP \(bu 2
 \fBdb_cursor_timeout\fP (\fIinteger\fP) – Set timeout time for unused cursors.
+.IP \(bu 2
+\fBdb_path\fP – Config file path to pass to MongoDB.
 .UNINDENT
 .TP
 .B Return type
@@ -962,6 +1115,27 @@ Subprocess of database closer.
 .TP
 .B Return type
 subprocess.Popen
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SH TROUBLESHOOTING
+.SS MongoDB/ Serving Issues
+.INDENT 0.0
+.TP
+.B Error: not master and slaveOk=false:
+This error means you have attempted to read from a replica set that is not the master. If you would like to read from SECONDARY\-ies/ slaves (anything thats not the PRIMARY) you can:
+.INDENT 7.0
+.TP
+.B Mongo shell:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+\fI\%rs.slaveOk()\fP
+.ft P
+.fi
+.UNINDENT
 .UNINDENT
 .UNINDENT
 .UNINDENT
