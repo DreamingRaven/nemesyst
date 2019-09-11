@@ -360,6 +360,11 @@ def argument_parser(description=None, cfg_files=None):
                          type=str,
                          env_var="N_DB_AUTHENTICATION",
                          help="Set the mongodb authentication method.")
+    mongodb.add_argument("--db-authentication-database",
+                         default=None,
+                         type=str,
+                         env_var="N_DB_AUTHENTICATION_DATABASE",
+                         help="Override db_name as database to authenticate.")
     mongodb.add_argument("--db-user-role",
                          default=str("readWrite"),
                          type=str,

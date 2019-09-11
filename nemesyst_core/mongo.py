@@ -46,15 +46,13 @@ class Mongo(object):
             "db_config_path": None,
             "db_intervention": False,
             "db_authentication": "SCRAM-SHA-1",
+            "db_authentication_database": None,
             "db_user_role": "readWrite",
             "db_ip": "localhost",
             "db_bind_ip": ["localhost"],
             "db_name": "nemesyst",
             "db_collection_name": "test",
-            "db_replica_set_name": None,
             "db_port": "27017",
-            # "db_url": "mongodb://localhost:27017/", # this is auto generated
-            "db_url": None,
             "db_path": self.home + "/db",
             "db_log_path": self.home + "/db" + "/log",
             "db_log_name": "mongoLog",
@@ -64,9 +62,11 @@ class Mongo(object):
             "db": None,
             "db_pipeline": None,
             "gfs": None,
-            # TODO: OVERIDE THESE
+
+            "db_replica_set_name": None,
             "db_replica_read_preference": "primary",
             "db_replica_max_staleness": -1,
+
             "db_tls": False,
             "db_tls_ca_file": None,
             "db_tls_certificate_key_file": None,
@@ -76,8 +76,6 @@ class Mongo(object):
         }
         self.args = self._mergeDicts(defaults, args)
         # final adjustments to newly defined dictionary
-        self.args["db_url"] = "mongodb://{0}:{1}/".format(
-            self.args["db_ip"], self.args["db_port"])
         self.args["db_path"] = os.path.abspath(self.args["db_path"])
         self.args["db_log_path"] = os.path.abspath(self.args["db_log_path"])
 
@@ -149,6 +147,7 @@ class Mongo(object):
                             "return": None}
 
     def connect(self, db_ip=None, db_port=None, db_authentication=None,
+                db_authentication_database=None,
                 db_user_name=None, db_password=None, db_name=None,
                 db_replica_set_name=None, db_replica_read_preference=None,
                 db_replica_max_staleness=None, db_tls=None,
@@ -201,6 +200,10 @@ class Mongo(object):
         # authentication mechanism name
         db_authentication = db_authentication if db_authentication is not \
             None else self.args["db_authentication"]
+        # authentication destination db name
+        db_authentication_database = db_authentication_database if\
+            db_authentication_database is not \
+            None else self.args["db_authentication_database"]
         # username
         db_user_name = db_user_name if db_user_name is not None else \
             self.args["db_user_name"]
@@ -248,7 +251,8 @@ class Mongo(object):
         client_args["authMechanism"] = db_authentication
         client_args["username"] = db_user_name
         client_args["password"] = db_password
-        client_args["authSource"] = db_name
+        client_args["authSource"] = db_authentication_database if \
+            db_authentication_database is not None else db_name
 
         # replica set
         client_args["replicaset"] = db_replica_set_name
