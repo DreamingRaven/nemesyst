@@ -275,6 +275,42 @@ def argument_parser(description=None, cfg_files=None):
                           help="Use predictor/ inferer scripts.")
 
     # MongoDB specific options
+
+    mongodb.add_argument("--db-replica-read-preference",
+                         default="primary",
+                         type=str,
+                         env_var="N_DB_REPLICA_READ_PREFERENCE",
+                         help="Set the read preference of mongo client.")
+    mongodb.add_argument("--db-replica-max-staleness",
+                         default=-1,
+                         type=int,
+                         env_var="N_DB_REPLICA_MAX_STALENESS",
+                         help="Maximum out of sync in seconds replica can be.")
+    mongodb.add_argument("--db-tls",
+                         default=False,
+                         type=bool,
+                         env_var="N_DB_TLS",
+                         help="Set connection to mongodb use TLS.")
+    mongodb.add_argument("--db-tls-ca-file",
+                         default=None,
+                         type=type_file_path_exists,
+                         env_var="N_DB_TLS_CA_FILE",
+                         help="Define certificat-authority certificate path.")
+    mongodb.add_argument("--db-tls-certificate-key-file",
+                         default=None,
+                         type=type_file_path_exists,
+                         env_var="N_DB_TLS_CERTIFICATE_KEY_FILE",
+                         help="Set the clients certificate and key pem path.")
+    mongodb.add_argument("--db-tls-certificate-key-file-password",
+                         default=None,
+                         type=str,
+                         env_var="N_DB_TLS_CERTIFICATE_KEY_FILE_PASSWORD",
+                         help="Set pass if certkey file needs password.")
+    mongodb.add_argument("--db-tls-crl-file",
+                         default=None,
+                         type=type_file_path_exists,
+                         env_var="N_DB_TLS_CRL_FILE",
+                         help="Path to certificate revocation list file.")
     mongodb.add_argument("-l", "--db-login",
                          default=bool(False),
                          action="store_true",
