@@ -223,7 +223,7 @@ class Mongo(object):
         # to use tls?
         db_tls = db_tls if db_tls is not None else self.args["db_tls"]
         # certificate authoritys certificate file
-        db_tls_ca_file if db_tls_ca_file is not None else \
+        db_tls_ca_file = db_tls_ca_file if db_tls_ca_file is not None else \
             self.args["db_tls_ca_file"]
         # client certificate & key file
         db_tls_certificate_key_file = db_tls_certificate_key_file if \
@@ -270,8 +270,7 @@ class Mongo(object):
 
         db = client[db_name]
         self.args["db"] = db
-        # self.args["gfs"] = gridfs.GridFS(db, collection=db_collection_name)
-        print(db)
+        self.args["gfs"] = gridfs.GridFS(db, collection=db_collection_name)
         return db
 
     connect.__annotations__ = {"db_ip": str,
