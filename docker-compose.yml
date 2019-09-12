@@ -1,0 +1,17 @@
+# set environment variables using .env file located in this same directory
+version: "3.7"
+
+services:
+  mongodb:
+    # this is the official image name to use so we dont have to create one
+    image: "mongo"
+    ports:
+      # this maps one of our local ports to one of the containers ones
+      # "local-port:container-port"
+      - "65535:27017"
+    volumes:
+      # this is the location to mount in container and storage for db
+      # "volume-name:in-container mount point (not local system):"
+      # or /local/location:/docker/location
+      # - "mongodb-volume:/data/db"
+      - /data/db:/data/db
