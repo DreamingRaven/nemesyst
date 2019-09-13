@@ -1,7 +1,7 @@
 # @Author: archer
 # @Date:   2019-09-13T12:52:06+01:00
 # @Last modified by:   archer
-# @Last modified time: 2019-09-13T13:39:26+01:00
+# @Last modified time: 2019-09-13T13:45:28+01:00
 
 
 
@@ -27,4 +27,5 @@ services:
       # - "mongodb-volume:/data/db"
       - /data/db:/data/db
       # local file:docker vm location # this copies over the config file
-      - /etc/mongodb.conf:/etc/mongodb.conf
+      # - /etc/mongodb.conf:/etc/mongodb.conf
+      - examples/configs/mongo_docker.yaml:/etc/mongodb.conf
