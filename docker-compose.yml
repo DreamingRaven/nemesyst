@@ -1,7 +1,7 @@
 # @Author: archer
 # @Date:   2019-09-13T12:52:06+01:00
 # @Last modified by:   archer
-# @Last modified time: 2019-09-13T13:32:33+01:00
+# @Last modified time: 2019-09-13T13:33:41+01:00
 
 
 
@@ -16,7 +16,7 @@ services:
     ports:
       # this maps one of our local ports to one of the containers ones
       # "local-port:container-port"
-      - "65535:27017"
+      - "65530:27017"
     # command:
     #     - "--config"
     #     - "/etc/mongo.conf" # this is the in container path
