@@ -617,15 +617,15 @@ class Mongo(object):
     def __iter__(self):
         """Iterate through housed dictionary, for looping."""
         raise NotImplementedError("iter() is not yet implemented")
-        self.db.connect()
-        cursor = self.db.getData(pipeline=self.getPipe(
-            self.args["pipeline"]), db_collection_name=self.args["coll"])
-
-        while(cursor.alive):
-            try:
-                yield self._nextBatch(cursor)
-            except StopIteration:
-                return
+        # self.db.connect()
+        # cursor = self.db.getData(pipeline=self.getPipe(
+        #     self.args["pipeline"]), db_collection_name=self.args["coll"])
+        #
+        # while(cursor.alive):
+        #     try:
+        #         yield self._nextBatch(cursor)
+        #     except StopIteration:
+        #         return
 
     __iter__.__annotations__ = {"return": any}
 

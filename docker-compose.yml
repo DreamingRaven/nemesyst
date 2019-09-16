@@ -1,0 +1,31 @@
+# @Author: archer
+# @Date:   2019-09-13T12:52:06+01:00
+# @Last modified by:   archer
+# @Last modified time: 2019-09-13T13:48:11+01:00
+
+
+
+# set environment variables using .env file located in this same directory
+version: "3.7"
+
+services:
+  mongodb:
+    container_name: mongodb_server
+    # this is the official image name to use so we dont have to create one
+    image: "mongo"
+    ports:
+      # this maps one of our local ports to one of the containers ones
+      # "local-port:container-port"
+      - "65530:27017"
+    command:
+      - "--config"
+      - "/etc/mongodb.conf" # this is the in container path
+    volumes:
+      # this is the location to mount in container and storage for db
+      # "volume-name:in-container mount point (not local system):"
+      # or /local/location:/docker/location
+      # - "mongodb-volume:/data/db"
+      - /data/db:/data/db
+      # local file:docker vm location # this copies over the config file
+      # - /etc/mongodb.conf:/etc/mongodb.conf
+      - ./examples/configs/mongo_docker.yaml:/etc/mongodb.conf
