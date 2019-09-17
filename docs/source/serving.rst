@@ -125,6 +125,11 @@ From basic database to replica sets
   Include instructions for turning a database into several replica sets.
 
 Troubleshooting
----------------
++++++++++++++++
 
 Please see |troubleshooting|
+
+Further reading
++++++++++++++++
+
+`MongoDB config file options <https://docs.mongodb.com/manual/reference/configuration-options/>`_
