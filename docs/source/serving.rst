@@ -117,6 +117,15 @@ Connect to the running database see :ref:`connecting_mongodb`.
       { role: "userAdminAnyDatabase", db: "admin" }
     ])
 
+:|mongo shell| create user and grant userAdminAnyDatabase in one\::
+
+  .. parsed-literal::
+
+    db.createUser({user: "USERNAME", pwd: passwordPrompt(), roles: [{role:"userAdminAnyDatabase", db: "admin"}]})
+
+.. note::
+  Since this user belongs to admin in the previous examples that means the authenticationDatabase is admin when authenticating as this user as per the instructions in ":ref:`connecting_mongodb`".
+
 From basic database to replica sets
 +++++++++++++++++++++++++++++++++++
 
