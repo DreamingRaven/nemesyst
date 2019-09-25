@@ -247,12 +247,13 @@ class Mongo(object):
         client_args = {}
         client_args["host"] = ["{0}:{1}".format(str(db_ip), str(db_port))]
 
-        # authentication
-        client_args["authMechanism"] = db_authentication
-        client_args["username"] = db_user_name
-        client_args["password"] = db_password
-        client_args["authSource"] = db_authentication_database if \
-            db_authentication_database is not None else db_name
+        if (db_authentication is not None) and (db_authentication != ""):
+            # authentication
+            client_args["authMechanism"] = db_authentication
+            client_args["username"] = db_user_name
+            client_args["password"] = db_password
+            client_args["authSource"] = db_authentication_database if \
+                db_authentication_database is not None else db_name
 
         # replica set
         client_args["replicaset"] = db_replica_set_name
