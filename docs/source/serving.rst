@@ -75,6 +75,7 @@ Nemesyst
 :todo:
 
   Include instructions for logging into |mongodb| from Nemesyst.
+  Still needs addition
 
 Mongo
 *****

@@ -41,6 +41,7 @@ class Mongo(object):
         args = args if args is not None else dict()
         self.home = os.path.expanduser("~")
         defaults = {
+            # generic options section
             "db_user_name": "groot",
             "db_password": "iamgroot",
             "db_config_path": None,
@@ -62,11 +63,11 @@ class Mongo(object):
             "db": None,
             "db_pipeline": None,
             "gfs": None,
-
+            # replica options section
             "db_replica_set_name": None,
             "db_replica_read_preference": "primary",
             "db_replica_max_staleness": -1,
-
+            # tls options section
             "db_tls": False,
             "db_tls_ca_file": None,
             "db_tls_certificate_key_file": None,
@@ -255,21 +256,23 @@ class Mongo(object):
             client_args["authSource"] = db_authentication_database if \
                 db_authentication_database is not None else db_name
 
-        # replica set
-        client_args["replicaset"] = db_replica_set_name
-        client_args["readPreference"] = db_replica_read_preference
-        client_args["maxStalenessSeconds"] = db_replica_max_staleness
+        if (db_replica_set_name is not None):
+            # replica set
+            client_args["replicaset"] = db_replica_set_name
+            client_args["readPreference"] = db_replica_read_preference
+            client_args["maxStalenessSeconds"] = db_replica_max_staleness
 
-        # tls
-        client_args["tls"] = db_tls  # False
-        client_args["tlsCAFile"] = db_tls_ca_file  # None
-        client_args["tlsCertificateKeyFile"] = db_tls_certificate_key_file
-        client_args["tlsCertificateKeyFilePassword"] =  \
-            db_tls_certificate_key_file_password  # None
+        if (db_tls is not None):
+            # tls
+            client_args["tls"] = db_tls  # False
+            client_args["tlsCAFile"] = db_tls_ca_file  # None
+            client_args["tlsCertificateKeyFile"] = db_tls_certificate_key_file
+            client_args["tlsCertificateKeyFilePassword"] =  \
+                db_tls_certificate_key_file_password  # None
+            client_args["tlsCRLFile"] = db_tls_crl_file  # None
         # TODO add these in next if user has them seperate
         # client_args["ssl_certfile"] = None
         # client_args["ssl_keyfile"] = None
-        client_args["tlsCRLFile"] = db_tls_crl_file  # None
 
         client = MongoClient(**client_args)
 
