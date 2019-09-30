@@ -28,4 +28,4 @@ services:
       - /data/db:/data/db
       # local file:docker vm location # this copies over the config file
       # - /etc/mongodb.conf:/etc/mongodb.conf
-      - ./examples/configs/mongo_docker.yaml:/etc/mongodb.conf
+      - ./examples/configs/mongo/mongo_docker.yaml:/etc/mongodb.conf

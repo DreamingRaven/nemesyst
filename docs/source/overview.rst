@@ -115,10 +115,13 @@ See |all-options| for a full list of options.
 
   .. literalinclude:: ../../tests/learning.sh
 
-.. _section_infering:
+.. warning::
+  Special attention should be paid to the size of the resultant neural networks. Beyond a certain size it will be necessary to store them as GridFS objects. The basic GridFS functionality is included in nemesyst's :ref:`section_mongo` however this is still experimental and should not be depended upon at this time.
 
-Infering / predicting
-*********************
+.. _section_inferring:
+
+Inferring / predicting
+**********************
 
 As of: `2.0.2.r7.1cf3eab <https://github.com/DreamingRaven/nemesyst/commit/1cf3eab0dd6196c9065f43e9b231a50687f67065>`_
 
@@ -128,7 +131,7 @@ See |all-options| for a full list of options.
     :alt: Nemesyst inference puzzle diagram.
     :figclass: align-center
 
-    Infering is the stage where the model(s) are used to predict on newly provided data.
+    Inferring is the stage where the model(s) are used to predict on newly provided data.
 
 :|files-only| example\::
 
