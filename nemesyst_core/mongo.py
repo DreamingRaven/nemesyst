@@ -300,7 +300,7 @@ class Mongo(object):
 
     def login(self, db_port=None, db_user_name=None, db_password=None,
               db_name=None, db_ip=None):
-        """Log in to database, interupt, and availiable via cli.
+        """Log in to database, interrupt, and availiable via cli.
 
         :param db_port: Database port to connect to.
         :param db_user_name: Database user to authenticate as.
