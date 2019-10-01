@@ -11,6 +11,7 @@ import io
 
 
 def download(url):
+    # https://stackoverflow.com/a/34109395
     r = urllib.request.urlopen(url)
     return r
 
