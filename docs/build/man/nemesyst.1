@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "NEMESYST" "1" "Sep 11, 2019" "" "Nemesyst"
+.TH "NEMESYST" "1" "Sep 25, 2019" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.3.r14.9c70b2e
+nemesyst \- Nemesyst 2.0.4.r2.0513afc
 .
 .nr rst2man-indent-level 0
 .
@@ -324,6 +324,9 @@ nemesyst \-\-db\-init \-\-db\-start \-\-db\-login \-\-db\-stop \e
 .fi
 .UNINDENT
 .UNINDENT
+.TP
+.B Further reading
+page_serving: More in depth serving with Nemesyst
 .UNINDENT
 .SS Learning
 .sp
@@ -387,13 +390,66 @@ While Nemesyst does support using mongodb.yaml files for complex db setup, care 
 .UNINDENT
 .SS Creating a basic database
 .sp
-disambiguation: we define a basic database as a standalone MongoDB instance with one universal administrator and one read/write user with password authentication.
+Disambiguation: we define a basic database as a standalone MongoDB instance with one universal administrator and one read/write user with password authentication.
 .sp
-While it is possible it is highly discouraged to use Nemesyst to create the users you require as this is quite complicated to manage and may lead to more problems than its worth compared to simply using something such as:
+While it is possible it is highly discouraged to use Nemesyst to create the users you require as this is quite complicated to manage and may lead to more problems than its worth compared to simply creating a database and adding a user manually using something like the following:
+.SS Manual creation of MongoDB
 .INDENT 0.0
 .TP
-.B todo
-Include example for basic database creation
+.B section_files\-only creation of database example:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+mongod \-\-config ./examples/configs/basic_mongo_config.yaml
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+This will create a database with all the MongoDB defaults as it is an empty yaml file.
+If you would instead want a more complex setup please take a look at \fBexamples/configs/authenticated_replicaset.yaml\fP instead, but you will need to generate certificates and keys for this so it is probably a poor place to start but will be what you will want to use in production as a bare minimum security.
+.SS Docker\-Compose creation of MongoDB
+.INDENT 0.0
+.TP
+.B Docker\-Compose, section_files\-only creation of database example:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+docker\-compose up
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+This similar to the \fI\%Manual creation of MongoDB\fP creation uses a simple config file to launch the database. This can be changed in \fBdocker\-compose.yaml\fP\&.
+At this point you will need to connect to the running MongoDB instance to create your main administrator user, with “userAdminAnyDatabase” role.
+After this you can use the following to close the docker container with the database:
+.INDENT 0.0
+.TP
+.B Docker\-Compose, section_files\-only, closing Docker\-Compose database example:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+docker\-compose down
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
+Don’t worry we set our docker\-compose.yaml to save its files in \fB/data/db\fP so they are persistent between runs of docker\-compose. If you need to delete the MongoDB database that is where you can find them.
+.UNINDENT
 .UNINDENT
 .SS Connecting to a running database
 .sp
@@ -413,7 +469,7 @@ If there is no \fI\%userAdmin or userAdminAnyDatabase\fP then unless expressly c
 .INDENT 0.0
 .TP
 .B todo
-Include instructions for logging into mongodb from Nemesyst.
+Include instructions for logging into MongoDB from Nemesyst.
 .UNINDENT
 .SS Mongo
 .sp
@@ -448,6 +504,59 @@ mongo HOSTNAME:PORT \-u USERNAME \-\-authenticationDatabase DATABASENAME \-\-tls
 .UNINDENT
 .UNINDENT
 .UNINDENT
+.SS Creating database users
+.sp
+You will absolutely need a user with at least “userAdminAnyDatabase” role.
+Connect to the running database see \fI\%Connecting to a running database\fP\&.
+.INDENT 0.0
+.TP
+.B Mongo shell create a new role\-less user:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+db.createUser({user: "USERNAME", pwd: passwordPrompt(), roles: []})
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.TP
+.B Mongo shell grant role to existing user example:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+db.grantRolesToUser(
+"USERNAME",
+[
+  { role: "userAdminAnyDatabase", db: "admin" }
+])
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.TP
+.B Mongo shell create user and grant userAdminAnyDatabase in one:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+db.createUser({user: "USERNAME", pwd: passwordPrompt(), roles: [{role:"userAdminAnyDatabase", db: "admin"}]})
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
+Since this user belongs to admin in the previous examples that means the authenticationDatabase is admin when authenticating as this user as per the instructions in “\fI\%Connecting to a running database\fP”.
+.UNINDENT
+.UNINDENT
 .SS From basic database to replica sets
 .INDENT 0.0
 .TP
@@ -457,6 +566,9 @@ Include instructions for turning a database into several replica sets.
 .SS Troubleshooting
 .sp
 Please see section_ts_mongodb
+.SS Further reading
+.sp
+\fI\%MongoDB config file options\fP
 .SH OPTIONS
 .sp
 Nemesyst uses \fI\%ConfigArgParse\fP for argument handling.
@@ -522,12 +634,13 @@ usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
                 [\-\-i\-predict] [\-\-db\-replica\-set\-name DB_REPLICA_SET_NAME]
                 [\-\-db\-replica\-read\-preference DB_REPLICA_READ_PREFERENCE]
                 [\-\-db\-replica\-max\-staleness DB_REPLICA_MAX_STALENESS]
-                [\-\-db\-tls DB_TLS] [\-\-db\-tls\-ca\-file DB_TLS_CA_FILE]
+                [\-\-db\-tls] [\-\-db\-tls\-ca\-file DB_TLS_CA_FILE]
                 [\-\-db\-tls\-certificate\-key\-file DB_TLS_CERTIFICATE_KEY_FILE]
                 [\-\-db\-tls\-certificate\-key\-file\-password DB_TLS_CERTIFICATE_KEY_FILE_PASSWORD]
                 [\-\-db\-tls\-crl\-file DB_TLS_CRL_FILE] [\-l] [\-s] [\-S] [\-i]
                 [\-\-db\-user\-name DB_USER_NAME] [\-\-db\-password]
                 [\-\-db\-intervention] [\-\-db\-authentication DB_AUTHENTICATION]
+                [\-\-db\-authentication\-database DB_AUTHENTICATION_DATABASE]
                 [\-\-db\-user\-role DB_USER_ROLE] [\-\-db\-ip DB_IP]
                 [\-\-db\-bind\-ip DB_BIND_IP [DB_BIND_IP ...]] [\-\-db\-port DB_PORT]
                 [\-\-db\-name DB_NAME] [\-\-db\-collection\-name DB_COLLECTION_NAME]
@@ -738,6 +851,9 @@ Set the mongodb authentication method.
 .sp
 Default: “SCRAM\-SHA\-1”
 .TP
+.B\-\-db\-authentication\-database
+Override db_name as database to authenticate.
+.TP
 .B\-\-db\-user\-role
 Set the users permissions in the database.
 .sp
@@ -896,7 +1012,7 @@ Mongo()
 .UNINDENT
 .INDENT 7.0
 .TP
-.B connect(db_ip: str = None, db_port: str = None, db_authentication: str = None, db_user_name: str = None, db_password: str = None, db_name: str = None, db_replica_set_name: str = None, db_replica_read_preference: str = None, db_replica_max_staleness: str = None, db_tls: bool = None, db_tls_ca_file: str = None, db_tls_certificate_key_file: str = None, db_tls_certificate_key_file_password: str = None, db_tls_crl_file: str = None, db_collection_name: str = None) -> pymongo.database.Database
+.B connect(db_ip: str = None, db_port: str = None, db_authentication: str = None, db_authentication_database=None, db_user_name: str = None, db_password: str = None, db_name: str = None, db_replica_set_name: str = None, db_replica_read_preference: str = None, db_replica_max_staleness: str = None, db_tls: bool = None, db_tls_ca_file: str = None, db_tls_certificate_key_file: str = None, db_tls_certificate_key_file_password: str = None, db_tls_crl_file: str = None, db_collection_name: str = None) -> pymongo.database.Database
 Connect to a specific mongodb database.
 .sp
 This sets the internal db client which is neccessary to connect to
@@ -1122,7 +1238,7 @@ subprocess.Popen
 .SS MongoDB/ Serving Issues
 .INDENT 0.0
 .TP
-.B Error: not master and slaveOk=false:
+.B Error: not master and slaveOk=false
 This error means you have attempted to read from a replica set that is not the master. If you would like to read from SECONDARY\-ies/ slaves (anything thats not the PRIMARY) you can:
 .INDENT 7.0
 .TP
@@ -1138,6 +1254,9 @@ This error means you have attempted to read from a replica set that is not the m
 .UNINDENT
 .UNINDENT
 .UNINDENT
+.TP
+.B pymongo.errors.OperationFailure: Authentication failed
+This error means likely means that your authentication credentials are incorrect, you will want to check the values you are passing to pymongo via Nemesyst to ensure they are what you are expecting. In particular pay special attention to Mongo().connect() as it is the life blood of all connections but since the driver is a lazy driver it wont fail until you attempt to use the connection.
 .UNINDENT
 .SH AUTHOR
 GeorgeRaven
