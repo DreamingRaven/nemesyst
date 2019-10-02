@@ -5,31 +5,17 @@
 # @Last modified by:   archer
 # @Last modified time: 2019-08-16
 # @License: Please see LICENSE in project root
-import urllib.request
-import gzip
 import io
-
-
-def download(url):
-    # https://stackoverflow.com/a/34109395
-    r = urllib.request.urlopen(url)
-    return r
+from sklearn.datasets import fetch_openml
 
 
 def main(**kwargs):
     print("kwargs:", type(kwargs), kwargs)
-
     print("downloading mnist dataset...")
 
-    r = download('http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz')
+    x, y = fetch_openml('mnist_784', version=1, return_X_y=True)
 
-    print(r)
-    compressed_file = io.BytesIO(r.read())
-    decompressed_file = gzip.GzipFile(fileobj=compressed_file)
-    with open("test_gzip", 'wb') as outfile:
-        outfile.write(decompressed_file.read())
-
-    x = 0
-    while x < 10:
-        yield {"x": x}
-        x = x + 1
+    X = 0
+    while X < 10:
+        yield {"x": X}
+        X = X + 1
