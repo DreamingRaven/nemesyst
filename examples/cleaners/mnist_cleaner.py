@@ -10,9 +10,8 @@ from sklearn.datasets import fetch_openml
 
 
 def main(**kwargs):
-    print("kwargs:", type(kwargs), kwargs)
+    print("kwargs:", type(kwargs), kwargs, "\n")
     print("downloading mnist dataset...")
-
     x, y = fetch_openml('mnist_784', version=1, return_X_y=True)
 
     X = 0
