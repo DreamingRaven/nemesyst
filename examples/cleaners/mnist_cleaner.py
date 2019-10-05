@@ -13,8 +13,15 @@ def main(**kwargs):
     print("kwargs:", type(kwargs), kwargs, "\n")
     print("downloading mnist dataset...")
     x, y = fetch_openml('mnist_784', version=1, return_X_y=True)
+    for i in range(len(x)):
+        document = {
+            "x": x[i].tolist(),     # converting to list to be bson compatible
+            "y": y[i],              # keeping as num as already compatible
+            "img_num": i,
+        }
+        yield document
 
-    X = 0
-    while X < 10:
-        yield {"x": X}
-        X = X + 1
+    # X = 0
+    # while X < 10:
+    #     yield {"x": X}
+    #     X = X + 1
