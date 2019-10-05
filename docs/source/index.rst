@@ -22,6 +22,7 @@ Nemesyst
    justification
    installation
    overview
+   mnist
    serving
    options
    mongodb_handler
