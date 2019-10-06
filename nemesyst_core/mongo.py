@@ -108,6 +108,10 @@ class Mongo(object):
         db_config_path = db_config_path if db_config_path is not None else \
             self.args["db_config_path"]
 
+        self.stop()
+
+        time.sleep(2)
+
         # create directories
         subprocess.call([
             "mkdir", "-p",
