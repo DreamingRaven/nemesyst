@@ -39,7 +39,6 @@ Serving
 
 For this example Nemesyst will create a database for us whenever we call the config file since we pass in options to initialise and start the database (see :ref:`section_mnist_config`). We can do this using:
 
-
 :|files-only| serving example\::
 
   .. parsed-literal::

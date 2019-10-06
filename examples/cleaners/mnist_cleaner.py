@@ -5,6 +5,7 @@
 # @Last modified by:   archer
 # @Last modified time: 2019-08-16
 # @License: Please see LICENSE in project root
+
 import io
 import datetime
 from sklearn.datasets import fetch_openml
@@ -16,7 +17,7 @@ def main(**kwargs):
     utc_import_start_time = datetime.datetime.utcnow()
     print("importing mnist dataset to mongodb...")
     # TODO: vectorize on outermost dimension (rowise not elementwise)
-    for i in range(len(x)):
+    for i in range(len(x)):  # also change to enumerate
         document = {
             "x": x[i].tolist(),     # converting to list to be bson compatible
             "y": y[i],              # keeping as num could also be list

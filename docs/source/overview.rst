@@ -95,8 +95,9 @@ A |mongo| object is automatically passed into every one of your desired scripts 
 
   .. literalinclude:: ../../tests/serving.sh
 
-:Further reading:
-  :ref:`page_serving`: More in depth serving with Nemesyst
+.. note::
+
+  Please see :ref:`page_serving` for more in depth serving with Nemesyst
 
 .. _section_learning:
 
