@@ -1,5 +1,9 @@
 .. _mnist: http://yann.lecun.com/exdb/mnist/
 .. |mnist| replace:: MNIST
+
+.. _sklearn: https://scikit-learn.org/stable/index.html
+.. |sklearn| replace:: scikit-learn
+
 .. |files-only| replace:: :ref:`section_files-only`
 
 Full |mnist|_ Example
@@ -57,7 +61,9 @@ This example will start the database, to close the database you can:
 Cleaning
 ++++++++
 
-In this step we wil
+In this step we will launch the example |mnist|_ cleaner which downloads the data using |sklearn|_ to get a much cleaner version of the data set for us. Then inserting the data into individual dictionaries row wise, so that each dictionary is a single complete example/ observation, with associated target feature. To put it back into the database we need only yield each dictionary and Nemesyst will handle iteration for us. This document dictionary can also be used to house useful metadata about the dataset so that you can further filter using more advanced Nemesyst and MongoDB functionality that go beyond the scope of this simple introduction.
+
+To begin cleaning you need only tell Nemesyst to clean the data using:
 
 :|files-only| cleaning example\::
 
@@ -65,12 +71,18 @@ In this step we wil
 
     ./nemesyst --config ./examples/configs/nemesyst/mnist.conf --data-clean
 
+The example |mnist|_ cleaner is shown below for convenience.
+
+:``examples/cleaners/mnist_cleaner.py``:
+
+  .. literalinclude:: ../../examples/cleaners/mnist_cleaner.py
+
 Learning
 ++++++++
 
-test
+placeholder
 
 Inferring
 +++++++++
 
-test
+placeholder
