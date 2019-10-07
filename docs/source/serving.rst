@@ -20,9 +20,11 @@
 .. _docker: https://www.docker.com/
 .. |docker| replace:: Docker
 
-
 .. _docker-compose: https://docs.docker.com/compose/
 .. |docker-compose| replace:: Docker-Compose
+
+.. _pymongo: https://api.mongodb.com/python/current/
+.. |pymongo| replace:: PyMongo
 
 .. |troubleshooting| replace:: :ref:`section_ts_mongodb`
 .. _page_serving:
