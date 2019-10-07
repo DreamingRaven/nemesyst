@@ -93,10 +93,13 @@ To be able to fine tune, create users, update etc it will be necessary to connec
 Nemesyst
 ********
 
-:todo:
+Nemesyst can be used to log you in to the mongo shell although this feature should not be depended on, and instead it is recommended to use mongo for anything more complicated than simple testing. You will need to provide any other options like ip port etc if it is not using the defaults.
 
-  Include instructions for logging into |mongodb|_ from Nemesyst.
-  Still needs addition
+:|bash shell| simple all defaults example\::
+
+  .. parsed-literal::
+
+    nemesyst --db-login
 
 Mongo
 *****
