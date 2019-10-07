@@ -4,6 +4,15 @@
 .. _sklearn: https://scikit-learn.org/stable/index.html
 .. |sklearn| replace:: scikit-learn
 
+.. _mongodb compass: https://www.mongodb.com/products/compass
+.. |mongodb compass| replace:: MongoDB Compass
+
+.. _mongo shell: https://docs.mongodb.com/manual/mongo/
+.. |mongo shell| replace:: Mongo shell
+
+.. _mongodb: https://www.mongodb.com/
+.. |mongodb| replace:: MongoDB
+
 .. |files-only| replace:: :ref:`section_files-only`
 
 Full |mnist|_ Example
@@ -55,7 +64,22 @@ This example will start the database, to close the database you can:
 
 .. note::
 
+  Nemesyst may ask you a password. As long as you are using the same password between runs it wont cause you issue as you are simultaneously using and creating (when using --db-init) the password for the default user in our config file, you can change this behavior but we wanted to include it so we don't end up creating universal passwords that lazy users might oversee.
+
   For more complex scenarios pleas refer to :ref:`page_serving`
+
+Checking up on the database
++++++++++++++++++++++++++++
+
+It may be necessary after each of the following steps to check on the database to ensure it has done exactly what you expect it to be doing. To login to the database easily you can use:
+
+:|files-only| logging into running database example\::
+
+  .. parsed-literal::
+
+    ./nemesyst --config ./examples/configs/nemesyst/mnist.conf --db-login
+
+This should put you in the |mongo shell|_ which is a javascript based interface of |mongodb|_ for direct user intervention. Where you can do all sorts of operations and checks. This is of course optional but recommended. If you would rather a more graphical interface you can use any of the plethora of tools to visualise the database but we recommend |mongodb compass|_, in particular for its aggregation helper.
 
 Cleaning
 ++++++++

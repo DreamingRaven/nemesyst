@@ -9,7 +9,12 @@
 .. _yaml: https://yaml.org/
 .. |yaml| replace:: yaml
 
+.. _mongodb compass: https://www.mongodb.com/products/compass
+.. |mongodb compass| replace:: MongoDB Compass
+
+.. _mongo shell: https://docs.mongodb.com/manual/mongo/
 .. |mongo shell| replace:: Mongo shell
+
 .. |bash shell| replace:: Bash shell
 
 .. _docker: https://www.docker.com/
@@ -116,13 +121,13 @@ Creating database users
 You will absolutely need a user with at least "userAdminAnyDatabase" role.
 Connect to the running database see :ref:`connecting_mongodb`.
 
-:|mongo shell| create a new role-less user\::
+:|mongo shell|_ create a new role-less user\::
 
   .. parsed-literal::
 
     db.createUser({user: "USERNAME", pwd: passwordPrompt(), roles: []})
 
-:|mongo shell| grant role to existing user example\::
+:|mongo shell|_ grant role to existing user example\::
 
   .. parsed-literal::
 
@@ -132,7 +137,7 @@ Connect to the running database see :ref:`connecting_mongodb`.
       { role: "userAdminAnyDatabase", db: "admin" }
     ])
 
-:|mongo shell| create user and grant userAdminAnyDatabase in one\::
+:|mongo shell|_ create user and grant userAdminAnyDatabase in one\::
 
   .. parsed-literal::
 
