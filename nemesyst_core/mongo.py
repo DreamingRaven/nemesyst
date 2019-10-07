@@ -578,6 +578,7 @@ class Mongo(object):
         if(cursor is not None):
             while(cursor.alive):
                 yield self._nextBatch(cursor, db_batch_size)
+            self.args["pylog"]("cursor is now dead.")
         else:
             self.args["pylog"]("Your cursor is None, please Mongo.connect()")
 
