@@ -23,6 +23,23 @@ It is also relatively clean so there is little pre-processing that is required o
 
 The dataset will be downloaded for you by the cleaning module.
 
+Requirements
+++++++++++++
+
+Please ensure you have the following as a bare minimum:
+
+:``examples/requirements/mnist.txt``:
+
+  .. literalinclude:: ../../examples/requirements/mnist.txt
+
+If you are using pip you can quickly install these using:
+
+:|files-only| pip requirements installation example\::
+
+  .. parsed-literal::
+
+    pip install -r examples/requirements/mnist.txt
+
 .. _section_mnist_config:
 
 Configuring
@@ -103,9 +120,25 @@ The example |mnist|_ cleaner is shown below for convenience.
 Learning
 ++++++++
 
-placeholder
+.. warning::
+
+  Work in progress section
+
+:|files-only| learning example\::
+
+  .. parsed-literal::
+
+    ./nemesyst --config ./examples/configs/nemesyst/mnist.conf --dl-learn
 
 Inferring
 +++++++++
 
-placeholder
+.. warning::
+
+  Work in progress section
+  
+:|files-only| inferring example\::
+
+  .. parsed-literal::
+
+    ./nemesyst --config ./examples/configs/nemesyst/mnist.conf --i-predict
