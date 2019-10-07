@@ -28,12 +28,13 @@ from nemesyst_core.mongo import Mongo
 
 def main(args):
     """Operate on processed args."""
-    db = Mongo(args)  # matching args will override defaults
+    db = Mongo(args)        # matching args will override defaults
+    args["pylog"] = print   # we can set a logger for now we will use standard
     if(args["db_init"] is True):
-        db.init()  # creates database files
+        db.init()           # creates database files
         time.sleep(2)
     if(args["db_start"] is True):
-        db.start()  # launches database
+        db.start()          # launches database
     if(args["data_clean"] is True):
         parallel_clean(args)
     if(args["dl_learn"] is True):
@@ -41,9 +42,9 @@ def main(args):
     if(args["i_predict"] is True):
         parallel_predict(args)
     if(args["db_login"] is True):
-        db.login()  # logs in to database
+        db.login()          # logs in to database
     if(args["db_stop"] is True):
-        db.stop()  # stops database
+        db.stop()           # stops database
 
 
 main.__annotations__ = {"args": dict, "return": None}
