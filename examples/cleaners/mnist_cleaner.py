@@ -16,7 +16,6 @@ def main(**kwargs):
     x, y = fetch_openml('mnist_784', version=1, return_X_y=True)
     utc_import_start_time = datetime.datetime.utcnow()
     print("importing mnist dataset to mongodb...")
-    # TODO: vectorize on outermost dimension (rowise not elementwise)
     for i in range(len(x)):  # also change to enumerate
         document = {
             "x": x[i].tolist(),     # converting to list to be bson compatible

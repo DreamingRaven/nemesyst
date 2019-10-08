@@ -21,7 +21,7 @@ def main(**kwargs):
     db.getCursor(db_collection_name=str(args["data_collection"][0]),
                  db_pipeline=[{"$match": {}}])  # using an empty pipeline
     # itetate through the data in batches to minimise requests
-    for dataBatch in db.getBatches(db_batch_size=32):
+    for dataBatch in db.getBatches(db_batch_size=args["dl_batch_size"][args["process"]]):
         args["pylog"]("Returned number of documents:", len(dataBatch))
 
     yield {}

@@ -76,9 +76,6 @@ def import_data_from_generator(db, generator, collection):
     """Import dictionary or list style data from generator to MongoDB."""
     db.connect()
     for data in generator:
-        # do nothing
-        if data is None:
-            pass
         # check if is dict and not empty, and not None all in one
         if isinstance(data, dict) and data:
             db.dump(db_collection_name=collection, data=data)
