@@ -63,13 +63,11 @@ def cleaner(args_m, i):
     """Atomic cleaner execution."""
     args = copy.deepcopy(args_m)
     db = Mongo(args)
-    del args["db_password"]  # deleting password as it is no longer needed
     args["process"] = i
     gen = import_script(script=args["data_cleaner"][i],
                         args=args, db=db,
                         entry_point=args[
                             "data_cleaner_entry_point"][i])
-
     import_data_from_generator(db=db, generator=gen,
                                collection=args["data_collection"][i])
 
@@ -102,10 +100,8 @@ def learner(args_m, i):
     args["process"] = i
     gen = import_script(script=args["dl_learner"][i], args=args, db=db,
                         entry_point=args["dl_learner_entry_point"][i])
-    db.connect()
-    for data in gen:
-        db.dump(db_collection_name=args["dl_output_model_collection"][i],
-                data=data)
+    import_data_from_generator(
+        db=db, generator=gen, collection=args["dl_output_model_collection"][i])
 
 
 def parallel_predict(args_m):
@@ -124,10 +120,9 @@ def predictor(args_m, i):
     args["process"] = i
     gen = import_script(script=args["i_predictor"][i], args=args, db=db,
                         entry_point=args["i_predictor_entry_point"][i])
-    db.connect()
-    for data in gen:
-        db.dump(db_collection_name=args["i_output_prediction_collection"][i],
-                data=data)
+    import_data_from_generator(
+        db=db, generator=gen,
+        collection=args["i_output_prediction_collection"][i])
 
 
 def argument_parser(description=None, cfg_files=None):
