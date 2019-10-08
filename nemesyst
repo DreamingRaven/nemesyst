@@ -69,9 +69,21 @@ def cleaner(args_m, i):
                         args=args, db=db,
                         entry_point=args[
                             "data_cleaner_entry_point"][i])
+
+    import_data_from_generator(db=db, generator=gen,
+                               collection=args["data_collection"][i])
+
+
+def import_data_from_generator(db, generator, collection):
+    """Import dictionary or list style data from generator to MongoDB."""
     db.connect()
-    for data in gen:
-        db.dump(db_collection_name=args["data_collection"][i], data=data)
+    for data in generator:
+        # do nothing
+        if data is None:
+            pass
+        # check if is dict and not empty, and not None all in one
+        if isinstance(data, dict) and data:
+            db.dump(db_collection_name=collection, data=data)
 
 
 def parallel_learn(args_m):

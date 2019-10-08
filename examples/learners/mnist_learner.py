@@ -6,6 +6,9 @@
 # @Last modified time: 2019-08-16
 # @License: Please see LICENSE in project root
 
+import keras
+import numpy as np
+
 
 def main(**kwargs):
     # print("kwargs:", type(kwargs), kwargs)
@@ -21,7 +24,4 @@ def main(**kwargs):
     for dataBatch in db.getBatches(db_batch_size=32):
         args["pylog"]("Returned number of documents:", len(dataBatch))
 
-    x = 0
-    while x < 10:
-        yield {"x": x}
-        x = x + 1
+    yield {}
