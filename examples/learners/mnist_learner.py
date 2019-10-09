@@ -11,17 +11,22 @@ import numpy as np
 
 
 def main(**kwargs):
-    # print("kwargs:", type(kwargs), kwargs)
-
+    # just making these a little nicer to use
     args = kwargs["args"]
     db = kwargs["db"]
-
-    print(args, args["data_collection"])
     # get a cursor to the data we want (stored internally in db object)
     db.getCursor(db_collection_name=str(args["data_collection"][0]),
                  db_pipeline=[{"$match": {}}])  # using an empty pipeline
     # itetate through the data in batches to minimise requests
-    for dataBatch in db.getBatches(db_batch_size=args["dl_batch_size"][args["process"]]):
-        args["pylog"]("Returned number of documents:", len(dataBatch))
-
+    for dataBatch in db.getBatches(db_batch_size=args["dl_batch_size"]
+                                   [args["process"]]):
+        # we recommend you take a quick read of:
+        # https://book.pythontips.com/en/latest/map_filter.html
+        # theres not a lot but it can come in handy for understanding
+        y = list(map(lambda d: d["y"], dataBatch))
+        y = np.array(y)  # converting list to numpy ndarray
+        x = list(map(lambda d: d["x"], dataBatch))
+        x = np.array(x)  # converting list of lists to numpy ndarray
+    args["pylog"](x, y)
+    args["pylog"](x.shape, y.shape)
     yield {}
