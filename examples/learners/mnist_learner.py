@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mnist_learner.py
 # @Last modified by:   archer
-# @Last modified time: 2019-10-09
+# @Last modified time: 2019-10-09T14:35:50+01:00
 # @License: Please see LICENSE in project root
 
 import keras
@@ -24,12 +24,12 @@ def main(**kwargs):
         # https://book.pythontips.com/en/latest/map_filter.html
         y = list(map(lambda d: d["y"], dataBatch))
         y = np.array(y)  # converting list to numpy ndarray
+        y = y.reshape((y.shape[0],))
         x = list(map(lambda d: d["x"], dataBatch))
         x = np.array(x)  # converting list of lists to numpy ndarray
-    args["pylog"](x, y)
+        x = x.reshape((x.shape[0], 28, 28, 1))
+    # args["pylog"](x, y)
     args["pylog"](x.shape, y.shape)
-
-    # args["pylog"](x.reshape(x.shape[0], 28, 28, 1).shape())
 
     # testing keras inbuilt method
     from keras.datasets import mnist
@@ -62,6 +62,7 @@ def main(**kwargs):
     x_train /= 255
     x_test /= 255
     print('x_train shape:', x_train.shape)
+    print('y_train shape:', y_train.shape)
     print(x_train.shape[0], 'train samples')
     print(x_test.shape[0], 'test samples')
 
