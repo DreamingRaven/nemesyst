@@ -16,10 +16,10 @@ def main(**kwargs):
     x, y = fetch_openml('mnist_784', version=1, return_X_y=True)
     utc_import_start_time = datetime.datetime.utcnow()
     print("importing mnist dataset to mongodb...")
-    for i in range(len(x)):  # also change to enumerate
+    for i in range(len(x)):  # could use enumerate but only interested in index
         document = {
             "x": x[i].tolist(),     # converting to list to be bson compatible
-            "y": y[i],              # keeping as num could also be list
+            "y": int(y[i]),         # Ensuring is num
             "img_num": i,           # saving the image number
             "utc_import_time":  utc_import_start_time,
             "dataset": "mnist"
