@@ -22,6 +22,7 @@ def main(**kwargs):
             "y": int(y[i]),         # Ensuring is num
             "img_num": i,           # saving the image number
             "utc_import_time":  utc_import_start_time,
-            "dataset": "mnist"
+            "dataset": "mnist",
+            "img_count": len(x)
         }
         yield document

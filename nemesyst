@@ -202,6 +202,12 @@ def argument_parser(description=None, cfg_files=None):
                               type=int,
                               env_var="N_DL_BATCH_SIZE",
                               help="Batch size of the data to use.")
+    deeplearning.add_argument("--dl-epochs",
+                              default=[1],
+                              nargs='+',
+                              type=int,
+                              env_var="N_DL_EPOCHS",
+                              help="Number of epochs to train on data.")
     deeplearning.add_argument("--dl-learn",
                               default=bool(False),
                               action="store_true",
