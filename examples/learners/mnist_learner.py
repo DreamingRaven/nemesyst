@@ -1,9 +1,9 @@
 # @Author: George Onoufriou <archer>
 # @Date:   2019-08-16
 # @Email:  george raven community at pm dot me
-# @Filename: debug_learner.py
+# @Filename: mnist_learner.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-16
+# @Last modified time: 2019-10-09
 # @License: Please see LICENSE in project root
 
 import keras
@@ -22,7 +22,6 @@ def main(**kwargs):
                                    [args["process"]]):
         # we recommend you take a quick read of:
         # https://book.pythontips.com/en/latest/map_filter.html
-        # theres not a lot but it can come in handy for understanding
         y = list(map(lambda d: d["y"], dataBatch))
         y = np.array(y)  # converting list to numpy ndarray
         x = list(map(lambda d: d["x"], dataBatch))
