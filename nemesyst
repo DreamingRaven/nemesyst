@@ -53,10 +53,10 @@ main.__annotations__ = {"args": dict, "return": None}
 def parallel_clean(args_m):
     """Run cleaning scripts in parallel."""
     # creating process pool
-    pool = mp.Pool(processes=args_m["process_pool"])
-    # calling each process pool
-    [pool.apply(cleaner, args=(args_m, x)) for x in
-        range(len(args_m["data_cleaner"]))]
+    with mp.Pool(processes=args_m["process_pool"]) as pool:
+        # calling each process pool
+        [pool.apply(cleaner, args=(args_m, x)) for x in
+            range(len(args_m["data_cleaner"]))]
 
 
 def cleaner(args_m, i):
@@ -84,10 +84,10 @@ def import_data_from_generator(db, generator, collection):
 def parallel_learn(args_m):
     """Run learning scripts in parallel."""
     # creating process pool
-    pool = mp.Pool(processes=args_m["process_pool"])
-    # calling each process pool
-    [pool.apply(learner, args=(args_m, x)) for x in
-        range(len(args_m["dl_learner"]))]
+    with mp.Pool(processes=args_m["process_pool"]) as pool:
+        # calling each process pool
+        [pool.apply(learner, args=(args_m, x)) for x in
+            range(len(args_m["dl_learner"]))]
 
 
 def learner(args_m, i):
@@ -104,10 +104,10 @@ def learner(args_m, i):
 def parallel_predict(args_m):
     """Run predictor scripts in parallel."""
     # creating process pool
-    pool = mp.Pool(processes=args_m["process_pool"])
-    # calling each process pool
-    [pool.apply(predictor, args=(args_m, x)) for x in
-        range(len(args_m["i_predictor"]))]
+    with mp.Pool(processes=args_m["process_pool"]) as pool:
+        # calling each process pool
+        [pool.apply(predictor, args=(args_m, x)) for x in
+            range(len(args_m["i_predictor"]))]
 
 
 def predictor(args_m, i):
