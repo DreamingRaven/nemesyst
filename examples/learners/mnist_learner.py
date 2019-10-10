@@ -24,6 +24,7 @@ def main(**kwargs):
 
     for epoch in range(args["dl_epochs"][args["process"]]):
         # get a cursor to the data we want (stored internally in db object)
+        args["pylog"]("Epoch:", epoch)
         db.getCursor(db_collection_name=str(args["data_collection"]
                                             [args["process"]]),
                      db_pipeline=[{"$match": {}}])  # using an empty pipeline
@@ -76,11 +77,15 @@ def main(**kwargs):
                               optimizer=keras.optimizers.Adadelta(),
                               metrics=['accuracy'])
 
-            model.fit(x_train, y_train,
-                      batch_size=args["dl_batch_size"][args["process"]],
-                      epochs=1,  # args["dl_epochs"][args["process"]],
-                      # verbose=1,
-                      # validation_data=(x_test, y_test)
-                      )
+            if(x_train.shape == (args["dl_batch_size"], 1,
+                                 img_rows, img_cols))\
+                    or (x_train.shape == (args["dl_batch_size"],
+                                          img_rows, img_cols, 1)):
+                model.fit(x_train, y_train,
+                          batch_size=args["dl_batch_size"][args["process"]],
+                          epochs=1,  # args["dl_epochs"][args["process"]],
+                          # verbose=1,
+                          # validation_data=(x_test, y_test)
+                          )
 
     yield {}
