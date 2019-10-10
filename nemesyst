@@ -36,11 +36,11 @@ def main(args):
     if(args["db_start"] is True):
         db.start()          # launches database
     if(args["data_clean"] is True):
-        parallel_clean(args)
+        parallel_scripts(cleaner, args, scripts=args["data_cleaner"])
     if(args["dl_learn"] is True):
-        parallel_learn(args)
+        parallel_scripts(learner, args, scripts=args["dl_learner"])
     if(args["i_predict"] is True):
-        parallel_predict(args)
+        parallel_scripts(predictor, args, scripts=args["i_predictor"])
     if(args["db_login"] is True):
         db.login()          # logs in to database
     if(args["db_stop"] is True):
@@ -50,13 +50,13 @@ def main(args):
 main.__annotations__ = {"args": dict, "return": None}
 
 
-def parallel_clean(args_m):
-    """Run cleaning scripts in parallel."""
-    # creating process pool
+def parallel_scripts(function, args_m, scripts):
+    """Run given scripts in parallel by category."""
+    # creating process pool with context manager
     with mp.Pool(processes=args_m["process_pool"]) as pool:
         # calling each process pool
-        [pool.apply(cleaner, args=(args_m, x)) for x in
-            range(len(args_m["data_cleaner"]))]
+        [pool.apply(function, args=(args_m, x)) for x in
+            range(len(scripts))]
 
 
 def cleaner(args_m, i):
@@ -72,24 +72,6 @@ def cleaner(args_m, i):
                                collection=args["data_collection"][i])
 
 
-def import_data_from_generator(db, generator, collection):
-    """Import dictionary or list style data from generator to MongoDB."""
-    db.connect()
-    for data in generator:
-        # check if is dict and not empty, and not None all in one
-        if isinstance(data, dict) and data:
-            db.dump(db_collection_name=collection, data=data)
-
-
-def parallel_learn(args_m):
-    """Run learning scripts in parallel."""
-    # creating process pool
-    with mp.Pool(processes=args_m["process_pool"]) as pool:
-        # calling each process pool
-        [pool.apply(learner, args=(args_m, x)) for x in
-            range(len(args_m["dl_learner"]))]
-
-
 def learner(args_m, i):
     """Atomic learner execution."""
     args = copy.deepcopy(args_m)
@@ -99,15 +81,6 @@ def learner(args_m, i):
                         entry_point=args["dl_learner_entry_point"][i])
     import_data_from_generator(
         db=db, generator=gen, collection=args["dl_output_model_collection"][i])
-
-
-def parallel_predict(args_m):
-    """Run predictor scripts in parallel."""
-    # creating process pool
-    with mp.Pool(processes=args_m["process_pool"]) as pool:
-        # calling each process pool
-        [pool.apply(predictor, args=(args_m, x)) for x in
-            range(len(args_m["i_predictor"]))]
 
 
 def predictor(args_m, i):
@@ -120,6 +93,15 @@ def predictor(args_m, i):
     import_data_from_generator(
         db=db, generator=gen,
         collection=args["i_output_prediction_collection"][i])
+
+
+def import_data_from_generator(db, generator, collection):
+    """Import dictionary or list style data from generator to MongoDB."""
+    db.connect()
+    for data in generator:
+        # check if is dict and not empty, and not None all in one
+        if isinstance(data, dict) and data:
+            db.dump(db_collection_name=collection, data=data)
 
 
 def argument_parser(description=None, cfg_files=None):
