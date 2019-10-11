@@ -7,6 +7,8 @@
 # @License: Please see LICENSE in project root
 
 import numpy as np
+import pickle
+
 import keras
 from keras import backend as K
 from keras.models import Sequential
@@ -21,6 +23,7 @@ def main(**kwargs):
     img_rows, img_cols = 28, 28
     num_classes = 10
     model = None
+    trained_on_ids = []
 
     for epoch in range(args["dl_epochs"][args["process"]]):
         # get a cursor to the data we want (stored internally in db object)
@@ -65,14 +68,23 @@ def main(**kwargs):
                                        num_classes=num_classes)
 
             # check that the data shape is correct finally before use
-            if(x_train.shape == (args["dl_batch_size"], 1,
+            # print(x_train.shape, (args["dl_batch_size"][args["process"]],
+            #                       1, img_rows, img_cols))
+            if(x_train.shape == (args["dl_batch_size"][args["process"]], 1,
                                  img_rows, img_cols))\
-                    or (x_train.shape == (args["dl_batch_size"],
+                    or (x_train.shape == (args["dl_batch_size"]
+                                          [args["process"]],
                                           img_rows, img_cols, 1)):
+                print("fitting")
                 model.fit(x_train, y_train,
                           batch_size=args["dl_batch_size"][args["process"]],
                           epochs=1,  # dont want to do epochs here
                           )
+                trained_on_ids.append(data_ids)
+                yield {
+                    "model": pickle.dumps(model),
+                    "trained_on": trained_on_ids,
+                }
 
     yield {}
 
