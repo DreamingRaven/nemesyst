@@ -71,9 +71,7 @@ def main(**kwargs):
                                           img_rows, img_cols, 1)):
                 model.fit(x_train, y_train,
                           batch_size=args["dl_batch_size"][args["process"]],
-                          epochs=1,  # args["dl_epochs"][args["process"]],
-                          # verbose=1,
-                          # validation_data=(x_test, y_test)
+                          epochs=1,  # dont want to do epochs here
                           )
 
     yield {}
