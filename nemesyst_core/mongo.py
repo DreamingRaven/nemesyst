@@ -282,7 +282,6 @@ class Mongo(object):
 
         db = client[db_name]
         self.args["db"] = db
-        self.args["gfs"] = gridfs.GridFS(db, collection=db_collection_name)
         return db
 
     connect.__annotations__ = {"db_ip": str,
@@ -507,7 +506,11 @@ class Mongo(object):
                        data={"subdict":{"hello": "world"}})
         """
         db = db if db is not None else self.args["db"]
-        db[str(db_collection_name)].insert_one(data)
+
+        if isinstance(data, dict) and data:
+            db[str(db_collection_name)].insert_one(data)
+        elif isinstance(data, tuple) and data:
+            gfs = gridfs.GridFS(db, collection=db_collection_name)
 
     dump.__annotations__ = {"db_collection_name": str, "data": dict,
                             "db": database.Database, "return": None}

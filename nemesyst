@@ -100,11 +100,9 @@ def import_data_from_generator(db, generator, collection):
     db.connect()
     for data in generator:
         # check if is dict and not empty, and not None all in one
-        if isinstance(data, dict) and data:
+        if(isinstance(data, dict) and data) or \
+                (isinstance(data, tuple) and data):
             db.dump(db_collection_name=collection, data=data)
-        # check if tuple and not empty
-        elif isinstance(data, tuple) and data:
-            pass
         else:
             print("yielded object not of type tuple or dict, ignoring")
 
