@@ -20,7 +20,12 @@ makedepends=('git')
 optdepends=('mongodb: local database creation'
 						'python-sphinx: documentation builder'
 						'python-sphinx_rtd_theme: documentation theme generator'
-						'python-sphinx-argparse: documentation auto generate argument list')
+						'python-sphinx-argparse: documentation auto generate argument list'
+						'python-scikit-learn: mnist example auto data fetcher'
+						'python-keras-applications: example neural networks'
+						'python-keras-preprocessing: example neural networks'
+						'python-keras: example neural networks'
+						)
 provides=()
 conflicts=()
 replaces=()
