@@ -17,6 +17,9 @@ from keras.layers import Conv2D, MaxPooling2D
 
 
 def main(**kwargs):
+    # there are issues using RTX cards with tensorflow:
+    # https://github.com/tensorflow/tensorflow/issues/24496
+
     # just making these a little nicer to use
     args = kwargs["args"]
     db = kwargs["db"]
