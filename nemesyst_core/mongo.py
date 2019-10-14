@@ -511,6 +511,7 @@ class Mongo(object):
             db[str(db_collection_name)].insert_one(data)
         elif isinstance(data, tuple) and data:
             gfs = gridfs.GridFS(db, collection=db_collection_name)
+            gfs.put(data[1], **data[0])
 
     dump.__annotations__ = {"db_collection_name": str, "data": dict,
                             "db": database.Database, "return": None}

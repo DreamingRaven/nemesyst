@@ -92,11 +92,12 @@ def main(**kwargs):
                 yield {
                     # metdata dictionary (used to find model)
                     "datetime_created": datetime.datetime.utcnow()
-                }, {
-                    # model dictionary (will be chunked)
-                    "model": pickle.dumps(model),
-                    "trained_on": trained_on_ids,
-                }
+                }, pickle.dumps(model)
+                # {
+                #     # model dictionary (will be chunked)
+                #     "model": pickle.dumps(model),
+                #     "trained_on": trained_on_ids,
+                # }
 
     yield {}
 
