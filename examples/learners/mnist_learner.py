@@ -7,6 +7,7 @@
 # @License: Please see LICENSE in project root
 
 import numpy as np
+import datetime
 import pickle
 
 import keras
@@ -84,7 +85,15 @@ def main(**kwargs):
                           epochs=1,  # dont want to do epochs here
                           )
                 trained_on_ids.append(data_ids)
+
+                # add checkpointing here against best validation accuracy
+
+                # yield metadata, model for gridfs
                 yield {
+                    # metdata dictionary (used to find model)
+                    "datetime_created": datetime.datetime.utcnow()
+                }, {
+                    # model dictionary (will be chunked)
                     "model": pickle.dumps(model),
                     "trained_on": trained_on_ids,
                 }

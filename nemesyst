@@ -102,6 +102,11 @@ def import_data_from_generator(db, generator, collection):
         # check if is dict and not empty, and not None all in one
         if isinstance(data, dict) and data:
             db.dump(db_collection_name=collection, data=data)
+        # check if tuple and not empty
+        elif isinstance(data, tuple) and data:
+            pass
+        else:
+            print("yielded object not of type tuple or dict, ignoring")
 
 
 def argument_parser(description=None, cfg_files=None):
