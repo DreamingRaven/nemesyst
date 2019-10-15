@@ -79,25 +79,24 @@ def main(**kwargs):
                     or (x_train.shape == (args["dl_batch_size"]
                                           [args["process"]],
                                           img_rows, img_cols, 1)):
-                print("fitting")
-                model.fit(x_train, y_train,
-                          batch_size=args["dl_batch_size"][args["process"]],
-                          epochs=1,  # dont want to do epochs here
-                          )
+                hist = model.fit(x_train, y_train,
+                                 batch_size=args["dl_batch_size"]
+                                 [args["process"]],
+                                 epochs=1,  # dont want to do epochs here
+                                 )
                 trained_on_ids.append(data_ids)
 
+                # print(hist.history['accuracy'][-1], type(hist.history['accuracy'][-1]))
                 # add checkpointing here against best validation accuracy
 
                 # yield metadata, model for gridfs
                 yield {
                     # metdata dictionary (used to find model)
-                    "datetime_created": datetime.datetime.utcnow()
+                    "model": "mnist_example",
+                    # "args": kwargs["args"],
+                    "accuracy": float(hist.history['accuracy'][-1]),
+                    "loss": float(hist.history['loss'][-1]),
                 }, pickle.dumps(model)
-                # {
-                #     # model dictionary (will be chunked)
-                #     "model": pickle.dumps(model),
-                #     "trained_on": trained_on_ids,
-                # }
 
     yield {}
 
