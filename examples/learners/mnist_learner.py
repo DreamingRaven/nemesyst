@@ -7,7 +7,6 @@
 # @License: Please see LICENSE in project root
 
 import numpy as np
-import datetime
 import pickle
 
 import keras
@@ -26,12 +25,12 @@ def inf_mnist_generator(db, args, example_dim, num_classes, pipeline=None):
     pipeline = pipeline if pipeline is not None else [{"$match": {}}]
     # loop infiniteley over pipeline
     while True:
-        db.getCursor(db_collection_name=str(args["data_collection"]
-                                            [args["process"]]),
-                     db_pipeline=pipeline)
+        c = db.getCursor(db_collection_name=str(args["data_collection"]
+                                                [args["process"]]),
+                         db_pipeline=pipeline)
         # itetate through the data in batches to minimise requests
         for data_batch in db.getBatches(db_batch_size=args["dl_batch_size"]
-                                        [args["process"]]):
+                                        [args["process"]], db_data_cursor=c):
             # we recommend you take a quick read of:
             # https://book.pythontips.com/en/latest/map_filter.html
             y = list(map(lambda d: d["y"], data_batch))
@@ -45,12 +44,12 @@ def inf_mnist_generator(db, args, example_dim, num_classes, pipeline=None):
                 y = y.reshape((y.shape[0], 1))
                 x = x.reshape((x.shape[0], 1,
                                example_dim[0], example_dim[1]))
-                input_shape = (1, example_dim[0], example_dim[1])
+                # input_shape = (1, example_dim[0], example_dim[1])
             else:
                 y = y.reshape((y.shape[0], 1))
                 x = x.reshape((x.shape[0],
                                example_dim[0], example_dim[1], 1))
-                input_shape = (example_dim[0], example_dim[1], 1)
+                # input_shape = (example_dim[0], example_dim[1], 1)
 
             # normalising to 0-1
             x = x.astype('float32')
@@ -59,6 +58,7 @@ def inf_mnist_generator(db, args, example_dim, num_classes, pipeline=None):
             # convert class vectors to binary class matrices
             y = keras.utils.to_categorical(y, num_classes)
 
+            # returning completeley propper data, batch by batch thats all.
             yield x, y
 
 
@@ -73,75 +73,30 @@ def main(**kwargs):
     num_classes = 10
     model = None
     best_model = None
-    trained_on_ids = []
+    train_generator = inf_mnist_generator(db=db, args=args,
+                                          example_dim=(img_rows, img_cols),
+                                          num_classes=num_classes,
+                                          pipeline=None)
 
-    for epoch in range(args["dl_epochs"][args["process"]]):
-        # get a cursor to the data we want (stored internally in db object)
-        args["pylog"]("Epoch:", epoch)
-        db.getCursor(db_collection_name=str(args["data_collection"]
-                                            [args["process"]]),
-                     db_pipeline=[{"$match": {}}])  # using an empty pipeline
+    if K.image_data_format() == 'channels_first':
+        input_shape = (1, img_rows, img_cols)
+    else:
+        input_shape = (img_rows, img_cols, 1)
 
-        # itetate through the data in batches to minimise requests
-        for data_batch in db.getBatches(db_batch_size=args["dl_batch_size"]
-                                        [args["process"]]):
-            # we recommend you take a quick read of:
-            # https://book.pythontips.com/en/latest/map_filter.html
-            y_train = list(map(lambda d: d["y"], data_batch))
-            y_train = np.array(y_train)  # converting list to numpy ndarray
+    model = generate_model(input_shape=input_shape,
+                           num_classes=num_classes)
+    model.fit_generator(generator=train_generator)
 
-            x_train = list(map(lambda d: d["x"], data_batch))
-            x_train = np.array(x_train)  # converting nlists to ndarray
-
-            # shaping the np array into whatever keras is asking for
-            if K.image_data_format() == 'channels_first':
-                y_train = y_train.reshape((y_train.shape[0], 1))
-                x_train = x_train.reshape((x_train.shape[0], 1,
-                                           img_rows, img_cols))
-                input_shape = (1, img_rows, img_cols)
-            else:
-                y_train = y_train.reshape((y_train.shape[0], 1))
-                x_train = x_train.reshape((x_train.shape[0],
-                                           img_rows, img_cols, 1))
-                input_shape = (img_rows, img_cols, 1)
-
-            # collecting the data trained with for traceability as list-list
-            data_ids = list(map(lambda d: d["_id"], data_batch))
-
-            # normalising to 0-1
-            x_train = x_train.astype('float32')
-            x_train /= 255
-
-            # convert class vectors to binary class matrices
-            y_train = keras.utils.to_categorical(y_train, num_classes)
-
-            # ensuring model is not recreated every time
-            if model is None:
-                model = generate_model(input_shape=input_shape,
-                                       num_classes=num_classes)
-
-            # check that the data shape is correct finally before use
-            if(x_train.shape == (args["dl_batch_size"][args["process"]], 1,
-                                 img_rows, img_cols))\
-                    or (x_train.shape == (args["dl_batch_size"]
-                                          [args["process"]],
-                                          img_rows, img_cols, 1)):
-                hist = model.fit(x_train, y_train,
-                                 batch_size=args["dl_batch_size"]
-                                 [args["process"]],
-                                 epochs=1,  # dont want to do epochs here
-                                 )
-                trained_on_ids.append(data_ids)
-                excluded_keys = ["pylog", "db_password"]
-                # yield metadata, model for gridfs
-                best_model = ({
-                    # metdata dictionary (used to find model)
-                    "model": "mnist_example",
-                    "args": {k: args[k] for k in set(list(args.keys())) - \
-                             set(excluded_keys)},
-                    "accuracy": float(hist.history['accuracy'][-1]),
-                    "loss": float(hist.history['loss'][-1]),
-                }, pickle.dumps(model))
+    excluded_keys = ["pylog", "db_password"]
+    # yield metadata, model for gridfs
+    best_model = ({
+        # metdata dictionary (used to find model)
+        "model": "mnist_example",
+        "args": {k: args[k] for k in set(list(args.keys())) - \
+                 set(excluded_keys)},
+        # "accuracy": float(hist.history['accuracy'][-1]),
+        # "loss": float(hist.history['loss'][-1]),
+    }, pickle.dumps(model))
 
     yield best_model
 
