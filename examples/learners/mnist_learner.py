@@ -27,6 +27,7 @@ def main(**kwargs):
     img_rows, img_cols = 28, 28
     num_classes = 10
     model = None
+    best_model = None
     trained_on_ids = []
 
     for epoch in range(args["dl_epochs"][args["process"]]):
@@ -47,6 +48,7 @@ def main(**kwargs):
             x_train = list(map(lambda d: d["x"], data_batch))
             x_train = np.array(x_train)  # converting nlists to ndarray
 
+            # shaping the np array into whatever keras is asking for
             if K.image_data_format() == 'channels_first':
                 y_train = y_train.reshape((y_train.shape[0], 1))
                 x_train = x_train.reshape((x_train.shape[0], 1,
@@ -58,8 +60,10 @@ def main(**kwargs):
                                            img_rows, img_cols, 1))
                 input_shape = (img_rows, img_cols, 1)
 
+            # collecting the data trained with for traceability as list-list
             data_ids = list(map(lambda d: d["_id"], data_batch))
 
+            # normalising to 0-1
             x_train = x_train.astype('float32')
             x_train /= 255
 
@@ -72,8 +76,6 @@ def main(**kwargs):
                                        num_classes=num_classes)
 
             # check that the data shape is correct finally before use
-            # print(x_train.shape, (args["dl_batch_size"][args["process"]],
-            #                       1, img_rows, img_cols))
             if(x_train.shape == (args["dl_batch_size"][args["process"]], 1,
                                  img_rows, img_cols))\
                     or (x_train.shape == (args["dl_batch_size"]
@@ -85,20 +87,18 @@ def main(**kwargs):
                                  epochs=1,  # dont want to do epochs here
                                  )
                 trained_on_ids.append(data_ids)
-
-                # print(hist.history['accuracy'][-1], type(hist.history['accuracy'][-1]))
-                # add checkpointing here against best validation accuracy
-
+                excluded_keys = ["pylog", "db_password"]
                 # yield metadata, model for gridfs
-                yield {
+                best_model = ({
                     # metdata dictionary (used to find model)
                     "model": "mnist_example",
-                    # "args": kwargs["args"],
+                    "args": {k: args[k] for k in set(list(args.keys())) - \
+                             set(excluded_keys)},
                     "accuracy": float(hist.history['accuracy'][-1]),
                     "loss": float(hist.history['loss'][-1]),
-                }, pickle.dumps(model)
+                }, pickle.dumps(model))
 
-    yield {}
+    yield best_model
 
 
 def generate_model(input_shape, num_classes):
