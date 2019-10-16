@@ -20,22 +20,29 @@ def main(**kwargs):
     # there are issues using RTX cards with tensorflow:
     # https://github.com/tensorflow/tensorflow/issues/24496
 
-    # just making these a little nicer to use
+    # just making these a little nicer to read but in a real application
+    # we would not want these hardcoded thankfully the database can provide!
     args = kwargs["args"]
     db = kwargs["db"]
     img_rows, img_cols = 28, 28
     num_classes = 10
-    model = None
-    best_model = None
+    # creating two database based generators iterate quickly through the data
+    # these are not random they will split data using 60000 as the boundary
     train_generator = inf_mnist_generator(db=db, args=args,
                                           example_dim=(img_rows, img_cols),
                                           num_classes=num_classes,
-                                          pipeline=None)
+                                          pipeline=[{"$match":
+                                                     {"img_num":
+                                                      {"$lt": 60000}}}
+                                                    ])
     test_generator = inf_mnist_generator(db=db, args=args,
                                          example_dim=(img_rows, img_cols),
                                          num_classes=num_classes,
-                                         pipeline=None)
-
+                                         pipeline=[{"$match":
+                                                    {"img_num":
+                                                     {"$gte": 60000}}}
+                                                   ])
+    # ensuring our input shape is in whatever style keras backend wants
     if K.image_data_format() == 'channels_first':
         input_shape = (1, img_rows, img_cols)
     else:
@@ -45,9 +52,9 @@ def main(**kwargs):
                            num_classes=num_classes)
     model.summary()
     hist = model.fit_generator(generator=train_generator,
-                               steps_per_epoch=219,
+                               steps_per_epoch=219,  # ceil(70000/32)
                                validation_data=test_generator,
-                               validation_steps=219)
+                               validation_steps=219)  # can be fetched from db
 
     excluded_keys = ["pylog", "db_password"]
     # yield metadata, model for gridfs
@@ -67,15 +74,15 @@ def generate_model(input_shape, num_classes):
     """Generate the keras CNN"""
     model = Sequential()
     model.add(Conv2D(32, kernel_size=(3, 3),
-                     activation='relu',
+                     activation="relu",
                      input_shape=input_shape))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Conv2D(64, (3, 3), activation="relu"))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
+    model.add(Dense(128, activation="relu"))
     model.add(Dropout(0.5))
-    model.add(Dense(num_classes, activation='softmax'))
+    model.add(Dense(num_classes, activation="softmax"))
 
     model.compile(loss=keras.losses.categorical_crossentropy,
                   optimizer=keras.optimizers.Adadelta(),
@@ -84,10 +91,7 @@ def generate_model(input_shape, num_classes):
 
 
 def inf_mnist_generator(db, args, example_dim, num_classes, pipeline=None):
-    """Infinite generator of data for keras fit_generator.
-
-
-    """
+    """Infinite generator of data for keras fit_generator."""
     # empty pipeline if none provided
     pipeline = pipeline if pipeline is not None else [{"$match": {}}]
     # loop infiniteley over pipeline
