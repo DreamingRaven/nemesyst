@@ -17,6 +17,51 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 
 
+def inf_mnist_generator(db, args, example_dim, num_classes, pipeline=None):
+    """Infinite generator of data for keras fit_generator.
+
+
+    """
+    # empty pipeline if none provided
+    pipeline = pipeline if pipeline is not None else [{"$match": {}}]
+    # loop infiniteley over pipeline
+    while True:
+        db.getCursor(db_collection_name=str(args["data_collection"]
+                                            [args["process"]]),
+                     db_pipeline=pipeline)
+        # itetate through the data in batches to minimise requests
+        for data_batch in db.getBatches(db_batch_size=args["dl_batch_size"]
+                                        [args["process"]]):
+            # we recommend you take a quick read of:
+            # https://book.pythontips.com/en/latest/map_filter.html
+            y = list(map(lambda d: d["y"], data_batch))
+            y = np.array(y)  # converting list to numpy ndarray
+
+            x = list(map(lambda d: d["x"], data_batch))
+            x = np.array(x)  # converting nlists to ndarray
+
+            # shaping the np array into whatever keras is asking for
+            if K.image_data_format() == 'channels_first':
+                y = y.reshape((y.shape[0], 1))
+                x = x.reshape((x.shape[0], 1,
+                               example_dim[0], example_dim[1]))
+                input_shape = (1, example_dim[0], example_dim[1])
+            else:
+                y = y.reshape((y.shape[0], 1))
+                x = x.reshape((x.shape[0],
+                               example_dim[0], example_dim[1], 1))
+                input_shape = (example_dim[0], example_dim[1], 1)
+
+            # normalising to 0-1
+            x = x.astype('float32')
+            x /= 255
+
+            # convert class vectors to binary class matrices
+            y = keras.utils.to_categorical(y, num_classes)
+
+            yield x, y
+
+
 def main(**kwargs):
     # there are issues using RTX cards with tensorflow:
     # https://github.com/tensorflow/tensorflow/issues/24496
