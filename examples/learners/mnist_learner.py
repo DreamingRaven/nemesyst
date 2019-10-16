@@ -16,6 +16,73 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 
 
+def main(**kwargs):
+    # there are issues using RTX cards with tensorflow:
+    # https://github.com/tensorflow/tensorflow/issues/24496
+
+    # just making these a little nicer to use
+    args = kwargs["args"]
+    db = kwargs["db"]
+    img_rows, img_cols = 28, 28
+    num_classes = 10
+    model = None
+    best_model = None
+    train_generator = inf_mnist_generator(db=db, args=args,
+                                          example_dim=(img_rows, img_cols),
+                                          num_classes=num_classes,
+                                          pipeline=None)
+    test_generator = inf_mnist_generator(db=db, args=args,
+                                         example_dim=(img_rows, img_cols),
+                                         num_classes=num_classes,
+                                         pipeline=None)
+
+    if K.image_data_format() == 'channels_first':
+        input_shape = (1, img_rows, img_cols)
+    else:
+        input_shape = (img_rows, img_cols, 1)
+
+    model = generate_model(input_shape=input_shape,
+                           num_classes=num_classes)
+    model.summary()
+    hist = model.fit_generator(generator=train_generator,
+                               steps_per_epoch=219,
+                               validation_data=test_generator,
+                               validation_steps=219)
+
+    excluded_keys = ["pylog", "db_password"]
+    # yield metadata, model for gridfs
+    best_model = ({
+        # metdata dictionary (used to find model later)
+        "model": "mnist_example",
+        "args": {k: args[k] for k in set(list(args.keys())) - \
+                 set(excluded_keys)},
+        "accuracy": float(hist.history['accuracy'][-1]),
+        "loss": float(hist.history['loss'][-1]),
+    }, pickle.dumps(model))
+
+    yield best_model
+
+
+def generate_model(input_shape, num_classes):
+    """Generate the keras CNN"""
+    model = Sequential()
+    model.add(Conv2D(32, kernel_size=(3, 3),
+                     activation='relu',
+                     input_shape=input_shape))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+    model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(num_classes, activation='softmax'))
+
+    model.compile(loss=keras.losses.categorical_crossentropy,
+                  optimizer=keras.optimizers.Adadelta(),
+                  metrics=['accuracy'])
+    return model
+
+
 def inf_mnist_generator(db, args, example_dim, num_classes, pipeline=None):
     """Infinite generator of data for keras fit_generator.
 
@@ -60,62 +127,3 @@ def inf_mnist_generator(db, args, example_dim, num_classes, pipeline=None):
 
             # returning completeley propper data, batch by batch thats all.
             yield x, y
-
-
-def main(**kwargs):
-    # there are issues using RTX cards with tensorflow:
-    # https://github.com/tensorflow/tensorflow/issues/24496
-
-    # just making these a little nicer to use
-    args = kwargs["args"]
-    db = kwargs["db"]
-    img_rows, img_cols = 28, 28
-    num_classes = 10
-    model = None
-    best_model = None
-    train_generator = inf_mnist_generator(db=db, args=args,
-                                          example_dim=(img_rows, img_cols),
-                                          num_classes=num_classes,
-                                          pipeline=None)
-
-    if K.image_data_format() == 'channels_first':
-        input_shape = (1, img_rows, img_cols)
-    else:
-        input_shape = (img_rows, img_cols, 1)
-
-    model = generate_model(input_shape=input_shape,
-                           num_classes=num_classes)
-    model.fit_generator(generator=train_generator)
-
-    excluded_keys = ["pylog", "db_password"]
-    # yield metadata, model for gridfs
-    best_model = ({
-        # metdata dictionary (used to find model)
-        "model": "mnist_example",
-        "args": {k: args[k] for k in set(list(args.keys())) - \
-                 set(excluded_keys)},
-        # "accuracy": float(hist.history['accuracy'][-1]),
-        # "loss": float(hist.history['loss'][-1]),
-    }, pickle.dumps(model))
-
-    yield best_model
-
-
-def generate_model(input_shape, num_classes):
-    """Generate the keras CNN"""
-    model = Sequential()
-    model.add(Conv2D(32, kernel_size=(3, 3),
-                     activation='relu',
-                     input_shape=input_shape))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-    model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(num_classes, activation='softmax'))
-
-    model.compile(loss=keras.losses.categorical_crossentropy,
-                  optimizer=keras.optimizers.Adadelta(),
-                  metrics=['accuracy'])
-    return model
