@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "NEMESYST" "1" "Oct 07, 2019" "" "Nemesyst"
+.TH "NEMESYST" "1" "Oct 16, 2019" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.4.r23.9c34467
+nemesyst \- Nemesyst 2.0.4.r60.a86c257
 .
 .nr rst2man-indent-level 0
 .
@@ -304,7 +304,7 @@ See section_all\-options for a full list of options.
 Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines..UNINDENT
 .UNINDENT
 .sp
-Nemesyst uses MongoDB databases through PyMongo as a data store, and distribution mechanism. The database(s) are some of the most important aspects of the chain of processes, as nothing can operate without a properly functioning database. As such we have attempted to simplify operations on both the user scripts side and our side by abstracting the slightly raw pymongo interface into a much friendlier class of operations called section_mongo\&.
+Nemesyst uses MongoDB databases through \fI\%PyMongo\fP as a data store, and distribution mechanism. The database(s) are some of the most important aspects of the chain of processes, as nothing can operate without a properly functioning database. As such we have attempted to simplify operations on both the user scripts side and our side by abstracting the slightly raw \fI\%PyMongo\fP interface into a much friendlier class of operations called section_mongo\&.
 .sp
 A section_mongo object is automatically passed into every one of your desired scripts entry points, so that you can also easily operate on the database if you so choose although asside from our data generator we handle the majority of use cases before it reaches your scripts.
 .INDENT 0.0
@@ -395,6 +395,43 @@ nemesyst
 It is also relatively clean so there is little pre\-processing that is required other than turning it into a directly usable form.
 .sp
 The dataset will be downloaded for you by the cleaning module.
+.SS Requirements
+.sp
+Please ensure you have the following as a bare minimum:
+.INDENT 0.0
+.TP
+.B \fBexamples/requirements/mnist.txt\fP
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+ConfigArgParse>=0.14.0
+pymongo>=3.8.0
+future>=0.17.1
+scikit\-learn>=0.21.3
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+If you are using pip you can quickly install these using:
+.INDENT 0.0
+.TP
+.B section_files\-only pip requirements installation example:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+pip install \-r examples/requirements/mnist.txt
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .SS Configuring
 .sp
 For this example we have created a configuration file for you so there is nothing additional that needs to be done. It is advised that you read it through. It is a \fI\&.ini\fP style file. However each of these options can be passed in to Nemesyst as cli or environment options as well but we believed it would be a much nicer introduction to have them in a configuration file.
@@ -432,6 +469,9 @@ For this example we have created a configuration file for you so there is nothin
 # learning specific options
 ; \-\-dl\-learn=True                                               # nothing will be learned unless you tell nemesyst explicitly to do so even if other information is given
 \-\-dl\-learner=examples/learners/mnist_learner.py               # the path to the learner in this case MNIST example learner
+\-\-dl\-batch\-size=32                                            # set the batch sizes to use
+\-\-dl\-epochs=12                                                # set the number of epochs we want (times to train on the same data)
+\-\-dl\-output\-model\-collection=models
 
 # infering specific options
 ; \-\-i\-predict=True                                              # nothing will be predicted unless you tell nemesyst explicitly to do so even if other information is given
@@ -566,14 +606,14 @@ def main(**kwargs):
     x, y = fetch_openml(\(aqmnist_784\(aq, version=1, return_X_y=True)
     utc_import_start_time = datetime.datetime.utcnow()
     print("importing mnist dataset to mongodb...")
-    # TODO: vectorize on outermost dimension (rowise not elementwise)
-    for i in range(len(x)):  # also change to enumerate
+    for i in range(len(x)):  # could use enumerate but only interested in index
         document = {
             "x": x[i].tolist(),     # converting to list to be bson compatible
-            "y": y[i],              # keeping as num could also be list
+            "y": int(y[i]),         # Ensuring is num
             "img_num": i,           # saving the image number
             "utc_import_time":  utc_import_start_time,
-            "dataset": "mnist"
+            "dataset": "mnist",
+            "img_count": len(x)
         }
         yield document
 
@@ -584,10 +624,216 @@ def main(**kwargs):
 .UNINDENT
 .SS Learning
 .sp
-placeholder
+To learn from the now cleaned database\-residing data, you can:
+.INDENT 0.0
+.TP
+.B section_files\-only learning example:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+\&./nemesyst \-\-config ./examples/configs/nemesyst/mnist.conf \-\-dl\-learn
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+This example trains a CNN, and yields a tuple \fB(metadata_dictionary, pickle.dumps(model))\fP which is then stored in \fI\%MongoDB\fP using gridfs as most models exceed the base \fI\%MongoDB\fP 16MB document size limit.
+This example is derived from one of the pre\-existing \fI\%Keras\fP \fI\%MNIST\fP examples, but transformed into a relatively efficient Nemesyst variant.
+The major differences are that we use \fIfit_generator\fP which takes a generator (in our case a database cursor and pre\-processor) for the training set, and another generator for the validation set. For this example we have simply validated against the test set as we aren’t attempting to blind ourselves for the purposes of scientific rigor and overfitting prevention.
+Care should be taken in reading the pipelines as they can be quite complex operations to solve very tough problems, but here we simply set them to separate the dataset into train, and validation.
+.INDENT 0.0
+.TP
+.B \fBexamples/learners/mnist_learner.py\fP
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+# @Author: George Onoufriou <archer>
+# @Date:   2019\-08\-16
+# @Email:  george raven community at pm dot me
+# @Filename: mnist_learner.py
+# @Last modified by:   archer
+# @Last modified time: 2019\-10\-09T14:35:50+01:00
+# @License: Please see LICENSE in project root
+
+import numpy as np
+import pickle
+
+import keras
+from keras import backend as K
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Conv2D, MaxPooling2D
+
+
+def main(**kwargs):
+    """Main entry point called by Nemesyst, always yields dictionary or None.
+
+    :param **kwargs: Generic input method to handle infinite dict\-args.
+    :rtype: yield dict
+    """
+    # there are issues using RTX cards with tensorflow:
+    # https://github.com/tensorflow/tensorflow/issues/24496
+
+    # just making these a little nicer to read but in a real application
+    # we would not want these hardcoded thankfully the database can provide!
+    args = kwargs["args"]
+    db = kwargs["db"]
+    img_rows, img_cols = 28, 28
+    num_classes = 10
+    # creating two database generators to iterate quickly through the data
+    # these are not random they will split data using 60000 as the boundary
+    train_generator = inf_mnist_generator(db=db, args=args,
+                                          example_dim=(img_rows, img_cols),
+                                          num_classes=num_classes,
+                                          pipeline=[{"$match":
+                                                     {"img_num":
+                                                      {"$lt": 60000}}}
+                                                    ])
+    test_generator = inf_mnist_generator(db=db, args=args,
+                                         example_dim=(img_rows, img_cols),
+                                         num_classes=num_classes,
+                                         pipeline=[{"$match":
+                                                    {"img_num":
+                                                     {"$gte": 60000}}}
+                                                   ])
+    # ensuring our input shape is in whatever style keras backend wants
+    if K.image_data_format() == \(aqchannels_first\(aq:
+        input_shape = (1, img_rows, img_cols)
+    else:
+        input_shape = (img_rows, img_cols, 1)
+
+    model = generate_model(input_shape=input_shape,
+                           num_classes=num_classes)
+    model.summary()
+    hist = model.fit_generator(generator=train_generator,
+                               steps_per_epoch=219,  # ceil(70000/32)
+                               validation_data=test_generator,
+                               validation_steps=219)  # can be fetched from db
+
+    excluded_keys = ["pylog", "db_password"]
+    # yield metadata, model for gridfs
+    best_model = ({
+        # metdata dictionary (used to find model later)
+        "model": "mnist_example",
+        "args": {k: args[k] for k in set(list(args.keys())) \- \e
+                 set(excluded_keys)},
+        "accuracy": float(hist.history[\(aqaccuracy\(aq][\-1]),
+        "loss": float(hist.history[\(aqloss\(aq][\-1]),
+    }, pickle.dumps(model))
+
+    yield best_model
+
+
+def generate_model(input_shape, num_classes):
+    """Generate the keras CNN"""
+    model = Sequential()
+    model.add(Conv2D(32, kernel_size=(3, 3),
+                     activation="relu",
+                     input_shape=input_shape))
+    model.add(Conv2D(64, (3, 3), activation="relu"))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+    model.add(Flatten())
+    model.add(Dense(128, activation="relu"))
+    model.add(Dropout(0.5))
+    model.add(Dense(num_classes, activation="softmax"))
+
+    model.compile(loss=keras.losses.categorical_crossentropy,
+                  optimizer=keras.optimizers.Adadelta(),
+                  metrics=[\(aqaccuracy\(aq])
+    return model
+
+
+def inf_mnist_generator(db, args, example_dim, num_classes, pipeline=None):
+    """Infinite generator of data for keras fit_generator.
+
+    :param db: Mongo() object to use to fetch data.
+    :param args: The user provided args and defaults for adaptation.
+    :param example_dim: The tuple dimensions of a single example (row, col).
+    :param pipeline: The MongoDB aggregate pipeline [{},{},{}] to use.
+    :type db: Mongo
+    :type args: dict
+    :type example_dim: tuple
+    :type num_classes: int
+    :type pipeline: list(dict())
+    :return: Tuple of a single data batch (x_batch,y_batch).
+    :rtype: tuple
+    """
+    # empty pipeline if none provided
+    pipeline = pipeline if pipeline is not None else [{"$match": {}}]
+    # loop infiniteley over pipeline
+    while True:
+        c = db.getCursor(db_collection_name=str(args["data_collection"]
+                                                [args["process"]]),
+                         db_pipeline=pipeline)
+        # itetate through the data in batches to minimise requests
+        for data_batch in db.getBatches(db_batch_size=args["dl_batch_size"]
+                                        [args["process"]], db_data_cursor=c):
+            # we recommend you take a quick read of:
+            # https://book.pythontips.com/en/latest/map_filter.html
+            y = list(map(lambda d: d["y"], data_batch))
+            y = np.array(y)  # converting list to numpy ndarray
+
+            x = list(map(lambda d: d["x"], data_batch))
+            x = np.array(x)  # converting nlists to ndarray
+
+            # shaping the np array into whatever keras is asking for
+            if K.image_data_format() == \(aqchannels_first\(aq:
+                y = y.reshape((y.shape[0], 1))
+                x = x.reshape((x.shape[0], 1,
+                               example_dim[0], example_dim[1]))
+                # input_shape = (1, example_dim[0], example_dim[1])
+            else:
+                y = y.reshape((y.shape[0], 1))
+                x = x.reshape((x.shape[0],
+                               example_dim[0], example_dim[1], 1))
+                # input_shape = (example_dim[0], example_dim[1], 1)
+
+            # normalising to 0\-1
+            x = x.astype(\(aqfloat32\(aq)
+            x /= 255
+
+            # convert class vectors to binary class matrices
+            y = keras.utils.to_categorical(y, num_classes)
+
+            # returning completeley propper data, batch by batch thats all.
+            yield x, y
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .SS Inferring
 .sp
-placeholder
+\fBWARNING:\fP
+.INDENT 0.0
+.INDENT 3.5
+Work in progress section
+.UNINDENT
+.UNINDENT
+.sp
+In this stage we retrieve the model trained previously stored in \fI\%MongoDB\fP as \fI\%gridfs\fP chunks and unpack the model again for reuse and prediction.
+We can predict using the \fI\%gridfs\fP stored model by passing:
+.INDENT 0.0
+.TP
+.B section_files\-only inferring example:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+\&./nemesyst \-\-config ./examples/configs/nemesyst/mnist.conf \-\-i\-predict
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .SH SERVING
 .sp
 Nemesyst uses \fI\%MongoDB\fP as its primary message passing interface. This page will more elaborate on using Nemesyst with different database setups, debugging, common issues, and any nitty\-gritty details that may be necessary to discuss.
@@ -676,11 +922,21 @@ If there is no \fI\%userAdmin or userAdminAnyDatabase\fP then unless expressly c
 .UNINDENT
 .UNINDENT
 .SS Nemesyst
+.sp
+Nemesyst can be used to log you in to the mongo shell although this feature should not be depended on, and instead it is recommended to use mongo for anything more complicated than simple testing. You will need to provide any other options like ip port etc if it is not using the defaults.
 .INDENT 0.0
 .TP
-.B todo
-Include instructions for logging into \fI\%MongoDB\fP from Nemesyst.
-Still needs addition
+.B Bash shell simple all defaults example:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+nemesyst \-\-db\-login
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
 .UNINDENT
 .SS Mongo
 .sp
@@ -832,7 +1088,8 @@ usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
                 [\-\-data\-cleaner\-entry\-point DATA_CLEANER_ENTRY_POINT [DATA_CLEANER_ENTRY_POINT ...]]
                 [\-\-data\-collection DATA_COLLECTION [DATA_COLLECTION ...]]
                 [\-\-dl\-batch\-size DL_BATCH_SIZE [DL_BATCH_SIZE ...]]
-                [\-\-dl\-learn] [\-\-dl\-learner DL_LEARNER [DL_LEARNER ...]]
+                [\-\-dl\-epochs DL_EPOCHS [DL_EPOCHS ...]] [\-\-dl\-learn]
+                [\-\-dl\-learner DL_LEARNER [DL_LEARNER ...]]
                 [\-\-dl\-learner\-entry\-point DL_LEARNER_ENTRY_POINT [DL_LEARNER_ENTRY_POINT ...]]
                 [\-\-dl\-data\-collection DL_DATA_COLLECTION [DL_DATA_COLLECTION ...]]
                 [\-\-dl\-data\-pipeline DL_DATA_PIPELINE [DL_DATA_PIPELINE ...]]
@@ -921,6 +1178,11 @@ Default: [‘debug_data’]
 Batch size of the data to use.
 .sp
 Default: [32]
+.TP
+.B\-\-dl\-epochs
+Number of epochs to train on data.
+.sp
+Default: [1]
 .TP
 .B\-\-dl\-learn
 Use learner scripts.
