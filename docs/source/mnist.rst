@@ -13,6 +13,12 @@
 .. _mongodb: https://www.mongodb.com/
 .. |mongodb| replace:: MongoDB
 
+.. _gridfs: https://docs.mongodb.com/manual/core/gridfs/
+.. |gridfs| replace:: gridfs
+
+.. _keras: https://keras.io/
+.. |keras| replace:: Keras
+
 .. |files-only| replace:: :ref:`section_files-only`
 
 Full |mnist|_ Example
@@ -120,9 +126,7 @@ The example |mnist|_ cleaner is shown below for convenience.
 Learning
 ++++++++
 
-.. warning::
-
-  Work in progress section
+To learn from the now cleaned database-residing data, you can:
 
 :|files-only| learning example\::
 
@@ -130,13 +134,25 @@ Learning
 
     ./nemesyst --config ./examples/configs/nemesyst/mnist.conf --dl-learn
 
+This example trains a CNN, and yields a tuple ``(metadata_dictionary, pickle.dumps(model))`` which is then stored in |mongodb|_ using |gridfs| as most models exceed the base |mongodb|_ 16MB document size limit.
+This example is derived from one of the pre-existing |keras|_ |mnist|_ examples, but transformed into a relatively efficient Nemesyst variant.
+The major differences are that we use `fit_generator` which takes a generator (in our case a database cursor and pre-processor) for the training set, and another generator for the validation set. For this example we have simply validated against the test set as we aren't attempting to blind ourselves for the purposes of scientific rigor and overfitting prevention.
+Care should be taken in reading the pipelines as they can be quite complex operations to solve very tough problems, but here we simply set them to separate the dataset into train, and validation.
+
+:``examples/learners/mnist_learner.py``:
+
+  .. literalinclude:: ../../examples/learners/mnist_learner.py
+
 Inferring
 +++++++++
 
 .. warning::
 
   Work in progress section
-  
+
+In this stage we retrieve the model trained previously stored in |mongodb|_ as |gridfs|_ chunks and unpack the model again for reuse and prediction.
+We can predict using the |gridfs|_ stored model by passing:
+
 :|files-only| inferring example\::
 
   .. parsed-literal::
