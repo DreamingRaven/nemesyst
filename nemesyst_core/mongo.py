@@ -41,6 +41,7 @@ class Mongo(object):
         args = args if args is not None else dict()
         self.home = os.path.expanduser("~")
         defaults = {
+            # generic options section
             "db_user_name": "groot",
             "db_password": "iamgroot",
             "db_config_path": None,
@@ -62,11 +63,11 @@ class Mongo(object):
             "db": None,
             "db_pipeline": None,
             "gfs": None,
-
+            # replica options section
             "db_replica_set_name": None,
             "db_replica_read_preference": "primary",
             "db_replica_max_staleness": -1,
-
+            # tls options section
             "db_tls": False,
             "db_tls_ca_file": None,
             "db_tls_certificate_key_file": None,
@@ -106,6 +107,10 @@ class Mongo(object):
             self.args["db_log_name"]
         db_config_path = db_config_path if db_config_path is not None else \
             self.args["db_config_path"]
+
+        self.stop()
+
+        time.sleep(2)
 
         # create directories
         subprocess.call([
@@ -247,34 +252,36 @@ class Mongo(object):
         client_args = {}
         client_args["host"] = ["{0}:{1}".format(str(db_ip), str(db_port))]
 
-        # authentication
-        client_args["authMechanism"] = db_authentication
-        client_args["username"] = db_user_name
-        client_args["password"] = db_password
-        client_args["authSource"] = db_authentication_database if \
-            db_authentication_database is not None else db_name
+        if (db_authentication is not None) and (db_authentication != ""):
+            # authentication
+            client_args["authMechanism"] = db_authentication
+            client_args["username"] = db_user_name
+            client_args["password"] = db_password
+            client_args["authSource"] = db_authentication_database if \
+                db_authentication_database is not None else db_name
 
-        # replica set
-        client_args["replicaset"] = db_replica_set_name
-        client_args["readPreference"] = db_replica_read_preference
-        client_args["maxStalenessSeconds"] = db_replica_max_staleness
+        if (db_replica_set_name is not None):
+            # replica set
+            client_args["replicaset"] = db_replica_set_name
+            client_args["readPreference"] = db_replica_read_preference
+            client_args["maxStalenessSeconds"] = db_replica_max_staleness
 
-        # tls
-        client_args["tls"] = db_tls  # False
-        client_args["tlsCAFile"] = db_tls_ca_file  # None
-        client_args["tlsCertificateKeyFile"] = db_tls_certificate_key_file
-        client_args["tlsCertificateKeyFilePassword"] =  \
-            db_tls_certificate_key_file_password  # None
+        if (db_tls is not None):
+            # tls
+            client_args["tls"] = db_tls  # False
+            client_args["tlsCAFile"] = db_tls_ca_file  # None
+            client_args["tlsCertificateKeyFile"] = db_tls_certificate_key_file
+            client_args["tlsCertificateKeyFilePassword"] =  \
+                db_tls_certificate_key_file_password  # None
+            client_args["tlsCRLFile"] = db_tls_crl_file  # None
         # TODO add these in next if user has them seperate
         # client_args["ssl_certfile"] = None
         # client_args["ssl_keyfile"] = None
-        client_args["tlsCRLFile"] = db_tls_crl_file  # None
 
         client = MongoClient(**client_args)
 
         db = client[db_name]
         self.args["db"] = db
-        self.args["gfs"] = gridfs.GridFS(db, collection=db_collection_name)
         return db
 
     connect.__annotations__ = {"db_ip": str,
@@ -296,7 +303,7 @@ class Mongo(object):
 
     def login(self, db_port=None, db_user_name=None, db_password=None,
               db_name=None, db_ip=None):
-        """Log in to database, interupt, and availiable via cli.
+        """Log in to database, interrupt, and availiable via cli.
 
         :param db_port: Database port to connect to.
         :param db_user_name: Database user to authenticate as.
@@ -499,7 +506,12 @@ class Mongo(object):
                        data={"subdict":{"hello": "world"}})
         """
         db = db if db is not None else self.args["db"]
-        db[str(db_collection_name)].insert_one(data)
+
+        if isinstance(data, dict) and data:
+            db[str(db_collection_name)].insert_one(data)
+        elif isinstance(data, tuple) and data:
+            gfs = gridfs.GridFS(db, collection=db_collection_name)
+            gfs.put(data[1], **data[0])
 
     dump.__annotations__ = {"db_collection_name": str, "data": dict,
                             "db": database.Database, "return": None}
@@ -570,6 +582,7 @@ class Mongo(object):
         if(cursor is not None):
             while(cursor.alive):
                 yield self._nextBatch(cursor, db_batch_size)
+            self.args["pylog"]("cursor is now dead.")
         else:
             self.args["pylog"]("Your cursor is None, please Mongo.connect()")
 

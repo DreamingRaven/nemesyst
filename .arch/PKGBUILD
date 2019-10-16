@@ -6,7 +6,7 @@
 # Maintainer: George Raven <GeorgeRavenCommunity AT pm dot me>
 pkgname=nemesyst-git
 _pkgsrcname="nemesyst"
-pkgver=2.0.2.r27.dc930b9
+pkgver=2.0.3.r35.d05318c
 pkgrel=1
 pkgdesc="Practical, distributed, hybrid-parallelism, deep learning framework."
 arch=('x86_64' 'aarch64')
@@ -20,7 +20,12 @@ makedepends=('git')
 optdepends=('mongodb: local database creation'
 						'python-sphinx: documentation builder'
 						'python-sphinx_rtd_theme: documentation theme generator'
-						'python-sphinx-argparse: documentation auto generate argument list')
+						'python-sphinx-argparse: documentation auto generate argument list'
+						'python-scikit-learn: mnist example auto data fetcher'
+						'python-keras-applications: example neural networks'
+						'python-keras-preprocessing: example neural networks'
+						'python-keras: example neural networks'
+						)
 provides=()
 conflicts=()
 replaces=()

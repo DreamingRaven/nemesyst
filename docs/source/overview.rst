@@ -2,7 +2,11 @@
 .. |all-options| replace:: :ref:`section_all-options`
 .. |automated| replace:: :ref:`section_automated`
 .. |mongo| replace:: :ref:`section_mongo`
+
+.. _mongodb: https://www.mongodb.com/
 .. |mongodb| replace:: MongoDB
+
+.. _pymongo: https://api.mongodb.com/python/current/
 .. |pymongo| replace:: PyMongo
 
 .. _page_overview:
@@ -87,13 +91,17 @@ See |all-options| for a full list of options.
 
     Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
 
-Nemesyst uses |mongodb| databases through |pymongo| as a data store, and distribution mechanism. The database(s) are some of the most important aspects of the chain of processes, as nothing can operate without a properly functioning database. As such we have attempted to simplify operations on both the user scripts side and our side by abstracting the slightly raw pymongo interface into a much friendlier class of operations called |mongo|.
+Nemesyst uses |mongodb| databases through |pymongo|_ as a data store, and distribution mechanism. The database(s) are some of the most important aspects of the chain of processes, as nothing can operate without a properly functioning database. As such we have attempted to simplify operations on both the user scripts side and our side by abstracting the slightly raw |pymongo|_ interface into a much friendlier class of operations called |mongo|.
 
 A |mongo| object is automatically passed into every one of your desired scripts entry points, so that you can also easily operate on the database if you so choose although asside from our data generator we handle the majority of use cases before it reaches your scripts.
 
 :|automated| example\::
 
   .. literalinclude:: ../../tests/serving.sh
+
+.. note::
+
+  Please see :ref:`page_serving` for more in depth serving with Nemesyst
 
 .. _section_learning:
 
@@ -112,10 +120,13 @@ See |all-options| for a full list of options.
 
   .. literalinclude:: ../../tests/learning.sh
 
-.. _section_infering:
+.. warning::
+  Special attention should be paid to the size of the resultant neural networks. Beyond a certain size it will be necessary to store them as GridFS objects. The basic GridFS functionality is included in nemesyst's :ref:`section_mongo` however this is still experimental and should not be depended upon at this time.
 
-Infering / predicting
-*********************
+.. _section_inferring:
+
+Inferring / predicting
+**********************
 
 As of: `2.0.2.r7.1cf3eab <https://github.com/DreamingRaven/nemesyst/commit/1cf3eab0dd6196c9065f43e9b231a50687f67065>`_
 
@@ -125,7 +136,7 @@ See |all-options| for a full list of options.
     :alt: Nemesyst inference puzzle diagram.
     :figclass: align-center
 
-    Infering is the stage where the model(s) are used to predict on newly provided data.
+    Inferring is the stage where the model(s) are used to predict on newly provided data.
 
 :|files-only| example\::
 
