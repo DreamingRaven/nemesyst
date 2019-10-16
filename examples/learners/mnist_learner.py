@@ -17,6 +17,11 @@ from keras.layers import Conv2D, MaxPooling2D
 
 
 def main(**kwargs):
+    """Main entry point called by Nemesyst, always yields dictionary or None.
+
+    :param **kwargs: Generic input method to handle infinite dict-args.
+    :rtype: yield dict
+    """
     # there are issues using RTX cards with tensorflow:
     # https://github.com/tensorflow/tensorflow/issues/24496
 
@@ -26,7 +31,7 @@ def main(**kwargs):
     db = kwargs["db"]
     img_rows, img_cols = 28, 28
     num_classes = 10
-    # creating two database based generators iterate quickly through the data
+    # creating two database generators to iterate quickly through the data
     # these are not random they will split data using 60000 as the boundary
     train_generator = inf_mnist_generator(db=db, args=args,
                                           example_dim=(img_rows, img_cols),
@@ -91,7 +96,20 @@ def generate_model(input_shape, num_classes):
 
 
 def inf_mnist_generator(db, args, example_dim, num_classes, pipeline=None):
-    """Infinite generator of data for keras fit_generator."""
+    """Infinite generator of data for keras fit_generator.
+
+    :param db: Mongo() object to use to fetch data.
+    :param args: The user provided args and defaults for adaptation.
+    :param example_dim: The tuple dimensions of a single example (row, col).
+    :param pipeline: The MongoDB aggregate pipeline [{},{},{}] to use.
+    :type db: Mongo
+    :type args: dict
+    :type example_dim: tuple
+    :type num_classes: int
+    :type pipeline: list(dict())
+    :return: Tuple of a single data batch (x_batch,y_batch).
+    :rtype: tuple
+    """
     # empty pipeline if none provided
     pipeline = pipeline if pipeline is not None else [{"$match": {}}]
     # loop infiniteley over pipeline
