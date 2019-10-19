@@ -1,5 +1,8 @@
 .. _page_installation:
 
+.. _git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+.. |git| replace:: git
+
 Installation
 ============
 
@@ -7,6 +10,10 @@ Installation
 
     Certain distributions link ``python`` to ``python2`` and others link it to ``python3``.
     For disambiguation python, pip, and virtualenv shall mean their python v3 versions here, i.e. ``python3``, ``pip3``, ``virtualenv3``.
+
+.. note::
+
+    You will need to have |git|_ installed for all bellow methods to work (except if you are on Archlinux).
 
 .. _section_automated:
 
