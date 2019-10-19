@@ -3,6 +3,9 @@
 .. _git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 .. |git| replace:: git
 
+.. _mongodb: https://www.mongodb.com/
+.. |mongodb| replace:: MongoDB
+
 Installation
 ============
 
@@ -14,6 +17,7 @@ Installation
 .. note::
 
     You will need to have |git|_ installed for most below methods to work.
+    You will also need |mongodb|_ if you intend to create a local database, (more than likeley), but Nemesyst will still connect to already running databases without it if you happen to have one already.
 
 .. _section_automated:
 
