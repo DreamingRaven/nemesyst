@@ -13,7 +13,7 @@ Installation
 
 .. note::
 
-    You will need to have |git|_ installed for all bellow methods to work (except if you are on Archlinux).
+    You will need to have |git|_ installed for most below methods to work.
 
 .. _section_automated:
 

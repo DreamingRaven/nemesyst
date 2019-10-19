@@ -46,6 +46,10 @@ If you are using pip you can quickly install these using:
 
     pip install -r examples/requirements/mnist.txt
 
+.. note::
+
+    Please also ensure you have the Nemesyst files at hand ( |files-only| ) as they have all the extra files you will need later on, which are only present in |files-only|
+
 .. _section_mnist_config:
 
 Configuring
