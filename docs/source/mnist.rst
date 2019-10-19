@@ -32,7 +32,7 @@ The dataset will be downloaded for you by the cleaning module.
 Requirements
 ++++++++++++
 
-Please ensure you have the following as a bare minimum:
+Please ensure you have both |mongodb|_ and the following installed as a bare minimum:
 
 :``examples/requirements/mnist.txt``:
 
