@@ -14,7 +14,7 @@ Installation
     Certain distributions link ``python`` to ``python2`` and others link it to ``python3``.
     For disambiguation python, pip, and virtualenv shall mean their python v3 versions here, i.e. ``python3``, ``pip3``, ``virtualenv3``.
 
-.. note::
+.. warning::
 
     You will need to have |git|_ installed for most below methods to work.
     You will also need |mongodb|_ if you intend to create a local database, (more than likeley), but Nemesyst will still connect to already running databases without it if you happen to have one already.
