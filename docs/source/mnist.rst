@@ -21,6 +21,8 @@
 
 .. |files-only| replace:: :ref:`section_files-only`
 
+.. _page_mnist:
+
 Full |mnist|_ Example
 =====================
 

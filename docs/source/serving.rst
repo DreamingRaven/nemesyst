@@ -15,6 +15,7 @@
 .. _mongo shell: https://docs.mongodb.com/manual/mongo/
 .. |mongo shell| replace:: Mongo shell
 
+.. _bash shell: https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29
 .. |bash shell| replace:: Bash shell
 
 .. _docker: https://www.docker.com/
