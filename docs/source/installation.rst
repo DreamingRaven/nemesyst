@@ -108,6 +108,8 @@ Python dependancies:
 Automated
 *********
 
+This section discusses the more automated and repeatable installation methods for Nemesyst, but they do not contain all the files needed to learn, and begin developing Nemesyst integrated applications, rather this includes just the barebones Nemesyst ready for your deployment.
+
 Generic
 +++++++
 
