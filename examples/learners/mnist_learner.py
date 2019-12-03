@@ -62,7 +62,9 @@ def main(**kwargs):
     hist = model.fit_generator(generator=train_generator,
                                steps_per_epoch=219,  # ceil(70000/32)
                                validation_data=test_generator,
-                               validation_steps=219)  # can be fetched from db
+                               validation_steps=219,
+                               epochs=args["dl_epochs"][args["process"]],
+                               initial_epoch=0)
 
     excluded_keys = ["pylog", "db_password"]
     # yield metadata, model for gridfs

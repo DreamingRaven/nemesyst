@@ -21,6 +21,8 @@
 
 .. |files-only| replace:: :ref:`section_files-only`
 
+.. _page_mnist:
+
 Full |mnist|_ Example
 =====================
 
@@ -32,7 +34,7 @@ The dataset will be downloaded for you by the cleaning module.
 Requirements
 ++++++++++++
 
-Please ensure you have the following as a bare minimum:
+Please ensure you have both |mongodb|_ and the following python dependancies installed as a bare minimum:
 
 :``examples/requirements/mnist.txt``:
 
@@ -45,6 +47,10 @@ If you are using pip you can quickly install these using:
   .. parsed-literal::
 
     pip install -r examples/requirements/mnist.txt
+
+.. note::
+
+    Please also ensure you have the Nemesyst files at hand ( |files-only| ) as they have all the extra files you will need later on, which are only present in |files-only|
 
 .. _section_mnist_config:
 
