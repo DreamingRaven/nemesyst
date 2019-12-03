@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mnist_learner.py
 # @Last modified by:   archer
-# @Last modified time: 2019-10-09T14:35:50+01:00
+# @Last modified time: 2019-10-17T00:36:20+01:00
 # @License: Please see LICENSE in project root
 
 import numpy as np
@@ -22,8 +22,11 @@ def main(**kwargs):
     :param **kwargs: Generic input method to handle infinite dict-args.
     :rtype: yield dict
     """
-    # there are issues using RTX cards with tensorflow:
-    # https://github.com/tensorflow/tensorflow/issues/24496
+    # # there are issues using RTX cards with tensorflow:
+    # # https://github.com/tensorflow/tensorflow/issues/24496
+    # # if this is the case please uncomment the following two lines:
+    # import os
+    # os.environ['CUDA_VISIBLE_DEVICES'] = '-1' # use cpu
 
     # just making these a little nicer to read but in a real application
     # we would not want these hardcoded thankfully the database can provide!
@@ -66,10 +69,12 @@ def main(**kwargs):
     best_model = ({
         # metdata dictionary (used to find model later)
         "model": "mnist_example",
+        # "validation_loss": float(hist.history["val_loss"][-1]),
+        # "validation_accuracy": float(hist.history["val_acc"][-1]),
+        "loss": float(hist.history["loss"][-1]),
+        "accuracy": float(hist.history["accuracy"][-1]),
         "args": {k: args[k] for k in set(list(args.keys())) - \
                  set(excluded_keys)},
-        "accuracy": float(hist.history['accuracy'][-1]),
-        "loss": float(hist.history['loss'][-1]),
     }, pickle.dumps(model))
 
     yield best_model
