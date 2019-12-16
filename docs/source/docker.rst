@@ -26,4 +26,10 @@ Installing TensorFlow in a container using devel, and GPU support:
 
 .. parsed-literal::
 
-  docker pull tensorflow/tensorflow:devel-gpu
+  docker pull tensorflow/tensorflow:devel-gpu-py3
+
+Running the tensorflow container:
+
+.. parsed-literal::
+
+    docker run --gpus all -it tensorflow/tensorflow:devel-gpu-py3 bash
