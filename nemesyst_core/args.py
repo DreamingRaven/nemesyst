@@ -1,111 +1,12 @@
-#!/usr/bin/env python3
-
-# @Author: George Onoufriou <georgeraven>
-# @Date:   2018-05-16
-# @Filename: nemesyst.py
+# @Author: archer
+# @Date:   2019-12-31T14:46:43+00:00
 # @Last modified by:   archer
-# @Last modified time: 2019-12-31T16:42:16+00:00
-# @License: Please see LICENSE file in project root
+# @Last modified time: 2019-12-31T16:39:58+00:00
 
-from __future__ import print_function, absolute_import   # python 2-3 compat
-# from six import reraise as raise_
 from future.utils import raise_
 import os
-import sys
-import copy
-import importlib
 import json
-import time
-import multiprocessing as mp
-
-# argument handler
-import getpass
 import configargparse
-# from nemesyst_core.args import argument_parser
-
-# mongodb handler
-from nemesyst_core.mongo import Mongo
-
-
-def main(args):
-    """Operate on processed args."""
-    db = Mongo(args)        # matching args will override defaults
-    args["pylog"] = print   # we can set a logger for now we will use standard
-    if(args["db_init"] is True):
-        db.init()           # creates database files
-        time.sleep(2)
-    if(args["db_start"] is True):
-        db.start()          # launches database
-    if(args["data_clean"] is True):
-        parallel_scripts(cleaner, args, scripts=args["data_cleaner"])
-    if(args["dl_learn"] is True):
-        parallel_scripts(learner, args, scripts=args["dl_learner"])
-    if(args["i_predict"] is True):
-        parallel_scripts(predictor, args, scripts=args["i_predictor"])
-    if(args["db_login"] is True):
-        db.login()          # logs in to database
-    if(args["db_stop"] is True):
-        db.stop()           # stops database
-
-
-main.__annotations__ = {"args": dict, "return": None}
-
-
-def parallel_scripts(function, args_m, scripts):
-    """Run given scripts in parallel by category."""
-    # creating process pool with context manager
-    with mp.Pool(processes=args_m["process_pool"]) as pool:
-        # calling each process pool
-        [pool.apply(function, args=(args_m, x)) for x in
-            range(len(scripts))]
-
-
-def cleaner(args_m, i):
-    """Atomic cleaner execution."""
-    args = copy.deepcopy(args_m)
-    db = Mongo(args)
-    args["process"] = i
-    gen = import_script(script=args["data_cleaner"][i],
-                        args=args, db=db,
-                        entry_point=args[
-                            "data_cleaner_entry_point"][i])
-    import_data_from_generator(db=db, generator=gen,
-                               collection=args["data_collection"][i])
-
-
-def learner(args_m, i):
-    """Atomic learner execution."""
-    args = copy.deepcopy(args_m)
-    db = Mongo(args)
-    args["process"] = i
-    gen = import_script(script=args["dl_learner"][i], args=args, db=db,
-                        entry_point=args["dl_learner_entry_point"][i])
-    import_data_from_generator(
-        db=db, generator=gen, collection=args["dl_output_model_collection"][i])
-
-
-def predictor(args_m, i):
-    """Atomic predictor execution."""
-    args = copy.deepcopy(args_m)
-    db = Mongo(args)
-    args["process"] = i
-    gen = import_script(script=args["i_predictor"][i], args=args, db=db,
-                        entry_point=args["i_predictor_entry_point"][i])
-    import_data_from_generator(
-        db=db, generator=gen,
-        collection=args["i_output_prediction_collection"][i])
-
-
-def import_data_from_generator(db, generator, collection):
-    """Import dictionary or list style data from generator to MongoDB."""
-    db.connect()
-    for data in generator:
-        # check if is dict and not empty, and not None all in one
-        if(isinstance(data, dict) and data) or \
-                (isinstance(data, tuple) and data):
-            db.dump(db_collection_name=collection, data=data)
-        else:
-            print("yielded object not of type tuple or dict, ignoring")
 
 
 def argument_parser(description=None, cfg_files=None):
@@ -443,6 +344,9 @@ def type_path(string):
     return os.path.abspath(string)
 
 
+type_path.__annotations__ = {"string": str, "return": str}
+
+
 def type_file_path_exists(string):
     """Cross platform file path existance parser."""
     string = os.path.abspath(string)
@@ -453,82 +357,14 @@ def type_file_path_exists(string):
         raise_(ValueError, str(string) + " does not exist.")
 
 
+type_file_path_exists.__annotations__ = {"string": str, "return": str}
+
+
 def type_pipeline_file_path(string):
+    """Cross platform json data loader."""
     fp = type_file_path_exists(string)
     with open(fp) as f:
         return json.load(f)
 
 
-type_path.__annotations__ = {"string": str, "return": str}
-
-
-def argument_handler(args, config_files, description, isNewConfig=False):
-    """Handle the argument parser."""
-    parser = argument_parser(description=description,
-                             cfg_files=config_files)
-    processed_args = parser.parse_args(args)
-    processed_args = vars(processed_args)
-    if(processed_args["update"] is True) and \
-            (processed_args["prevent_update"] is not True):
-        # this will reboot this script
-        new_args = [x for x in sys.argv if x != "-U"] + ["--prevent-update"]
-        print("updating and restarting nemesyst at:", __file__)
-        os.execv(__file__, new_args)
-    if(processed_args["config"] is not None) and (isNewConfig is False):
-        # this will reload this handler with a new config file
-        processed_args = argument_handler(args,
-                                          processed_args["config"] +
-                                          config_files,
-                                          description,
-                                          isNewConfig=True)  # prevent loop
-    if(processed_args["db_password"] is True):
-        processed_args["db_password"] = getpass.getpass()
-    return processed_args
-
-
-argument_handler.__annotations__ = {"args": list,
-                                    "description": str,
-                                    "cfg_files": list,
-                                    "return": any}
-
-
-def import_script(script, args, db, entry_point):
-    """Import script and call entry function."""
-    # get dir and file strings
-    module_dir, module_file = os.path.split(script)
-    # get name from file string if it has an extension for example
-    module_name = os.path.splitext(module_file)[0]
-    print("\nLaunching:", module_dir, module_file)
-    sys.path.append(module_dir)
-    script = importlib.import_module(module_name)
-    # get the address of the function we want to call
-    entryPointFunc = getattr(
-        script, entry_point)
-    # call this function with the provided arguments
-    return entryPointFunc(args=copy.deepcopy(args), db=db)
-
-
-def default_config_files():
-    """Default config file generator, for cleaner abstraction.
-
-    :return: ordered list of config file expansions
-    :rtype: list
-    """
-    config_files = [
-        "./nemesyst.d/*.conf",
-        "/etc/nemesyst/nemesyst.d/*.conf",
-    ]
-    return config_files
-
-
-if(__name__ == "__main__"):
-    # passing the 3 needed args to argument handler and main with minimal
-    # global footprint, so no assignment sorry
-    main(argument_handler(
-        # first arg, the set of cli args
-        args=sys.argv[1:],
-         # second arg, the list of default config locations
-         config_files=default_config_files(),
-         # the third arg, a description to be used in help
-         description="Nemesyst; Hybrid-parallelisation database deep learning."
-         ))
+type_pipeline_file_path.__annotations__ = {"string": str, "return": str}
