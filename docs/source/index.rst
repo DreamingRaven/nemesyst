@@ -26,4 +26,5 @@ Nemesyst
    serving
    options
    mongodb_handler
+   docker
    troubleshooting

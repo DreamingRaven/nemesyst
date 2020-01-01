@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "NEMESYST" "1" "Oct 16, 2019" "" "Nemesyst"
+.TH "NEMESYST" "1" "Dec 04, 2019" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.4.r60.a86c257
+nemesyst \- Nemesyst 2.0.5.r13.e7d980d
 .
 .nr rst2man-indent-level 0
 .
@@ -71,7 +71,178 @@ Certain distributions link \fBpython\fP to \fBpython2\fP and others link it to \
 For disambiguation python, pip, and virtualenv shall mean their python v3 versions here, i.e. \fBpython3\fP, \fBpip3\fP, \fBvirtualenv3\fP\&.
 .UNINDENT
 .UNINDENT
+.sp
+\fBWARNING:\fP
+.INDENT 0.0
+.INDENT 3.5
+You will need to have \fI\%git\fP, and \fI\%python\fP installed any of the below methods to work.
+You will also need \fI\%MongoDB\fP if you intend to create a local database, (more than likeley), but Nemesyst will still connect to already running databases without it if you happen to have one already.
+.UNINDENT
+.UNINDENT
+.sp
+This section will outline various methods for installation of Nemesyst, and its dependancies. Not all methods are equal there are slight variations between them, which are outlined in the respective sections below, along with instructions for each method:
+.INDENT 0.0
+.IP \(bu 2
+\fI\%Files\-only/ development\fP
+.INDENT 2.0
+.IP \(bu 2
+\fI\%Getting the files\fP
+.IP \(bu 2
+\fI\%Installing dependancies\fP
+.UNINDENT
+.IP \(bu 2
+\fI\%Automated\fP
+.INDENT 2.0
+.IP \(bu 2
+\fI\%Generic\fP
+.IP \(bu 2
+\fI\%Archlinux\fP
+.UNINDENT
+.IP \(bu 2
+\fI\%Manual\fP
+.INDENT 2.0
+.IP \(bu 2
+\fI\%Generic\fP
+.IP \(bu 2
+\fI\%Archlinux\fP
+.UNINDENT
+.IP \(bu 2
+\fI\%Virtual env\fP
+.UNINDENT
+.SS Files\-only/ development
+.sp
+This method of files\-only installation provides the user with all the additional utility files, and examples needed during development. This includes the files necessary for the page_mnist, and is advised when first starting to use Nemesyst so that you can better understand what is going on. In production however you do not need all these additional files so other slimmer/ more streamlined methods of installation are better.
+.INDENT 0.0
+.INDENT 3.5
+Pros:
+.INDENT 0.0
+.IP \(bu 2
+All the example files for quickly getting to grips with Nemesyst.
+.IP \(bu 2
+Easy to understand as the files are not filed away somewhere obscure.
+.IP \(bu 2
+Easy to install example dependancies as you can \fBpip install \-r requirements.txt\fP or whatever other requirements list we include.
+.IP \(bu 2
+Unit tests availiable.
+.UNINDENT
+.sp
+Cons:
+.INDENT 0.0
+.IP \(bu 2
+You are responsible for ensuring the requirements are met for Nemesyst, such as \fI\%python\fP, \fI\%git\fP, and \fI\%MongoDB\fP\&.
+.IP \(bu 2
+It is less repeatable/ deployable as most steps are manual as opposed to the other availiable methods of installation.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Getting the files
+.sp
+To retrieve the Nemesyst files you will need \fI\%git\fP installed. To download the Nemesyst directory in your current working directory you can run:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+git clone https://github.com/DreamingRaven/nemesyst
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Installing dependancies
+.sp
+To make use of Nemesyst directly now that you have the files you need to have installed:
+.sp
+System dependancies:
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.IP 1. 3
+\fI\%python\fP (required): Nemesyst is written in \fI\%python\fP, you wont get far without it.
+.IP 2. 3
+\fI\%git\fP (required): To install, and manage Nemesyst files.
+.IP 3. 3
+\fI\%MongoDB\fP (recommended): If you want to be able to create, and destroy a local \fI\%MongoDB\fP database.
+.IP 4. 3
+\fI\%Docker\fP (optional): If you want to manage local containerized \fI\%MongoDB\fP databases.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+Python dependancies:
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B \fB\&./nemesyst/requirements.txt\fP
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+ConfigArgParse>=0.14.0
+pymongo>=3.8.0
+future>=0.17.1
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+You can install these quickly using:
+.INDENT 7.0
+.TP
+.B \fI\%Bash shell\fP installing dependancies from file
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+pip install \-r \fB\&./nemesyst/requirements.txt\fP
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+or:
+.INDENT 7.0
+.TP
+.B \fI\%Bash shell\fP installing Nemesyst and dependancies using setup.py
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+python setup.py install
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+Optionally if you would like to build the Nemesyst documentation, and/ or use the full testing suite you will require \fB\&./nemesyst/docs/requirements.txt\fP:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sphinx>=2.1.2
+sphinx\-argparse>=0.2.5
+sphinx\-rtd\-theme>=0.4.3
+ConfigArgParse>=0.14.0
+pymongo>=3.8.0
+future>=0.17.1
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .SS Automated
+.sp
+This section discusses the more automated and repeatable installation methods for Nemesyst, but they do not contain all the files needed to learn, and begin developing Nemesyst integrated applications, rather this includes just the barebones Nemesyst ready for your deployment.
 .SS Generic
 .sp
 For now you can use pip via:
@@ -176,61 +347,6 @@ deactivate
 .fi
 .UNINDENT
 .UNINDENT
-.SS Files only/ development
-.sp
-Nemesyst minimally requires \fBnemesyst/requirements.txt\fP:
-.INDENT 0.0
-.INDENT 3.5
-.sp
-.nf
-.ft C
-ConfigArgParse>=0.14.0
-pymongo>=3.8.0
-future>=0.17.1
-
-.ft P
-.fi
-.UNINDENT
-.UNINDENT
-.sp
-All other methods will automatically install the requirements, however if you would rather just use the files as is without installation you will need to ensure these are installed.
-.sp
-\fBNOTE:\fP
-.INDENT 0.0
-.INDENT 3.5
-To build the Nemesyst documentation and full testing requires \fBnemesyst/docs/requirements.txt\fP:
-.INDENT 0.0
-.INDENT 3.5
-.sp
-.nf
-.ft C
-sphinx>=2.1.2
-sphinx\-argparse>=0.2.5
-sphinx\-rtd\-theme>=0.4.3
-ConfigArgParse>=0.14.0
-pymongo>=3.8.0
-future>=0.17.1
-
-.ft P
-.fi
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.sp
-Then just simply:
-.INDENT 0.0
-.INDENT 3.5
-.sp
-.nf
-.ft C
-git clone https://github.com/DreamingRaven/nemesyst
-.ft P
-.fi
-.UNINDENT
-.UNINDENT
-.sp
-We also have a two testers one \fBunit_test.py\fP for the nemesyst code only, then we also have \fBtests/test_everything.sh\fP which will test building the documentation, PKGBUILD, nemesyst, etc
 .SH OVERVIEW
 .sp
 \fBNOTE:\fP
@@ -397,7 +513,7 @@ It is also relatively clean so there is little pre\-processing that is required 
 The dataset will be downloaded for you by the cleaning module.
 .SS Requirements
 .sp
-Please ensure you have the following as a bare minimum:
+Please ensure you have both \fI\%MongoDB\fP and the following python dependancies installed as a bare minimum:
 .INDENT 0.0
 .TP
 .B \fBexamples/requirements/mnist.txt\fP
@@ -410,6 +526,8 @@ ConfigArgParse>=0.14.0
 pymongo>=3.8.0
 future>=0.17.1
 scikit\-learn>=0.21.3
+keras>=2.3.1
+tensorflow\-gpu>=2.0.0
 
 .ft P
 .fi
@@ -430,6 +548,13 @@ pip install \-r examples/requirements/mnist.txt
 .ft P
 .fi
 .UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
+Please also ensure you have the Nemesyst files at hand ( section_files\-only ) as they have all the extra files you will need later on, which are only present in section_files\-only
 .UNINDENT
 .UNINDENT
 .SS Configuring
@@ -657,7 +782,7 @@ Care should be taken in reading the pipelines as they can be quite complex opera
 # @Email:  george raven community at pm dot me
 # @Filename: mnist_learner.py
 # @Last modified by:   archer
-# @Last modified time: 2019\-10\-09T14:35:50+01:00
+# @Last modified time: 2019\-10\-17T00:36:20+01:00
 # @License: Please see LICENSE in project root
 
 import numpy as np
@@ -676,8 +801,11 @@ def main(**kwargs):
     :param **kwargs: Generic input method to handle infinite dict\-args.
     :rtype: yield dict
     """
-    # there are issues using RTX cards with tensorflow:
-    # https://github.com/tensorflow/tensorflow/issues/24496
+    # # there are issues using RTX cards with tensorflow:
+    # # https://github.com/tensorflow/tensorflow/issues/24496
+    # # if this is the case please uncomment the following two lines:
+    # import os
+    # os.environ[\(aqCUDA_VISIBLE_DEVICES\(aq] = \(aq\-1\(aq # use cpu
 
     # just making these a little nicer to read but in a real application
     # we would not want these hardcoded thankfully the database can provide!
@@ -713,17 +841,21 @@ def main(**kwargs):
     hist = model.fit_generator(generator=train_generator,
                                steps_per_epoch=219,  # ceil(70000/32)
                                validation_data=test_generator,
-                               validation_steps=219)  # can be fetched from db
+                               validation_steps=219,
+                               epochs=args["dl_epochs"][args["process"]],
+                               initial_epoch=0)
 
     excluded_keys = ["pylog", "db_password"]
     # yield metadata, model for gridfs
     best_model = ({
         # metdata dictionary (used to find model later)
         "model": "mnist_example",
+        # "validation_loss": float(hist.history["val_loss"][\-1]),
+        # "validation_accuracy": float(hist.history["val_acc"][\-1]),
+        "loss": float(hist.history["loss"][\-1]),
+        "accuracy": float(hist.history["accuracy"][\-1]),
         "args": {k: args[k] for k in set(list(args.keys())) \- \e
                  set(excluded_keys)},
-        "accuracy": float(hist.history[\(aqaccuracy\(aq][\-1]),
-        "loss": float(hist.history[\(aqloss\(aq][\-1]),
     }, pickle.dumps(model))
 
     yield best_model
@@ -1082,8 +1214,7 @@ Using the –config argument you may specify more config files, which will be pe
 .nf
 .ft C
 usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
-                [\-\-process\-pool PROCESS_POOL] [\-d DATA [DATA ...]]
-                [\-\-data\-clean]
+                [\-\-process\-pool PROCESS_POOL] [\-d DATA [DATA ...]] [\-\-data\-clean]
                 [\-\-data\-cleaner DATA_CLEANER [DATA_CLEANER ...]]
                 [\-\-data\-cleaner\-entry\-point DATA_CLEANER_ENTRY_POINT [DATA_CLEANER_ENTRY_POINT ...]]
                 [\-\-data\-collection DATA_COLLECTION [DATA_COLLECTION ...]]
@@ -1101,21 +1232,21 @@ usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
                 [\-\-i\-output\-prediction\-collection I_OUTPUT_PREDICTION_COLLECTION [I_OUTPUT_PREDICTION_COLLECTION ...]]
                 [\-\-i\-predict] [\-\-db\-replica\-set\-name DB_REPLICA_SET_NAME]
                 [\-\-db\-replica\-read\-preference DB_REPLICA_READ_PREFERENCE]
-                [\-\-db\-replica\-max\-staleness DB_REPLICA_MAX_STALENESS]
-                [\-\-db\-tls] [\-\-db\-tls\-ca\-file DB_TLS_CA_FILE]
+                [\-\-db\-replica\-max\-staleness DB_REPLICA_MAX_STALENESS] [\-\-db\-tls]
+                [\-\-db\-tls\-ca\-file DB_TLS_CA_FILE]
                 [\-\-db\-tls\-certificate\-key\-file DB_TLS_CERTIFICATE_KEY_FILE]
                 [\-\-db\-tls\-certificate\-key\-file\-password DB_TLS_CERTIFICATE_KEY_FILE_PASSWORD]
                 [\-\-db\-tls\-crl\-file DB_TLS_CRL_FILE] [\-l] [\-s] [\-S] [\-i]
-                [\-\-db\-user\-name DB_USER_NAME] [\-\-db\-password]
-                [\-\-db\-intervention] [\-\-db\-authentication DB_AUTHENTICATION]
+                [\-\-db\-user\-name DB_USER_NAME] [\-\-db\-password] [\-\-db\-intervention]
+                [\-\-db\-authentication DB_AUTHENTICATION]
                 [\-\-db\-authentication\-database DB_AUTHENTICATION_DATABASE]
                 [\-\-db\-user\-role DB_USER_ROLE] [\-\-db\-ip DB_IP]
                 [\-\-db\-bind\-ip DB_BIND_IP [DB_BIND_IP ...]] [\-\-db\-port DB_PORT]
                 [\-\-db\-name DB_NAME] [\-\-db\-collection\-name DB_COLLECTION_NAME]
                 [\-\-db\-config\-path DB_CONFIG_PATH] [\-\-db\-path DB_PATH]
                 [\-\-db\-log\-path DB_LOG_PATH] [\-\-db\-log\-name DB_LOG_NAME]
-                [\-\-db\-cursor\-timeout DB_CURSOR_TIMEOUT]
-                [\-\-db\-batch\-size DB_BATCH_SIZE] [\-\-db\-pipeline DB_PIPELINE]
+                [\-\-db\-cursor\-timeout DB_CURSOR_TIMEOUT] [\-\-db\-batch\-size DB_BATCH_SIZE]
+                [\-\-db\-pipeline DB_PIPELINE]
 .ft P
 .fi
 .UNINDENT
