@@ -1,6 +1,0 @@
-version: '2.3'
-
-services:
- nvidia-smi-test:
-  runtime: nvidia
-  image: nvidia/cuda:9.2-runtime-centos7
