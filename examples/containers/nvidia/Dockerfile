@@ -30,5 +30,6 @@ RUN mkdir ~/git && \
     git clone "https://github.com/DreamingRaven/nemesyst" && \
     cd ~/git/nemesyst && \
     git checkout ${branch} && \
-    cd ~/git && \
-    # echo "${user_password}" | sudo -S -v
+    cd ~/git
+
+# echo "${user_password}" | sudo -S -v

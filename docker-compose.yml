@@ -9,6 +9,12 @@
 version: "3.7"
 
 services:
+  
+  nemesyst:
+    build:
+      context: ./examples/containers/nvidia
+      dockerfile: Dockerfile
+
   mongodb:
     container_name: mongodb_server
     # this is the official image name to use so we dont have to create one
