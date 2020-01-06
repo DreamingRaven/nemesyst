@@ -9,11 +9,13 @@
 version: "3.7"
 
 services:
-  
+
   nemesyst:
     build:
       context: ./examples/containers/nvidia
       dockerfile: Dockerfile
+    depends_on:
+      - mongodb
 
   mongodb:
     container_name: mongodb_server
