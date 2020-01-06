@@ -10,3 +10,5 @@ RUN pacman -Syyuu sudo nvidia git --noconfirm && \
 
 RUN pacman -S python python-pip --noconfirm && \
     pip install "git+https://github.com/DreamingRaven/nemesyst.git#branch=master"
+
+# echo "${user_password}" | sudo -S ls
