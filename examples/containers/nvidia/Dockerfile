@@ -9,13 +9,10 @@ ARG user_password=archer
 # variable for which branch to use of nemesyst when installing it
 ARG branch=master
 
-# creating basic gpu capable archlinux system with user
-RUN pacman -Syyuu sudo nvidia git base-devel --noconfirm && \
+# creating basic gpu capable archlinux system with user and python
+RUN pacman -Syyuu sudo nvidia git base-devel python python-pip pyalpm --noconfirm && \
     useradd -m -p $(openssl passwd -1 ${user_password}) ${user_name} && \
     echo "${user_name} ALL=(ALL) ALL" >> /etc/sudoers
-
-# creating specific python system
-RUN pacman -S python python-pip pyalpm --noconfirm
 
 # swapping to our newly created user
 USER ${user_name}
@@ -27,6 +24,9 @@ RUN mkdir ~/git && \
     cd ~/git/pikaur && \
     echo "${user_password}" | makepkg -s --noconfirm && \
     echo "${user_password}" | sudo -S pacman -U pikaur*pkg.tar.xz --noconfirm
+
+# building cuda enabled tensorflow
+RUN pikaur -S tensorflow-cuda-git --noconfirm
 
 # clone, swap to desired branch, of nemesyst
 RUN cd ~/git && \
