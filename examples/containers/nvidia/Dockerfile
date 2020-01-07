@@ -23,12 +23,19 @@ RUN mkdir ~/git && \
     git clone "https://aur.archlinux.org/pikaur.git" && \
     cd ~/git/pikaur && \
     echo "${user_password}" | makepkg -s --noconfirm && \
-    echo "${user_password}" | sudo -S pacman -U pikaur*pkg.tar.xz --noconfirm
+    echo "${user_password}" | sudo -S pacman -U *pkg.tar.xz --noconfirm
 
-# building cuda enabled tensorflow
-RUN pikaur -S tensorflow-cuda-git --noconfirm
+# attempt to install any package in our case python-tensorflow-cuda
+RUN echo "${user_password}" | sudo -S pikaur -S python-tensorflow-cuda --noconfirm
 
-# clone, swap to desired branch, of nemesyst
+# # clone, build, and install tensorflow git
+# RUN cd ~/git && \
+#     git clone "https://aur.archlinux.org/tensorflow-git.git" && \
+#     cd ~/git/tensorflow-git && \
+#     echo "${user_password}" | makepkg -s --noconfirm && \
+#     echo "${user_password}" | sudo -S pacman -U *pkg.tar.xz --noconfirm
+
+# # clone, swap to desired branch, of nemesyst
 RUN cd ~/git && \
     git clone "https://github.com/DreamingRaven/nemesyst" && \
     cd ~/git/nemesyst && \
