@@ -22,7 +22,7 @@ USER ${user_name}
 # clone, build, and install pikaur
 RUN mkdir /home/${user_name}/git && \
     cd /home/${user_name}/git && \
-    git clone "https://github.com/DreamingRaven/pikaur" && \
+    git clone "https://github.com/actionless/pikaur" && \
     cd /home/${user_name}/git/pikaur && \
     makepkg -s --noconfirm && \
     echo "${user_password}" | sudo -S pacman -U *pkg.tar.xz --noconfirm
