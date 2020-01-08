@@ -20,13 +20,15 @@ USER ${user_name}
 # clone, build, and install pikaur
 RUN mkdir ~/git && \
     cd ~/git && \
-    git clone "https://aur.archlinux.org/pikaur.git" && \
+    git clone "https://github.com/DreamingRaven/pikaur" && \
     cd ~/git/pikaur && \
-    echo "${user_password}" | makepkg -s --noconfirm && \
+    makepkg -s --noconfirm && \
     echo "${user_password}" | sudo -S pacman -U *pkg.tar.xz --noconfirm
 
+# git clone "https://aur.archlinux.orgpikaur.git" && \
+
 # attempt to install any package in our case python-tensorflow-cuda
-RUN echo "${user_password}" | sudo -S pikaur -S python-tensorflow-cuda --noconfirm
+# RUN echo "${user_password}" | sudo -S pikaur -S python-tensorflow-cuda --noconfirm
 
 # # clone, build, and install tensorflow git
 # RUN cd ~/git && \
