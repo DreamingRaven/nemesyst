@@ -9,10 +9,12 @@ ARG user_password=archer
 # variable for which branch to use of nemesyst when installing it
 ARG branch=master
 
-# creating basic gpu capable archlinux system with user and python
-RUN pacman -Syyuu sudo nvidia git base-devel python python-pip pyalpm --noconfirm && \
-    useradd -m -p $(openssl passwd -1 ${user_password}) ${user_name} && \
-    echo "${user_name} ALL=(ALL) ALL" >> /etc/sudoers
+# creating basic gpu capable archlinux system
+RUN pacman -Syyuu sudo nvidia git base-devel python python-pip pyalpm --noconfirm
+
+#
+RUN useradd -m -p $(openssl passwd -1 ${user_password}) ${user_name} && \
+    echo "${user_name} ALL=(ALL) NOPASSWD:/usr/bin/pacman" >> /etc/sudoers
 
 # swapping to our newly created user
 USER ${user_name}
@@ -22,21 +24,16 @@ RUN mkdir ~/git && \
     cd ~/git && \
     git clone "https://aur.archlinux.org/pikaur.git" && \
     cd ~/git/pikaur && \
-    echo "${user_password}" | makepkg -s --noconfirm && \
+    makepkg -s --noconfirm && \
     echo "${user_password}" | sudo -S pacman -U *pkg.tar.xz --noconfirm
 
-# attempt to install any package in our case python-tensorflow-cuda
-RUN echo "${user_password}" | sudo -S pikaur -S python-tensorflow-cuda --noconfirm
-
-# # clone, build, and install tensorflow git
-# RUN cd ~/git && \
-#     git clone "https://aur.archlinux.org/tensorflow-git.git" && \
-#     cd ~/git/tensorflow-git && \
-#     echo "${user_password}" | makepkg -s --noconfirm && \
-#     echo "${user_password}" | sudo -S pacman -U *pkg.tar.xz --noconfirm
-
-# # clone, swap to desired branch, of nemesyst
+# clone, swap to desired branch, of nemesyst
 RUN cd ~/git && \
     git clone "https://github.com/DreamingRaven/nemesyst" && \
     cd ~/git/nemesyst && \
     git checkout ${branch}
+
+USER root
+
+# attempt to install any package in our case python-tensorflow-cuda
+RUN sudo -u ${user_name} pikaur -S --noconfirm python-tensorflow-cuda
