@@ -12,7 +12,7 @@ ARG branch=master
 # creating basic gpu capable archlinux system
 RUN pacman -Syyuu sudo nvidia git base-devel python python-pip pyalpm --noconfirm
 
-#
+# creating user with the desired permissions (NOPASS required for pikaur stages)
 RUN useradd -m -p $(openssl passwd -1 ${user_password}) ${user_name} && \
     echo "${user_name} ALL=(ALL) NOPASSWD:/usr/bin/pacman" >> /etc/sudoers
 
@@ -20,20 +20,24 @@ RUN useradd -m -p $(openssl passwd -1 ${user_password}) ${user_name} && \
 USER ${user_name}
 
 # clone, build, and install pikaur
-RUN mkdir ~/git && \
-    cd ~/git && \
-    git clone "https://aur.archlinux.org/pikaur.git" && \
-    cd ~/git/pikaur && \
+RUN mkdir /home/${user_name}/git && \
+    cd /home/${user_name}/git && \
+    git clone "https://github.com/DreamingRaven/pikaur" && \
+    cd /home/${user_name}/git/pikaur && \
     makepkg -s --noconfirm && \
     echo "${user_password}" | sudo -S pacman -U *pkg.tar.xz --noconfirm
 
-# clone, swap to desired branch, of nemesyst
+# swapping back to root to continue since we no longer desire to be a user for makepkg
+USER root
+
+# install more specific packages from community and AUR as needed
+RUN sudo -u ${user_name} pikaur -S --noconfirm python-tensorflow-cuda
+
+# changing to final user in case interactivity is desired
+USER ${user_name}
+
+# clone and checkout nemesyst
 RUN cd ~/git && \
     git clone "https://github.com/DreamingRaven/nemesyst" && \
     cd ~/git/nemesyst && \
     git checkout ${branch}
-
-USER root
-
-# attempt to install any package in our case python-tensorflow-cuda
-RUN sudo -u ${user_name} pikaur -S --noconfirm python-tensorflow-cuda
