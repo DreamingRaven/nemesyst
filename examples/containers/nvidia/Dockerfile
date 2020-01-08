@@ -28,7 +28,7 @@ RUN mkdir ~/git && \
 # git clone "https://aur.archlinux.orgpikaur.git" && \
 
 # attempt to install any package in our case python-tensorflow-cuda
-RUN echo "${user_password}" | sudo -S pikaur -S python-tensorflow-cuda --noconfirm
+# RUN echo "${user_password}" | sudo -S pikaur -S python-tensorflow-cuda --noconfirm
 
 # # clone, build, and install tensorflow git
 # RUN cd ~/git && \
