@@ -10,10 +10,11 @@ ARG user_password=archer
 ARG branch=master
 
 # creating basic gpu capable archlinux system
-RUN pacman -Syyuu sudo nvidia git base-devel python python-pip pyalpm --noconfirm
+RUN pacman -Syyuu sudo nvidia git base-devel python python-pip pyalpm python-tensorflow-cuda --noconfirm
 
 # creating user with the desired permissions (NOPASS required for pikaur stages)
 RUN useradd -m -p $(openssl passwd -1 ${user_password}) ${user_name} && \
+    echo "${user_name} ALL=(ALL) ALL" >> /etc/sudoers && \
     echo "${user_name} ALL=(ALL) NOPASSWD:/usr/bin/pacman" >> /etc/sudoers
 
 # swapping to our newly created user
@@ -31,7 +32,7 @@ RUN mkdir /home/${user_name}/git && \
 USER root
 
 # install more specific packages from community and AUR as needed
-RUN sudo -u ${user_name} pikaur -S --noconfirm python-tensorflow-cuda
+# RUN sudo -u ${user_name} pikaur -S --noconfirm python-tensorflow-cuda
 
 # changing to final user in case interactivity is desired
 USER ${user_name}
