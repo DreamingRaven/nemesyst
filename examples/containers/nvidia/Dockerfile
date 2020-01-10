@@ -10,12 +10,15 @@ ARG user_password=archer
 ARG branch=master
 
 # creating basic gpu capable archlinux system
-RUN pacman -Syyuu sudo nvidia git base-devel python python-pip pyalpm python-tensorflow-cuda --noconfirm
+RUN pacman -Syyuu sudo nvidia git base-devel python python-pip pyalpm fish --noconfirm
 
 # creating user with the desired permissions (NOPASS required for pikaur stages)
 RUN useradd -m -p $(openssl passwd -1 ${user_password}) ${user_name} && \
     echo "${user_name} ALL=(ALL) ALL" >> /etc/sudoers && \
-    echo "${user_name} ALL=(ALL) NOPASSWD:/usr/bin/pacman" >> /etc/sudoers
+    echo "${user_name} ALL=(ALL) NOPASSWD:/usr/bin/pacman" >> /etc/sudoers && \
+    echo "exec fish" >> /root/.bashrc && \
+    echo "exec fish" >> /home/${user_name}/.bashrc
+
 
 # swapping to our newly created user
 USER ${user_name}
@@ -42,3 +45,12 @@ RUN cd ~/git && \
     git clone "https://github.com/DreamingRaven/nemesyst" && \
     cd ~/git/nemesyst && \
     git checkout ${branch}
+
+# clone and build custom tensorflow
+RUN echo "${user_password}" | sudo -S pacman -S python-numpy bazel --noconfirm && \
+    cd ~/git && \
+    git clone "https://github.com/tf-encrypted/tf-seal"
+    # cd ~/git/tf-seal && \
+    # echo "${user_password}" | sudo -S pip install -r requirements-customtf.txt && \
+    # make tensorflow && \
+    # echo "${user_password}" | sudo -S pip install -U tf_nightly-1.14.0-cp37-cp37m-*
