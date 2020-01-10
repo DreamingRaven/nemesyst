@@ -46,8 +46,9 @@ RUN cd ~/git && \
     cd ~/git/nemesyst && \
     git checkout ${branch}
 
-# clone and build custom tensorflow
-RUN echo "${user_password}" | sudo -S pacman -S python-numpy bazel wget --noconfirm && \
+# clone and build custom tensorflow with specific bazel version and set java environment to the one it wants ...
+RUN echo "${user_password}" | sudo -S pacman -S python-numpy bazel wget cmake java-runtime-common java-environment-common --noconfirm && \
+    echo "${user_password}" | sudo -S archlinux-java set java-11-openjdk && \
     cd ~/git && \
     git clone "https://github.com/tf-encrypted/tf-seal"
     # cd ~/git/tf-seal && \
