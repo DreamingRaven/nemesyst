@@ -47,7 +47,7 @@ RUN cd ~/git && \
     git checkout ${branch}
 
 # clone and build custom tensorflow
-RUN echo "${user_password}" | sudo -S pacman -S python-numpy bazel --noconfirm && \
+RUN echo "${user_password}" | sudo -S pacman -S python-numpy bazel wget --noconfirm && \
     cd ~/git && \
     git clone "https://github.com/tf-encrypted/tf-seal"
     # cd ~/git/tf-seal && \
