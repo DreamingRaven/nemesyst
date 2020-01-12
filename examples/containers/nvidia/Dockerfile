@@ -16,8 +16,7 @@ RUN pacman -Syyuu sudo nvidia git base-devel python python-pip pyalpm fish --noc
 RUN useradd -m -p $(openssl passwd -1 ${user_password}) ${user_name} && \
     echo "${user_name} ALL=(ALL) ALL" >> /etc/sudoers && \
     echo "${user_name} ALL=(ALL) NOPASSWD:/usr/bin/pacman" >> /etc/sudoers && \
-    echo "exec fish" >> /root/.bashrc && \
-    echo "exec fish" >> /home/${user_name}/.bashrc
+    echo "exec fish" >> /root/.bashrc
 
 
 # swapping to our newly created user
@@ -47,10 +46,11 @@ RUN cd ~/git && \
     git checkout ${branch}
 
 # set up to build tensorflow (so that while we are still fiddling we dont stress archlinux servers)
-RUN echo "${user_password}" | sudo -S pacman -S python-numpy bazel wget cmake java-runtime-common java-environment-common --noconfirm
+RUN echo "${user_password}" | sudo -S pacman -S cuda cudnn python-numpy bazel wget cmake java-runtime-common java-environment-common --noconfirm
 
 RUN echo "${user_password}" | sudo -S archlinux-java set java-11-openjdk && \
-    export TF_IGNORE_MAX_BAZEL_VERSION=1 && \
+    echo "export TF_IGNORE_MAX_BAZEL_VERSION=1" >> /home/${user_name}/.bashrc && \
+    echo "exec fish" >> /home/${user_name}/.bashrc && \
     cd ~/git && \
     git clone "https://github.com/tf-encrypted/tf-seal"
     # cd ~/git/tf-seal && \
