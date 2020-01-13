@@ -12,7 +12,7 @@ services:
 
   nemesyst:
     build:
-      context: ./examples/containers/nvidia
+      context: ./examples/containers/tf_seal
       dockerfile: Dockerfile
     depends_on:
       - mongodb
