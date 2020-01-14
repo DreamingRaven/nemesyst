@@ -10,7 +10,7 @@ ARG user_password=archer
 ARG branch=master
 
 # creating basic gpu capable archlinux system
-RUN pacman -Syyuu sudo nvidia git base-devel python python-pip pyalpm fish --noconfirm
+RUN pacman -Syyuu sudo nvidia git base-devel python python-pip pyalpm fish neovim --noconfirm
 
 # creating user with the desired permissions (NOPASS required for pikaur stages)
 RUN useradd -m -p $(openssl passwd -1 ${user_password}) ${user_name} && \
