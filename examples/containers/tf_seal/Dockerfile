@@ -34,7 +34,7 @@ RUN mkdir /home/${user_name}/git && \
 USER root
 
 # install more specific packages from community and AUR as needed
-# RUN sudo -u ${user_name} pikaur -S --noconfirm python-tensorflow-cuda
+# RUN sudo -u ${user_name} pikaur -S --noconfirm grpc-git
 
 # changing to final user in case interactivity is desired
 USER ${user_name}
@@ -46,7 +46,7 @@ RUN cd ~/git && \
     git checkout ${branch}
 
 # set up to build tensorflow (so that while we are still fiddling we dont stress archlinux servers)
-RUN echo "${user_password}" | sudo -S pacman -S cuda cudnn python-numpy bazel wget cmake java-runtime-common java-environment-common --noconfirm
+RUN echo "${user_password}" | sudo -S pacman -S cuda cudnn python-numpy bazel wget cmake java-runtime-common java-environment-common grpc --noconfirm
 
 RUN echo "${user_password}" | sudo -S archlinux-java set java-11-openjdk && \
     export TF_IGNORE_MAX_BAZEL_VERSION=1 && \
