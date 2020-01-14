@@ -49,6 +49,7 @@ RUN cd ~/git && \
 RUN echo "${user_password}" | sudo -S pacman -S cuda cudnn python-numpy bazel wget cmake java-runtime-common java-environment-common --noconfirm
 
 RUN echo "${user_password}" | sudo -S archlinux-java set java-11-openjdk && \
+    export TF_IGNORE_MAX_BAZEL_VERSION=1 && \
     echo "export TF_IGNORE_MAX_BAZEL_VERSION=1" >> /home/${user_name}/.bashrc && \
     echo "exec fish" >> /home/${user_name}/.bashrc && \
     cd ~/git && \
