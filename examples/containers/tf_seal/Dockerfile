@@ -54,7 +54,8 @@ RUN echo "${user_password}" | sudo -S archlinux-java set java-11-openjdk && \
     echo "exec fish" >> /home/${user_name}/.bashrc && \
     cd ~/git && \
     git clone "https://github.com/tf-encrypted/tf-seal" && \
-    cd ~/git/tf-seal && \
-    # echo "${user_password}" | sudo -S pip install -r requirements-customtf.txt && \
-    make tensorflow
-    # echo "${user_password}" | sudo -S pip install -U tf_nightly-1.14.0-cp37-cp37m-*
+    cd ~/git/tf-seal
+
+# echo "${user_password}" | sudo -S pip install -r requirements-customtf.txt && \
+# make tensorflow
+# echo "${user_password}" | sudo -S pip install -U tf_nightly-1.14.0-cp37-cp37m-*
