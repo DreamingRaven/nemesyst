@@ -1,7 +1,7 @@
 # @Author: archer
 # @Date:   2019-09-13T12:52:06+01:00
 # @Last modified by:   archer
-# @Last modified time: 2019-10-01T10:48:17+01:00
+# @Last modified time: 2020-01-16
 
 
 
@@ -10,12 +10,13 @@ version: "3.7"
 
 services:
 
-  nemesyst:
-    build:
-      context: ./examples/containers/tf_seal
-      dockerfile: Dockerfile
-    depends_on:
-      - mongodb
+  # # uncomment this section only if you desire to build nemesyst this way
+  # nemesyst:
+  #   build:
+  #     context: ./examples/containers/tf_seal
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     - mongodb
 
   mongodb:
     container_name: mongodb_server
@@ -28,6 +29,9 @@ services:
     command:
       - "--config"
       - "/etc/mongodb.conf" # this is the in container path
+      # be warned our config file uses additional options like directoryPerDB
+      # which may make it not work with existing databases, if in doubt just
+      # use your own config file and change the volume path below
     volumes:
       # this is the location to mount in container and storage for db
       # "volume-name:in-container mount point (not local system):"
