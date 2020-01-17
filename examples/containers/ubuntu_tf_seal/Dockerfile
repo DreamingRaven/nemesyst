@@ -11,4 +11,6 @@ RUN wget https://storage.googleapis.com/tf-pips/tf-c++17-support/tf_nightly-1.14
     python3.7 -m pip install tf-seal
 
 # getting tf-seal repository so we have access to all of their examples etc
-RUN git clone https://github.com/tf-encrypted/tf-seal
+RUN python3.7 -m pip install git+https://github.com/DreamingRaven/nemesyst.git#branch=master && \
+    git clone https://github.com/tf-encrypted/tf-seal && \
+    git clone https://github.com/DreamingRaven/nemesyst
