@@ -26,9 +26,9 @@ Installation
 .. warning::
 
     You will need to have |git|_, and |python|_ installed any of the below methods to work.
-    You will also need |mongodb|_ if you intend to create a local database, (more than likeley), but Nemesyst will still connect to already running databases without it if you happen to have one already.
+    You will also need |mongodb|_ if you intend to create a local database, (more than likely), but Nemesyst will still connect to already running databases without it if you happen to have one already.
 
-This section will outline various methods for installation of Nemesyst, and its dependancies. Not all methods are equal there are slight variations between them, which are outlined in the respective sections below, along with instructions for each method:
+This section will outline various methods for installation of Nemesyst, and its dependencies. Not all methods are equal there are slight variations between them, which are outlined in the respective sections below, along with instructions for each method:
 
 .. contents:: :local:
 
@@ -47,13 +47,13 @@ This method of files-only installation provides the user with all the additional
 
     - All the example files for quickly getting to grips with Nemesyst.
     - Easy to understand as the files are not filed away somewhere obscure.
-    - Easy to install example dependancies as you can ``pip install -r requirements.txt`` or whatever other requirements list we include.
-    - Unit tests availiable.
+    - Easy to install example dependencies as you can ``pip install -r requirements.txt`` or whatever other requirements list we include.
+    - Unit tests available.
 
     Cons:
 
     - You are responsible for ensuring the requirements are met for Nemesyst, such as |python|_, |git|_, and |mongodb|_.
-    - It is less repeatable/ deployable as most steps are manual as opposed to the other availiable methods of installation.
+    - It is less repeatable/ deployable as most steps are manual as opposed to the other available methods of installation.
 
 Getting the files
 +++++++++++++++++
@@ -69,14 +69,14 @@ Installing dependancies
 
 To make use of Nemesyst directly now that you have the files you need to have installed:
 
-System dependancies:
+System dependencies:
 
     1. |python|_ (required): Nemesyst is written in |python|_, you wont get far without it.
     2. |git|_ (required): To install, and manage Nemesyst files.
     3. |mongodb|_ (recommended): If you want to be able to create, and destroy a local |mongodb|_ database.
     4. |docker|_ (optional): If you want to manage local containerized |mongodb|_ databases.
 
-Python dependancies:
+Python dependencies:
 
     :|minimal_requirements|:
 
@@ -108,7 +108,7 @@ Python dependancies:
 Automated
 *********
 
-This section discusses the more automated and repeatable installation methods for Nemesyst, but they do not contain all the files needed to learn, and begin developing Nemesyst integrated applications, rather this includes just the barebones Nemesyst ready for your deployment.
+This section discusses the more automated and repeatable installation methods for Nemesyst, but they do not contain all the files needed to learn, and begin developing Nemesyst integrated applications, rather this includes just the bare-bones Nemesyst ready for your deployment.
 
 Generic
 +++++++
@@ -168,7 +168,7 @@ OR if you are using a terminal like fish:
 
     source venv/bin/activate.fish
 
-To install Nemesyst and all its dependancies into a virtual environment while it is being used (activated):
+To install Nemesyst and all its dependencies into a virtual environment while it is being used (activated):
 
 .. code-block:: bash
 
