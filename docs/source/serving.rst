@@ -28,10 +28,11 @@
 .. |pymongo| replace:: PyMongo
 
 .. |troubleshooting| replace:: :ref:`section_ts_mongodb`
+
 .. _page_serving:
 
-Serving
-=======
+Serving with MongoDB
+====================
 
 Nemesyst uses |mongodb|_ as its primary message passing interface. This page will more elaborate on using Nemesyst with different database setups, debugging, common issues, and any nitty-gritty details that may be necessary to discuss.
 
