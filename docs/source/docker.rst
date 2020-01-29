@@ -1,3 +1,6 @@
+.. _dockerfile: https://docs.docker.com/engine/reference/builder/
+.. |dockerfile| replace:: Dockerfile
+
 Dockerisation
 =============
 
@@ -15,6 +18,24 @@ Docker Usage (Linux)
 ********************
 
 While docker is very portable to most platforms, we do not maintain any Microsoft Windows or Mac systems, thus we cannot presume to give sound Docker usage on these other platforms. However the usage should largely remain the same, but presumably without the need for privilege escalation using sudo.
+
+|dockerfile|_
++++++++++++++
+
+A |dockerfile|_ is a short command based script that defines how to create a container. These can and usually are built on other containers. Please refer to the |dockerfile|_ documentation for a more in depth breakdown.
+
+:|Dockerfile|_ example ``examples/containers/nemesyst_ubuntu/Dockerfile``:
+
+  .. literalinclude:: ../../examples/containers/nemesyst_ubuntu/Dockerfile
+
+.dockerignore
++++++++++++++
+
+A .dockerignore is similar in function to a .gitignore and supports similar syntax. Special care should be paid to .dockerignore files as they are both usefull to minimise the risk of potential secrets being leaked into a container, their container size etc, but they can also cause problems with things like the ```COPY``` command leading to unexpected results. We personally recommend a whitelist strategy .dockerignore where you specify only what you would like to be copied in.
+
+:whitelist .dockerignore example ``examples/containers/nemesyst_ubuntu/.dockerignore``:
+
+  .. literalinclude:: ../../examples/containers/nemesyst_ubuntu/.dockerignore
 
 Building
 ++++++++
