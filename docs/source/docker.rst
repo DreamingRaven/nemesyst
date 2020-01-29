@@ -4,6 +4,13 @@
 .. _bash shell: https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29
 .. |bash shell| replace:: Bash shell
 
+.. _docker: https://www.docker.com/
+.. |docker| replace:: Docker
+
+.. |dockerisation| replace:: :ref:`section_docker`
+
+.. _section_docker:
+
 Dockerisation
 =============
 

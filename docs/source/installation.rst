@@ -15,6 +15,8 @@
 .. _bash shell: https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29
 .. |bash shell| replace:: Bash shell
 
+.. |dockerisation| replace:: :ref:`section_docker`
+
 Installation
 ============
 
@@ -113,11 +115,19 @@ This section discusses the more automated and repeatable installation methods fo
 Generic
 +++++++
 
+pip
+---
+
 For now you can use pip via:
 
 .. code-block:: bash
 
   pip install git+https://github.com/DreamingRaven/nemesyst.git#branch=master
+
+|docker|_
+---------
+
+see |dockerisation| for docker instructions.
 
 Archlinux
 +++++++++
