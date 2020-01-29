@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "NEMESYST" "1" "Dec 04, 2019" "" "Nemesyst"
+.TH "NEMESYST" "1" "Jan 29, 2020" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.5.r13.e7d980d
+nemesyst \- Nemesyst 2.0.5.r81.ab07514
 .
 .nr rst2man-indent-level 0
 .
@@ -53,7 +53,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 .SH WHY USE NEMESYST
 .sp
-Nemesyst is a highly configurable hybrid parallelisation deep learning framework, for distributed deep learning, that uses other backend framework(s) of your choice (Pytorch, TensorFlow, etc.) for training.
+Nemesyst is a highly configurable hybrid parallelization deep learning framework, for distributed deep learning, that uses other backend framework(s) of your choice (Pytorch, TensorFlow, etc.) for training.
 .INDENT 0.0
 .INDENT 2.5
 [image: Nemesyst use-case example diagram.]
@@ -61,7 +61,7 @@ Nemesyst is a highly configurable hybrid parallelisation deep learning framework
 This image is a use case example of Nemesyst applied to a distributed refrigeration fleet over multiple sites, and both online and offline learning capabilities occuring simultaneously..UNINDENT
 .UNINDENT
 .sp
-Nemesyst uses MongoDB as its core message passing interface (MPI). This means MongoDB is used to store, distribute, retrieve, and transform the data; store, distribute, and retrieve the trained models. In future we also hope to use it to transfer more specific processing instructions to individual learners. This way we use the already advanced functionality of MongoDB to handle complex and non\-trivial problems such as tracing models back to the specific data trained with, the results and arguments present at the point of training, and being able to reload pre\-trained models for further use, and, or training. This also means the same data can be transformed differentley for different learners from the same source dynamically at the point of need.
+Nemesyst uses MongoDB as its core message passing interface (MPI). This means MongoDB is used to store, distribute, retrieve, and transform the data; store, distribute, and retrieve the trained models. In future we also hope to use it to transfer more specific processing instructions to individual learners. This way we use the already advanced functionality of MongoDB to handle complex and non\-trivial problems such as tracing models back to the specific data trained with, the results and arguments present at the point of training, and being able to reload pre\-trained models for further use, and, or training. This also means the same data can be transformed differently for different learners from the same source dynamically at the point of need.
 .SH INSTALLATION
 .sp
 \fBNOTE:\fP
@@ -76,11 +76,11 @@ For disambiguation python, pip, and virtualenv shall mean their python v3 versio
 .INDENT 0.0
 .INDENT 3.5
 You will need to have \fI\%git\fP, and \fI\%python\fP installed any of the below methods to work.
-You will also need \fI\%MongoDB\fP if you intend to create a local database, (more than likeley), but Nemesyst will still connect to already running databases without it if you happen to have one already.
+You will also need \fI\%MongoDB\fP if you intend to create a local database, (more than likely), but Nemesyst will still connect to already running databases without it if you happen to have one already.
 .UNINDENT
 .UNINDENT
 .sp
-This section will outline various methods for installation of Nemesyst, and its dependancies. Not all methods are equal there are slight variations between them, which are outlined in the respective sections below, along with instructions for each method:
+This section will outline various methods for installation of Nemesyst, and its dependencies. Not all methods are equal there are slight variations between them, which are outlined in the respective sections below, along with instructions for each method:
 .INDENT 0.0
 .IP \(bu 2
 \fI\%Files\-only/ development\fP
@@ -121,9 +121,9 @@ All the example files for quickly getting to grips with Nemesyst.
 .IP \(bu 2
 Easy to understand as the files are not filed away somewhere obscure.
 .IP \(bu 2
-Easy to install example dependancies as you can \fBpip install \-r requirements.txt\fP or whatever other requirements list we include.
+Easy to install example dependencies as you can \fBpip install \-r requirements.txt\fP or whatever other requirements list we include.
 .IP \(bu 2
-Unit tests availiable.
+Unit tests available.
 .UNINDENT
 .sp
 Cons:
@@ -131,7 +131,7 @@ Cons:
 .IP \(bu 2
 You are responsible for ensuring the requirements are met for Nemesyst, such as \fI\%python\fP, \fI\%git\fP, and \fI\%MongoDB\fP\&.
 .IP \(bu 2
-It is less repeatable/ deployable as most steps are manual as opposed to the other availiable methods of installation.
+It is less repeatable/ deployable as most steps are manual as opposed to the other available methods of installation.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -152,7 +152,7 @@ git clone https://github.com/DreamingRaven/nemesyst
 .sp
 To make use of Nemesyst directly now that you have the files you need to have installed:
 .sp
-System dependancies:
+System dependencies:
 .INDENT 0.0
 .INDENT 3.5
 .INDENT 0.0
@@ -168,7 +168,7 @@ System dependancies:
 .UNINDENT
 .UNINDENT
 .sp
-Python dependancies:
+Python dependencies:
 .INDENT 0.0
 .INDENT 3.5
 .INDENT 0.0
@@ -242,7 +242,7 @@ future>=0.17.1
 .UNINDENT
 .SS Automated
 .sp
-This section discusses the more automated and repeatable installation methods for Nemesyst, but they do not contain all the files needed to learn, and begin developing Nemesyst integrated applications, rather this includes just the barebones Nemesyst ready for your deployment.
+This section discusses the more automated and repeatable installation methods for Nemesyst, but they do not contain all the files needed to learn, and begin developing Nemesyst integrated applications, rather this includes just the bare\-bones Nemesyst ready for your deployment.
 .SS Generic
 .sp
 For now you can use pip via:
@@ -324,7 +324,7 @@ source venv/bin/activate.fish
 .UNINDENT
 .UNINDENT
 .sp
-To install Nemesyst and all its dependancies into a virtual environment while it is being used (activated):
+To install Nemesyst and all its dependencies into a virtual environment while it is being used (activated):
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -365,7 +365,7 @@ If you are not using the section_files\-only installation you will have to point
 This image is a use case example of Nemesyst applied to a distributed refrigeration fleet over multiple sites, and both online and offline learning capabilities occuring simultaneously..UNINDENT
 .UNINDENT
 .sp
-Nemesyst has been made to be generic enough to handle many possible configurations, but we cannot possibly handle all possible scenarios. Sometimes it may be neccessary to manually configure certain aspects of the process, especially regarding MongoDB as it is quite a well developed, mature, database, with more features than we could, and should automate.
+Nemesyst has been made to be generic enough to handle many possible configurations, but we cannot possibly handle all possible scenarios. Sometimes it may be necessary to manually configure certain aspects of the process, especially regarding MongoDB as it is quite a well developed, mature, database, with more features than we could, and should automate.
 .SS Nemesyst Abstraction of stages
 .INDENT 0.0
 .INDENT 2.5
@@ -374,7 +374,7 @@ Nemesyst has been made to be generic enough to handle many possible configuratio
 Nemesyst has abstracted, grouped, and formalised what we believe are the core stages of applying deep learning at all scales..UNINDENT
 .UNINDENT
 .sp
-Deep learning can be said to include 3 stages, data\-wrangling, test\-training, and infering. Nemesyst adds an extra layer we call serving, which is the stage at which databases are involved as the message passing interface (MPI), and generator, between the layers, machines, and algorithms, along with being the data, and model storage mechanism.
+Deep learning can be said to include 3 stages, data\-wrangling, test\-training, and inferring. Nemesyst adds an extra layer we call serving, which is the stage at which databases are involved as the message passing interface (MPI), and generator, between the layers, machines, and algorithms, along with being the data, and model storage mechanism.
 .SS Nemesyst Parallelisation
 .sp
 As of: \fI\%2.0.1.r6.f9f92c3\fP
@@ -385,7 +385,7 @@ As of: \fI\%2.0.1.r6.f9f92c3\fP
 Nemesyst parallelises each script, up the the maximum number of processes in the process pool..UNINDENT
 .UNINDENT
 .sp
-Local parallelisation of your scripts occur using pythons process pools from multiprocessing. This diagram shows how the rounds of processing are abstracted and the order of them. Rounds do not continue between stages, I.E if there is a spare process but not enough scripts from that stage (e.g cleaning) it will not fill this with a script process from the next stage (e.g learning). This is to prevent the scenario where a learning script may depend on the output of a previous cleaning script.
+Local parallelization of your scripts occur using pythons process pools from multiprocessing. This diagram shows how the rounds of processing are abstracted and the order of them. Rounds do not continue between stages, I.E if there is a spare process but not enough scripts from that stage (e.g cleaning) it will not fill this with a script process from the next stage (e.g learning). This is to prevent the scenario where a learning script may depend on the output of a previous cleaning script.
 .SS Wrangling / cleaning
 .sp
 See section_all\-options for a full list of options.
@@ -422,7 +422,7 @@ Serving is the stage where the data and eventually trained models will be stored
 .sp
 Nemesyst uses MongoDB databases through \fI\%PyMongo\fP as a data store, and distribution mechanism. The database(s) are some of the most important aspects of the chain of processes, as nothing can operate without a properly functioning database. As such we have attempted to simplify operations on both the user scripts side and our side by abstracting the slightly raw \fI\%PyMongo\fP interface into a much friendlier class of operations called section_mongo\&.
 .sp
-A section_mongo object is automatically passed into every one of your desired scripts entry points, so that you can also easily operate on the database if you so choose although asside from our data generator we handle the majority of use cases before it reaches your scripts.
+A section_mongo object is automatically passed into every one of your desired scripts entry points, so that you can also easily operate on the database if you so choose although aside from our data generator we handle the majority of use cases before it reaches your scripts.
 .INDENT 0.0
 .TP
 .B section_automated example:
@@ -513,7 +513,7 @@ It is also relatively clean so there is little pre\-processing that is required 
 The dataset will be downloaded for you by the cleaning module.
 .SS Requirements
 .sp
-Please ensure you have both \fI\%MongoDB\fP and the following python dependancies installed as a bare minimum:
+Please ensure you have both \fI\%MongoDB\fP and the following python dependencies installed as a bare minimum:
 .INDENT 0.0
 .TP
 .B \fBexamples/requirements/mnist.txt\fP
@@ -625,7 +625,7 @@ If you would like to skip rest of this example for whatever reason such as you a
 .UNINDENT
 .SS Serving
 .sp
-For this example Nemesyst will create a database for us whenever we call the config file since we pass in options to initialise and start the database (see \fI\%Configuring\fP). We can do this using:
+For this example Nemesyst will create a database for us whenever we call the config file since we pass in options to initialize and start the database (see \fI\%Configuring\fP). We can do this using:
 .INDENT 0.0
 .TP
 .B section_files\-only serving example:
@@ -683,7 +683,7 @@ It may be necessary after each of the following steps to check on the database t
 .UNINDENT
 .UNINDENT
 .sp
-This should put you in the \fI\%Mongo shell\fP which is a javascript based interface of \fI\%MongoDB\fP for direct user intervention. Where you can do all sorts of operations and checks. This is of course optional but recommended. If you would rather a more graphical interface you can use any of the plethora of tools to visualise the database but we recommend \fI\%MongoDB Compass\fP, in particular for its aggregation helper.
+This should put you in the \fI\%Mongo shell\fP which is a javascript based interface of \fI\%MongoDB\fP for direct user intervention. Where you can do all sorts of operations and checks. This is of course optional but recommended. If you would rather a more graphical interface you can use any of the plethora of tools to visualize the database but we recommend \fI\%MongoDB Compass\fP, in particular for its aggregation helper.
 .SS Cleaning
 .sp
 In this step we will launch the example \fI\%MNIST\fP cleaner which downloads the data using \fI\%scikit\-learn\fP to get a much cleaner version of the data set for us. Then inserting the data into individual dictionaries row wise, so that each dictionary is a single complete example/ observation, with associated target feature. To put it back into the database we need only yield each dictionary and Nemesyst will handle iteration for us. This document dictionary can also be used to house useful metadata about the dataset so that you can further filter using more advanced Nemesyst and MongoDB functionality that go beyond the scope of this simple introduction.
@@ -767,7 +767,7 @@ To learn from the now cleaned database\-residing data, you can:
 .sp
 This example trains a CNN, and yields a tuple \fB(metadata_dictionary, pickle.dumps(model))\fP which is then stored in \fI\%MongoDB\fP using gridfs as most models exceed the base \fI\%MongoDB\fP 16MB document size limit.
 This example is derived from one of the pre\-existing \fI\%Keras\fP \fI\%MNIST\fP examples, but transformed into a relatively efficient Nemesyst variant.
-The major differences are that we use \fIfit_generator\fP which takes a generator (in our case a database cursor and pre\-processor) for the training set, and another generator for the validation set. For this example we have simply validated against the test set as we aren’t attempting to blind ourselves for the purposes of scientific rigor and overfitting prevention.
+The major differences are that we use \fIfit_generator\fP which takes a generator (in our case a database cursor and pre\-processor) for the training set, and another generator for the validation set. For this example we have simply validated against the test set as we aren’t attempting to blind ourselves for the purposes of scientific rigor and over\-fitting prevention.
 Care should be taken in reading the pipelines as they can be quite complex operations to solve very tough problems, but here we simply set them to separate the dataset into train, and validation.
 .INDENT 0.0
 .TP
@@ -782,7 +782,7 @@ Care should be taken in reading the pipelines as they can be quite complex opera
 # @Email:  george raven community at pm dot me
 # @Filename: mnist_learner.py
 # @Last modified by:   archer
-# @Last modified time: 2019\-10\-17T00:36:20+01:00
+# @Last modified time: 2019\-12\-31T17:18:10+00:00
 # @License: Please see LICENSE in project root
 
 import numpy as np
@@ -796,7 +796,7 @@ from keras.layers import Conv2D, MaxPooling2D
 
 
 def main(**kwargs):
-    """Main entry point called by Nemesyst, always yields dictionary or None.
+    """Entry point called by Nemesyst, always yields dictionary or None.
 
     :param **kwargs: Generic input method to handle infinite dict\-args.
     :rtype: yield dict
@@ -804,8 +804,8 @@ def main(**kwargs):
     # # there are issues using RTX cards with tensorflow:
     # # https://github.com/tensorflow/tensorflow/issues/24496
     # # if this is the case please uncomment the following two lines:
-    # import os
-    # os.environ[\(aqCUDA_VISIBLE_DEVICES\(aq] = \(aq\-1\(aq # use cpu
+    import os
+    os.environ[\(aqCUDA_VISIBLE_DEVICES\(aq] = \(aq\-1\(aq  # use cpu
 
     # just making these a little nicer to read but in a real application
     # we would not want these hardcoded thankfully the database can provide!
@@ -1180,7 +1180,7 @@ Environment variables
 .IP \(bu 2
 ini format .conf config files
 .IP \(bu 2
-Hardcoded defaults
+Hard\-coded defaults
 .UNINDENT
 .sp
 In code Nemesyst will look for config files in the following default locations, in order of priority and with expansion (highest first):
@@ -1835,6 +1835,175 @@ Subprocess of database closer.
 .TP
 .B Return type
 subprocess.Popen
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SH DOCKERISATION
+.sp
+Docker is a lightweight semi\-vm that can help automate reproducibility, dependency management, deployment, and use of some code which is containerized.
+Considering the relative ease with which Docker is used, modified/adjusted, with only a minimal amount of code, it has quite a profound affect on work\-flows, making really nightmarish scenarios much easier to handle.
+.sp
+For docker installation you may need to look up instructions online but after installing docker (minimum version 19.03) and nvidia container toolkit, you will need not install anything further, and can instead rely on the Dockerfile and docker to install and manage dependencies from then on. If you would like more automation/ to use docker\-compose then please ensure you also have docker\-compose installed.
+.sp
+There are two available versions of our Dockerfile:
+.INDENT 0.0
+.IP \(bu 2
+Archlinux based nemesyst docker \fBexamples/containers/nemesyst/Dockerfile\fP; This docker is the one we seek to support since it will force us to stay up to date with the latest software and changes so we never end up in a crippling dependency requirement. It should be noted however that it is not quite complete.
+.IP \(bu 2
+Ubuntu based nemesyst docker \fBexamples/containers/nemesyst_ubuntu/Dockerfile\fP; This docker is the one we make available for the purposes of longer term support, and for those that just prefer Ubuntu (you must be crazy!). This one is the more supported by depended on projects such as tf\-seal so is easier to maintain.
+.UNINDENT
+.SS Docker Usage (Linux)
+.sp
+While docker is very portable to most platforms, we do not maintain any non\-x86_64, Microsoft Windows or Mac systems, thus we cannot presume to give sound Docker usage on these other platforms. However the usage should largely remain the same, but presumably without the need for privilege escalation using sudo for Win and Mac.
+.sp
+Using docker usually revolves around only two steps building the image you would like to use, and then using it either interactively or by issuing explicit commands to be executed. First however we should briefly mention the two most important files related to this a .dockerignore file, and a \fI\%Dockerfile\fP .
+.SS \fI\%Dockerfile\fP
+.sp
+A \fI\%Dockerfile\fP is a short command based script that defines how to create a container. These can and usually are built on other containers. Please refer to the \fI\%Dockerfile\fP documentation for a more in depth breakdown.
+.INDENT 0.0
+.TP
+.B \fI\%Dockerfile\fP example \fBexamples/containers/nemesyst_ubuntu/Dockerfile\fP
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+FROM ubuntu:19.04
+
+# updating and installing basic ubuntu python container
+RUN apt update && \e
+    apt install \-y wget python3.7 python3\-pip git
+
+# getting and installing tensorflow, and tf\-seal
+RUN wget https://storage.googleapis.com/tf\-pips/tf\-c++17\-support/tf_nightly\-1.14.0\-cp37\-cp37m\-linux_x86_64.whl && \e
+    python3.7 \-m pip install tf_nightly\-1.14.0\-cp37\-cp37m\-linux_x86_64.whl && \e
+    rm tf_nightly\-1.14.0\-cp37\-cp37m\-linux_x86_64.whl && \e
+    python3.7 \-m pip install tf\-seal
+
+# getting tf\-seal repository so we have access to all of their examples etc
+RUN python3.7 \-m pip install git+https://github.com/DreamingRaven/nemesyst.git#branch=master && \e
+    git clone https://github.com/tf\-encrypted/tf\-seal && \e
+    git clone https://github.com/DreamingRaven/nemesyst
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS \&.dockerignore
+.sp
+A .dockerignore is similar in function to a .gitignore and supports similar syntax. Special care should be paid to .dockerignore files as they are both useful to minimise the risk of potential secrets being leaked into a container, their container size etc, but they can also cause problems with things like the \fB\(gaCOPY\(ga\fP command leading to unexpected results. We personally recommend a whitelist strategy .dockerignore where you specify only what you would like to be copied in.
+.INDENT 0.0
+.TP
+.B whitelist .dockerignore example \fBexamples/containers/nemesyst_ubuntu/.dockerignore\fP
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+# ignore everything using whitelist strategy
+*
+
+# you can selectiveley allow files using the ! at the beginning of the line
+#!lib/**/*.py # this would allow all python files in subdirectories of lib if enabled
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Building
+.sp
+With a \fI\%Dockerfile\fP in the current directory to build a dockerfile into a docker image:
+.INDENT 0.0
+.TP
+.B \fI\%Bash shell\fP creating a tagged docker image
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker build \-t example/nemesyst .
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+This tag “example/nemesyst” will help you reference the docker image later on, like easy removal, and general use.
+.SS Running
+.sp
+When we take a built image and run it, it is now called a container. Images are the immutable snapshots that you have built, containers are the changed containers for all the work that has happened since being an image.
+.sp
+To create a container from an image/ to run a docker image you can either:
+.INDENT 0.0
+.TP
+.B \fI\%Bash shell\fP creating/running a CPU only container from a tagged (“example/nemesyst”) docker image
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker run \-it example/nemesyst bash
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+or
+.INDENT 0.0
+.TP
+.B \fI\%Bash shell\fP creating/running a GPU enabled container (“example/nemesyst”)
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker run \-\-gpus all \-it example/nemesyst bash
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Cleaning up/ Removing
+.sp
+It may be necessary over the course of any experimentation or creation to occasionally clean up any images and containers that may still be taking up space on your system.
+.INDENT 0.0
+.TP
+.B \fI\%Bash shell\fP removing/ pruning everything
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker system prune
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.TP
+.B \fI\%Bash shell\fP removing all images
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker rmi \-f $(sudo docker images \-q)
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.TP
+.B \fI\%Bash shell\fP removing all containers
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker rm (sudo docker ps \-a \-q)
+.ft P
+.fi
 .UNINDENT
 .UNINDENT
 .UNINDENT
