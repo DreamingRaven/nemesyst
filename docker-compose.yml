@@ -13,7 +13,7 @@ services:
   # # uncomment this section only if you desire to build nemesyst this way
   # nemesyst:
   #   build:
-  #     context: ./examples/containers/nemesust_ubuntu
+  #     context: ./examples/containers/nemesyst_ubuntu
   #     dockerfile: Dockerfile
   #   depends_on:
   #     - mongodb
