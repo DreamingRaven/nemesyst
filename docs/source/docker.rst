@@ -7,7 +7,7 @@ Dockerisation
 Docker is a lightweight semi-vm that can help automate reproducibility, dependency management, deployment, and use of some code which is containerized.
 Considering the relative ease with which Docker is used, modified/adjusted, with only a minimal amount of code, it has quite a profound affect on work-flows, making really nightmarish scenarios much easier to handle.
 
-For docker installation you may need to look up instructions online but after installing docker and nvidia container toolkit, you will need not install anything further, and can instead rely on the Dockerfile and docker to install and manage dependencies from then on. If you would like more automation/ to use docker-compose then please ensure you also have docker-compose installed.
+For docker installation you may need to look up instructions online but after installing docker (minimum version 19.03) and nvidia container toolkit, you will need not install anything further, and can instead rely on the Dockerfile and docker to install and manage dependencies from then on. If you would like more automation/ to use docker-compose then please ensure you also have docker-compose installed.
 
 There are two avaliable versions of our Dockerfile:
 
@@ -17,7 +17,9 @@ There are two avaliable versions of our Dockerfile:
 Docker Usage (Linux)
 ********************
 
-While docker is very portable to most platforms, we do not maintain any Microsoft Windows or Mac systems, thus we cannot presume to give sound Docker usage on these other platforms. However the usage should largely remain the same, but presumably without the need for privilege escalation using sudo.
+While docker is very portable to most platforms, we do not maintain any non-x86_64, Microsoft Windows or Mac systems, thus we cannot presume to give sound Docker usage on these other platforms. However the usage should largely remain the same, but presumably without the need for privilege escalation using sudo for Win and Mac.
+
+Using docker usualy revolves around only two steps building the image you would like to use, and then using it either interactiveley or by issuing explicit commands to be executed. First however we should briefly mention the two most important files related to this a .dockerignore file, and a |dockerfile|_ .
 
 |dockerfile|_
 +++++++++++++
@@ -39,6 +41,8 @@ A .dockerignore is similar in function to a .gitignore and supports similar synt
 
 Building
 ++++++++
+
+
 
 Running
 +++++++
