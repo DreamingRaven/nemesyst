@@ -60,7 +60,21 @@ Running
 
 When we take a built image and run it, it is now called a container. Images are the immutable snapshots that you have built, containers are the changed containers for all the work that has happened since being an image.
 
-To create a container from an image/ to run a docker image:
+To create a container from an image/ to run a docker image you can either:
+
+:|bash shell|_ creating/running a CPU only container from a tagged ("example/nemesyst") docker image:
+
+    .. parsed-literal::
+
+        sudo docker run -it example/nemesyst bash
+
+or
+
+:|bash shell|_ creating/running a GPU enabled container ("example/nemesyst"):
+
+    .. parsed-literal::
+
+        sudo docker run --gpus all -it example/nemesyst bash
 
 Cleaning up/ Removing
 +++++++++++++++++++++
