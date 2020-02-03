@@ -7,7 +7,7 @@ Troubleshooting
 .. _section_ts_mongodb:
 
 MongoDB/ Serving Issues
-+++++++++++++++++++++++
+***********************
 
 :Error\: not master and slaveOk=false:
 

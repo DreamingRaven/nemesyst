@@ -9,7 +9,7 @@ This means you may pass in arguments as (in order of highest priority first):
 * CLI arguments
 * Environment variables
 * ini format .conf config files
-* Hardcoded defaults
+* Hard-coded defaults
 
 In code Nemesyst will look for config files in the following default locations, in order of priority and with expansion (highest first):
 

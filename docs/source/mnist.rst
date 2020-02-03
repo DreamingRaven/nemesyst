@@ -34,7 +34,7 @@ The dataset will be downloaded for you by the cleaning module.
 Requirements
 ++++++++++++
 
-Please ensure you have both |mongodb|_ and the following python dependancies installed as a bare minimum:
+Please ensure you have both |mongodb|_ and the following python dependencies installed as a bare minimum:
 
 :``examples/requirements/mnist.txt``:
 
@@ -75,7 +75,7 @@ If you would like to skip rest of this example for whatever reason such as you a
 Serving
 +++++++
 
-For this example Nemesyst will create a database for us whenever we call the config file since we pass in options to initialise and start the database (see :ref:`section_mnist_config`). We can do this using:
+For this example Nemesyst will create a database for us whenever we call the config file since we pass in options to initialize and start the database (see :ref:`section_mnist_config`). We can do this using:
 
 :|files-only| serving example\::
 
@@ -108,7 +108,7 @@ It may be necessary after each of the following steps to check on the database t
 
     ./nemesyst --config ./examples/configs/nemesyst/mnist.conf --db-login
 
-This should put you in the |mongo shell|_ which is a javascript based interface of |mongodb|_ for direct user intervention. Where you can do all sorts of operations and checks. This is of course optional but recommended. If you would rather a more graphical interface you can use any of the plethora of tools to visualise the database but we recommend |mongodb compass|_, in particular for its aggregation helper.
+This should put you in the |mongo shell|_ which is a javascript based interface of |mongodb|_ for direct user intervention. Where you can do all sorts of operations and checks. This is of course optional but recommended. If you would rather a more graphical interface you can use any of the plethora of tools to visualize the database but we recommend |mongodb compass|_, in particular for its aggregation helper.
 
 Cleaning
 ++++++++
@@ -142,7 +142,7 @@ To learn from the now cleaned database-residing data, you can:
 
 This example trains a CNN, and yields a tuple ``(metadata_dictionary, pickle.dumps(model))`` which is then stored in |mongodb|_ using |gridfs| as most models exceed the base |mongodb|_ 16MB document size limit.
 This example is derived from one of the pre-existing |keras|_ |mnist|_ examples, but transformed into a relatively efficient Nemesyst variant.
-The major differences are that we use `fit_generator` which takes a generator (in our case a database cursor and pre-processor) for the training set, and another generator for the validation set. For this example we have simply validated against the test set as we aren't attempting to blind ourselves for the purposes of scientific rigor and overfitting prevention.
+The major differences are that we use `fit_generator` which takes a generator (in our case a database cursor and pre-processor) for the training set, and another generator for the validation set. For this example we have simply validated against the test set as we aren't attempting to blind ourselves for the purposes of scientific rigor and over-fitting prevention.
 Care should be taken in reading the pipelines as they can be quite complex operations to solve very tough problems, but here we simply set them to separate the dataset into train, and validation.
 
 :``examples/learners/mnist_learner.py``:
