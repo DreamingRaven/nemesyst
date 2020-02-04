@@ -63,7 +63,7 @@ For this example we have created a configuration file for you so there is nothin
 
   .. literalinclude:: ../../examples/configs/nemesyst/mnist.conf
 
-If you would like to skip rest of this example for whatever reason such as you are more interested in checking Nemesyst is working simply remove the symbol "`;`" from the start of any lines it appears in to uncomment that line, and then run everything using:
+If you would like to the skip rest of this example for whatever reason such as you are more interested in checking Nemesyst is working simply remove the symbol "`;`" from the start of any lines it appears in to uncomment that line, and then run everything using:
 
 :|files-only| automated example\::
 
