@@ -14,7 +14,7 @@ Nemesyst
     :target: https://github.com/DreamingRaven/nemesyst
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Table of Contents
    :numbered:
 
