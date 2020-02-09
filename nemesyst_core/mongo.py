@@ -54,8 +54,8 @@ class Mongo(object):
             "db_name": "nemesyst",
             "db_collection_name": "test",
             "db_port": "27017",
-            "db_path": self.home + "/db",
-            "db_log_path": self.home + "/db" + "/log",
+            "db_path": "db",
+            "db_log_path": "db" + "/log",
             "db_log_name": "mongoLog",
             "db_cursor_timeout": 600000,
             "db_batch_size": 32,
@@ -652,6 +652,7 @@ class Mongo(object):
 def _mongo_unit_test():
     """Unit test of MongoDB compat."""
     import datetime
+    import pickle
     # create Mongo object to use
     db = Mongo({"test2": 2, "db_port": "65535"})
     # testing magic functions
@@ -685,13 +686,25 @@ def _mongo_unit_test():
         "subarray": [{"hello": "worlds"}, {"hi": "jim"}],
         "timedate": datetime.datetime.utcnow(),
     })
+    # testing gridfs insert item into database
+    db.dump(db_collection_name="test", data=(
+        {"utctime": datetime.datetime.utcnow()},
+        pickle.dumps("some_test_string")
+    ))
     # log into the database so user can manually check data import
-    db.login()
+    # db.login()
     # attempt to retrieve the data that exists in the collection as a cursor
-    db.getCursor(db_collection_name="test", db_pipeline=[{"$match": {}}])
+    c = db.getCursor(db_collection_name="test", db_pipeline=[{"$match": {}}])
     # itetate through the data in batches to minimise requests
-    for dataBatch in db.getBatches(db_batch_size=32):
+    for dataBatch in db.getBatches(db_batch_size=32, db_data_cursor=c):
         print("Returned number of documents:", len(dataBatch))
+    # define a pipeline to get the latest gridfs file in a given collection
+    fs_pipeline = [{'$sort': {'uploadDate': -1}},
+                   {'$limit': 1},
+                   {'$project': {'_id': 1}}]
+    # get a cursor to get us the ID of files we desire
+    fc = db.getCursor(db_collection_name="test.files", db_pipeline=fs_pipeline)
+    print(list(db.getBatches(db_batch_size=32, db_data_cursor=fc)))
     # finally close out database
     db.stop()
 
