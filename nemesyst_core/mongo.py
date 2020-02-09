@@ -616,9 +616,14 @@ class Mongo(object):
         gfs = gridfs.GridFS(db, collection=db_collection_name)
         for batch in self.getBatches(db_batch_size=db_batch_size,
                                      db_data_cursor=db_data_cursor):
-            gridout_list = []
-            for doc in batch:
-                gridout_list.extend(gfs.get(doc["_id"]))
+            gridout_list = list(map(
+                lambda doc: {"gridout": gfs.get(doc["_id"]),
+                             "_id": doc["_id"]}, batch))
+            # # equivalent for loop
+            # gridout_list = []
+            # for doc in batch:
+            #     gridout_list.extend({"gridout": gfs.get(doc["_id"]),
+            #                          "_id": doc["_id"]})
             yield gridout_list
 
     getFiles.__annotations__ = {"db_batch_size": int,
