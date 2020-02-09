@@ -578,7 +578,6 @@ class Mongo(object):
             self.args["db_data_cursor"]
 
         cursor = db_data_cursor
-        # while self.args["db_data_cursor"]
         if(cursor is not None):
             while(cursor.alive):
                 yield self._nextBatch(cursor, db_batch_size)
@@ -590,6 +589,43 @@ class Mongo(object):
                                   "db_data_cursor":
                                   command_cursor.CommandCursor,
                                   "return": list}
+
+    def getFiles(self, db_batch_size=None, db_data_cursor=None,
+                 db_collection_name=None, db=None):
+        """Get gridfs files from mongodb by id using cursor to *.files.
+
+        :param db_batch_size: The number of items to return in a single round.
+        :param db_data_cursor: The cursor to use to retrieve data from db.
+        :param db_collection_name: The top level collecton name
+            not including .chunks or .files where gridfs is to operate.
+        :param db: Database object to operate pipeline on.
+        :type db_batch_size: integer
+        :type db_data_cursor: command_cursor.CommandCursor
+        :type db_collection_name: str
+        :type db: pymongo.database.Database
+        :return: yields a list of tuples containing (item requested, metadata).
+        """
+        db_data_cursor = db_data_cursor if db_data_cursor is not None else \
+            self.args["db_data_cursor"]
+        db_batch_size = db_batch_size if db_batch_size is not None else \
+            self.args["db_batch_size"]
+        db_collection_name = db_collection_name if db_collection_name is not \
+            None else self.args["db_collection_name"]
+        db = db if db is not None else self.args["db"]
+
+        gfs = gridfs.GridFS(db, collection=db_collection_name)
+        for batch in self.getBatches(db_batch_size=db_batch_size,
+                                     db_data_cursor=db_data_cursor):
+            gridout_list = []
+            for doc in batch:
+                gridout_list.extend(gfs.get(doc["_id"]))
+            yield gridout_list
+
+    getFiles.__annotations__ = {"db_batch_size": int,
+                                "db_data_cursor": command_cursor.CommandCursor,
+                                "db_collection_name": str,
+                                "db": database.Database,
+                                "return": list}
 
     def _nextBatch(self, cursor, db_batch_size):
         """Return the very next batch in mongoDb cursor."""
@@ -700,11 +736,13 @@ def _mongo_unit_test():
         print("Returned number of documents:", len(dataBatch))
     # define a pipeline to get the latest gridfs file in a given collection
     fs_pipeline = [{'$sort': {'uploadDate': -1}},
-                   {'$limit': 1},
+                   {'$limit': 5},
                    {'$project': {'_id': 1}}]
     # get a cursor to get us the ID of files we desire
     fc = db.getCursor(db_collection_name="test.files", db_pipeline=fs_pipeline)
-    print(list(db.getBatches(db_batch_size=32, db_data_cursor=fc)))
+    # use cursor and get files to collect our data in batches
+    for batch in db.getFiles(db_batch_size=2, db_data_cursor=fc):
+        print(batch)
     # finally close out database
     db.stop()
 
