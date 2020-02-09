@@ -730,7 +730,8 @@ def _mongo_unit_test():
     # testing gridfs insert item into database
     db.dump(db_collection_name="test", data=(
         {"utctime": datetime.datetime.utcnow()},
-        pickle.dumps("some_test_string")
+        b"some_test_string"
+        # pickle.dumps("some_test_string")
     ))
     # log into the database so user can manually check data import
     db.login()
@@ -747,7 +748,9 @@ def _mongo_unit_test():
     fc = db.getCursor(db_collection_name="test.files", db_pipeline=fs_pipeline)
     # use cursor and get files to collect our data in batches
     for batch in db.getFiles(db_batch_size=2, db_data_cursor=fc):
-        print(batch)
+        for doc in batch:
+            # now read the gridout object
+            print(doc["gridout"].read())
     # finally close out database
     db.stop()
 
