@@ -1,7 +1,7 @@
 # @Author: archer
 # @Date:   2019-12-31T14:46:43+00:00
 # @Last modified by:   archer
-# @Last modified time: 2019-12-31T16:39:58+00:00
+# @Last modified time: 2020-02-05T16:04:31+00:00
 
 from future.utils import raise_
 import os
@@ -146,6 +146,13 @@ def argument_parser(description=None, cfg_files=None):
                               env_var="N_DL_OUTPUT_MODEL_COLLECTION",
                               help="Specify model storage collection to " +
                                    "post trained neural networks to.")
+    deeplearning.add_argument("--dl-sequence-length",
+                              default=[32],
+                              nargs='+',
+                              type=int,
+                              env_var="N_DL_SEQUENCE_LENGTH",
+                              help="List of ints for how long a sequence of" +
+                                   "data should be/ expected.")
 
     # Inference specific options
     infering.add_argument("--i-predictor",

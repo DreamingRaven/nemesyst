@@ -27,7 +27,7 @@ Installation
 
 .. warning::
 
-    You will need to have |git|_, and |python|_ installed any of the below methods to work.
+    You will need to have |git|_, and |python|_ installed for any of the below methods to work.
     You will also need |mongodb|_ if you intend to create a local database, (more than likely), but Nemesyst will still connect to already running databases without it if you happen to have one already.
 
 This section will outline various methods for installation of Nemesyst, and its dependencies. Not all methods are equal there are slight variations between them, which are outlined in the respective sections below, along with instructions for each method:
