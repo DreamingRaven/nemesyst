@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "NEMESYST" "1" "Jan 29, 2020" "" "Nemesyst"
+.TH "NEMESYST" "1" "Feb 09, 2020" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.5.r81.ab07514
+nemesyst \- Nemesyst 2.0.5.r93.0daa58b
 .
 .nr rst2man-indent-level 0
 .
@@ -75,7 +75,7 @@ For disambiguation python, pip, and virtualenv shall mean their python v3 versio
 \fBWARNING:\fP
 .INDENT 0.0
 .INDENT 3.5
-You will need to have \fI\%git\fP, and \fI\%python\fP installed any of the below methods to work.
+You will need to have \fI\%git\fP, and \fI\%python\fP installed for any of the below methods to work.
 You will also need \fI\%MongoDB\fP if you intend to create a local database, (more than likely), but Nemesyst will still connect to already running databases without it if you happen to have one already.
 .UNINDENT
 .UNINDENT
@@ -95,6 +95,12 @@ This section will outline various methods for installation of Nemesyst, and its 
 .INDENT 2.0
 .IP \(bu 2
 \fI\%Generic\fP
+.INDENT 2.0
+.IP \(bu 2
+\fI\%pip\fP
+.IP \(bu 2
+\fI\%Docker\fP
+.UNINDENT
 .IP \(bu 2
 \fI\%Archlinux\fP
 .UNINDENT
@@ -244,6 +250,7 @@ future>=0.17.1
 .sp
 This section discusses the more automated and repeatable installation methods for Nemesyst, but they do not contain all the files needed to learn, and begin developing Nemesyst integrated applications, rather this includes just the bare\-bones Nemesyst ready for your deployment.
 .SS Generic
+.SS pip
 .sp
 For now you can use pip via:
 .INDENT 0.0
@@ -256,6 +263,9 @@ pip install git+https://github.com/DreamingRaven/nemesyst.git#branch=master
 .fi
 .UNINDENT
 .UNINDENT
+.SS \fI\%Docker\fP
+.sp
+see section_docker for docker instructions.
 .SS Archlinux
 .sp
 Install \fI\%nemesyst\-git\fP\s-2\uAUR\d\s0\&.
@@ -608,7 +618,7 @@ For this example we have created a configuration file for you so there is nothin
 .UNINDENT
 .UNINDENT
 .sp
-If you would like to skip rest of this example for whatever reason such as you are more interested in checking Nemesyst is working simply remove the symbol “\fI;\fP” from the start of any lines it appears in to uncomment that line, and then run everything using:
+If you would like to the skip rest of this example for whatever reason such as you are more interested in checking Nemesyst is working simply remove the symbol “\fI;\fP” from the start of any lines it appears in to uncomment that line, and then run everything using:
 .INDENT 0.0
 .TP
 .B section_files\-only automated example:
@@ -782,7 +792,7 @@ Care should be taken in reading the pipelines as they can be quite complex opera
 # @Email:  george raven community at pm dot me
 # @Filename: mnist_learner.py
 # @Last modified by:   archer
-# @Last modified time: 2019\-12\-31T17:18:10+00:00
+# @Last modified time: 2020\-01\-31T16:13:08+00:00
 # @License: Please see LICENSE in project root
 
 import numpy as np
@@ -804,8 +814,8 @@ def main(**kwargs):
     # # there are issues using RTX cards with tensorflow:
     # # https://github.com/tensorflow/tensorflow/issues/24496
     # # if this is the case please uncomment the following two lines:
-    import os
-    os.environ[\(aqCUDA_VISIBLE_DEVICES\(aq] = \(aq\-1\(aq  # use cpu
+    # import os
+    # os.environ[\(aqCUDA_VISIBLE_DEVICES\(aq] = \(aq\-1\(aq  # use cpu
 
     # just making these a little nicer to read but in a real application
     # we would not want these hardcoded thankfully the database can provide!
@@ -966,7 +976,7 @@ We can predict using the \fI\%gridfs\fP stored model by passing:
 .UNINDENT
 .UNINDENT
 .UNINDENT
-.SH SERVING
+.SH SERVING WITH MONGODB
 .sp
 Nemesyst uses \fI\%MongoDB\fP as its primary message passing interface. This page will more elaborate on using Nemesyst with different database setups, debugging, common issues, and any nitty\-gritty details that may be necessary to discuss.
 .sp
@@ -1227,6 +1237,7 @@ usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
                 [\-\-dl\-input\-model\-collection DL_INPUT_MODEL_COLLECTION [DL_INPUT_MODEL_COLLECTION ...]]
                 [\-\-dl\-input\-model\-pipeline DL_INPUT_MODEL_PIPELINE [DL_INPUT_MODEL_PIPELINE ...]]
                 [\-\-dl\-output\-model\-collection DL_OUTPUT_MODEL_COLLECTION [DL_OUTPUT_MODEL_COLLECTION ...]]
+                [\-\-dl\-sequence\-length DL_SEQUENCE_LENGTH [DL_SEQUENCE_LENGTH ...]]
                 [\-\-i\-predictor I_PREDICTOR [I_PREDICTOR ...]]
                 [\-\-i\-predictor\-entry\-point I_PREDICTOR_ENTRY_POINT [I_PREDICTOR_ENTRY_POINT ...]]
                 [\-\-i\-output\-prediction\-collection I_OUTPUT_PREDICTION_COLLECTION [I_OUTPUT_PREDICTION_COLLECTION ...]]
@@ -1354,6 +1365,11 @@ Default: [{}]
 Specify model storage collection to post trained neural networks to.
 .sp
 Default: [‘debug_models’]
+.TP
+.B\-\-dl\-sequence\-length
+List of ints for how long a sequence ofdata should be/ expected.
+.sp
+Default: [32]
 .UNINDENT
 .SS Infering options
 .INDENT 0.0
@@ -1525,7 +1541,7 @@ Nemesyst MongoDB abstraction/ Handler.
 This handler helps abstract some pymongo functionality to make it easier for us to use a MongoDB database for our deep learning purposes.
 .SS Example usage
 .sp
-Below follows a in code example unit test for all functionality. You can overide the options using a dictionary to the constructor or as keyword arguments to the functions that use them:
+Below follows a in code example unit test for all functionality. You can override the options using a dictionary to the constructor or as keyword arguments to the functions that use them:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -1534,6 +1550,7 @@ Below follows a in code example unit test for all functionality. You can overide
 def _mongo_unit_test():
     """Unit test of MongoDB compat."""
     import datetime
+    import pickle
     # create Mongo object to use
     db = Mongo({"test2": 2, "db_port": "65535"})
     # testing magic functions
@@ -1567,13 +1584,27 @@ def _mongo_unit_test():
         "subarray": [{"hello": "worlds"}, {"hi": "jim"}],
         "timedate": datetime.datetime.utcnow(),
     })
+    # testing gridfs insert item into database
+    db.dump(db_collection_name="test", data=(
+        {"utctime": datetime.datetime.utcnow()},
+        pickle.dumps("some_test_string")
+    ))
     # log into the database so user can manually check data import
     db.login()
     # attempt to retrieve the data that exists in the collection as a cursor
-    db.getCursor(db_collection_name="test", db_pipeline=[{"$match": {}}])
+    c = db.getCursor(db_collection_name="test", db_pipeline=[{"$match": {}}])
     # itetate through the data in batches to minimise requests
-    for dataBatch in db.getBatches(db_batch_size=32):
+    for dataBatch in db.getBatches(db_batch_size=32, db_data_cursor=c):
         print("Returned number of documents:", len(dataBatch))
+    # define a pipeline to get the latest gridfs file in a given collection
+    fs_pipeline = [{\(aq$sort\(aq: {\(aquploadDate\(aq: \-1}},
+                   {\(aq$limit\(aq: 5},
+                   {\(aq$project\(aq: {\(aq_id\(aq: 1}}]
+    # get a cursor to get us the ID of files we desire
+    fc = db.getCursor(db_collection_name="test.files", db_pipeline=fs_pipeline)
+    # use cursor and get files to collect our data in batches
+    for batch in db.getFiles(db_batch_size=2, db_data_cursor=fc):
+        print(batch)
     # finally close out database
     db.stop()
 
@@ -1581,6 +1612,8 @@ def _mongo_unit_test():
 .fi
 .UNINDENT
 .UNINDENT
+.sp
+This unit test also briefly shows how to use gridfs by dumping tuple items in the form (dict(), object), where the dict will become the files metadata and the object is some form of the data that can be sequentialized into the database.
 .sp
 \fBWARNING:\fP
 .INDENT 0.0
@@ -1743,6 +1776,29 @@ Command cursor to fetch the data with.
 .TP
 .B Return type
 pymongo.command_cursor.CommandCursor
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.TP
+.B getFiles(db_batch_size: int = None, db_data_cursor: pymongo.command_cursor.CommandCursor = None, db_collection_name: str = None, db: pymongo.database.Database = None) -> list
+Get gridfs files from mongodb by id using cursor to .files.
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fBdb_batch_size\fP (\fIinteger\fP) – The number of items to return in a single round.
+.IP \(bu 2
+\fBdb_data_cursor\fP (\fIcommand_cursor.CommandCursor\fP) – The cursor to use to retrieve data from db.
+.IP \(bu 2
+\fBdb_collection_name\fP (\fIstr\fP) – The top level collecton name
+not including .chunks or .files where gridfs is to operate.
+.IP \(bu 2
+\fBdb\fP (\fIpymongo.database.Database\fP) – Database object to operate pipeline on.
+.UNINDENT
+.TP
+.B Returns
+yields a list of tuples containing (item requested, metadata).
 .UNINDENT
 .UNINDENT
 .INDENT 7.0

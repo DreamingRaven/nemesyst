@@ -9,10 +9,12 @@ This handler helps abstract some pymongo functionality to make it easier for us 
 Example usage
 +++++++++++++
 
-Below follows a in code example unit test for all functionality. You can overide the options using a dictionary to the constructor or as keyword arguments to the functions that use them:
+Below follows a in code example unit test for all functionality. You can override the options using a dictionary to the constructor or as keyword arguments to the functions that use them:
 
 .. literalinclude:: ../../nemesyst_core/mongo.py
     :pyobject: _mongo_unit_test
+
+This unit test also briefly shows how to use gridfs by dumping tuple items in the form (dict(), object), where the dict will become the files metadata and the object is some form of the data that can be sequentialized into the database.
 
 .. warning::
 

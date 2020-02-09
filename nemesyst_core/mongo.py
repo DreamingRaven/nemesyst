@@ -592,7 +592,7 @@ class Mongo(object):
 
     def getFiles(self, db_batch_size=None, db_data_cursor=None,
                  db_collection_name=None, db=None):
-        """Get gridfs files from mongodb by id using cursor to *.files.
+        """Get gridfs files from mongodb by id using cursor to .files.
 
         :param db_batch_size: The number of items to return in a single round.
         :param db_data_cursor: The cursor to use to retrieve data from db.
@@ -728,7 +728,7 @@ def _mongo_unit_test():
         pickle.dumps("some_test_string")
     ))
     # log into the database so user can manually check data import
-    # db.login()
+    db.login()
     # attempt to retrieve the data that exists in the collection as a cursor
     c = db.getCursor(db_collection_name="test", db_pipeline=[{"$match": {}}])
     # itetate through the data in batches to minimise requests
