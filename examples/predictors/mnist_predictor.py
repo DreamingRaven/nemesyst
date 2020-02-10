@@ -17,6 +17,7 @@ def main(**kwargs):
     db = kwargs["db"]
 
     db.connect()
+    db.debug()
 
     # define a pipeline to get the latest gridfs file in any collection
     fs_pipeline = [{'$sort': {'uploadDate': -1}},  # sort most recent first
@@ -26,20 +27,22 @@ def main(**kwargs):
     # we add a suffix to target the metadata collection specifically
     # at the end of the top level model collection name we specified in our
     # config file
-    model_coll = \
-        "{0}{1}".format(args["dl_output_model_collection"], ".files")
+    model_coll_root = args["dl_output_model_collection"][args["process"]]
+    model_coll_files = "{0}{1}".format(model_coll_root, ".files")
     # apply this pipeline to the collection we used to store the models
-    fc = db.getCursor(db_collection_name=model_coll, db_pipeline=fs_pipeline)
+    fc = db.getCursor(db_collection_name=model_coll_files,
+                      db_pipeline=fs_pipeline)
     # we could return several models but we have limited everything to only one
     # but to be extensible this shows how to get the models from the db
     # in batches, however since we only have one model a batch size higher than
     # one does nothing
-    for batch in db.getFiles(db_batch_size=2, db_data_cursor=fc):
+    for batch in db.getFiles(db_batch_size=1, db_data_cursor=fc,
+                             db_collection_name=model_coll_root):
         for doc in batch:
+            print(doc, "hi")
             # now read the gridout object
             print(doc["gridout"].read())
 
-    print("kwargs:", type(kwargs), kwargs)
     x = 0
     while x < 10:
         yield {"x": x}
