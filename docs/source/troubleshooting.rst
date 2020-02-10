@@ -4,6 +4,14 @@
 Troubleshooting
 ===============
 
+Tensorflow Issues
+*****************
+
+:tensorflow.python.framework.errors_impl.UnknownError:
+
+  If you are using an RTX graphics card this is more than likeley due to your tesnorflow not supporting them. Simply either use the CPU, another graphics card, or re-compile tensorflow on your system so that it has RTX support.
+
+
 .. _section_ts_mongodb:
 
 MongoDB/ Serving Issues
