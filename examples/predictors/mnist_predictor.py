@@ -8,6 +8,37 @@
 
 
 def main(**kwargs):
+    """Entry point called by Nemesyst, always yields dictionary, tuple or None.
+
+    :param **kwargs: Generic input method to handle infinite dict-args.
+    :rtype: yield dict
+    """
+    args = kwargs["args"]
+    db = kwargs["db"]
+
+    db.connect()
+
+    # define a pipeline to get the latest gridfs file in any collection
+    fs_pipeline = [{'$sort': {'uploadDate': -1}},  # sort most recent first
+                   {'$limit': 1},  # we only want one model
+                   {'$project': {'_id': 1}}]  # we only want its _id
+    args["dl_output_model_collection"]
+    # we add a suffix to target the metadata collection specifically
+    # at the end of the top level model collection name we specified in our
+    # config file
+    model_coll = \
+        "{0}{1}".format(args["dl_output_model_collection"], ".files")
+    # apply this pipeline to the collection we used to store the models
+    fc = db.getCursor(db_collection_name=model_coll, db_pipeline=fs_pipeline)
+    # we could return several models but we have limited everything to only one
+    # but to be extensible this shows how to get the models from the db
+    # in batches, however since we only have one model a batch size higher than
+    # one does nothing
+    for batch in db.getFiles(db_batch_size=2, db_data_cursor=fc):
+        for doc in batch:
+            # now read the gridout object
+            print(doc["gridout"].read())
+
     print("kwargs:", type(kwargs), kwargs)
     x = 0
     while x < 10:
