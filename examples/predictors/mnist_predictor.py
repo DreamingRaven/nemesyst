@@ -38,11 +38,8 @@ def main(**kwargs):
     for batch in db.getFiles(db_batch_size=1, db_data_cursor=fc,
                              db_collection_name=model_coll_root):
         for doc in batch:
-            print(doc, "hi")
-            # now read the gridout object
-            print(doc["gridout"].read())
+            # now read the gridout object to get the model (pickled)
+            model = doc["gridout"].read()
+            print(doc, type(model))
 
-    x = 0
-    while x < 10:
-        yield {"x": x}
-        x = x + 1
+    yield None
