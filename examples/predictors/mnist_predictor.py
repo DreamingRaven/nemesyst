@@ -17,7 +17,6 @@ def main(**kwargs):
     db = kwargs["db"]
 
     db.connect()
-    db.debug()
 
     # define a pipeline to get the latest gridfs file in any collection
     fs_pipeline = [{'$sort': {'uploadDate': -1}},  # sort most recent first
