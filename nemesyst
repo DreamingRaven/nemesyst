@@ -23,11 +23,14 @@ from nemesyst_core.args import argument_parser
 # mongodb handler
 from nemesyst_core.mongo import Mongo
 
+# nemesyst inbuild logger
+from nemesyst_core.logger import Logger
+
 
 def main(args):
     """Operate on processed args."""
     db = Mongo(args)        # matching args will override defaults
-    args["pylog"] = print   # we can set a logger for now we will use standard
+    args["pylog"] = Logger(args).log  # we can set an arbitrary logger
     if(args["db_init"] is True):
         db.init()           # creates database files
         time.sleep(2)
