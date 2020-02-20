@@ -124,8 +124,8 @@ def argument_handler(args, config_files, description, isNewConfig=False):
     if(processed_args["config"] is not None) and (isNewConfig is False):
         # this will reload this handler with a new config file
         processed_args = argument_handler(args,
-                                          processed_args["config"] +
-                                          config_files,
+                                          processed_args["config"]
+                                          + config_files,
                                           description,
                                           isNewConfig=True)  # prevent loop
     if(processed_args["db_password"] is True):
