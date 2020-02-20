@@ -129,6 +129,7 @@ def argument_handler(args, config_files, description, isNewConfig=False):
                                           description,
                                           isNewConfig=True)  # prevent loop
     if(processed_args["db_password"] is True):
+        print("database password request ...")
         processed_args["db_password"] = getpass.getpass()
     elif(processed_args["db_password"] is False):
         processed_args["db_password"] = ""
