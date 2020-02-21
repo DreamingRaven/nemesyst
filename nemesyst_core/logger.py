@@ -42,5 +42,6 @@ class Logger(object):
     def log(self, *printables, debug=None, delimiter=None):
         """Log desired output to teminal."""
         delimiter = str(delimiter) if delimiter is not None else ""
+        debug = debug if debug is not None else self.args["debug"]
         if(debug):
             print(delimiter.join(map(str, printables)))
