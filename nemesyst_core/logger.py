@@ -40,13 +40,13 @@ class Logger(object):
 
     _mergeDicts.__annotations__ = {"dicts": dict, "return": dict}
 
-    def log(self, *args, log_level=None, min_level=None, delimiter=None):
+    def log(self, *text, log_level=None, min_level=None, delimiter=None):
         """Log desired output to teminal.
 
-        :param *args: The desired text to log.
+        :param \*text: The desired text to log.
         :param log_level: Current log level/ log level override.
         :param min_level: Minimum required log level to display text.
-        :param delimiter: String to place in between positional *args.
+        :param delimiter: String to place in between positional \*text.
         :type log_level: int
         :type min_level: int
         :type delimiter: str
@@ -63,7 +63,7 @@ class Logger(object):
         if(log_level >= min_level):
             print(delimiter.join(map(str, args)))
 
-    log.__annotations__ = {"*args": tuple, "log_level": int, "min_level": int,
+    log.__annotations__ = {"*text": tuple, "log_level": int, "min_level": int,
                            "delimiter": str, "return": None}
 
     def __setitem__(self, key, value):
