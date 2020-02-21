@@ -61,7 +61,7 @@ class Logger(object):
             self.args["min_level"]
 
         if(log_level >= min_level):
-            print(delimiter.join(map(str, args)))
+            print(delimiter.join(map(str, text)))
 
     log.__annotations__ = {"*text": tuple, "log_level": int, "min_level": int,
                            "delimiter": str, "return": None}
