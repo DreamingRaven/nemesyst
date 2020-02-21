@@ -8,7 +8,7 @@ class Logger(object):
     :param args: Dictionary of overides.
     :type args: dictionary
     :example: Logger().log("Hello, world.")
-    :example: Logger({"debug": True,}).log("Hello, world.")
+    :example: Logger({"log_level": 5,}).log("Hello, world.")
     """
 
     def __init__(self, args=None):
@@ -20,7 +20,8 @@ class Logger(object):
         """
         args = args if args is not None else dict()
         defaults = {
-            "debug": True,
+            "log_level": 0,
+            "min_level": 0,
             "delimiter": " ",
         }
         self.args = self._mergeDicts(defaults, args)
@@ -39,9 +40,52 @@ class Logger(object):
 
     _mergeDicts.__annotations__ = {"dicts": dict, "return": dict}
 
-    def log(self, *printables, debug=None, delimiter=None):
-        """Log desired output to teminal."""
+    def log(self, *args, log_level=None, min_level=None, delimiter=None):
+        """Log desired output to teminal.
+
+        :param *args: The desired text to log.
+        :param log_level: Current log level/ log level override.
+        :param min_level: Minimum required log level to display text.
+        :param delimiter: String to place in between positional *args.
+        :type log_level: int
+        :type min_level: int
+        :type delimiter: str
+        :return: None
+        :example: Logger({log_level:2}).log("Hello, world.", min_level=0)
+        :example: Logger().log("Hello", "world.", delimiter=", ")
+        """
         delimiter = str(delimiter) if delimiter is not None else ""
-        debug = debug if debug is not None else self.args["debug"]
-        if(debug):
-            print(delimiter.join(map(str, printables)))
+        log_level = log_level if log_level is not None else \
+            self.args["log_level"]
+        min_level = min_level if min_level is not None else \
+            self.args["min_level"]
+
+        if(log_level >= min_level):
+            print(delimiter.join(map(str, args)))
+
+    log.__annotations__ = {"*args": tuple, "log_level": int, "min_level": int,
+                           "delimiter": str, "return": None}
+
+    def __setitem__(self, key, value):
+        """Set a single arg or state by, (key, value)."""
+        self.args[key] = value
+
+    __setitem__.__annotations__ = {"key": str, "value": any, "return": None}
+
+    def __getitem__(self, key):
+        """Get a single arg or state by, (key, value)."""
+        try:
+            return self.args[key]
+        except KeyError:
+            return None  # does not exist is the same as None, gracefull catch
+
+    __getitem__.__annotations__ = {"key": str, "return": any}
+
+    def __delitem__(self, key):
+        """Delete a single arg or state by, (key, value)."""
+        try:
+            del self.args[key]
+        except KeyError:
+            pass  # job is not done but equivalent outcomes so will not error
+
+    __delitem__.__annotations__ = {"key": str, "return": None}
