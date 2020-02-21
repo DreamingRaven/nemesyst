@@ -164,3 +164,9 @@ We can predict using the |gridfs|_ stored model by passing:
   .. parsed-literal::
 
     ./nemesyst --config ./examples/configs/nemesyst/mnist.conf --i-predict
+
+As in the previous sections, this lets nemesyst know to run the predictor specified in the config file, which can be seen below. This predictor loads the most recent, most performant mnist model, and uses it to predict against the testing set. 
+
+:``examples/predictors/mnist_predictor.py``:
+
+  .. literalinclude:: ../../examples/predictors/mnist_predictor.py

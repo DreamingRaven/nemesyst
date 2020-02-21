@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "NEMESYST" "1" "Feb 09, 2020" "" "Nemesyst"
+.TH "NEMESYST" "1" "Feb 21, 2020" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.5.r93.0daa58b
+nemesyst \- Nemesyst 2.0.5.r115.8ad3400
 .
 .nr rst2man-indent-level 0
 .
@@ -976,6 +976,67 @@ We can predict using the \fI\%gridfs\fP stored model by passing:
 .UNINDENT
 .UNINDENT
 .UNINDENT
+.sp
+As in the previous sections, this lets nemesyst know to run the predictor specified in the config file, which can be seen below. This predictor loads the most recent, most performant mnist model, and uses it to predict against the testing set.
+.INDENT 0.0
+.TP
+.B \fBexamples/predictors/mnist_predictor.py\fP
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+# @Author: George Onoufriou <archer>
+# @Date:   2019\-08\-16
+# @Email:  george raven community at pm dot me
+# @Filename: debug_predictors.py
+# @Last modified by:   archer
+# @Last modified time: 2019\-08\-16
+# @License: Please see LICENSE in project root
+
+
+def main(**kwargs):
+    """Entry point called by Nemesyst, always yields dictionary, tuple or None.
+
+    :param **kwargs: Generic input method to handle infinite dict\-args.
+    :rtype: yield dict
+    """
+    args = kwargs["args"]
+    db = kwargs["db"]
+
+    db.connect()
+
+    # define a pipeline to get the latest gridfs file in any collection
+    fs_pipeline = [{\(aq$sort\(aq: {\(aquploadDate\(aq: \-1}},  # sort most recent first
+                   {\(aq$limit\(aq: 1},  # we only want one model
+                   {\(aq$project\(aq: {\(aq_id\(aq: 1}}]  # we only want its _id
+    args["dl_output_model_collection"]
+    # we add a suffix to target the metadata collection specifically
+    # at the end of the top level model collection name we specified in our
+    # config file
+    model_coll_root = args["dl_output_model_collection"][args["process"]]
+    model_coll_files = "{0}{1}".format(model_coll_root, ".files")
+    # apply this pipeline to the collection we used to store the models
+    fc = db.getCursor(db_collection_name=model_coll_files,
+                      db_pipeline=fs_pipeline)
+    # we could return several models but we have limited everything to only one
+    # but to be extensible this shows how to get the models from the db
+    # in batches, however since we only have one model a batch size higher than
+    # one does nothing
+    for batch in db.getFiles(db_batch_size=1, db_data_cursor=fc,
+                             db_collection_name=model_coll_root):
+        for doc in batch:
+            # now read the gridout object to get the model (pickled)
+            model = doc["gridout"].read()
+            print(doc, type(model))
+
+    yield None
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .SH SERVING WITH MONGODB
 .sp
 Nemesyst uses \fI\%MongoDB\fP as its primary message passing interface. This page will more elaborate on using Nemesyst with different database setups, debugging, common issues, and any nitty\-gritty details that may be necessary to discuss.
@@ -1178,6 +1239,175 @@ Please see section_ts_mongodb
 .SS Further reading
 .sp
 \fI\%MongoDB config file options\fP
+.SH DOCKERISATION
+.sp
+Docker is a lightweight semi\-vm that can help automate reproducibility, dependency management, deployment, and use of some code which is containerized.
+Considering the relative ease with which Docker is used, modified/adjusted, with only a minimal amount of code, it has quite a profound affect on work\-flows, making really nightmarish scenarios much easier to handle.
+.sp
+For docker installation you may need to look up instructions online but after installing docker (minimum version 19.03) and nvidia container toolkit, you will need not install anything further, and can instead rely on the Dockerfile and docker to install and manage dependencies from then on. If you would like more automation/ to use docker\-compose then please ensure you also have docker\-compose installed.
+.sp
+There are two available versions of our Dockerfile:
+.INDENT 0.0
+.IP \(bu 2
+Archlinux based nemesyst docker \fBexamples/containers/nemesyst/Dockerfile\fP; This docker is the one we seek to support since it will force us to stay up to date with the latest software and changes so we never end up in a crippling dependency requirement. It should be noted however that it is not quite complete.
+.IP \(bu 2
+Ubuntu based nemesyst docker \fBexamples/containers/nemesyst_ubuntu/Dockerfile\fP; This docker is the one we make available for the purposes of longer term support, and for those that just prefer Ubuntu (you must be crazy!). This one is the more supported by depended on projects such as tf\-seal so is easier to maintain.
+.UNINDENT
+.SS Docker Usage (Linux)
+.sp
+While docker is very portable to most platforms, we do not maintain any non\-x86_64, Microsoft Windows or Mac systems, thus we cannot presume to give sound Docker usage on these other platforms. However the usage should largely remain the same, but presumably without the need for privilege escalation using sudo for Win and Mac.
+.sp
+Using docker usually revolves around only two steps building the image you would like to use, and then using it either interactively or by issuing explicit commands to be executed. First however we should briefly mention the two most important files related to this a .dockerignore file, and a \fI\%Dockerfile\fP .
+.SS \fI\%Dockerfile\fP
+.sp
+A \fI\%Dockerfile\fP is a short command based script that defines how to create a container. These can and usually are built on other containers. Please refer to the \fI\%Dockerfile\fP documentation for a more in depth breakdown.
+.INDENT 0.0
+.TP
+.B \fI\%Dockerfile\fP example \fBexamples/containers/nemesyst_ubuntu/Dockerfile\fP
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+FROM ubuntu:19.04
+
+# updating and installing basic ubuntu python container
+RUN apt update && \e
+    apt install \-y wget python3.7 python3\-pip git
+
+# getting and installing tensorflow, and tf\-seal
+RUN wget https://storage.googleapis.com/tf\-pips/tf\-c++17\-support/tf_nightly\-1.14.0\-cp37\-cp37m\-linux_x86_64.whl && \e
+    python3.7 \-m pip install tf_nightly\-1.14.0\-cp37\-cp37m\-linux_x86_64.whl && \e
+    rm tf_nightly\-1.14.0\-cp37\-cp37m\-linux_x86_64.whl && \e
+    python3.7 \-m pip install tf\-seal
+
+# getting tf\-seal repository so we have access to all of their examples etc
+RUN python3.7 \-m pip install git+https://github.com/DreamingRaven/nemesyst.git#branch=master && \e
+    git clone https://github.com/tf\-encrypted/tf\-seal && \e
+    git clone https://github.com/DreamingRaven/nemesyst
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS \&.dockerignore
+.sp
+A .dockerignore is similar in function to a .gitignore and supports similar syntax. Special care should be paid to .dockerignore files as they are both useful to minimise the risk of potential secrets being leaked into a container, their container size etc, but they can also cause problems with things like the \fB\(gaCOPY\(ga\fP command leading to unexpected results. We personally recommend a whitelist strategy .dockerignore where you specify only what you would like to be copied in.
+.INDENT 0.0
+.TP
+.B whitelist .dockerignore example \fBexamples/containers/nemesyst_ubuntu/.dockerignore\fP
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+# ignore everything using whitelist strategy
+*
+
+# you can selectiveley allow files using the ! at the beginning of the line
+#!lib/**/*.py # this would allow all python files in subdirectories of lib if enabled
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Building
+.sp
+With a \fI\%Dockerfile\fP in the current directory to build a dockerfile into a docker image:
+.INDENT 0.0
+.TP
+.B \fI\%Bash shell\fP creating a tagged docker image
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker build \-t example/nemesyst .
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+This tag “example/nemesyst” will help you reference the docker image later on, like easy removal, and general use.
+.SS Running
+.sp
+When we take a built image and run it, it is now called a container. Images are the immutable snapshots that you have built, containers are the changed containers for all the work that has happened since being an image.
+.sp
+To create a container from an image/ to run a docker image you can either:
+.INDENT 0.0
+.TP
+.B \fI\%Bash shell\fP creating/running a CPU only container from a tagged (“example/nemesyst”) docker image
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker run \-it example/nemesyst bash
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+or
+.INDENT 0.0
+.TP
+.B \fI\%Bash shell\fP creating/running a GPU enabled container (“example/nemesyst”)
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker run \-\-gpus all \-it example/nemesyst bash
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Cleaning up/ Removing
+.sp
+It may be necessary over the course of any experimentation or creation to occasionally clean up any images and containers that may still be taking up space on your system.
+.INDENT 0.0
+.TP
+.B \fI\%Bash shell\fP removing/ pruning everything
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker system prune
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.TP
+.B \fI\%Bash shell\fP removing all images
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker rmi \-f $(sudo docker images \-q)
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.TP
+.B \fI\%Bash shell\fP removing all containers
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker rm (sudo docker ps \-a \-q)
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .SH OPTIONS
 .sp
 Nemesyst uses \fI\%ConfigArgParse\fP for argument handling.
@@ -1248,8 +1478,8 @@ usage: nemesyst [\-h] [\-U] [\-\-prevent\-update] [\-c CONFIG [CONFIG ...]]
                 [\-\-db\-tls\-certificate\-key\-file DB_TLS_CERTIFICATE_KEY_FILE]
                 [\-\-db\-tls\-certificate\-key\-file\-password DB_TLS_CERTIFICATE_KEY_FILE_PASSWORD]
                 [\-\-db\-tls\-crl\-file DB_TLS_CRL_FILE] [\-l] [\-s] [\-S] [\-i]
-                [\-\-db\-user\-name DB_USER_NAME] [\-\-db\-password] [\-\-db\-intervention]
-                [\-\-db\-authentication DB_AUTHENTICATION]
+                [\-\-db\-user\-name DB_USER_NAME] [\-\-db\-password DB_PASSWORD]
+                [\-\-db\-intervention] [\-\-db\-authentication DB_AUTHENTICATION]
                 [\-\-db\-authentication\-database DB_AUTHENTICATION_DATABASE]
                 [\-\-db\-user\-role DB_USER_ROLE] [\-\-db\-ip DB_IP]
                 [\-\-db\-bind\-ip DB_BIND_IP [DB_BIND_IP ...]] [\-\-db\-port DB_PORT]
@@ -1535,6 +1765,58 @@ Default: 32
 .B\-\-db\-pipeline
 The file path of the pipeline to use on db.
 .UNINDENT
+.SH LOGGER
+.sp
+Nemesyst logging utility/ tool.
+This handler helps give the user and developer more granular control of logging/ output, and leaves expansion possible for new and more complex scenarios.
+.SS API
+.INDENT 0.0
+.TP
+.B class logger.Logger(args: dict = None)
+Python logger utility.
+.sp
+This logger utility helps output in desired manner in slightly more
+configurable manner than simple print().
+.INDENT 7.0
+.TP
+.B Parameters
+\fBargs\fP (\fIdictionary\fP) – Dictionary of overides.
+.TP
+.B Example
+Logger().log(“Hello, world.”)
+.TP
+.B Example
+Logger({“log_level”: 5,}).log(“Hello, world.”)
+.UNINDENT
+.INDENT 7.0
+.TP
+.B log(*text, log_level: int = None, min_level: int = None, delimiter: str = None) -> None
+Log desired output to teminal.
+.INDENT 7.0
+.TP
+.B Parameters
+.INDENT 7.0
+.IP \(bu 2
+\fB*text\fP – The desired text to log.
+.IP \(bu 2
+\fBlog_level\fP (\fIint\fP) – Current log level/ log level override.
+.IP \(bu 2
+\fBmin_level\fP (\fIint\fP) – Minimum required log level to display text.
+.IP \(bu 2
+\fBdelimiter\fP (\fIstr\fP) – String to place in between positional *text.
+.UNINDENT
+.TP
+.B Returns
+None
+.TP
+.B Example
+Logger({log_level:2}).log(“Hello, world.”, min_level=0)
+.TP
+.B Example
+Logger().log(“Hello”, “world.”, delimiter=”, “)
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .SH MONGO
 .sp
 Nemesyst MongoDB abstraction/ Handler.
@@ -1587,7 +1869,8 @@ def _mongo_unit_test():
     # testing gridfs insert item into database
     db.dump(db_collection_name="test", data=(
         {"utctime": datetime.datetime.utcnow()},
-        pickle.dumps("some_test_string")
+        b"some_test_string"
+        # pickle.dumps("some_test_string")
     ))
     # log into the database so user can manually check data import
     db.login()
@@ -1604,7 +1887,9 @@ def _mongo_unit_test():
     fc = db.getCursor(db_collection_name="test.files", db_pipeline=fs_pipeline)
     # use cursor and get files to collect our data in batches
     for batch in db.getFiles(db_batch_size=2, db_data_cursor=fc):
-        print(batch)
+        for doc in batch:
+            # now read the gridout object
+            print(doc["gridout"].read())
     # finally close out database
     db.stop()
 
@@ -1894,176 +2179,13 @@ subprocess.Popen
 .UNINDENT
 .UNINDENT
 .UNINDENT
-.SH DOCKERISATION
-.sp
-Docker is a lightweight semi\-vm that can help automate reproducibility, dependency management, deployment, and use of some code which is containerized.
-Considering the relative ease with which Docker is used, modified/adjusted, with only a minimal amount of code, it has quite a profound affect on work\-flows, making really nightmarish scenarios much easier to handle.
-.sp
-For docker installation you may need to look up instructions online but after installing docker (minimum version 19.03) and nvidia container toolkit, you will need not install anything further, and can instead rely on the Dockerfile and docker to install and manage dependencies from then on. If you would like more automation/ to use docker\-compose then please ensure you also have docker\-compose installed.
-.sp
-There are two available versions of our Dockerfile:
-.INDENT 0.0
-.IP \(bu 2
-Archlinux based nemesyst docker \fBexamples/containers/nemesyst/Dockerfile\fP; This docker is the one we seek to support since it will force us to stay up to date with the latest software and changes so we never end up in a crippling dependency requirement. It should be noted however that it is not quite complete.
-.IP \(bu 2
-Ubuntu based nemesyst docker \fBexamples/containers/nemesyst_ubuntu/Dockerfile\fP; This docker is the one we make available for the purposes of longer term support, and for those that just prefer Ubuntu (you must be crazy!). This one is the more supported by depended on projects such as tf\-seal so is easier to maintain.
-.UNINDENT
-.SS Docker Usage (Linux)
-.sp
-While docker is very portable to most platforms, we do not maintain any non\-x86_64, Microsoft Windows or Mac systems, thus we cannot presume to give sound Docker usage on these other platforms. However the usage should largely remain the same, but presumably without the need for privilege escalation using sudo for Win and Mac.
-.sp
-Using docker usually revolves around only two steps building the image you would like to use, and then using it either interactively or by issuing explicit commands to be executed. First however we should briefly mention the two most important files related to this a .dockerignore file, and a \fI\%Dockerfile\fP .
-.SS \fI\%Dockerfile\fP
-.sp
-A \fI\%Dockerfile\fP is a short command based script that defines how to create a container. These can and usually are built on other containers. Please refer to the \fI\%Dockerfile\fP documentation for a more in depth breakdown.
-.INDENT 0.0
-.TP
-.B \fI\%Dockerfile\fP example \fBexamples/containers/nemesyst_ubuntu/Dockerfile\fP
-.INDENT 7.0
-.INDENT 3.5
-.sp
-.nf
-.ft C
-FROM ubuntu:19.04
-
-# updating and installing basic ubuntu python container
-RUN apt update && \e
-    apt install \-y wget python3.7 python3\-pip git
-
-# getting and installing tensorflow, and tf\-seal
-RUN wget https://storage.googleapis.com/tf\-pips/tf\-c++17\-support/tf_nightly\-1.14.0\-cp37\-cp37m\-linux_x86_64.whl && \e
-    python3.7 \-m pip install tf_nightly\-1.14.0\-cp37\-cp37m\-linux_x86_64.whl && \e
-    rm tf_nightly\-1.14.0\-cp37\-cp37m\-linux_x86_64.whl && \e
-    python3.7 \-m pip install tf\-seal
-
-# getting tf\-seal repository so we have access to all of their examples etc
-RUN python3.7 \-m pip install git+https://github.com/DreamingRaven/nemesyst.git#branch=master && \e
-    git clone https://github.com/tf\-encrypted/tf\-seal && \e
-    git clone https://github.com/DreamingRaven/nemesyst
-
-.ft P
-.fi
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.SS \&.dockerignore
-.sp
-A .dockerignore is similar in function to a .gitignore and supports similar syntax. Special care should be paid to .dockerignore files as they are both useful to minimise the risk of potential secrets being leaked into a container, their container size etc, but they can also cause problems with things like the \fB\(gaCOPY\(ga\fP command leading to unexpected results. We personally recommend a whitelist strategy .dockerignore where you specify only what you would like to be copied in.
-.INDENT 0.0
-.TP
-.B whitelist .dockerignore example \fBexamples/containers/nemesyst_ubuntu/.dockerignore\fP
-.INDENT 7.0
-.INDENT 3.5
-.sp
-.nf
-.ft C
-# ignore everything using whitelist strategy
-*
-
-# you can selectiveley allow files using the ! at the beginning of the line
-#!lib/**/*.py # this would allow all python files in subdirectories of lib if enabled
-
-.ft P
-.fi
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.SS Building
-.sp
-With a \fI\%Dockerfile\fP in the current directory to build a dockerfile into a docker image:
-.INDENT 0.0
-.TP
-.B \fI\%Bash shell\fP creating a tagged docker image
-.INDENT 7.0
-.INDENT 3.5
-.sp
-.nf
-.ft C
-sudo docker build \-t example/nemesyst .
-.ft P
-.fi
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.sp
-This tag “example/nemesyst” will help you reference the docker image later on, like easy removal, and general use.
-.SS Running
-.sp
-When we take a built image and run it, it is now called a container. Images are the immutable snapshots that you have built, containers are the changed containers for all the work that has happened since being an image.
-.sp
-To create a container from an image/ to run a docker image you can either:
-.INDENT 0.0
-.TP
-.B \fI\%Bash shell\fP creating/running a CPU only container from a tagged (“example/nemesyst”) docker image
-.INDENT 7.0
-.INDENT 3.5
-.sp
-.nf
-.ft C
-sudo docker run \-it example/nemesyst bash
-.ft P
-.fi
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.sp
-or
-.INDENT 0.0
-.TP
-.B \fI\%Bash shell\fP creating/running a GPU enabled container (“example/nemesyst”)
-.INDENT 7.0
-.INDENT 3.5
-.sp
-.nf
-.ft C
-sudo docker run \-\-gpus all \-it example/nemesyst bash
-.ft P
-.fi
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.SS Cleaning up/ Removing
-.sp
-It may be necessary over the course of any experimentation or creation to occasionally clean up any images and containers that may still be taking up space on your system.
-.INDENT 0.0
-.TP
-.B \fI\%Bash shell\fP removing/ pruning everything
-.INDENT 7.0
-.INDENT 3.5
-.sp
-.nf
-.ft C
-sudo docker system prune
-.ft P
-.fi
-.UNINDENT
-.UNINDENT
-.TP
-.B \fI\%Bash shell\fP removing all images
-.INDENT 7.0
-.INDENT 3.5
-.sp
-.nf
-.ft C
-sudo docker rmi \-f $(sudo docker images \-q)
-.ft P
-.fi
-.UNINDENT
-.UNINDENT
-.TP
-.B \fI\%Bash shell\fP removing all containers
-.INDENT 7.0
-.INDENT 3.5
-.sp
-.nf
-.ft C
-sudo docker rm (sudo docker ps \-a \-q)
-.ft P
-.fi
-.UNINDENT
-.UNINDENT
-.UNINDENT
 .SH TROUBLESHOOTING
+.SS Tensorflow Issues
+.INDENT 0.0
+.TP
+.B tensorflow.python.framework.errors_impl.UnknownError
+If you are using an RTX graphics card this is more than likeley due to your tesnorflow not supporting them. Simply either use the CPU, another graphics card, or re\-compile tensorflow on your system so that it has RTX support.
+.UNINDENT
 .SS MongoDB/ Serving Issues
 .INDENT 0.0
 .TP

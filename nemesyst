@@ -23,11 +23,14 @@ from nemesyst_core.args import argument_parser
 # mongodb handler
 from nemesyst_core.mongo import Mongo
 
+# nemesyst inbuild logger
+from nemesyst_core.logger import Logger
+
 
 def main(args):
     """Operate on processed args."""
     db = Mongo(args)        # matching args will override defaults
-    args["pylog"] = print   # we can set a logger for now we will use standard
+    args["pylog"] = Logger(args).log  # we can set an arbitrary logger
     if(args["db_init"] is True):
         db.init()           # creates database files
         time.sleep(2)
@@ -124,12 +127,15 @@ def argument_handler(args, config_files, description, isNewConfig=False):
     if(processed_args["config"] is not None) and (isNewConfig is False):
         # this will reload this handler with a new config file
         processed_args = argument_handler(args,
-                                          processed_args["config"] +
-                                          config_files,
+                                          processed_args["config"]
+                                          + config_files,
                                           description,
                                           isNewConfig=True)  # prevent loop
     if(processed_args["db_password"] is True):
+        print("database password request ...")
         processed_args["db_password"] = getpass.getpass()
+    elif(processed_args["db_password"] is False):
+        processed_args["db_password"] = ""
     return processed_args
 
 

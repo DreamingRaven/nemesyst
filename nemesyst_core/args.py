@@ -252,7 +252,8 @@ def argument_parser(description=None, cfg_files=None):
                          help="Set mongodb username.")
     mongodb.add_argument("--db-password",
                          default=bool(False),
-                         action="store_true",
+                         type=bool_or_string,
+                         # action="store_true",
                          env_var="N_DB_PASSWORD",
                          help="Set mongodb password.")
     mongodb.add_argument("--db-intervention",
@@ -375,3 +376,14 @@ def type_pipeline_file_path(string):
 
 
 type_pipeline_file_path.__annotations__ = {"string": str, "return": str}
+
+
+def bool_or_string(s):
+    """Discern if a string is a bool or a normal string."""
+    true_strings = ["true", "1"]
+    false_strings = ["false", "0"]
+    if(s.lower() in true_strings):
+        return True
+    elif(s.lower() in false_strings):
+        return False
+    return s
