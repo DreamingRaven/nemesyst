@@ -25,6 +25,7 @@ Nemesyst
    mnist
    serving
    options
+   logger
    mongodb_handler
    docker
    troubleshooting
