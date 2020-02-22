@@ -1,10 +1,11 @@
 # @Author: GeorgeRaven <raven>
 # @Date:   2020-02-22T00:09:49+00:00
 # @Last modified by:   raven
-# @Last modified time: 2020-02-22T00:41:57+00:00
+# @Last modified time: 2020-02-22T01:17:07+00:00
 # @License: please see LICENSE file in project root
 
 import logging
+import datetime
 
 
 class Logger(object):
@@ -12,6 +13,21 @@ class Logger(object):
 
     This logger utility helps output in desired manner in slightly more
     configurable manner than simple print().
+
+    40-DEBUG: Detailed information, typically of interest only when diagnosing
+    problems.
+
+    30-INFO: Confirmation that things are working as expected.
+
+    20-WARNING: An indication that something unexpected happened, or indicative
+    of some problem in the near future (e.g. ‘disk space low’). The software
+    is still working as expected.
+
+    10-ERROR: Due to a more serious problem, the software has not been able to
+    perform some function.
+
+    0-CRITICAL: A serious error, indicating that the program itself may be
+    unable to continue running.
 
     :param args: Dictionary of overides.
     :type args: dictionary
@@ -28,14 +44,17 @@ class Logger(object):
         """
         args = args if args is not None else dict()
         defaults = {
-            "log_level": 0,
-            "log_min_level": 0,
+            "log_level": 30,
+            "log_min_level": 40,
             "delimiter": " ",
-            "log_file": "nemesyst.log"
+            "log_file": "nemesyst.log",
+            "log_filemode": "a",
         }
         self.args = self._mergeDicts(defaults, args)
-        logging.basicConfig(filename=self.args["log_file"])
-        logging.info("testing")
+        logging.basicConfig(filename=self.args["log_file"],
+                            filemode=self.args["log_filemode"],
+                            level=50-self.args["log_level"])
+        logging.info("logger is now online")
 
     __init__.__annotations__ = {"args": dict, "return": None}
 
@@ -72,6 +91,8 @@ class Logger(object):
             self.args["log_min_level"]
 
         if(log_level >= log_min_level):
+            # todo make adaptations for python logging, e.g check level
+            # and convert to INFO CRITICAL etc type message
             print(log_delimiter.join(map(str, text)))
 
     log.__annotations__ = {"*text": tuple, "log_level": int, "min_level": int,
