@@ -1,7 +1,7 @@
 # @Author: GeorgeRaven <raven>
 # @Date:   2020-02-22T00:09:49+00:00
 # @Last modified by:   raven
-# @Last modified time: 2020-02-22T01:17:07+00:00
+# @Last modified time: 2020-02-22T18:31:33+00:00
 # @License: please see LICENSE file in project root
 
 import logging
@@ -44,11 +44,11 @@ class Logger(object):
         """
         args = args if args is not None else dict()
         defaults = {
-            "log_level": 30,
-            "log_min_level": 40,
-            "delimiter": " ",
-            "log_file": "nemesyst.log",
-            "log_filemode": "a",
+            "log_level": 30,                # setting default log level to INFO
+            "log_min_level": 40,            # setting default minim to DEBUG
+            "log_delimiter": " ",           # default to act just like print
+            "log_file": "nemesyst.log",     # default log file to use
+            "log_filemode": "a",            # append to file not overwrite
         }
         self.args = self._mergeDicts(defaults, args)
         logging.basicConfig(filename=self.args["log_file"],
@@ -70,7 +70,8 @@ class Logger(object):
 
     _mergeDicts.__annotations__ = {"dicts": dict, "return": dict}
 
-    def log(self, *text, log_level=None, log_min_level=None, log_delimiter=None):
+    def log(self, *text, log_level=None, log_min_level=None,
+            log_delimiter=None):
         """Log desired output to teminal.
 
         :param \*text: The desired text to log.
@@ -84,16 +85,28 @@ class Logger(object):
         :example: Logger({log_level:2}).log("Hello, world.", min_level=0)
         :example: Logger().log("Hello", "world.", delimiter=", ")
         """
-        log_delimiter = str(log_delimiter) if log_delimiter is not None else ""
+        log_delimiter = str(log_delimiter) if log_delimiter is not None else \
+            self.args["log_delimiter"]
         log_level = log_level if log_level is not None else \
             self.args["log_level"]
         log_min_level = log_min_level if log_min_level is not None else \
             self.args["log_min_level"]
+        message = log_delimiter.join(map(str, text))
 
-        if(log_level >= log_min_level):
-            # todo make adaptations for python logging, e.g check level
-            # and convert to INFO CRITICAL etc type message
-            print(log_delimiter.join(map(str, text)))
+        if(log_min_level < 10):
+            logging.critical(message)
+        elif(log_min_level < 20) and (log_min_level >= 10):
+            logging.error(message)
+        elif(log_min_level < 30) and (log_min_level >= 20):
+            logging.warning(message)
+        elif(log_min_level < 40) and (log_min_level >= 30):
+            logging.info(message)
+        elif(log_min_level >= 40):
+            logging.debug(message)
+        # if(log_level >= log_min_level):
+        #     # todo make adaptations for python logging, e.g check level
+        #     # and convert to INFO CRITICAL etc type message
+        #     print(log_delimiter.join(map(str, text)))
 
     log.__annotations__ = {"*text": tuple, "log_level": int, "min_level": int,
                            "delimiter": str, "return": None}
