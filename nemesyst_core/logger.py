@@ -1,7 +1,7 @@
 # @Author: GeorgeRaven <raven>
 # @Date:   2020-02-22T00:09:49+00:00
 # @Last modified by:   raven
-# @Last modified time: 2020-02-22T18:31:33+00:00
+# @Last modified time: 2020-02-22T23:20:30+00:00
 # @License: please see LICENSE file in project root
 
 import logging
@@ -48,12 +48,16 @@ class Logger(object):
             "log_min_level": 40,            # setting default minim to DEBUG
             "log_delimiter": " ",           # default to act just like print
             "log_file": "nemesyst.log",     # default log file to use
-            "log_filemode": "a",            # append to file not overwrite
+            "log_filemode": "w",            # append to file not overwrite
+            "log_format": "%(asctime)s %(levelname)s:%(message)s",
+            "log_date_format": "%Y-%m-%dT%H:%M:%S",
         }
         self.args = self._mergeDicts(defaults, args)
         logging.basicConfig(filename=self.args["log_file"],
                             filemode=self.args["log_filemode"],
-                            level=50-self.args["log_level"])
+                            level=50-self.args["log_level"],
+                            format=self.args["log_format"],
+                            datefmt=self.args["log_date_format"])
         logging.info("logger is now online")
 
     __init__.__annotations__ = {"args": dict, "return": None}
