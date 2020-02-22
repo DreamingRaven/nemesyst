@@ -1,8 +1,10 @@
 # @Author: GeorgeRaven <raven>
 # @Date:   2020-02-22T00:09:49+00:00
 # @Last modified by:   raven
-# @Last modified time: 2020-02-22T00:09:53+00:00
+# @Last modified time: 2020-02-22T00:41:57+00:00
 # @License: please see LICENSE file in project root
+
+import logging
 
 
 class Logger(object):
@@ -27,10 +29,13 @@ class Logger(object):
         args = args if args is not None else dict()
         defaults = {
             "log_level": 0,
-            "min_level": 0,
+            "log_min_level": 0,
             "delimiter": " ",
+            "log_file": "nemesyst.log"
         }
         self.args = self._mergeDicts(defaults, args)
+        logging.basicConfig(filename=self.args["log_file"])
+        logging.info("testing")
 
     __init__.__annotations__ = {"args": dict, "return": None}
 
@@ -46,7 +51,7 @@ class Logger(object):
 
     _mergeDicts.__annotations__ = {"dicts": dict, "return": dict}
 
-    def log(self, *text, log_level=None, min_level=None, delimiter=None):
+    def log(self, *text, log_level=None, log_min_level=None, log_delimiter=None):
         """Log desired output to teminal.
 
         :param \*text: The desired text to log.
@@ -60,14 +65,14 @@ class Logger(object):
         :example: Logger({log_level:2}).log("Hello, world.", min_level=0)
         :example: Logger().log("Hello", "world.", delimiter=", ")
         """
-        delimiter = str(delimiter) if delimiter is not None else ""
+        log_delimiter = str(log_delimiter) if log_delimiter is not None else ""
         log_level = log_level if log_level is not None else \
             self.args["log_level"]
-        min_level = min_level if min_level is not None else \
-            self.args["min_level"]
+        log_min_level = log_min_level if log_min_level is not None else \
+            self.args["log_min_level"]
 
-        if(log_level >= min_level):
-            print(delimiter.join(map(str, text)))
+        if(log_level >= log_min_level):
+            print(log_delimiter.join(map(str, text)))
 
     log.__annotations__ = {"*text": tuple, "log_level": int, "min_level": int,
                            "delimiter": str, "return": None}
