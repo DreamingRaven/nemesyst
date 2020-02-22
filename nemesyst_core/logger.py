@@ -1,3 +1,9 @@
+# @Author: GeorgeRaven <raven>
+# @Date:   2020-02-22T00:09:49+00:00
+# @Last modified by:   raven
+# @Last modified time: 2020-02-22T00:09:53+00:00
+# @License: please see LICENSE file in project root
+
 
 class Logger(object):
     """Python logger utility.
