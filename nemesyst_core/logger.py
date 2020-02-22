@@ -1,7 +1,7 @@
 # @Author: GeorgeRaven <raven>
 # @Date:   2020-02-22T00:09:49+00:00
 # @Last modified by:   raven
-# @Last modified time: 2020-02-22T23:20:30+00:00
+# @Last modified time: 2020-02-22T23:23:02+00:00
 # @License: please see LICENSE file in project root
 
 import logging
@@ -48,7 +48,7 @@ class Logger(object):
             "log_min_level": 40,            # setting default minim to DEBUG
             "log_delimiter": " ",           # default to act just like print
             "log_file": "nemesyst.log",     # default log file to use
-            "log_filemode": "w",            # append to file not overwrite
+            "log_filemode": "a",            # append to file not overwrite
             "log_format": "%(asctime)s %(levelname)s:%(message)s",
             "log_date_format": "%Y-%m-%dT%H:%M:%S",
         }
@@ -74,7 +74,7 @@ class Logger(object):
 
     _mergeDicts.__annotations__ = {"dicts": dict, "return": dict}
 
-    def log(self, *text, log_level=None, log_min_level=None,
+    def log(self, *text, log_min_level=None,
             log_delimiter=None):
         """Log desired output to teminal.
 
@@ -91,8 +91,6 @@ class Logger(object):
         """
         log_delimiter = str(log_delimiter) if log_delimiter is not None else \
             self.args["log_delimiter"]
-        log_level = log_level if log_level is not None else \
-            self.args["log_level"]
         log_min_level = log_min_level if log_min_level is not None else \
             self.args["log_min_level"]
         message = log_delimiter.join(map(str, text))
@@ -107,10 +105,6 @@ class Logger(object):
             logging.info(message)
         elif(log_min_level >= 40):
             logging.debug(message)
-        # if(log_level >= log_min_level):
-        #     # todo make adaptations for python logging, e.g check level
-        #     # and convert to INFO CRITICAL etc type message
-        #     print(log_delimiter.join(map(str, text)))
 
     log.__annotations__ = {"*text": tuple, "log_level": int, "min_level": int,
                            "delimiter": str, "return": None}
