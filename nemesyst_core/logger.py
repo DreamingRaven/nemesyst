@@ -1,7 +1,7 @@
 # @Author: GeorgeRaven <raven>
 # @Date:   2020-02-22T00:09:49+00:00
-# @Last modified by:   raven
-# @Last modified time: 2020-02-22T23:23:02+00:00
+# @Last modified by:   archer
+# @Last modified time: 2020-02-23T15:40:19+00:00
 # @License: please see LICENSE file in project root
 
 import logging
@@ -51,6 +51,11 @@ class Logger(object):
             "log_filemode": "a",            # append to file not overwrite
             "log_format": "%(asctime)s %(levelname)s:%(message)s",
             "log_date_format": "%Y-%m-%dT%H:%M:%S",
+            "debug": 40,
+            "info": 30,
+            "warning": 20,
+            "error": 10,
+            "critical": 0,
         }
         self.args = self._mergeDicts(defaults, args)
         logging.basicConfig(filename=self.args["log_file"],
