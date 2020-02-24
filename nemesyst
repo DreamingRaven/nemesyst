@@ -46,6 +46,7 @@ def main(args):
         db.login()          # logs in to database
     if(args["db_stop"] is True):
         db.stop()           # stops database
+    args["pylog"]("now successfully exiting", log_min_level=30)
 
 
 main.__annotations__ = {"args": dict, "return": None}
