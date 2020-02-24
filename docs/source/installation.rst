@@ -164,7 +164,7 @@ To create the `python-virtualenv <https://wiki.archlinux.org/index.php/Python/Vi
 
 .. code-block:: bash
 
-    vituralenv venv
+    virtualenv venv
 
 To then use the newly created virtual environment:
 
