@@ -1,7 +1,7 @@
 # @Author: GeorgeRaven <raven>
 # @Date:   2020-02-22T00:09:49+00:00
 # @Last modified by:   archer
-# @Last modified time: 2020-02-23T22:23:13+00:00
+# @Last modified time: 2020-02-24T11:36:30+00:00
 # @License: please see LICENSE file in project root
 
 import logging
@@ -48,7 +48,7 @@ class Logger(object):
             "log_min_level": 40,            # setting default minim to DEBUG
             "log_delimiter": " ",           # default to act just like print
             "log_file": "nemesyst.log",     # default log file to use
-            "log_filemode": "a",            # append to file not overwrite
+            "log_filemode": "w",            # append to file not overwrite
             "log_format": "%(asctime)s %(levelname)s:%(message)s",
             "log_date_format": "%Y-%m-%dT%H:%M:%S",
             "log_debug": 40,
