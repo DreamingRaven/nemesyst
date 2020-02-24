@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "NEMESYST" "1" "Feb 21, 2020" "" "Nemesyst"
+.TH "NEMESYST" "1" "Feb 23, 2020" "" "Nemesyst"
 .SH NAME
-nemesyst \- Nemesyst 2.0.6.r0.0dc8a60
+nemesyst \- Nemesyst 2.0.6.r9.196bacc
 .
 .nr rst2man-indent-level 0
 .
@@ -1777,6 +1777,21 @@ Python logger utility.
 .sp
 This logger utility helps output in desired manner in slightly more
 configurable manner than simple print().
+.sp
+40\-DEBUG: Detailed information, typically of interest only when diagnosing
+problems.
+.sp
+30\-INFO: Confirmation that things are working as expected.
+.sp
+20\-WARNING: An indication that something unexpected happened, or indicative
+of some problem in the near future (e.g. ‘disk space low’). The software
+is still working as expected.
+.sp
+10\-ERROR: Due to a more serious problem, the software has not been able to
+perform some function.
+.sp
+0\-CRITICAL: A serious error, indicating that the program itself may be
+unable to continue running.
 .INDENT 7.0
 .TP
 .B Parameters
@@ -1790,7 +1805,7 @@ Logger({“log_level”: 5,}).log(“Hello, world.”)
 .UNINDENT
 .INDENT 7.0
 .TP
-.B log(*text, log_level: int = None, min_level: int = None, delimiter: str = None) -> None
+.B log(*text, log_min_level=None, log_delimiter=None) -> None
 Log desired output to teminal.
 .INDENT 7.0
 .TP

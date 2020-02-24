@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: nemesyst.py
 # @Last modified by:   archer
-# @Last modified time: 2020-01-01T17:32:17+00:00
+# @Last modified time: 2020-02-23T15:38:13+00:00
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -151,7 +151,7 @@ def import_script(script, args, db, entry_point):
     module_dir, module_file = os.path.split(script)
     # get name from file string if it has an extension for example
     module_name = os.path.splitext(module_file)[0]
-    print("\nLaunching:", module_dir, module_file)
+    args["pylog"]("Launching:", module_dir, module_file, log_min_level=30)
     sys.path.append(module_dir)
     script = importlib.import_module(module_name)
     # get the address of the function we want to call
