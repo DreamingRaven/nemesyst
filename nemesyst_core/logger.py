@@ -1,7 +1,7 @@
 # @Author: GeorgeRaven <raven>
 # @Date:   2020-02-22T00:09:49+00:00
 # @Last modified by:   archer
-# @Last modified time: 2020-02-26T15:39:20+00:00
+# @Last modified time: 2020-02-26T15:42:46+00:00
 # @License: please see LICENSE file in project root
 
 import logging
@@ -81,6 +81,10 @@ class Logger(object):
 
     def __call__(self, *text, log_min_level=None, log_delimiter=None):
         """Magic function used for drop-in-replacement of print from object"""
+        # logging usage of compatibility function
+        self.log("compatibility function usage",
+                 log_min_level=self.args["log_debug"])
+        # redirecting compatibility function
         self.log(*text, log_min_level=log_min_level,
                  log_delimiter=log_delimiter)
 
