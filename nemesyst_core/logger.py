@@ -1,7 +1,7 @@
 # @Author: GeorgeRaven <raven>
 # @Date:   2020-02-22T00:09:49+00:00
 # @Last modified by:   archer
-# @Last modified time: 2020-02-24T11:36:30+00:00
+# @Last modified time: 2020-02-26T15:39:20+00:00
 # @License: please see LICENSE file in project root
 
 import logging
@@ -78,6 +78,11 @@ class Logger(object):
         return result
 
     _mergeDicts.__annotations__ = {"dicts": dict, "return": dict}
+
+    def __call__(self, *text, log_min_level=None, log_delimiter=None):
+        """Magic function used for drop-in-replacement of print from object"""
+        self.log(*text, log_min_level=log_min_level,
+                 log_delimiter=log_delimiter)
 
     def log(self, *text, log_min_level=None,
             log_delimiter=None):
