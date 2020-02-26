@@ -1,7 +1,9 @@
-# @Author: archer
-# @Date:   2019-12-31T14:46:43+00:00
-# @Last modified by:   archer
-# @Last modified time: 2020-02-05T16:04:31+00:00
+# @Author: GeorgeRaven <raven>
+# @Date:   2020-02-26T12:51:56+00:00
+# @Last modified by:   raven
+# @Last modified time: 2020-02-26T13:14:17+00:00
+# @License: please see LICENSE file in project root
+
 
 from future.utils import raise_
 import os
@@ -23,6 +25,7 @@ def argument_parser(description=None, cfg_files=None):
     mongodb_rep = parser.add_argument_group(title="MongoDb replica options")
     mongodb_tls = parser.add_argument_group(title="MongoDb TLS options")
     mongodb = parser.add_argument_group(title="MongoDb options")
+    logger = parser.add_argument_group(title="Logger options")
 
     # Nemesyst specific options
     nemesyst.add_argument("-h", "--help",
@@ -338,6 +341,43 @@ def argument_parser(description=None, cfg_files=None):
                          type=str,
                          env_var="N_DB_PIPELINE",
                          help="The file path of the pipeline to use on db.")
+    # logger specific options
+    logger.add_argument("--log-level",
+                        default=30,
+                        type=int,
+                        env_var="N_LOG_LEVEL",
+                        help="Use given number as boundry printing anything" +
+                        " that has an equal or lower value.")
+    logger.add_argument("--log-min-level",
+                        default=40,
+                        type=int,
+                        env_var="N_LOG_MIN_LEVEL",
+                        help="The default log level of prints.")
+    logger.add_argument("--log-delimiter",
+                        default=" ",
+                        type=str,
+                        env_var="N_LOG_DELIMITER",
+                        help="The delimiter to use between printout strings.")
+    logger.add_argument("--log-file",
+                        default="nemesyst.log",
+                        type=str,
+                        env_var="N_LOG_FILE",
+                        help="The file to log to, relative or absolute path.")
+    logger.add_argument("--log-filemode",
+                        default="w",
+                        type=str,
+                        env_var="N_LOG_FILEMODE",
+                        help="'a' to append to file, 'w' to overwrite file.")
+    logger.add_argument("--log-format",
+                        default="%(asctime)s %(levelname)s:%(message)s",
+                        type=str,
+                        env_var="N_LOG_FORMAT",
+                        help="Python logger format to use.")
+    logger.add_argument("--log-date-format",
+                        default="%Y-%m-%dT%H:%M:%S",
+                        type=str,
+                        env_var="N_LOG_DATE_FORMAT",
+                        help="Python logger date format.")
 
     return parser
 
