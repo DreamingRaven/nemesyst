@@ -4,7 +4,7 @@
 # @Date:   2018-05-16
 # @Filename: nemesyst.py
 # @Last modified by:   archer
-# @Last modified time: 2020-02-23T15:38:13+00:00
+# @Last modified time: 2020-02-26T15:17:44+00:00
 # @License: Please see LICENSE file in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -30,7 +30,7 @@ from nemesyst_core.logger import Logger
 def main(args):
     """Operate on processed args."""
     db = Mongo(args)        # matching args will override defaults
-    args["pylog"] = Logger(args).log  # we can set an arbitrary logger
+    args["pylog"] = Logger(args)  # we can set an arbitrary logger
     if(args["db_init"] is True):
         db.init()           # creates database files
         time.sleep(2)
