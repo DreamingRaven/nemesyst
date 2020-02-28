@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mnist_learner.py
 # @Last modified by:   raven
-# @Last modified time: 2020-02-28T13:12:07+00:00
+# @Last modified time: 2020-02-28T13:17:57+00:00
 # @License: Please see LICENSE in project root
 
 import numpy as np
@@ -55,12 +55,12 @@ def main(**kwargs):
     model = generate_model(input_shape=input_shape,
                            num_classes=num_classes)
     model.summary()
-    hist = model.fit_generator(generator=train_generator,
-                               steps_per_epoch=219,  # ceil(70000/32)
-                               validation_data=test_generator,
-                               validation_steps=219,
-                               epochs=args["dl_epochs"][args["process"]],
-                               initial_epoch=0)
+    hist = model.fit(train_generator,
+                     steps_per_epoch=219,  # ceil(70000/32)
+                     validation_data=test_generator,
+                     validation_steps=219,
+                     epochs=args["dl_epochs"][args["process"]],
+                     initial_epoch=0)
 
     excluded_keys = ["pylog", "db_password"]
     # yield metadata, model for gridfs
