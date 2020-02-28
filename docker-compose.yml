@@ -1,7 +1,7 @@
 # @Author: archer
 # @Date:   2019-09-13T12:52:06+01:00
 # @Last modified by:   archer
-# @Last modified time: 2020-02-28T14:21:02+00:00
+# @Last modified time: 2020-02-28T14:34:24+00:00
 
 
 
@@ -10,10 +10,14 @@ version: "3.7"
 
 services:
 
-  # uncomment this section only if you desire to build nemesyst this way
+  # by default uses local files and copies them into docker
+  # if you prefer a more sable version swap the commented context call
+  # with the uncommented one.
   nemesyst:
     build:
-  #   context: ./examples/containers/nemesyst_ubuntu
+      # this is the stable/ longer term (ubuntu) version:
+      # context: ./examples/containers/nemesyst_ubuntu
+      # this is the archlinux on the edge version, it is very big (+10G):
       context: ./
       dockerfile: Dockerfile
     depends_on:
