@@ -2,18 +2,19 @@
 # @Date:   2019-08-16
 # @Email:  george raven community at pm dot me
 # @Filename: mnist_learner.py
-# @Last modified by:   archer
-# @Last modified time: 2020-01-31T16:13:08+00:00
+# @Last modified by:   raven
+# @Last modified time: 2020-02-28T12:48:35+00:00
 # @License: Please see LICENSE in project root
 
 import numpy as np
 import pickle
 
-import keras
-from keras import backend as K
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Conv2D, MaxPooling2D
+import tensorflow as tf
+# import keras
+# from keras import backend as K
+# from keras.models import Sequential
+# from keras.layers import Dense, Dropout, Flatten
+# from keras.layers import Conv2D, MaxPooling2D
 
 
 def main(**kwargs):
@@ -51,7 +52,7 @@ def main(**kwargs):
                                                      {"$gte": 60000}}}
                                                    ])
     # ensuring our input shape is in whatever style keras backend wants
-    if K.image_data_format() == 'channels_first':
+    if tf.keras.backend.image_data_format() == 'channels_first':
         input_shape = (1, img_rows, img_cols)
     else:
         input_shape = (img_rows, img_cols, 1)
@@ -84,20 +85,20 @@ def main(**kwargs):
 
 def generate_model(input_shape, num_classes):
     """Generate the keras CNN"""
-    model = Sequential()
-    model.add(Conv2D(32, kernel_size=(3, 3),
-                     activation="relu",
-                     input_shape=input_shape))
-    model.add(Conv2D(64, (3, 3), activation="relu"))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-    model.add(Flatten())
-    model.add(Dense(128, activation="relu"))
-    model.add(Dropout(0.5))
-    model.add(Dense(num_classes, activation="softmax"))
+    model = tf.keras.Sequential()
+    model.add(tf.keras.layers.Conv2D(32, kernel_size=(3, 3),
+                                     activation="relu",
+                                     input_shape=input_shape))
+    model.add(tf.keras.layers.Conv2D(64, (3, 3), activation="relu"))
+    model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(tf.keras.layers.Dropout(0.25))
+    model.add(tf.keras.layers.Flatten())
+    model.add(tf.keras.layers.Dense(128, activation="relu"))
+    model.add(tf.keras.layers.Dropout(0.5))
+    model.add(tf.keras.layers.Dense(num_classes, activation="softmax"))
 
-    model.compile(loss=keras.losses.categorical_crossentropy,
-                  optimizer=keras.optimizers.Adadelta(),
+    model.compile(loss=tf.keras.losses.categorical_crossentropy,
+                  optimizer=tf.keras.optimizers.Adadelta(),
                   metrics=['accuracy'])
     return model
 
@@ -136,7 +137,7 @@ def inf_mnist_generator(db, args, example_dim, num_classes, pipeline=None):
             x = np.array(x)  # converting nlists to ndarray
 
             # shaping the np array into whatever keras is asking for
-            if K.image_data_format() == 'channels_first':
+            if tf.keras.backend.image_data_format() == 'channels_first':
                 y = y.reshape((y.shape[0], 1))
                 x = x.reshape((x.shape[0], 1,
                                example_dim[0], example_dim[1]))
@@ -152,7 +153,7 @@ def inf_mnist_generator(db, args, example_dim, num_classes, pipeline=None):
             x /= 255
 
             # convert class vectors to binary class matrices
-            y = keras.utils.to_categorical(y, num_classes)
+            y = tf.keras.utils.to_categorical(y, num_classes)
 
             # returning completeley propper data, batch by batch thats all.
             yield x, y
