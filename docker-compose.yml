@@ -1,7 +1,7 @@
 # @Author: archer
 # @Date:   2019-09-13T12:52:06+01:00
 # @Last modified by:   archer
-# @Last modified time: 2020-02-28T14:34:24+00:00
+# @Last modified time: 2020-02-28T21:31:39+00:00
 
 
 
@@ -29,8 +29,11 @@ services:
     image: "mongo"
     ports:
       # this maps one of our local ports to one of the containers ones
-      # "local-port:container-port"
-      - "65530:27017"
+      # "local-port:container-port":
+      - "127.0.0.1:65530:27017"
+      # this will expose the database to everybody by piping all trafic
+      # to host-port:container-port, even external machines and traffic:
+      # - "65530:27017"
     command:
       - "--config"
       - "/etc/mongodb.conf" # this is the in container path
