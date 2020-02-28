@@ -1,7 +1,7 @@
 # @Author: archer
 # @Date:   2019-09-13T12:52:06+01:00
 # @Last modified by:   archer
-# @Last modified time: 2020-01-16
+# @Last modified time: 2020-02-28T14:21:02+00:00
 
 
 
@@ -10,13 +10,14 @@ version: "3.7"
 
 services:
 
-  # # uncomment this section only if you desire to build nemesyst this way
-  # nemesyst:
-  #   build:
-  #     context: ./examples/containers/nemesyst_ubuntu
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - mongodb
+  # uncomment this section only if you desire to build nemesyst this way
+  nemesyst:
+    build:
+  #   context: ./examples/containers/nemesyst_ubuntu
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - mongodb
 
   mongodb:
     container_name: mongodb_server
