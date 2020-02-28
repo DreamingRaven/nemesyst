@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mnist_learner.py
 # @Last modified by:   raven
-# @Last modified time: 2020-02-28T13:17:57+00:00
+# @Last modified time: 2020-02-28T13:29:29+00:00
 # @License: Please see LICENSE in project root
 
 import numpy as np
@@ -18,12 +18,6 @@ def main(**kwargs):
     :param **kwargs: Generic input method to handle infinite dict-args.
     :rtype: yield dict
     """
-    # # there are issues using RTX cards with tensorflow:
-    # # https://github.com/tensorflow/tensorflow/issues/24496
-    # # if this is the case please uncomment the following two lines:
-    # import os
-    # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'  # use cpu
-
     # just making these a little nicer to read but in a real application
     # we would not want these hardcoded thankfully the database can provide!
     args = kwargs["args"]
