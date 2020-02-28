@@ -3,18 +3,13 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mnist_learner.py
 # @Last modified by:   raven
-# @Last modified time: 2020-02-28T13:09:23+00:00
+# @Last modified time: 2020-02-28T13:12:07+00:00
 # @License: Please see LICENSE in project root
 
 import numpy as np
 import pickle
 
 import tensorflow as tf
-# import keras
-# from keras import backend as K
-# from keras.models import Sequential
-# from keras.layers import Dense, Dropout, Flatten
-# from keras.layers import Conv2D, MaxPooling2D
 
 
 def main(**kwargs):
