@@ -3,7 +3,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mnist_learner.py
 # @Last modified by:   raven
-# @Last modified time: 2020-02-28T12:48:35+00:00
+# @Last modified time: 2020-02-28T13:09:23+00:00
 # @License: Please see LICENSE in project root
 
 import numpy as np
@@ -78,9 +78,14 @@ def main(**kwargs):
         "accuracy": float(hist.history["accuracy"][-1]),
         "args": {k: args[k] for k in set(list(args.keys())) - \
                  set(excluded_keys)},
-    }, pickle.dumps(model))
+    }, save_model(args, model))
 
     yield best_model
+
+
+def save_model(args, model):
+    """Take model, and create a serialisable object to store in a database."""
+    return pickle.dumps(model)
 
 
 def generate_model(input_shape, num_classes):
