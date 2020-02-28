@@ -30,7 +30,7 @@ RUN mkdir /home/${user_name}/git && \
 USER root
 
 # install more specific packages from community and AUR as needed, E.G some in-container libs to aid development/ testing:
-RUN sudo -u ${user_name} pikaur -S --noconfirm mongodb-bin mongodb-tools-bin python-scikit-learn --noconfirm
+RUN sudo -u ${user_name} pikaur -S --noconfirm mongodb-bin mongodb-tools-bin python-scikit-learn python-sphinx python-sphinx-argparse python-sphinx_rtd_theme --noconfirm
 
 # changing to final user in case interactivity is desired
 USER ${user_name}
