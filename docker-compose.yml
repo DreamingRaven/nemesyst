@@ -1,7 +1,7 @@
 # @Author: archer
 # @Date:   2019-09-13T12:52:06+01:00
 # @Last modified by:   archer
-# @Last modified time: 2020-02-29T00:19:53+00:00
+# @Last modified time: 2020-02-29T12:36:34+00:00
 
 
 
@@ -61,4 +61,7 @@ services:
     container_name: nginx_proxy
     image: "nginx:mainline-alpine"
     volumes:
+      # volume to store error logs
+      - /var/log/nginx-error.log:/var/log/nginx-error.log
+      # volume to store the nginx config
       - ./examples/configs/nginx/nginx.conf:/etc/nginx/nginx.conf
