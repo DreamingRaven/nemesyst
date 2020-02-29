@@ -1,7 +1,7 @@
 # @Author: archer
 # @Date:   2019-09-13T12:52:06+01:00
 # @Last modified by:   archer
-# @Last modified time: 2020-02-28T23:48:54+00:00
+# @Last modified time: 2020-02-29T00:05:19+00:00
 
 
 
@@ -19,9 +19,13 @@ services:
       # context: ./examples/containers/nemesyst_ubuntu
       # this is the archlinux on the edge version, it is very big (+10G):
       context: ./
+      # just the name of the dockerfile we want to use, happens to be normal
       dockerfile: Dockerfile
-    image: archer/nemesyst # giving the buildt image a name
+    # giving our build image a name for future reference
+    image: archer/nemesyst
+    # giving out image which spawns from our image a name
     container_name: nemesyst_client
+    # ensuring MongoDB is started before we start ours
     depends_on:
       - mongodb
 
@@ -52,3 +56,7 @@ services:
       # This will copy local config file to docker container
       # - /etc/mongodb.conf:/etc/mongodb.conf
       - ./examples/configs/mongo/mongo_docker.yaml:/etc/mongodb.conf
+
+  nginx:
+    container_name: nginx_proxy
+    image: "nginx:mainline-alpine"
