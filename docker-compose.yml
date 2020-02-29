@@ -1,7 +1,7 @@
 # @Author: archer
 # @Date:   2019-09-13T12:52:06+01:00
 # @Last modified by:   archer
-# @Last modified time: 2020-02-29T00:05:19+00:00
+# @Last modified time: 2020-02-29T00:19:53+00:00
 
 
 
@@ -60,3 +60,5 @@ services:
   nginx:
     container_name: nginx_proxy
     image: "nginx:mainline-alpine"
+    volumes:
+      - ./examples/configs/nginx/nginx.conf:/etc/nginx/nginx.conf
