@@ -104,4 +104,4 @@ It may be necessary over the course of any experimentation or creation to occasi
 
     .. parsed-literal::
 
-        sudo docker rm (sudo docker ps -a -q)
+        sudo docker rm $(sudo docker ps -a -q)
