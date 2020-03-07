@@ -5,7 +5,7 @@
 # @Email:  george raven community at pm dot me
 # @Filename: mongo_handler.py
 # @Last modified by:   archer
-# @Last modified time: 2019-08-16
+# @Last modified time: 2020-03-07T21:28:31+00:00
 # @License: Please see LICENSE in project root
 
 from __future__ import print_function, absolute_import   # python 2-3 compat
@@ -434,12 +434,6 @@ class Mongo(object):
         """Add a user with given permissions to the authentication database."""
         local_mongourl = "mongodb://{0}:{1}/".format(
             "localhost", self.args["db_port"])
-        # self.args["pylog"]("Adding  mongodb user:",
-        #                    str(self.args["db_user_name"]),
-        #                    ", pass:",
-        #                    str(type(self.args["db_password"])),
-        #                    ", role:", str(self.args["db_user_role"]),
-        #                    ", authdb:", str(self.args["db_name"]))
         debug_status = {
             "mongodb-user:": self.args["db_user_name"],
             "user-password": type(self.args["db_password"]),
