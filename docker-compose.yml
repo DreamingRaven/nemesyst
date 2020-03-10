@@ -1,7 +1,7 @@
 # @Author: archer
 # @Date:   2019-09-13T12:52:06+01:00
 # @Last modified by:   archer
-# @Last modified time: 2020-02-29T12:36:34+00:00
+# @Last modified time: 2020-03-10T00:23:07+00:00
 
 
 
@@ -51,7 +51,7 @@ services:
       # "volume-name:in-container mount point (not local system):"
       # or /local/location:/docker/location
       # - "mongodb-volume:/data/db"
-      - /data/db:/data/db
+      - /containers/mongodb:/data/db
       # local file:docker vm location # this copies over the config file
       # This will copy local config file to docker container
       # - /etc/mongodb.conf:/etc/mongodb.conf
@@ -60,8 +60,10 @@ services:
   nginx:
     container_name: nginx_proxy
     image: "nginx:mainline-alpine"
+    ports:
+      - "65535:27017" # the first port here is accessible from anywhere
     volumes:
-      # volume to store error logs
-      - /var/log/nginx-error.log:/var/log/nginx-error.log
+      # storage directory for logs etc
+      - /containers/nginx:/nginx
       # volume to store the nginx config
       - ./examples/configs/nginx/nginx.conf:/etc/nginx/nginx.conf
