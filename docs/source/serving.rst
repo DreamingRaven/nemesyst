@@ -281,6 +281,9 @@ Further reading
 - `config file options <https://docs.mongodb.com/manual/reference/configuration-options/>`_
 - `user management <https://docs.mongodb.com/manual/tutorial/manage-users-and-roles/#manage-users-and-roles/>`_
 
+..
+  https://docs.mongodb.com/manual/reference/glossary/#term-init-script
+
 |replica|_ sets:
 
 - `rs.initiate <https://docs.mongodb.com/manual/reference/method/rs.initiate//>`_
