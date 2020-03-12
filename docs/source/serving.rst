@@ -29,6 +29,10 @@
 
 .. |troubleshooting| replace:: :ref:`section_ts_mongodb`
 
+.. |hostname| replace:: ``hostname``
+.. |port| replace:: ``port``
+.. |username| replace:: ``username``
+
 .. _page_serving:
 
 Serving with MongoDB
@@ -112,7 +116,7 @@ To connect to an non-sharded database with autnentication but no TLS/SSL:
 
   .. parsed-literal::
 
-      mongo HOSTNAME:PORT -u USERNAME --authenticationDatabase DATABASENAME
+      mongo |hostname|:|port| -u |username| --authenticationDatabase DATABASENAME
 
 To connect to a slightly more complicated scenario with authentication, TLS, and sharding enabled:
 
@@ -120,7 +124,7 @@ To connect to a slightly more complicated scenario with authentication, TLS, and
 
   .. parsed-literal::
 
-      mongo HOSTNAME:PORT -u USERNAME --authenticationDatabase DATABASENAME --tls --tlsCAFile PATHTOCAFILE --tlsCertificateKeyFile PATHTOCERTKEYFILE
+      mongo |hostname|:|port| -u |username| --authenticationDatabase DATABASENAME --tls --tlsCAFile PATHTOCAFILE --tlsCertificateKeyFile PATHTOCERTKEYFILE
 
 Creating database users
 -----------------------
@@ -132,14 +136,14 @@ Connect to the running database see :ref:`connecting_mongodb`.
 
   .. parsed-literal::
 
-    db.createUser({user: "USERNAME", pwd: passwordPrompt(), roles: []})
+    db.createUser({user: "|username|", pwd: passwordPrompt(), roles: []})
 
 :|mongo shell|_ grant role to existing user example\::
 
   .. parsed-literal::
 
     db.grantRolesToUser(
-    "USERNAME",
+    "|username|",
     [
       { role: "userAdminAnyDatabase", db: "admin" }
     ])
@@ -148,13 +152,96 @@ Connect to the running database see :ref:`connecting_mongodb`.
 
   .. parsed-literal::
 
-    db.createUser({user: "USERNAME", pwd: passwordPrompt(), roles: [{role:"userAdminAnyDatabase", db: "admin"}]})
+    db.createUser({user: "|username|", pwd: passwordPrompt(), roles: [{role:"userAdminAnyDatabase", db: "admin"}]})
 
 .. note::
   Since this user belongs to admin in the previous examples that means the authenticationDatabase is admin when authenticating as this user as per the instructions in ":ref:`connecting_mongodb`".
 
 From basic database to replica sets
 +++++++++++++++++++++++++++++++++++
+
+This section will outline how to take a currently standard database and turn it into a replica set
+
+Checking the current status of the replica sets
+-----------------------------------------------
+
+The replica sets should not be initialized which we can check.
+
+:|mongo shell|_ Check the current status of replica sets\::
+
+  Command:
+
+  .. parsed-literal::
+
+    rs.status()
+
+  Out:
+
+  .. parsed-literal::
+
+    {
+    	"operationTime" : Timestamp(0, 0),
+    	"ok" : 0,
+    	"errmsg" : "no replset config has been received",
+    	"code" : 94,
+    	"codeName" : "NotYetInitialized",
+    	"$clusterTime" : {
+    		"clusterTime" : Timestamp(0, 0),
+    		"signature" : {
+    			"hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+    			"keyId" : NumberLong(0)
+    		}
+    	}
+    }
+
+There should be no config present also, which we can also check.
+
+:|mongo shell|_ Check the current status of replica set config\::
+
+  Command:
+
+  .. parsed-literal::
+
+    rs.conf()
+
+  Out:
+
+  .. parsed-literal::
+
+    2020-03-12T13:43:46.998+0000 E  QUERY    [js] uncaught exception: Error: Could not retrieve replica set config: {
+    	"operationTime" : Timestamp(0, 0),
+    	"ok" : 0,
+    	"errmsg" : "no replset config has been received",
+    	"code" : 94,
+    	"codeName" : "NotYetInitialized",
+    	"$clusterTime" : {
+    		"clusterTime" : Timestamp(0, 0),
+    		"signature" : {
+    			"hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+    			"keyId" : NumberLong(0)
+    		}
+    	}
+    } :
+    rs.conf@src/mongo/shell/utils.js:1531:11
+    @(shell):1:1
+
+If the config does not yet exist like above, or is not initialized we should initialize it.
+
+:|mongo shell|_ Initialize the config\::
+
+  Command:
+
+    rs.initiate()
+
+Now we are free to add members to the replica set.
+
+:|mongo shell|_ Add a member to the config\::
+
+  Command:
+
+  .. parsed-literal::
+
+    rs.add({host: "|hostname|:|port|"})
 
 :todo:
 
