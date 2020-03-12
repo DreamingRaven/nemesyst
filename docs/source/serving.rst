@@ -168,9 +168,9 @@ This section will outline how to take a currently standard database and turn it 
 |mongodb| config file setup for replica sets
 --------------------------------------------
 
-:|files-only| example ``./examples/configs/mongo/authenticated_replicaset.yaml``\::
+:|files-only| example ``./examples/configs/mongo/replica.yaml``\::
 
-  .. literalinclude:: ../../examples/configs/mongo/authenticated_replicaset.yaml
+  .. literalinclude:: ../../examples/configs/mongo/replica.yaml
 
 Checking the current status of the replica sets
 -----------------------------------------------
@@ -260,6 +260,13 @@ Now the rs.conf should exist so we are free to add members to the replica set.
 
 From plaintext database to SSL/TLS
 ++++++++++++++++++++++++++++++++++
+
+Almost all of the required changes take place in the mongodb config file/ how you call mongod itself.
+An example tls enabled replica set database config file can be seen below. This however requires a few additional files for authenticating the databases and certificates for SSL/TLS that you will need to generate.
+
+:|files-only| example ``./examples/configs/mongo/authenticated_replicaset.yaml``\::
+
+  .. literalinclude:: ../../examples/configs/mongo/authenticated_replicaset.yaml
 
 Troubleshooting
 +++++++++++++++
