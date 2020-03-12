@@ -74,9 +74,9 @@ See |all-options| for a full list of options.
 
     Wrangling is the stage where the data is cleaned into single atomic examples to be imported to the database.
 
-:|files-only| example\::
-
-  .. literalinclude:: ../../tests/cleaning.sh
+.. :|files-only| example\::
+..
+..   .. literalinclude:: ../../tests/cleaning.sh
 
 .. _section_serving:
 
@@ -95,9 +95,9 @@ Nemesyst uses |mongodb| databases through |pymongo|_ as a data store, and distri
 
 A |mongo| object is automatically passed into every one of your desired scripts entry points, so that you can also easily operate on the database if you so choose although aside from our data generator we handle the majority of use cases before it reaches your scripts.
 
-:|automated| example\::
-
-  .. literalinclude:: ../../tests/serving.sh
+.. :|automated| example\::
+..
+..   .. literalinclude:: ../../tests/serving.sh
 
 .. note::
 
@@ -116,9 +116,9 @@ See |all-options| for a full list of options.
 
     Learning is the stage where the data is used to train new models or to update an existing model already in the database.
 
-:|files-only| example\::
-
-  .. literalinclude:: ../../tests/learning.sh
+.. :|files-only| example\::
+..
+..   .. literalinclude:: ../../tests/learning.sh
 
 .. warning::
   Special attention should be paid to the size of the resultant neural networks. Beyond a certain size it will be necessary to store them as GridFS objects. The basic GridFS functionality is included in nemesyst's :ref:`section_mongo` however this is still experimental and should not be depended upon at this time.
@@ -138,6 +138,6 @@ See |all-options| for a full list of options.
 
     Inferring is the stage where the model(s) are used to predict on newly provided data.
 
-:|files-only| example\::
-
-  .. literalinclude:: ../../tests/learning.sh
+.. :|files-only| example\::
+..
+..   .. literalinclude:: ../../tests/learning.sh
