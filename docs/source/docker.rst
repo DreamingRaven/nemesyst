@@ -43,7 +43,7 @@ A |dockerfile|_ is a short command based script that defines how to create a con
 .dockerignore
 +++++++++++++
 
-A .dockerignore is similar in function to a .gitignore and supports similar syntax. Special care should be paid to .dockerignore files as they are both useful to minimise the risk of potential secrets being leaked into a container, their container size etc, but they can also cause problems with things like the ```COPY``` command leading to unexpected results. We personally recommend a whitelist strategy .dockerignore where you specify only what you would like to be copied in.
+A .dockerignore is similar in function to a .gitignore and supports similar syntax. Special care should be paid to .dockerignore files as they are both useful to minimize the risk of potential secrets being leaked into a container, their container size etc, but they can also cause problems with things like the ```COPY``` command leading to unexpected results. We personally recommend a whitelist strategy .dockerignore where you specify only what you would like to be copied in.
 
 :whitelist .dockerignore example ``examples/containers/nemesyst_ubuntu/.dockerignore``:
 

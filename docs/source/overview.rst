@@ -29,7 +29,7 @@ Nemesyst literal un-abstract stages
     :alt: Nemesyst use-case example diagram.
     :figclass: align-center
 
-    This image is a use case example of Nemesyst applied to a distributed refrigeration fleet over multiple sites, and both online and offline learning capabilities occuring simultaneously.
+    This image is a use case example of Nemesyst applied to a distributed refrigeration fleet over multiple sites, and both online and offline learning capabilities occurring simultaneously.
 
 Nemesyst has been made to be generic enough to handle many possible configurations, but we cannot possibly handle all possible scenarios. Sometimes it may be necessary to manually configure certain aspects of the process, especially regarding MongoDB as it is quite a well developed, mature, database, with more features than we could, and should automate.
 
@@ -42,7 +42,7 @@ Nemesyst Abstraction of stages
     :alt: Nemesyst stages of data from input to output.
     :figclass: align-center
 
-    Nemesyst has abstracted, grouped, and formalised what we believe are the core stages of applying deep learning at all scales.
+    Nemesyst has abstracted, grouped, and formalized what we believe are the core stages of applying deep learning at all scales.
 
 Deep learning can be said to include 3 stages, data-wrangling, test-training, and inferring. Nemesyst adds an extra layer we call serving, which is the stage at which databases are involved as the message passing interface (MPI), and generator, between the layers, machines, and algorithms, along with being the data, and model storage mechanism.
 
@@ -57,7 +57,7 @@ As of: `2.0.1.r6.f9f92c3 <https://github.com/DreamingRaven/nemesyst/commit/f9f92
     :alt: Nemesyst round depiction diagram, showing the order and values of rounds.
     :figclass: align-center
 
-    Nemesyst parallelises each script, up the the maximum number of processes in the process pool.
+    Nemesyst parallelizes each script, up the the maximum number of processes in the process pool.
 
 Local parallelization of your scripts occur using pythons process pools from multiprocessing. This diagram shows how the rounds of processing are abstracted and the order of them. Rounds do not continue between stages, I.E if there is a spare process but not enough scripts from that stage (e.g cleaning) it will not fill this with a script process from the next stage (e.g learning). This is to prevent the scenario where a learning script may depend on the output of a previous cleaning script.
 
@@ -89,7 +89,7 @@ See |all-options| for a full list of options.
     :alt: Nemesyst database serving puzzle diagram.
     :figclass: align-center
 
-    Serving is the stage where the data and eventually trained models will be stored and passed to other processess potentially on other machines.
+    Serving is the stage where the data and eventually trained models will be stored and passed to other processes potentially on other machines.
 
 Nemesyst uses |mongodb| databases through |pymongo|_ as a data store, and distribution mechanism. The database(s) are some of the most important aspects of the chain of processes, as nothing can operate without a properly functioning database. As such we have attempted to simplify operations on both the user scripts side and our side by abstracting the slightly raw |pymongo|_ interface into a much friendlier class of operations called |mongo|.
 
