@@ -227,6 +227,9 @@ There should be no config present also, which we can also check.
 
 If the config does not yet exist like above, or is not initialized we should initialize it.
 
+Initializing and populating the replica set config
+--------------------------------------------------
+
 :|mongo shell|_ Initialize the config\::
 
   Command:
@@ -242,10 +245,6 @@ Now we are free to add members to the replica set.
   .. parsed-literal::
 
     rs.add({host: "|hostname|:|port|"})
-
-:todo:
-
-  Include instructions for turning a database into several replica sets.
 
 Troubleshooting
 +++++++++++++++
