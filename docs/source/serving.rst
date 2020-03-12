@@ -12,6 +12,9 @@
 .. _mongodb compass: https://www.mongodb.com/products/compass
 .. |mongodb compass| replace:: MongoDB Compass
 
+.. _replica: https://docs.mongodb.com/manual/replication/
+.. |replica| replace:: Replica
+
 .. _mongo shell: https://docs.mongodb.com/manual/mongo/
 .. |mongo shell| replace:: Mongo shell
 
@@ -234,9 +237,11 @@ Initializing and populating the replica set config
 
   Command:
 
+  .. parsed-literal::
+
     rs.initiate()
 
-Now we are free to add members to the replica set.
+Now the rs.conf should exist so we are free to add members to the replica set.
 
 :|mongo shell|_ Add a member to the config\::
 
@@ -254,4 +259,16 @@ Please see |troubleshooting|
 Further reading
 +++++++++++++++
 
-`MongoDB config file options <https://docs.mongodb.com/manual/reference/configuration-options/>`_
+|mongodb|_ core:
+
+- `config file options <https://docs.mongodb.com/manual/reference/configuration-options/>`_
+- `user management <https://docs.mongodb.com/manual/tutorial/manage-users-and-roles/#manage-users-and-roles/>`_
+
+|replica|_ sets:
+
+- `rs.initiate <https://docs.mongodb.com/manual/reference/method/rs.initiate//>`_
+- `add members <https://docs.mongodb.com/manual/tutorial/expand-replica-set//>`_
+
+
+..
+  `link template </>`_
