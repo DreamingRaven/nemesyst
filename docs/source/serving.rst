@@ -87,7 +87,7 @@ After this you can use the following to close the |docker|_ container with the d
       docker-compose down
 
 .. note::
-  Don't worry we set our docker-compose.yaml to save its files in ``/data/db`` so they are persistent between runs of docker-compose. If you need to delete the |mongodb|_ database that is where you can find them.
+  Don't worry we set our docker-compose.yaml to save its files in ``/containers/mongodb`` so they are persistent between runs of docker-compose. If you need to delete the |mongodb|_ database that is where you can find them.
 
 .. _connecting_mongodb:
 
