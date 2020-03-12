@@ -165,6 +165,13 @@ From basic database to replica sets
 
 This section will outline how to take a currently standard database and turn it into a replica set
 
+|mongodb| config file setup for replica sets
+--------------------------------------------
+
+:|files-only| example ``./examples/configs/mongo/authenticated_replicaset.yaml``\::
+
+  .. literalinclude:: ../../examples/configs/mongo/authenticated_replicaset.yaml
+
 Checking the current status of the replica sets
 -----------------------------------------------
 
@@ -250,6 +257,9 @@ Now the rs.conf should exist so we are free to add members to the replica set.
   .. parsed-literal::
 
     rs.add({host: "|hostname|:|port|"})
+
+From plaintext database to SSL/TLS
+++++++++++++++++++++++++++++++++++
 
 Troubleshooting
 +++++++++++++++

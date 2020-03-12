@@ -8,11 +8,6 @@ processManagement:
 net:
   bindIp: 0.0.0.0
   port: 65535
-  tls:
-    mode: requireTLS
-    certificateKeyFile: mongodb.pem
-    certificateKeyFilePassword: passwordIfItHasOneAtAll
-    allowConnectionsWithoutCertificates: true
 systemLog:
   path: mongolog.log
   destination: file
