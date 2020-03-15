@@ -104,7 +104,7 @@ Nemesyst
 
 Nemesyst can be used to log you in to the mongo shell although this feature should not be depended on, and instead it is recommended to use mongo for anything more complicated than simple testing. You will need to provide any other options like ip port etc if it is not using the defaults.
 
-:|bash shell| simple all defaults example\::
+:|bash shell|_ simple all defaults example\::
 
   .. parsed-literal::
 
@@ -115,7 +115,7 @@ Mongo
 
 To connect to an non-sharded database with autnentication but no TLS/SSL:
 
-:|bash shell| example\::
+:|bash shell|_ example\::
 
   .. parsed-literal::
 
@@ -123,7 +123,7 @@ To connect to an non-sharded database with autnentication but no TLS/SSL:
 
 To connect to a slightly more complicated scenario with authentication, TLS, and sharding enabled:
 
-:|bash shell| example\::
+:|bash shell|_ example\::
 
   .. parsed-literal::
 
@@ -260,6 +260,30 @@ Now the rs.conf should exist so we are free to add members to the replica set.
 
 From plaintext database to SSL/TLS
 ++++++++++++++++++++++++++++++++++
+
+First it is necessary to generate a key and a certificate file for our use. For now these can be self signed but in future you may want to look at getting them signed by a certificate authority.
+
+Generating a self signed certificate and key
+--------------------------------------------
+
+This example shows generating an encrypted RSA key. If you would instead prefer it to be plaintext remove ```-aes-256-cbc```.
+
+:|bash shell|_ generate encrypted RSA key example\::
+
+  .. parsed-literal::
+
+      openssl genpkey -algorithm ``RSA`` ``-aes-256-cbc`` -pkeyopt rsa_keygen_bits:``4096`` -out ``ssl_key``
+
+:|bash shell|_ generate x509 certificate file valid for 365 days example\::
+
+  .. parsed-literal::
+
+      openssl req -key ``ssl_key`` -x509 -new -days ``365`` -out ``signed_certificate``
+
+This should now leave you with two files, an ``ssl_key`` and a ``signed_certificate``. 
+
+Using our certificate and key
+-----------------------------
 
 Almost all of the required changes take place in the mongodb config file/ how you call mongod itself.
 An example tls enabled replica set database config file can be seen below. This however requires a few additional files for authenticating the databases and certificates for SSL/TLS that you will need to generate.
