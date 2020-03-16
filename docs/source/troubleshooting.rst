@@ -30,3 +30,8 @@ MongoDB/ Serving Issues
 :pymongo.errors.OperationFailure\: Authentication failed:
 
   This error means likely means that your authentication credentials are incorrect, you will want to check the values you are passing to pymongo via Nemesyst to ensure they are what you are expecting. In particular pay special attention to Mongo().connect() as it is the life blood of all connections but since the driver is a lazy driver it wont fail until you attempt to use the connection.
+
+:pymongo.errors.ServerSelectionTimeoutError\: 192.168.1.10\:27017\: [SSL\: CERTIFICATE_VERIFY_FAILED] certificate verify failed\: IP address mismatch, certificate is not valid for '192.168.1.10':
+
+  This error is a implementation quirk of pymongo not converting between ip addresses and hostname strings implicitly even if the certificate stipulates the desired IP address correctly for other things such as the mongo client.
+  My only recommendation is to either use hostnames even if that only be explicit in ``/etc/hosts`` or disabling TLS but both are bad options for anything more than testing.
