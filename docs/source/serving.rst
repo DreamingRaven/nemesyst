@@ -35,6 +35,11 @@
 .. |hostname| replace:: ``hostname``
 .. |port| replace:: ``port``
 .. |username| replace:: ``username``
+.. |dbname| replace:: ``database name``
+.. |cafile| replace:: ``path to ca file``
+.. |certkeyfile| replace:: ``path to cert key file``
+.. |useradminanydb| replace:: ``userAdminAnyDatabase``
+.. |admin| replace:: ``admin``
 
 .. _page_serving:
 
@@ -119,7 +124,7 @@ To connect to an non-sharded database with autnentication but no TLS/SSL:
 
   .. parsed-literal::
 
-      mongo |hostname|:|port| -u |username| --authenticationDatabase DATABASENAME
+      mongo |hostname|:|port| -u |username| --authenticationDatabase |dbname|
 
 To connect to a slightly more complicated scenario with authentication, TLS, and sharding enabled:
 
@@ -127,7 +132,7 @@ To connect to a slightly more complicated scenario with authentication, TLS, and
 
   .. parsed-literal::
 
-      mongo |hostname|:|port| -u |username| --authenticationDatabase DATABASENAME --tls --tlsCAFile PATHTOCAFILE --tlsCertificateKeyFile PATHTOCERTKEYFILE
+      mongo |hostname|:|port| -u |username| --authenticationDatabase |dbname| --tls --tlsCAFile |cafile| --tlsCertificateKeyFile |certkeyfile|
 
 Creating database users
 -----------------------
@@ -148,17 +153,17 @@ Connect to the running database see :ref:`connecting_mongodb`.
     db.grantRolesToUser(
     "|username|",
     [
-      { role: "userAdminAnyDatabase", db: "admin" }
+      { role: "|useradminanydb|", db: "|admin|" }
     ])
 
-:|mongo shell|_ create user and grant userAdminAnyDatabase in one\::
+:|mongo shell|_ create user and grant |useradminanydb| in one\::
 
   .. parsed-literal::
 
-    db.createUser({user: "|username|", pwd: passwordPrompt(), roles: [{role:"userAdminAnyDatabase", db: "admin"}]})
+    db.createUser({user: "|username|", pwd: passwordPrompt(), roles: [{role:"|useradminanydb|", db: "|admin|"}]})
 
 .. note::
-  Since this user belongs to admin in the previous examples that means the authenticationDatabase is admin when authenticating as this user as per the instructions in ":ref:`connecting_mongodb`".
+  Since this user belongs to |admin| in the previous examples that means the authenticationDatabase is |admin| when authenticating as this user as per the instructions in ":ref:`connecting_mongodb`".
 
 From basic database to replica sets
 +++++++++++++++++++++++++++++++++++
@@ -285,6 +290,7 @@ This should now leave you with two files, an ``ssl_key`` and a ``signed_certific
 .. note::
   It should be noted that MongoDB does hostname validation using this certificate file.
   The things we are aware of are the hostname must match, and in the case of replicas one thing like organization name must match between the communicating replicas if they use SSL/TLS.
+  It should also be noted that Pymongo unlike mongo does not interpret between hostname and ip address the same way, an example can be found in troubleshooting.
 
 Using our certificate and key
 -----------------------------
