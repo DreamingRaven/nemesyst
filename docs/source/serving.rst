@@ -280,7 +280,11 @@ This example shows generating an encrypted RSA key. If you would instead prefer 
 
       openssl req -key ``ssl_key`` -x509 -new -days ``365`` -out ``signed_certificate``
 
-This should now leave you with two files, an ``ssl_key`` and a ``signed_certificate``. 
+This should now leave you with two files, an ``ssl_key`` and a ``signed_certificate``.
+
+.. note::
+  It should be noted that MongoDB does hostname validation using this certificate file.
+  The things we are aware of are the hostname must match, and in the case of replicas one thing like organization name must match between the communicating replicas if they use SSL/TLS.
 
 Using our certificate and key
 -----------------------------
