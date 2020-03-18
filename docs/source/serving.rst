@@ -285,17 +285,39 @@ This example shows generating an encrypted RSA key. If you would instead prefer 
 
       openssl req -key ``ssl_key`` -x509 -new -days ``365`` -out ``signed_certificate``
 
-This should now leave you with two files, an ``ssl_key`` and a ``signed_certificate``.
-
 .. note::
   It should be noted that MongoDB does hostname validation using this certificate file.
   The things we are aware of are the hostname must match, and in the case of replicas one thing like organization name must match between the communicating replicas if they use SSL/TLS.
   It should also be noted that Pymongo unlike mongo does not interpret between hostname and ip address the same way, an example can be found in troubleshooting.
 
+This should now leave you with two files, an ``ssl_key`` and a ``signed_certificate``. We can now combine these two together to create a .pem file with both to provide to |mongodb|_.
+This new file will is the certificate-key file.
+
+:|bash shell|_ a certificate-key (CK) file example\::
+
+  .. parsed-literal::
+
+      cat ``signed_certificate`` > ``certificateKeyFile.pem``
+      cat ``ssl_key`` >> ``certificateKeyFile.pem``
+
 Using our certificate and key
 -----------------------------
 
 Almost all of the required changes take place in the mongodb config file/ how you call mongod itself.
+
+:|files-only| ``mongod.conf``/ ``mongod.yaml`` example\::
+
+  .. parsed-literal::
+
+    net:
+      bindIp: ``127.0.0.1``
+      port: ``27017``
+      tls:
+        mode: requireTLS
+        certificateKeyFile: ``certificateKeyFile.pem``
+        certificateKeyFilePassword: ``password``
+        allowConnectionsWithoutCertificates: true
+
 An example tls enabled replica set database config file can be seen below. This however requires a few additional files for authenticating the databases and certificates for SSL/TLS that you will need to generate.
 
 :|files-only| example ``./examples/configs/mongo/authenticated_replicaset.yaml``\::
