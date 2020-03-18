@@ -30,6 +30,9 @@
 .. _pymongo: https://api.mongodb.com/python/current/
 .. |pymongo| replace:: PyMongo
 
+.. _ckfile: https://docs.mongodb.com/manual/tutorial/configure-ssl/#mongod-and-mongos-certificate-key-file
+.. |ckfile| replace:: ``ckfile.pem``
+
 .. |troubleshooting| replace:: :ref:`section_ts_mongodb`
 
 .. |hostname| replace:: ``hostname``
@@ -293,11 +296,11 @@ This example shows generating an encrypted RSA key. If you would instead prefer 
 This should now leave you with two files, an ``ssl_key`` and a ``signed_certificate``. We can now combine these two together to create a .pem file with both to provide to |mongodb|_.
 This new file will is the certificate-key file.
 
-:|bash shell|_ a certificate-key (CK) file example\::
+:|bash shell|_ a |ckfile|_ file example\::
 
   .. parsed-literal::
 
-      cat ``signed_certificate`` > ``certificateKeyFile.pem``
+      cat ``signed_certificate`` > |ckfile|_
       cat ``ssl_key`` >> ``certificateKeyFile.pem``
 
 Using our certificate and key
