@@ -32,6 +32,9 @@ services:
       # simply call whatever you desire assuming you have copied it in
       - "/nemesyst_local/nemesyst" # nemesyst shebang uses python 3
       - "--help"
+    volumes:
+      # mount current directory to a directory in the container
+      - .:/nemesyst_local
 
   mongodb:
     container_name: mongodb_server
