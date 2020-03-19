@@ -20,7 +20,7 @@ services:
       # this is the archlinux on the edge version, it is very big (+10G):
       context: ./
       # just the name of the dockerfile we want to use, happens to be normal
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile_ubuntu
     # giving our build image a name for future reference
     image: archer/nemesyst
     # giving out image which spawns from our image a name
@@ -28,6 +28,9 @@ services:
     # ensuring MongoDB is started before we start ours
     depends_on:
       - mongodb
+    command:
+      - "/nemesyst_local/nemesyst"
+      - "--help"
 
   mongodb:
     container_name: mongodb_server
@@ -51,7 +54,7 @@ services:
       # "volume-name:in-container mount point (not local system):"
       # or /local/location:/docker/location
       # - "mongodb-volume:/data/db"
-      - /containers/mongodb:/data/db
+      - /containers/mongodb/db0:/data/db
       # local file:docker vm location # this copies over the config file
       # This will copy local config file to docker container
       # - /etc/mongodb.conf:/etc/mongodb.conf
@@ -61,9 +64,12 @@ services:
     container_name: nginx_proxy
     image: "nginx:mainline-alpine"
     ports:
-      - "65535:27017" # the first port here is accessible from anywhere
+      - "127.0.0.1:65535:27017" # the first port is only accessible locally
+      # - "65535:27017" # the first port here is accessible from anywhere
     volumes:
       # storage directory for logs etc
       - /containers/nginx:/nginx
       # volume to store the nginx config
       - ./examples/configs/nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - mongodb
