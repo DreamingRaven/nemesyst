@@ -29,7 +29,8 @@ services:
     depends_on:
       - mongodb
     command:
-      - "/nemesyst_local/nemesyst"
+      # simply call whatever you desire assuming you have copied it in
+      - "/nemesyst_local/nemesyst" # nemesyst shebang uses python 3
       - "--help"
 
   mongodb:
