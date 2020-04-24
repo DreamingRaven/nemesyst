@@ -166,6 +166,12 @@ To create the `python-virtualenv <https://wiki.archlinux.org/index.php/Python/Vi
 
     virtualenv venv
 
+If python 3 is not the default python for your virtualenvironment, simply delete the new directory ``venv`` and instead use the following to generate a new one with python3:
+
+.. code-block:: bash
+
+     virtualenv -p python3 venv
+
 To then use the newly created virtual environment:
 
 .. code-block:: bash
