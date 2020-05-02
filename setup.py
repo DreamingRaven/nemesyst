@@ -8,6 +8,7 @@
 # @Last modified time: 2019-08-17
 # @License: Please see LICENSE file in project root
 
+import re
 import subprocess
 from setuptools import setup, find_packages, find_namespace_packages
 
@@ -41,16 +42,51 @@ def get_requirements(path=None):
     This function fascilitates git urls being in requirements.txt
     and installing them as normall just like pip install -r requirements.txt
     would but setup does not by default.
+
+    :e.g requirements.txt\::
+
+        ConfigArgParse
+        git+https://github.com/DreamingRaven/python-ezdb.git#branch=master
+
+    should result in
+
+    :requirements\::
+
+        [
+            ConfigArgParse
+            python-ezdb
+        ]
+
+    : dependenc links\::
+
+        ["git+https://github.com/DreamingRaven/python-ezdb.git#egg=python-ezdb"]
+
+    version can also be appended but that may break compatibility with
+    pip install -r requirements.txt so we will not attempt that here but would
+    look something like this:
+
+    "git+https://github.com/DreamingRaven/python-ezdb.git#egg=python-ezdb-0.0.1"
     """
+    dependency_links = []
+
     #  read in the requirements file
     path = path if path is not None else "./requirements.txt"
     with open(path, "r") as f:
         requirements = f.read().splitlines()
-    # find and replace all urls with the name of the package being pointed to
-    re_git_url = r"^\bgit.+\.git"
-    # generate a list of dependency links for these package names
-    # so setup can now understand them
-    dependency_links = []
+
+    # apply regex to find all desired groups like package name and url
+    re_git_url = r"^\bgit.+/(.+)\.git"
+    re_groups = list(map(lambda x: re.search(re_git_url, x), requirements))
+
+    # iterate over regex and select package name group to insert over url
+    for i, content in enumerate(re_groups):
+        # re.search can return None so only if it returned something
+        if(content):
+            print(i, content, requirements[i])
+            requirements[i] = content.group(1)
+            dependency_links.append("{}#egg={}".format(content.group(0),
+                                                       content.group(1)))
+
     return requirements, dependency_links
 
 
