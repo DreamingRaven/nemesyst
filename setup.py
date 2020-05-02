@@ -95,11 +95,12 @@ version = get_gitVersion()
 print("version:", version)
 
 # get dependencys and dependency install links to work with git urls
-mutated_depends, mutated_links = get_requirements()
-print("requirements:", mutated_depends)
-print("requirement_links:", mutated_links)
+dependencies, links = get_requirements()
+print("requirements:", dependencies)
+print("requirement_links:", links)
 
-# get
+# read in readme as readme for package as im too lazy to write a new one for
+# package
 with open("README.md", "r") as fh:
     readme = fh.read()
 
@@ -120,7 +121,6 @@ setup(
     url="https://github.com/DreamingRaven/nemesyst",
     packages=packages,
     scripts=['nemesyst'],
-    # dependency_links=["git+https://github.com/DreamingRaven/python-ezdb.git#egg=python-ezdb-0.0.1"],
-    dependency_links=mutated_links,
-    install_requires=mutated_depends
+    dependency_links=links,
+    install_requires=dependencies
 )
